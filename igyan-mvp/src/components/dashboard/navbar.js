@@ -141,7 +141,6 @@ export default function DashboardNavbar({ onMenuClick }) {
 								<p className="text-sm font-semibold text-zinc-900 dark:text-white">
 									{user?.full_name?.split(" ")[0] || "User"}
 								</p>
-								<p className="text-xs text-zinc-500 dark:text-zinc-400">Student</p>
 							</div>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
