@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../utils/auth_context";
+import { supabase } from "../utils/supabase";
 import Link from "next/link";
+import SchoolOnboarding from "../../components/dashboard/school-onboarding";
 
 export default function DashboardPage() {
 	const { user, session, loading } = useAuth();
 	const router = useRouter();
+	const [hasSchool, setHasSchool] = useState(null);
+	const [checkingSchool, setCheckingSchool] = useState(true);
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -15,7 +19,41 @@ export default function DashboardPage() {
 		}
 	}, [user, loading, router]);
 
-	if (loading) {
+	// Check if user has a school
+	useEffect(() => {
+		const checkSchool = async () => {
+			if (!user) return;
+
+			try {
+				// Check if user has created a school
+				const { data, error } = await supabase
+					.from("schools")
+					.select("id")
+					.limit(1)
+					.maybeSingle();
+
+				if (error && error.code !== "PGRST116") {
+					console.error("Error checking school:", error);
+				}
+
+				setHasSchool(!!data);
+				setCheckingSchool(false);
+			} catch (err) {
+				console.error("Error checking school:", err);
+				setCheckingSchool(false);
+			}
+		};
+
+		if (user) {
+			checkSchool();
+		}
+	}, [user]);
+
+	const handleOnboardingComplete = () => {
+		setHasSchool(true);
+	};
+
+	if (loading || checkingSchool) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-center">
@@ -29,6 +67,13 @@ export default function DashboardPage() {
 	}
 
 	if (!user) return null;
+
+	// Show onboarding if user has no school
+	if (hasSchool === false) {
+		return (
+			<SchoolOnboarding userId={user.id} onComplete={handleOnboardingComplete} />
+		);
+	}
 
 	return (
 		<div className="p-6 lg:p-8">
