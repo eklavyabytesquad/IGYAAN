@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "./logo";
 
 const links = [
 	{ href: "/features", label: "Features" },
@@ -15,7 +16,8 @@ export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
-		setIsOpen(false);
+		const timer = setTimeout(() => setIsOpen(false), 0);
+		return () => clearTimeout(timer);
 	}, [pathname]);
 
 	return (
@@ -24,9 +26,10 @@ export default function Navbar() {
 			<nav className="flex w-full max-w-5xl items-center justify-between rounded-xl border border-zinc-200/80 bg-white/85 px-5 py-3 shadow-lg shadow-zinc-900/10 transition-all dark:border-zinc-700/60 dark:bg-zinc-900/80">
 				<Link
 					href="/"
-					className="text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
+					className="flex items-center gap-3 text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
 				>
-					iGyanAI
+					<Logo variant="nav" />
+					<span className="leading-tight">iGyanAI</span>
 				</Link>
 				<div className="hidden items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-300 lg:flex">
 					{links.map(({ href, label }) => {

@@ -1,7 +1,10 @@
+import Logo from "@/components/logo";
+
 export default function ContactPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-20">
       <header className="max-w-2xl">
+        <Logo variant="card" className="mb-6" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
           Let’s design your AI-first learning ecosystem.
         </h1>

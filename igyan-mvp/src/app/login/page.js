@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/logo";
 import { useAuth } from "../utils/auth_context";
 
 export default function LoginPage() {
@@ -30,6 +31,9 @@ export default function LoginPage() {
 	return (
 		<div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center px-6 py-20">
 			<div className="rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70">
+				<div className="mb-6 flex justify-center">
+					<Logo variant="card" />
+				</div>
 				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
 					Welcome back
 				</h1>

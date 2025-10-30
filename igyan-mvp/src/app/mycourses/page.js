@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "@/components/logo";
 
 const courses = [
 	{
@@ -63,7 +64,8 @@ const progressTone = (value) => {
 export default function MyCoursesPage() {
 	return (
 		<div className="min-h-full space-y-8 p-6 lg:p-10">
-			<header className="space-y-2">
+			<header className="space-y-3">
+				<Logo variant="header" />
 				<h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">
 					Your Courses
 				</h1>

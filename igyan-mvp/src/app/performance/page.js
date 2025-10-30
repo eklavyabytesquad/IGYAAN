@@ -1,5 +1,7 @@
 "use client";
 
+import Logo from "@/components/logo";
+
 const metrics = [
 	{ label: "Learning velocity", value: "18h", trend: "▲ 12% vs last month", tone: "text-emerald-500" },
 	{ label: "Average score", value: "92", trend: "▲ 3 pts", tone: "text-indigo-500" },
@@ -120,7 +122,8 @@ const examsReport = [
 export default function PerformancePage() {
 	return (
 		<div className="min-h-full space-y-10 p-6 lg:p-10">
-			<header className="space-y-2">
+			<header className="space-y-3">
+				<Logo variant="header" />
 				<h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">
 					Performance intelligence
 				</h1>

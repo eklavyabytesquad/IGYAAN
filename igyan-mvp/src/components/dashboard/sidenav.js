@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "../logo";
 
 export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed }) {
 	const pathname = usePathname();
@@ -199,9 +200,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 							isCollapsed ? "lg:justify-center" : ""
 						}`}
 					>
-						<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-purple-500">
-							<span className="text-sm font-bold text-white">iG</span>
-						</div>
+						<Logo variant={isCollapsed ? "compact" : "sidebar"} className="shrink-0" />
 						<span
 							className={`text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white ${
 								isCollapsed ? "lg:hidden" : ""

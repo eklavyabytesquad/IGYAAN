@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/logo";
 
 const calendarEvents = [
 	{
@@ -84,6 +85,7 @@ export default function CalendarPage() {
 		<div className="min-h-full space-y-10 p-6 lg:p-10">
 			<header className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
 				<div>
+					<Logo variant="header" className="mb-3" />
 					<h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">Learning calendar</h1>
 					<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
 						Plot deadlines, study blocks, and mentor sessions on one interactive view.

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "./logo";
 
 export default function Footer() {
 	return (
@@ -7,9 +8,10 @@ export default function Footer() {
 				<div className="space-y-4">
 					<Link
 						href="/"
-						className="text-lg font-semibold text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
+						className="flex items-center gap-3 text-lg font-semibold text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
 					>
-						iGyanAI
+						<Logo variant="footer" />
+						<span className="leading-tight">iGyanAI</span>
 					</Link>
 					<p className="max-w-sm leading-relaxed">
 						The AI-native operating system for schools, empowering students with

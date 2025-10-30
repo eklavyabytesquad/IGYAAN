@@ -6,6 +6,7 @@ import { useAuth } from "../utils/auth_context";
 import { supabase } from "../utils/supabase";
 import Link from "next/link";
 import SchoolOnboarding from "../../components/dashboard/school-onboarding";
+import Logo from "@/components/logo";
 
 export default function DashboardPage() {
 	const { user, session, loading } = useAuth();
@@ -78,12 +79,13 @@ export default function DashboardPage() {
 	return (
 		<div className="p-6 lg:p-8">
 			{/* Header */}
-			<div className="mb-8">
+			<div className="mb-8 space-y-3">
+				<Logo variant="header" />
 				<h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
 					Welcome back, {user.full_name?.split(" ")[0] || "User"}! 👋
 				</h1>
 				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
-					Here's what's happening with your learning today
+					Here&rsquo;s what&rsquo;s happening with your learning today
 				</p>
 			</div>
 
@@ -381,7 +383,7 @@ export default function DashboardPage() {
 										Get Support
 									</p>
 									<p className="text-xs text-zinc-600 dark:text-zinc-400">
-										We're here to help
+										We&rsquo;re here to help
 									</p>
 								</div>
 								<svg

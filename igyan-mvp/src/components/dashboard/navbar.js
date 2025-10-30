@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../app/utils/auth_context";
 import { useRouter } from "next/navigation";
+import Logo from "../logo";
 
 export default function DashboardNavbar({ onMenuClick }) {
 	const { user, logout } = useAuth();
@@ -52,8 +53,10 @@ export default function DashboardNavbar({ onMenuClick }) {
 						</svg>
 					</button>
 
+					<Logo variant="sidebar" className="shrink-0" />
+
 					{/* Search Bar */}
-					<div className="hidden md:flex items-center">
+				<div className="hidden md:flex items-center">
 						<div className="relative">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

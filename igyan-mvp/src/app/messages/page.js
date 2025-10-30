@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Logo from "@/components/logo";
 
 const tabs = [
 	{ id: "all", label: "All" },
@@ -95,6 +96,7 @@ export default function MessagesPage() {
 		<div className="min-h-full space-y-8 p-6 lg:p-10">
 			<header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 				<div>
+					<Logo variant="header" className="mb-2" />
 					<h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">Messages & Coaching</h1>
 					<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
 						Check mentor feedback, sync with peers, and manage notifications in one inbox.

@@ -1,6 +1,7 @@
 // #aniket
 
 import Link from "next/link";
+import Logo from "@/components/logo";
 
 const highlights = [
   "Unified operating system for schools",
@@ -80,6 +81,9 @@ export default function Home() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-24 pt-24 sm:pt-28">
         <div className="relative grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
+            <div className="mb-8 mt-2 flex justify-start sm:justify-start">
+              <Logo variant="hero" priority />
+            </div>
             <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-600 shadow-sm dark:border-indigo-900/60 dark:bg-zinc-900/70 dark:text-indigo-300">
               AI-Native Learning OS
             </span>

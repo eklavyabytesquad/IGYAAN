@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/logo";
 
 const assignmentsMock = [
 	{
@@ -88,7 +89,8 @@ export default function AssignmentsPage() {
 
 	return (
 		<div className="min-h-full space-y-10 p-6 lg:p-10">
-			<header className="space-y-2">
+			<header className="space-y-3">
+				<Logo variant="header" />
 				<h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">
 					Assignments & Assessments
 				</h1>
