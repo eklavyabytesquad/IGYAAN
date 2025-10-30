@@ -62,7 +62,7 @@ export default function Navbar() {
 					</Link>
 					<Link
 						href="/register"
-						className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.02] hover:bg-indigo-400"
+						className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.04] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
 					>
 						Get Started
 					</Link>
@@ -127,7 +127,7 @@ export default function Navbar() {
 						</Link>
 						<Link
 							href="/register"
-							className="rounded-lg bg-indigo-500 px-3 py-2 text-center font-semibold text-white transition-colors hover:bg-indigo-400"
+							className="rounded-lg bg-sky-500 px-3 py-2 text-center font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.03] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
 						>
 							Get Started
 						</Link>
