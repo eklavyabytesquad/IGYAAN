@@ -13,7 +13,7 @@ const values = [
   {
     title: "Intelligent infrastructure",
     description:
-      "Our AI stack fuses campus data, skill ontologies, and LLM copilots with rigorous safety, privacy, and compliance.",
+  "Our AI stack fuses campus data, skill ontologies, and LLM Sudarshan Ai copilots with rigorous safety, privacy, and compliance.",
   },
   {
     title: "Inclusive ecosystems",
@@ -29,7 +29,7 @@ const timeline = [
   },
   {
     year: "2023",
-    detail: "Launched the Copilot Suite across 20 innovation-first campuses in India and Southeast Asia.",
+  detail: "Launched the Sudarshan Ai Suite across 20 innovation-first campuses in India and Southeast Asia.",
   },
   {
     year: "2024",

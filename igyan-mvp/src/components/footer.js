@@ -45,7 +45,7 @@ export default function Footer() {
 							Updates
 						</h3>
 						<p className="leading-relaxed text-zinc-600 dark:text-zinc-400">
-							Join our newsletter to hear about new AI copilots and curriculum
+							Join our newsletter to hear about new Sudarshan Ai copilots and curriculum
 							launches.
 						</p>
 						<form className="flex gap-2">

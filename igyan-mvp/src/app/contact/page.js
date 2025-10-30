@@ -66,7 +66,7 @@ export default function ContactPage() {
               name="goal"
               className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
             >
-              <option>Launch AI copilots across operations</option>
+              <option>Launch Sudarshan Ai copilots across operations</option>
               <option>Personalize learning and careers</option>
               <option>Build entrepreneurship and venture labs</option>
               <option>Co-create a custom initiative</option>
@@ -98,7 +98,7 @@ export default function ContactPage() {
           </h2>
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
             Schedule a 30-minute live demo with our product strategists. We’ll
-            map your objectives to the right copilots and launch plan.
+            map your objectives to the right Sudarshan Ai copilots and launch plan.
           </p>
           <div className="space-y-4 text-sm text-zinc-700 dark:text-zinc-300">
             <p>

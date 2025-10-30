@@ -374,7 +374,7 @@ export default function AssignmentsPage() {
 
 					<div className="rounded-3xl border border-zinc-200 bg-white/80 p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/80">
 						<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
-							AI Copilot boosts
+							Sudarshan Ai boosts
 						</h2>
 						<p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
 							Speed up drafting, self-review, and brainstorming.

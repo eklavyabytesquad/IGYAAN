@@ -292,7 +292,7 @@ export default function DashboardPage() {
 								</div>
 								<div className="flex-1">
 									<p className="font-semibold text-zinc-900 dark:text-white">
-										AI Copilot
+										Sudarshan Ai
 									</p>
 									<p className="text-xs text-zinc-600 dark:text-zinc-400">
 										Get personalized help

@@ -29,7 +29,7 @@ const courses = [
 		title: "No-Code Automation Studio",
 		category: "Productivity",
 		description:
-			"Automate business workflows with Zapier, Make, and native AI copilots—no engineering degree required.",
+			"Automate business workflows with Zapier, Make, and native Sudarshan Ai copilots—no engineering degree required.",
 		progress: 12,
 		nextLesson: "Module 1 · Mapping Automation Goals",
 		status: "Explore",

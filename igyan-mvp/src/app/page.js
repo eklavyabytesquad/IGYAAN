@@ -5,7 +5,7 @@ import Logo from "@/components/logo";
 
 const highlights = [
   "Unified operating system for schools",
-  "AI copilots for every learner and educator",
+  "Sudarshan Ai copilots for every learner and educator",
   "Career and venture incubators built in",
 ];
 
@@ -18,7 +18,7 @@ const featureCards = [
   {
     title: "Personalized Learning Paths",
     description:
-      "Adaptive AI copilots curate lesson plans, mastery checks, and mentorship tailored to each learner's aspirations.",
+  "Adaptive Sudarshan Ai copilots curate lesson plans, mastery checks, and mentorship tailored to each learner's aspirations.",
   },
   {
     title: "Career & Entrepreneurship Studio",
@@ -35,17 +35,17 @@ const stats = [
 
 const copilots = [
   {
-    name: "Principal Copilot",
+  name: "Principal Sudarshan Ai",
     description:
       "Forecast admissions, manage compliance, and orchestrate school-wide OKRs with executive dashboards.",
   },
   {
-    name: "Faculty Copilot",
+  name: "Faculty Sudarshan Ai",
     description:
       "Generate lesson plans, formative assessments, and differentiated content in seconds.",
   },
   {
-    name: "Student Copilot",
+  name: "Student Sudarshan Ai",
     description:
       "Chat-based mentor guiding daily learning goals, career exploration, and venture pitch feedback.",
   },
@@ -59,7 +59,7 @@ const heroSignals = [
       "Auto-generate OKRs, board decks, and funding readiness reports in minutes with trusted data.",
   },
   {
-    title: "Faculty copilots live",
+  title: "Sudarshan Ai copilots live",
     metric: "142 lessons launched",
     description:
       "Differentiated lesson plans, mastery checks, and engagement nudges delivered in real time.",
@@ -88,7 +88,7 @@ export default function Home() {
               AI-Native Learning OS
             </span>
             <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl lg:text-6xl dark:text-white">
-              Build <span className="bg-linear-to-r from-indigo-500 via-purple-500 to-sky-500 bg-clip-text text-transparent">future-first schools</span> with copilots for every journey.
+              Build <span className="bg-linear-to-r from-indigo-500 via-purple-500 to-sky-500 bg-clip-text text-transparent">future-first schools</span> with Sudarshan Ai copilots for every journey.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
               iGyanAI unifies school operations, personalized learning, and venture incubation into a single intelligent fabric. Empower your community to learn, launch, and lead with confidence.
@@ -129,7 +129,7 @@ export default function Home() {
                 <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Auto-sync every 5 minutes</span>
               </div>
               <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                Leadership copilots surface opportunities and risks before they appear. See how your school evolves in real time.
+                Leadership Sudarshan Ai copilots surface opportunities and risks before they appear. See how your school evolves in real time.
               </p>
               <div className="space-y-3">
                 {heroSignals.map((signal, index) => (
@@ -207,7 +207,7 @@ export default function Home() {
           Designed for modern school leaders
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-center text-base text-zinc-600 dark:text-zinc-300">
-          Whether you are scaling a network or reimagining a single campus, our modular copilots adapt to your unique vision.
+          Whether you are scaling a network or reimagining a single campus, our modular Sudarshan Ai copilots adapt to your unique vision.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {featureCards.map((feature, index) => (
@@ -232,10 +232,10 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-        <div className="grid gap-10 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70 lg:grid-cols-[0.9fr_1.1fr]">
+  <div className="grid gap-10 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-6">
             <h2 className="text-3xl font-semibold text-zinc-900 dark:text-white">
-              Meet the iGyanAI Copilot Suite
+              Meet the iGyanAI Sudarshan Ai Suite
             </h2>
             <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
               Seamless assistants tuned for every stakeholder, powered by your data and large language models with enterprise-grade governance.

@@ -193,7 +193,7 @@ export default function MessagesPage() {
 									Conversation
 								</h2>
 								<p className="text-xs text-zinc-500 dark:text-zinc-400">
-									Summaries and action items generate automatically via AI Copilot.
+									Summaries and action items generate automatically via Sudarshan Ai.
 								</p>
 							</div>
 							<button className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-700 transition hover:border-indigo-300 hover:text-indigo-600 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-indigo-500">
@@ -224,7 +224,7 @@ export default function MessagesPage() {
 						<textarea
 							value={draft}
 							onChange={(event) => setDraft(event.target.value)}
-							placeholder="Type a reply, or ask AI Copilot to draft one…"
+							placeholder="Type a reply, or ask Sudarshan Ai to draft one…"
 							className="mt-3 h-32 w-full rounded-2xl border border-zinc-300 bg-transparent px-4 py-3 text-sm text-zinc-700 focus:border-indigo-400 focus:outline-none dark:border-zinc-700 dark:text-zinc-200"
 						/>
 						<div className="mt-3 flex flex-wrap items-center gap-3 text-xs">

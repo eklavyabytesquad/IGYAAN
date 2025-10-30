@@ -8,7 +8,7 @@ const featureGroups = [
     items: [
       "Predictive admissions forecasting and seat planning",
       "Automated fee collection with financial aid simulations",
-      "Attendance, transport, and compliance copilots",
+  "Attendance, transport, and compliance Sudarshan Ai copilots",
     ],
   },
   {
@@ -33,7 +33,7 @@ const automations = [
   {
     name: "Pulse Streams",
     detail:
-      "Unified data lake that feeds AI copilots with contextual insights from academics, finance, and wellbeing trackers.",
+  "Unified data lake that feeds Sudarshan Ai copilots with contextual insights from academics, finance, and wellbeing trackers.",
   },
   {
     name: "Blueprint Designer",
@@ -116,7 +116,7 @@ export default function FeaturesPage() {
           </ul>
           <p className="text-sm text-indigo-100/80">
             Deploy on iGyanAI cloud or within your secure infrastructure. All
-            copilots respect your policies and adapt to regulatory shifts.
+            Sudarshan Ai copilots respect your policies and adapt to regulatory shifts.
           </p>
         </div>
       </section>

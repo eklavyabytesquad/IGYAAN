@@ -38,7 +38,7 @@ export default function LoginPage() {
 					Welcome back
 				</h1>
 				<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-					Access your iGyanAI dashboard and copilots.
+					Access your iGyanAI dashboard and Sudarshan Ai copilots.
 				</p>
 
 				{error && (

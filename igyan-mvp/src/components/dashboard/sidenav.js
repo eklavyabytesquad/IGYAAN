@@ -50,7 +50,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
-			name: "AI Copilot",
+			name: "Sudarshan Ai",
 			href: "/dashboard/copilot",
 			icon: (
 				<svg
