@@ -8,20 +8,56 @@ import Logo from "../logo";
 export default function DashboardNavbar({ onMenuClick }) {
 	const { user, logout } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
+	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 	const [notifications, setNotifications] = useState(3);
 	const dropdownRef = useRef(null);
+	const notificationsRef = useRef(null);
+	const notificationItems = [
+		{
+			id: "assignment-reminder",
+			title: "Assignments due tomorrow",
+			description: "Automation case study submission closes in 18 hours.",
+			time: "18h",
+		},
+		{
+			id: "mentor-feedback",
+			title: "Mentor feedback received",
+			description: "Priya left notes on your Sudarshan Ai brief.",
+			time: "3h",
+		},
+		{
+			id: "copilot-update",
+			title: "Sudarshan Ai insight",
+			description: "Velocity nudges suggest a 20 min focus block today.",
+			time: "Just now",
+		},
+	];
 	const router = useRouter();
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		function handleClickOutside(event) {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+			const target = event.target;
+			if (dropdownRef.current && !dropdownRef.current.contains(target)) {
 				setIsProfileOpen(false);
+			}
+			if (notificationsRef.current && !notificationsRef.current.contains(target)) {
+				setIsNotificationsOpen(false);
 			}
 		}
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
+
+	const toggleNotifications = () => {
+		setIsNotificationsOpen((prev) => {
+			const next = !prev;
+			if (next) {
+				setNotifications(0);
+			}
+			return next;
+		});
+	};
 
 	const handleLogout = async () => {
 		await logout();
@@ -102,27 +138,75 @@ export default function DashboardNavbar({ onMenuClick }) {
 					</button>
 
 					{/* Notifications */}
-					<button className="relative rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="1.5"
-							className="h-5 w-5"
+					<div className="relative" ref={notificationsRef}>
+						<button
+							onClick={toggleNotifications}
+							className="relative rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:text-zinc-400 dark:hover:bg-zinc-800"
+							aria-haspopup="true"
+							aria-expanded={isNotificationsOpen}
 						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-							/>
-						</svg>
-						{notifications > 0 && (
-							<span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white">
-								{notifications}
-							</span>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								className="h-5 w-5"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+								/>
+							</svg>
+							{notifications > 0 && (
+								<span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white">
+									{notifications}
+								</span>
+							)}
+						</button>
+
+						{isNotificationsOpen && (
+							<div className="absolute right-0 mt-2 w-80 origin-top-right rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-800">
+								<div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-zinc-700">
+									<p className="text-sm font-semibold text-zinc-900 dark:text-white">Notifications</p>
+									<button
+										onClick={() => setIsNotificationsOpen(false)}
+										className="rounded-lg p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200"
+										aria-label="Close notifications"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="1.5"
+											className="h-4 w-4"
+										>
+											<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+									</button>
+								</div>
+								<div className="max-h-80 overflow-y-auto">
+									{notificationItems.map((item) => (
+										<div
+											key={item.id}
+											className="border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 dark:border-zinc-700"
+										>
+											<p className="font-semibold text-zinc-900 dark:text-white">{item.title}</p>
+											<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{item.description}</p>
+											<p className="mt-2 text-[11px] uppercase tracking-wide text-indigo-500 dark:text-indigo-300">{item.time}</p>
+										</div>
+									))}
+								</div>
+								<div className="border-t border-zinc-100 px-4 py-3 text-center text-xs dark:border-zinc-700">
+									<button className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-3 py-1.5 font-semibold text-zinc-700 transition-colors hover:border-indigo-400 hover:text-indigo-500 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-indigo-400 dark:hover:text-indigo-300">
+										View all updates
+									</button>
+								</div>
+							</div>
 						)}
-					</button>
+					</div>
 
 					{/* Divider */}
 					<div className="h-8 w-px bg-zinc-200 dark:bg-zinc-700" />
