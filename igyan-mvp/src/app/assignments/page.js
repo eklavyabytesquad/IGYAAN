@@ -73,10 +73,17 @@ const statusTone = {
 	Overdue: "bg-linear-to-r from-rose-500/10 to-orange-500/10 text-rose-600 dark:text-rose-300",
 };
 
+const viewerTabs = [
+	{ id: "overview", label: "Overview" },
+	{ id: "files", label: "Files" },
+	{ id: "feedback", label: "Feedback" },
+];
+
 export default function AssignmentsPage() {
 	const [selectedId, setSelectedId] = useState(assignmentsMock[0]?.id ?? null);
 	const [reminderLead, setReminderLead] = useState("24");
 	const [isUploading, setIsUploading] = useState(false);
+	const [viewerTab, setViewerTab] = useState("overview");
 
 	const selectedAssignment = useMemo(
 		() => assignmentsMock.find((item) => item.id === selectedId) ?? null,
@@ -122,7 +129,10 @@ export default function AssignmentsPage() {
 							{assignmentsMock.map((assignment) => (
 								<button
 									key={assignment.id}
-									onClick={() => setSelectedId(assignment.id)}
+									onClick={() => {
+										setSelectedId(assignment.id);
+										setViewerTab("overview");
+									}}
 									className={`w-full rounded-2xl border p-4 text-left transition-all hover:-translate-y-1 hover:border-indigo-300 hover:shadow-lg ${
 										selectedId === assignment.id
 											? "border-indigo-300 bg-indigo-50/80 shadow-md dark:border-indigo-700/80 dark:bg-indigo-500/10"
@@ -393,6 +403,206 @@ export default function AssignmentsPage() {
 					</div>
 				</div>
 			</section>
+
+			{selectedAssignment && (
+				<section className="rounded-3xl border border-sky-200/70 bg-white/90 p-6 shadow-lg shadow-sky-500/10 dark:border-sky-800/40 dark:bg-zinc-900/90">
+					<div className="flex flex-wrap items-center justify-between gap-4">
+						<div>
+							<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+								Student assignment viewer
+							</h2>
+							<p className="text-xs text-zinc-500 dark:text-zinc-400">
+								Preview the live brief, files, and instructor cues exactly as learners experience them.
+							</p>
+						</div>
+						<div className="flex items-center gap-2 rounded-full bg-sky-50/90 p-1 dark:bg-sky-500/10">
+							{viewerTabs.map((tab) => (
+								<button
+									key={tab.id}
+									onClick={() => setViewerTab(tab.id)}
+									className={`rounded-full px-3 py-1 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 dark:focus-visible:ring-sky-400 ${
+										viewerTab === tab.id
+											? "bg-sky-500 text-white shadow-sm shadow-sky-500/40 dark:bg-sky-400 dark:text-zinc-900"
+											: "text-sky-700 hover:bg-white/70 dark:text-sky-200 dark:hover:bg-sky-500/20"
+									}`}
+								>
+									{tab.label}
+								</button>
+							))}
+						</div>
+					</div>
+
+					<div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+						<div className="space-y-4">
+							<div className="rounded-2xl border border-sky-100 bg-linear-to-br from-sky-50 via-white to-white p-5 shadow-inner dark:border-sky-700/50 dark:from-sky-950/40 dark:via-zinc-900 dark:to-zinc-900">
+								<div className="flex flex-wrap items-start justify-between gap-3">
+									<div>
+										<p className="text-[11px] font-semibold uppercase tracking-wider text-sky-500 dark:text-sky-300">
+											Active brief
+										</p>
+										<h3 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-white">
+											{selectedAssignment.title}
+										</h3>
+										<p className="text-xs text-zinc-500 dark:text-zinc-400">
+											{selectedAssignment.course}
+										</p>
+									</div>
+									<span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-sky-700 shadow-sm dark:bg-sky-500/20 dark:text-sky-200">
+										Due {selectedAssignment.dueDate}
+									</span>
+								</div>
+
+								<div className="mt-4 space-y-4 text-sm text-zinc-700 dark:text-zinc-200">
+									{viewerTab === "overview" && (
+										<>
+											<p>
+												{selectedAssignment.brief}
+											</p>
+											<ul className="space-y-2 text-xs text-zinc-600 dark:text-zinc-300">
+												<li className="flex items-start gap-2">
+													<span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
+													<span>Align your solution narrative with measurable learner impact and ethical guardrails.</span>
+												</li>
+												<li className="flex items-start gap-2">
+													<span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
+													<span>Keep the brief concise; highlight key assumptions and fallback scenarios.</span>
+												</li>
+												<li className="flex items-start gap-2">
+													<span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
+													<span>Link evidence or datasets when referencing benchmarks to streamline grading.</span>
+												</li>
+											</ul>
+										</>
+									)}
+									{viewerTab === "files" && (
+										<div className="space-y-3">
+											<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+												Reference material
+											</p>
+											<ul className="space-y-2">
+												{selectedAssignment.resources.map((resource) => (
+													<li key={resource.label}>
+														<Link
+															href={resource.url}
+															className="inline-flex w-full items-center justify-between rounded-xl border border-sky-100 bg-white px-3 py-2 text-sm font-medium text-sky-700 transition hover:border-sky-300 hover:text-sky-600 dark:border-sky-700/40 dark:bg-zinc-900 dark:text-sky-200 dark:hover:border-sky-500"
+														>
+															<span className="flex items-center gap-2">
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	viewBox="0 0 24 24"
+																	fill="none"
+																	stroke="currentColor"
+																	strokeWidth="1.5"
+																	className="h-5 w-5"
+																>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		d="M9 4.5h6M7.5 21h9a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5h-9A1.5 1.5 0 006 6v13.5A1.5 1.5 0 007.5 21z"
+																	/>
+																</svg>
+																{resource.label}
+															</span>
+															<span className="text-[11px] font-semibold uppercase tracking-wide text-sky-400">
+																View
+															</span>
+														</Link>
+													</li>
+												))}
+										</ul>
+										<div className="rounded-2xl border border-dashed border-sky-200 bg-white/80 p-4 text-xs leading-relaxed text-sky-700 dark:border-sky-700/50 dark:bg-sky-950/20 dark:text-sky-200">
+											Organise supporting artefacts like datasets, diagrams, or screen recordings so mentors can review context quickly.
+										</div>
+									</div>
+									)}
+									{viewerTab === "feedback" && (
+										<div className="space-y-3">
+											<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+												Instructor focus
+											</p>
+											<div className="rounded-2xl bg-white/80 p-4 text-sm leading-relaxed text-zinc-700 shadow-sm dark:bg-zinc-800/80 dark:text-zinc-200">
+												{selectedAssignment.feedback.notes}
+											</div>
+											<ul className="space-y-2 text-xs text-zinc-600 dark:text-zinc-300">
+												<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+													<span>Rubric coverage</span>
+													<span className="font-semibold text-emerald-500">Meets</span>
+												</li>
+												<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+													<span>Originality scan</span>
+													<span className="font-semibold text-sky-500">Clean</span>
+												</li>
+												<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+													<span>Action items</span>
+													<span className="font-semibold text-amber-500">2 pending</span>
+												</li>
+											</ul>
+									</div>
+									)}
+								</div>
+							</div>
+
+							<div className="space-y-4">
+								<div className="rounded-2xl border border-zinc-200 bg-white/95 p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/80">
+									<h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+										Student progress
+									</h3>
+									<ul className="mt-3 space-y-2 text-xs text-zinc-600 dark:text-zinc-300">
+										<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+											<span>Current status</span>
+											<span className="font-semibold text-sky-500">{selectedAssignment.status}</span>
+										</li>
+										<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+											<span>Attempts logged</span>
+											<span className="font-semibold">{selectedAssignment.submissions.length}</span>
+										</li>
+										<li className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900/80">
+											<span>Reminder cadence</span>
+											<span className="font-semibold">Every {reminderLead}h</span>
+										</li>
+									</ul>
+								</div>
+								<div className="rounded-2xl border border-sky-100 bg-linear-to-br from-white via-sky-50 to-sky-100 p-5 text-sm text-zinc-700 shadow-sm dark:border-sky-700/40 dark:from-sky-950/50 dark:via-zinc-900 dark:to-zinc-900 dark:text-zinc-200">
+									<p className="font-semibold text-sky-600 dark:text-sky-300">Quick checklist</p>
+									<ul className="mt-2 space-y-2 text-xs">
+										<li className="flex items-center gap-2">
+											<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-sky-500/20 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
+												✓
+											</span>
+											<span>Confirm brief comprehension</span>
+										</li>
+										<li className="flex items-center gap-2">
+											<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-sky-500/20 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
+												✓
+											</span>
+											<span>Gather references for submission</span>
+										</li>
+										<li className="flex items-center gap-2">
+											<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-sky-500/20 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
+												•
+											</span>
+											<span>Schedule mentor review before final upload</span>
+										</li>
+									</ul>
+									<button className="mt-4 inline-flex items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_16px_rgba(56,189,248,0.45)] transition hover:bg-sky-400 hover:shadow-[0_0_26px_rgba(56,189,248,0.6)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 dark:bg-sky-400 dark:text-zinc-900">
+										Open full assignment
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="1.5"
+											className="h-4 w-4"
+										>
+											<path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+										</svg>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			)}
 		</div>
 	);
 }
