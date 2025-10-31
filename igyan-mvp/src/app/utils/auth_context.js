@@ -126,7 +126,7 @@ export function AuthProvider({ children }) {
 		}
 	};
 
-	const register = async (email, password, fullName, phone = null) => {
+	const register = async (email, password, fullName, phone = null, imageBase64 = null) => {
 		try {
 			const passwordHash = await hashPassword(password);
 
@@ -138,6 +138,9 @@ export function AuthProvider({ children }) {
 						password_hash: passwordHash,
 						full_name: fullName,
 						phone,
+						image_base64: imageBase64,
+						role: "super_admin", // Set as super_admin for first-time users
+						school_id: null, // Will be set after school onboarding
 					},
 				])
 				.select()

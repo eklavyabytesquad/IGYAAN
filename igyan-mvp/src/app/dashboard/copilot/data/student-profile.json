@@ -1,0 +1,16 @@
+{
+	"name": "Akshat Srivastav",
+	"class": "9th",
+	"classTeacher": "Sneha Gupta",
+	"school": {
+		"name": "Litera Valley School",
+		"location": "Patna, Bihar"
+	},
+	"interests": [
+		"AI",
+		"Entrepreneurship",
+		"Technology",
+		"Science"
+	],
+	"sleepTime": "10:00 PM"
+}

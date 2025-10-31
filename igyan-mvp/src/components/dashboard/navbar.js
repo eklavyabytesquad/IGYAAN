@@ -3,9 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../app/utils/auth_context";
 import { useRouter } from "next/navigation";
-import Logo from "../logo";
-
-export default function DashboardNavbar({ onMenuClick }) {
+export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	const { user, logout } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -65,7 +63,7 @@ export default function DashboardNavbar({ onMenuClick }) {
 	};
 
 	return (
-		<header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/80 backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-900/80">
+		<header className="dashboard-nav sticky top-0 z-30 border-b backdrop-blur-xl">
 			<div className="flex h-16 items-center justify-between px-6">
 				{/* Left Section */}
 				<div className="flex items-center gap-4">
@@ -89,10 +87,8 @@ export default function DashboardNavbar({ onMenuClick }) {
 						</svg>
 					</button>
 
-					<Logo variant="sidebar" className="shrink-0" />
-
 					{/* Search Bar */}
-				<div className="hidden md:flex items-center">
+				<div className="hidden items-center md:flex">
 						<div className="relative">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -217,16 +213,30 @@ export default function DashboardNavbar({ onMenuClick }) {
 							onClick={() => setIsProfileOpen(!isProfileOpen)}
 							className="flex items-center gap-3 rounded-lg p-1.5 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
 						>
-							<div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-sm font-semibold text-white">
-								{user?.full_name
-									?.split(" ")
-									.map((n) => n[0])
-									.join("")
-									.toUpperCase() || "U"}
-							</div>
+							{user?.image_base64 ? (
+								<img
+									src={user.image_base64}
+									alt={user?.full_name || "User"}
+									className="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-500/20"
+								/>
+							) : (
+								<div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-sm font-semibold text-white ring-2 ring-indigo-500/20">
+									{user?.full_name
+										?.split(" ")
+										.map((n) => n[0])
+										.join("")
+										.toUpperCase() || "U"}
+								</div>
+							)}
 							<div className="hidden text-left lg:block">
 								<p className="text-sm font-semibold text-zinc-900 dark:text-white">
 									{user?.full_name?.split(" ")[0] || "User"}
+								</p>
+								<p className="text-xs text-zinc-500 dark:text-zinc-400">
+									{user?.role === 'faculty' ? 'Faculty' : 
+									 user?.role === 'super_admin' ? 'Super Admin' :
+									 user?.role === 'co_admin' ? 'Co-Admin' :
+									 schoolData?.school_name || 'Student'}
 								</p>
 							</div>
 							<svg
@@ -251,12 +261,31 @@ export default function DashboardNavbar({ onMenuClick }) {
 						{isProfileOpen && (
 							<div className="absolute right-0 mt-2 w-64 origin-top-right rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-800">
 								<div className="border-b border-zinc-100 p-4 dark:border-zinc-700">
-									<p className="text-sm font-semibold text-zinc-900 dark:text-white">
-										{user?.full_name}
-									</p>
-									<p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-										{user?.email}
-									</p>
+									<div className="flex items-center gap-3">
+										{user?.image_base64 ? (
+											<img
+												src={user.image_base64}
+												alt={user?.full_name || "User"}
+												className="h-12 w-12 rounded-full object-cover ring-2 ring-indigo-500/30"
+											/>
+										) : (
+											<div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-lg font-semibold text-white ring-2 ring-indigo-500/30">
+												{user?.full_name
+													?.split(" ")
+													.map((n) => n[0])
+													.join("")
+													.toUpperCase() || "U"}
+											</div>
+										)}
+										<div className="flex-1 min-w-0">
+											<p className="text-sm font-semibold text-zinc-900 truncate dark:text-white">
+												{user?.full_name}
+											</p>
+											<p className="mt-0.5 text-xs text-zinc-500 truncate dark:text-zinc-400">
+												{user?.email}
+											</p>
+										</div>
+									</div>
 								</div>
 
 								<div className="p-2">

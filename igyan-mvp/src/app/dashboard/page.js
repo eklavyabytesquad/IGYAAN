@@ -52,6 +52,8 @@ export default function DashboardPage() {
 
 	const handleOnboardingComplete = () => {
 		setHasSchool(true);
+		// Trigger a re-render of the layout to fetch school data
+		window.location.reload();
 	};
 
 	if (loading || checkingSchool) {
@@ -76,399 +78,371 @@ export default function DashboardPage() {
 		);
 	}
 
+	const firstName = user.full_name?.split(" ")[0] || "Learner";
+
+	const statCards = [
+		{
+			label: "Active Courses",
+			value: "8",
+			trend: "+2 this week",
+			accent: "from-indigo-500/15 via-indigo-500/5 to-transparent",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+				</svg>
+			),
+			iconBg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300",
+		},
+		{
+			label: "Completed Tasks",
+			value: "23",
+			trend: "Great momentum",
+			accent: "from-sky-500/15 via-sky-500/5 to-transparent",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+				</svg>
+			),
+			iconBg: "bg-sky-500/10 text-sky-600 dark:text-sky-300",
+		},
+		{
+			label: "Avg Performance",
+			value: "92%",
+			trend: "Stable progression",
+			accent: "from-purple-500/15 via-purple-500/5 to-transparent",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+				</svg>
+			),
+			iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-300",
+		},
+		{
+			label: "Learning Time",
+			value: "42h",
+			trend: "+6h vs last week",
+			accent: "from-emerald-500/15 via-emerald-500/5 to-transparent",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+				</svg>
+			),
+			iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300",
+		},
+	];
+
+	const quickActions = [
+		{
+			title: "Explore Courses",
+			description: "Discover curated learning paths tailored to you",
+			href: "/features",
+			iconBg: "bg-white/70 text-indigo-600 dark:bg-white/10 dark:text-indigo-300",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+				</svg>
+			),
+		},
+		{
+			title: "Open iGyanAI",
+			description: "Chat with your AI mentor for voice-first guidance",
+			href: "/dashboard/viva-ai",
+			iconBg: "bg-white/70 text-pink-600 dark:bg-white/10 dark:text-pink-300",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+				</svg>
+			),
+		},
+		{
+			title: "Career Hub",
+			description: "Match your strengths with future pathways",
+			href: "/features",
+			iconBg: "bg-white/70 text-purple-600 dark:bg-white/10 dark:text-purple-300",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+				</svg>
+			),
+		},
+		{
+			title: "Need Support?",
+			description: "Reach the iGyaan team for quick assistance",
+			href: "/contact",
+			iconBg: "bg-white/70 text-emerald-600 dark:bg-white/10 dark:text-emerald-300",
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+				</svg>
+			),
+		},
+	];
+
+	const focusAreas = [
+		{
+			title: "Math sprint",
+			detail: "Revise algebraic identities before Friday's quiz",
+			tags: ["15 min", "Concept clarity"],
+		},
+		{
+			title: "Science storyteller",
+			detail: "Explain Newton's laws using a skateboard analogy",
+			tags: ["Project", "Presentation"],
+		},
+		{
+			title: "Stand-up revision",
+			detail: "Draft 3 witty mnemonics for biology terms",
+			tags: ["Creative", "Fun"],
+		},
+	];
+
+	const aiHighlights = [
+		{
+			title: "Viva AI recap",
+			detail: "You asked about electrostatics. Next try linking it to drone design!",
+		},
+		{
+			title: "Momentum boost",
+			detail: "Consistency streak of 5 focused sessions this week. Keep the streak alive!",
+		},
+		{
+			title: "Mentor echo",
+			detail: "Coach Anil suggests documenting prototype learnings in Notion after each session.",
+		},
+	];
+
+	const upcomingSessions = [
+		{
+			time: "Today  b7 7:30 PM",
+			title: "Math practice with iGyanAI",
+			description: "Run a voice-based problem solving round",
+		},
+		{
+			time: "Tomorrow  b7 5:00 PM",
+			title: "Entrepreneurship club",
+			description: "Pitch the smart attendance tracker update",
+		},
+		{
+			time: "Friday  b7 4:00 PM",
+			title: "Robotics lab",
+			description: "Integrate sensor module for the rover",
+		},
+	];
+
 	return (
-		<div className="p-6 lg:p-8">
-			{/* Header */}
-			<div className="mb-8 space-y-3">
-				<Logo variant="header" />
-				<h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
-					Welcome back, {user.full_name?.split(" ")[0] || "User"}! 👋
-				</h1>
-				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
-					Here&rsquo;s what&rsquo;s happening with your learning today
-				</p>
-			</div>
-
-			{/* Stats Grid */}
-			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-				<div className="animate-float rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-					<div className="flex items-center gap-3">
-						<div className="rounded-full bg-indigo-100 p-3 dark:bg-indigo-900/30">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="1.5"
-								className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
-								/>
-							</svg>
-						</div>
-						<div>
-							<p className="text-2xl font-semibold text-zinc-900 dark:text-white">
-								8
-							</p>
-							<p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-								Active Courses
-							</p>
-						</div>
+		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-rose-50 p-6 lg:p-8 dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900">
+			<div className="mx-auto max-w-6xl space-y-8">
+				<header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white shadow-xl sm:p-10">
+					<div className="absolute inset-0 opacity-40 mix-blend-soft-light">
+						<div className="absolute -left-10 top-10 h-32 w-32 rounded-full bg-white/20 blur-3xl"></div>
+						<div className="absolute right-10 -bottom-10 h-48 w-48 rounded-full bg-white/10 blur-3xl"></div>
 					</div>
-				</div>
-
-				<div
-					className="animate-float rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-					style={{ animationDelay: "0.1s" }}
-				>
-					<div className="flex items-center gap-3">
-						<div className="rounded-full bg-sky-100 p-3 dark:bg-sky-900/30">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="1.5"
-								className="h-6 w-6 text-sky-600 dark:text-sky-400"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-						</div>
-						<div>
-							<p className="text-2xl font-semibold text-zinc-900 dark:text-white">
-								23
+					<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+						<div className="space-y-3">
+							<Logo variant="header" />
+							<h1 className="text-3xl font-semibold sm:text-4xl">
+								Hey {firstName}, ready for another brilliant session?
+							</h1>
+							<p className="max-w-xl text-sm text-white/80 sm:text-base">
+								Track your goals, jump back into conversations, and keep that NTSE dream in sight. We saved your momentum so you can pick up right where you left off.
 							</p>
-							<p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-								Completed Tasks
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div
-					className="animate-float rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-					style={{ animationDelay: "0.2s" }}
-				>
-					<div className="flex items-center gap-3">
-						<div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="1.5"
-								className="h-6 w-6 text-purple-600 dark:text-purple-400"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
-								/>
-							</svg>
-						</div>
-						<div>
-							<p className="text-2xl font-semibold text-zinc-900 dark:text-white">
-								92%
-							</p>
-							<p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-								Avg Performance
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div
-					className="animate-float rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-					style={{ animationDelay: "0.3s" }}
-				>
-					<div className="flex items-center gap-3">
-						<div className="rounded-full bg-emerald-100 p-3 dark:bg-emerald-900/30">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="1.5"
-								className="h-6 w-6 text-emerald-600 dark:text-emerald-400"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-						</div>
-						<div>
-							<p className="text-2xl font-semibold text-zinc-900 dark:text-white">
-								42h
-							</p>
-							<p className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-								Learning Time
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			{/* Main Content Grid */}
-			<div className="grid gap-6 lg:grid-cols-3">
-				{/* Quick Actions */}
-				<div className="lg:col-span-2">
-					<div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-						<h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">
-							Quick Actions
-						</h2>
-						<div className="grid gap-4 sm:grid-cols-2">
-							<Link
-								href="/features"
-								className="group flex items-center gap-4 rounded-xl border border-zinc-200 bg-zinc-50/50 p-4 transition-all hover:-translate-y-1 hover:border-indigo-300 hover:bg-white hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
-							>
-								<div className="rounded-lg bg-indigo-100 p-3 dark:bg-indigo-900/30">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-										/>
+							<div className="flex flex-wrap gap-3">
+								<Link href="/dashboard/viva-ai" className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/25">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
 									</svg>
-								</div>
-								<div className="flex-1">
-									<p className="font-semibold text-zinc-900 dark:text-white">
-										Browse Courses
-									</p>
-									<p className="text-xs text-zinc-600 dark:text-zinc-400">
-										Explore learning paths
-									</p>
-								</div>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									className="h-5 w-5 text-zinc-400 transition-transform group-hover:translate-x-1"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M8.25 4.5l7.5 7.5-7.5 7.5"
-									/>
-								</svg>
-							</Link>
-
-							<Link
-								href="/features"
-								className="group flex items-center gap-4 rounded-xl border border-zinc-200 bg-zinc-50/50 p-4 transition-all hover:-translate-y-1 hover:border-indigo-300 hover:bg-white hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
-							>
-								<div className="rounded-lg bg-sky-100 p-3 dark:bg-sky-900/30">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										className="h-6 w-6 text-sky-600 dark:text-sky-400"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-										/>
+									Jump into Viva AI
+								</Link>
+								<Link href="/features" className="flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/20">
+									Plan my week
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5h15m-15 0A1.5 1.5 0 003 6v12a1.5 1.5 0 001.5 1.5h15A1.5 1.5 0 0021 18V6a1.5 1.5 0 00-1.5-1.5m-15 0V3.75m0 .75V3.75m0 0A.75.75 0 014.5 3h1.5a.75.75 0 01.75.75V4.5m11.25 0V3.75a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75V4.5m-3 5.25h-6" />
 									</svg>
-								</div>
-								<div className="flex-1">
-									<p className="font-semibold text-zinc-900 dark:text-white">
-										Sudarshan Ai
-									</p>
-									<p className="text-xs text-zinc-600 dark:text-zinc-400">
-										Get personalized help
-									</p>
-								</div>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									className="h-5 w-5 text-zinc-400 transition-transform group-hover:translate-x-1"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M8.25 4.5l7.5 7.5-7.5 7.5"
-									/>
-								</svg>
-							</Link>
-
-							<Link
-								href="/features"
-								className="group flex items-center gap-4 rounded-xl border border-zinc-200 bg-zinc-50/50 p-4 transition-all hover:-translate-y-1 hover:border-indigo-300 hover:bg-white hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
-							>
-								<div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900/30">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										className="h-6 w-6 text-purple-600 dark:text-purple-400"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"
-										/>
-									</svg>
-								</div>
-								<div className="flex-1">
-									<p className="font-semibold text-zinc-900 dark:text-white">
-										Career Hub
-									</p>
-									<p className="text-xs text-zinc-600 dark:text-zinc-400">
-										Plan your future
-									</p>
-								</div>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									className="h-5 w-5 text-zinc-400 transition-transform group-hover:translate-x-1"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M8.25 4.5l7.5 7.5-7.5 7.5"
-									/>
-								</svg>
-							</Link>
-
-							<Link
-								href="/contact"
-								className="group flex items-center gap-4 rounded-xl border border-zinc-200 bg-zinc-50/50 p-4 transition-all hover:-translate-y-1 hover:border-indigo-300 hover:bg-white hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
-							>
-								<div className="rounded-lg bg-emerald-100 p-3 dark:bg-emerald-900/30">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										className="h-6 w-6 text-emerald-600 dark:text-emerald-400"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-										/>
-									</svg>
-								</div>
-								<div className="flex-1">
-									<p className="font-semibold text-zinc-900 dark:text-white">
-										Get Support
-									</p>
-									<p className="text-xs text-zinc-600 dark:text-zinc-400">
-										We&rsquo;re here to help
-									</p>
-								</div>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									className="h-5 w-5 text-zinc-400 transition-transform group-hover:translate-x-1"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M8.25 4.5l7.5 7.5-7.5 7.5"
-									/>
-								</svg>
-							</Link>
-						</div>
-					</div>
-				</div>
-
-				{/* User Profile Card */}
-				<div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-					<h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">
-						Profile
-					</h2>
-					<div className="space-y-4">
-						<div className="flex items-center gap-4">
-							<div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-xl font-semibold text-white">
-								{user.full_name
-									?.split(" ")
-									.map((n) => n[0])
-									.join("")
-									.toUpperCase() || "U"}
-							</div>
-							<div>
-								<p className="font-semibold text-zinc-900 dark:text-white">
-									{user.full_name}
-								</p>
-								<p className="text-sm text-zinc-600 dark:text-zinc-400">
-									{user.email}
-								</p>
+								</Link>
 							</div>
 						</div>
-
-						<div className="space-y-3 border-t border-zinc-200 pt-4 dark:border-zinc-700">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-zinc-600 dark:text-zinc-400">
-									Member since
-								</span>
-								<span className="font-medium text-zinc-900 dark:text-white">
-									{new Date(user.created_at).toLocaleDateString("en-US", {
-										month: "short",
-										year: "numeric",
-									})}
-								</span>
+						<div className="grid gap-4 sm:w-52">
+							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
+								<p className="text-xs uppercase tracking-wide text-white/70">Next check-in</p>
+								<p className="mt-1 text-lg font-semibold">Physics practice · 9 PM</p>
+								<p className="mt-2 text-white/70">Akshat has 3 saved prompts from yesterday&apos;s session.</p>
 							</div>
-							{user.phone && (
-								<div className="flex items-center justify-between text-sm">
-									<span className="text-zinc-600 dark:text-zinc-400">
-										Phone
-									</span>
-									<span className="font-medium text-zinc-900 dark:text-white">
-										{user.phone}
-									</span>
-								</div>
-							)}
-							{session && (
-								<div className="flex items-center justify-between text-sm">
-									<span className="text-zinc-600 dark:text-zinc-400">
-										Device
-									</span>
-									<span className="font-medium text-zinc-900 dark:text-white">
-										{session.device_type}
-									</span>
-								</div>
-							)}
+							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
+								<p className="text-xs uppercase tracking-wide text-white/70">Focus mantra</p>
+								<p className="mt-2 text-white/80">Turn curiosity into progress 1 playful question at a time.</p>
+							</div>
 						</div>
+					</div>
+				</header>
 
-						<Link
-							href="/features"
-							className="block w-full rounded-lg border border-zinc-300 px-4 py-2 text-center text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
-						>
-							Edit Profile
-						</Link>
+				<section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+					{statCards.map((card) => (
+						<div key={card.label} className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/70 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-zinc-800/60 dark:bg-zinc-900/70">
+							<div className={`absolute inset-0 bg-gradient-to-br ${card.accent}`}></div>
+							<div className="relative flex items-start justify-between gap-3">
+								<div>
+									<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{card.label}</p>
+									<p className="mt-2 text-3xl font-semibold text-zinc-900 dark:text-white">{card.value}</p>
+									<p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">{card.trend}</p>
+								</div>
+								<div className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.iconBg}`}>
+									{card.icon}
+								</div>
+							</div>
+						</div>
+					))}
+				</section>
+
+				<div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
+					<div className="space-y-6">
+						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+							<div className="mb-6 flex items-center justify-between">
+								<div>
+									<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Quick launchpad</h2>
+									<p className="text-sm text-zinc-600 dark:text-zinc-400">Jump back into tools that keep your streak alive</p>
+								</div>
+								<span className="rounded-full border border-zinc-200 px-3 py-1 text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">Recommended</span>
+							</div>
+							<div className="grid gap-4 sm:grid-cols-2">
+								{quickActions.map((action) => (
+									<Link key={action.title} href={action.href} className="group relative flex h-full flex-col gap-4 rounded-2xl border border-zinc-200/80 bg-white/90 p-4 transition-all hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg dark:border-zinc-800/60 dark:bg-zinc-900/80">
+										<div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/0 via-purple-100/0 to-purple-100/40 opacity-0 transition group-hover:opacity-100 dark:from-white/0 dark:via-white/0 dark:to-purple-500/10"></div>
+										<div className="relative flex items-center gap-3">
+											<div className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.iconBg}`}>
+												{action.icon}
+											</div>
+											<div>
+												<p className="font-semibold text-zinc-900 transition group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-300">{action.title}</p>
+												<p className="text-xs text-zinc-600 dark:text-zinc-400">{action.description}</p>
+											</div>
+										</div>
+										<div className="relative mt-auto flex items-center gap-2 text-xs font-semibold text-purple-600 transition group-hover:translate-x-1 dark:text-purple-300">
+											<span>Open</span>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+												<path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h9M16.5 7.5v9M16.5 16.5h-9" />
+											</svg>
+										</div>
+									</Link>
+								))}
+							</div>
+						</section>
+
+						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+							<div className="mb-6 flex items-center justify-between">
+								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Today&apos;s focus board</h2>
+								<span className="text-xs text-zinc-500 dark:text-zinc-400">Curated for Akshat</span>
+							</div>
+							<ul className="space-y-4">
+								{focusAreas.map((item) => (
+									<li key={item.title} className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800/60 dark:bg-zinc-800/60">
+										<div className="flex items-start justify-between gap-3">
+											<div>
+												<p className="text-sm font-semibold text-zinc-900 dark:text-white">{item.title}</p>
+												<p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">{item.detail}</p>
+											</div>
+											<div className="flex gap-2">
+												{item.tags.map((tag) => (
+													<span key={tag} className="rounded-full bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-purple-600 dark:bg-white/10 dark:text-purple-200">
+														{tag}
+													</span>
+												))}
+											</div>
+										</div>
+									</li>
+								))}
+							</ul>
+						</section>
+
+						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+							<div className="mb-6 flex items-center justify-between">
+								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">iGyanAI highlights</h2>
+								<Link href="/dashboard/viva-ai" className="text-xs font-semibold text-purple-600 hover:underline dark:text-purple-300">View chat log</Link>
+							</div>
+							<ul className="space-y-4">
+								{aiHighlights.map((highlight) => (
+									<li key={highlight.title} className="rounded-2xl border border-purple-200/60 bg-purple-50/70 p-4 dark:border-purple-800/60 dark:bg-purple-900/30">
+										<p className="text-sm font-semibold text-purple-900 dark:text-purple-100">{highlight.title}</p>
+										<p className="mt-1 text-xs text-purple-700 dark:text-purple-200">{highlight.detail}</p>
+									</li>
+								))}
+							</ul>
+						</section>
+					</div>
+
+					<div className="space-y-6">
+						<section className="overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/85 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/75">
+							<div className="flex items-start gap-4">
+								<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-semibold text-white">
+									{user.full_name
+										?.split(" ")
+										.map((n) => n[0])
+										.join("")
+										.toUpperCase() || "U"}
+								</div>
+								<div className="flex-1">
+									<div className="flex items-start justify-between">
+										<div>
+											<p className="text-lg font-semibold text-zinc-900 dark:text-white">{user.full_name}</p>
+											<p className="text-sm text-zinc-600 dark:text-zinc-400">{user.email}</p>
+										</div>
+										<span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 dark:border-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200">Pro learner mode</span>
+									</div>
+									<div className="mt-4 grid gap-3">
+										<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+											<span>Member since</span>
+											<span className="font-semibold text-zinc-900 dark:text-white">{new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
+										</div>
+										{user.phone && (
+											<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+												<span>Phone</span>
+												<span className="font-semibold text-zinc-900 dark:text-white">{user.phone}</span>
+											</div>
+										)}
+										{session && (
+											<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+												<span>Device</span>
+												<span className="font-semibold text-zinc-900 dark:text-white">{session.device_type}</span>
+											</div>
+										)}
+									</div>
+									<div className="mt-4 flex gap-2">
+										<Link href="/features" className="flex-1 rounded-xl border border-zinc-200 px-4 py-2 text-center text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">Edit profile</Link>
+										<Link href="/dashboard/viva-ai" className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 text-center text-sm font-semibold text-white transition hover:shadow-lg">Resume AI chat</Link>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+							<div className="mb-6 flex items-center justify-between">
+								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Upcoming timeline</h2>
+								<span className="text-xs text-zinc-500 dark:text-zinc-400">Stay prepped</span>
+							</div>
+							<ul className="space-y-4">
+								{upcomingSessions.map((sessionItem) => (
+									<li key={sessionItem.title} className="flex items-start gap-3 rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800/50 dark:bg-zinc-800/60">
+										<div className="mt-1 h-2 w-2 rounded-full bg-purple-500"></div>
+										<div>
+											<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{sessionItem.time}</p>
+											<p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">{sessionItem.title}</p>
+											<p className="text-xs text-zinc-600 dark:text-zinc-400">{sessionItem.description}</p>
+										</div>
+									</li>
+								))}
+							</ul>
+						</section>
+
+						<section className="rounded-3xl border border-indigo-200/60 bg-indigo-50/70 p-6 shadow-sm dark:border-indigo-800/60 dark:bg-indigo-900/30">
+							<h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Goal tracker</h2>
+							<p className="mt-2 text-xs text-indigo-700 dark:text-indigo-200">You&apos;re 65% through this week&apos;s mission list. Celebrate small wins and log reflections with iGyanAI.</p>
+							<div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/60 dark:bg-white/10">
+								<div className="h-full w-[65%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+							</div>
+							<div className="mt-4 flex items-center justify-between text-xs text-indigo-700 dark:text-indigo-200">
+								<span>3 objectives remaining</span>
+								<Link href="/dashboard/viva-ai" className="font-semibold hover:underline">Log progress</Link>
+							</div>
+						</section>
 					</div>
 				</div>
 			</div>
