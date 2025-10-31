@@ -90,6 +90,26 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			name: "Incubation Hub",
+			href: "/dashboard/incubation-hub",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M3.75 21h16.5M4.5 10.5L12 3l7.5 7.5M6 9.75V21m12-11.25V21M9.75 21v-4.5a2.25 2.25 0 114.5 0V21"
+					/>
+				</svg>
+			),
+		},
+		{
 			name: "Performance",
 			href: "/dashboard/performance",
 			icon: (
