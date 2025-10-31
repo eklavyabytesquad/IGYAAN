@@ -372,12 +372,17 @@ export default function IgyanAIPage() {
 	}
 
 	return (
-		<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-zinc-950 dark:via-purple-950/20 dark:to-zinc-950">
+		<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6" style={{
+			background: 'var(--dashboard-background)'
+		}}>
 			{/* Sidebar */}
 			<div className={`${isSidebarOpen ? "w-80" : "w-0"} shrink-0 transition-all duration-300 overflow-hidden`}>
 				<div className="flex h-full flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80">
 				{/* Sidebar Header with Gradient */}
-				<div className="relative border-b border-purple-100 bg-gradient-to-br from-purple-500 to-pink-500 p-6 dark:border-purple-900/50 overflow-hidden">
+				<div className="relative border-b p-6 overflow-hidden" style={{
+					background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
+					borderColor: 'var(--dashboard-border)'
+				}}>
 					<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
 					<div className="relative flex items-center gap-3">
 						<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg">
@@ -402,17 +407,21 @@ export default function IgyanAIPage() {
 					</div>
 				</div>
 					{/* Tabs */}
-					<div className="flex border-b border-purple-100 dark:border-purple-900/30 bg-gradient-to-b from-purple-50/50 to-transparent dark:from-purple-900/20">
+					<div className="flex border-b" style={{
+						borderColor: 'var(--dashboard-border)',
+						background: `linear-gradient(180deg, color-mix(in srgb, var(--dashboard-primary) 8%, transparent), transparent)`
+					}}>
 						<button
 							onClick={() => setActiveTab("chats")}
-							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative ${
-								activeTab === "chats"
-									? "text-purple-600 dark:text-purple-400"
-									: "text-zinc-600 hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
-							}`}
+							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+							style={{
+								color: activeTab === "chats" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+							}}
 						>
 							{activeTab === "chats" && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+									background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+								}}></div>
 							)}
 							<div className="flex items-center justify-center gap-2">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -423,14 +432,15 @@ export default function IgyanAIPage() {
 						</button>
 						<button
 							onClick={() => setActiveTab("profile")}
-							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative ${
-								activeTab === "profile"
-									? "text-purple-600 dark:text-purple-400"
-									: "text-zinc-600 hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
-							}`}
+							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+							style={{
+								color: activeTab === "profile" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+							}}
 						>
 							{activeTab === "profile" && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+									background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+								}}></div>
 							)}
 							<div className="flex items-center justify-center gap-2">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -441,14 +451,15 @@ export default function IgyanAIPage() {
 						</button>
 						<button
 							onClick={() => setActiveTab("notes")}
-							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative ${
-								activeTab === "notes"
-									? "text-purple-600 dark:text-purple-400"
-									: "text-zinc-600 hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
-							}`}
+							className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+							style={{
+								color: activeTab === "notes" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+							}}
 						>
 							{activeTab === "notes" && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+									background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+								}}></div>
 							)}
 							<div className="flex items-center justify-center gap-2">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -489,8 +500,13 @@ export default function IgyanAIPage() {
 			{/* Main Chat Area */}
 			<div className="flex flex-1 flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80 overflow-hidden">
 				{/* Header with Gradient */}
-				<div className="relative flex items-center justify-between border-b border-purple-100 bg-white/60 backdrop-blur-md p-5 dark:border-purple-900/30 dark:bg-zinc-900/60">
-					<div className="absolute inset-0 bg-linear-to-r from-purple-500/5 via-pink-500/5 to-indigo-500/5"></div>
+				<div className="relative flex items-center justify-between border-b backdrop-blur-md p-5" style={{
+					borderColor: 'var(--dashboard-border)',
+					backgroundColor: 'var(--dashboard-surface)'
+				}}>
+					<div className="absolute inset-0" style={{
+						background: `linear-gradient(90deg, color-mix(in srgb, var(--dashboard-primary) 5%, transparent), color-mix(in srgb, var(--dashboard-primary) 3%, transparent), color-mix(in srgb, var(--dashboard-primary) 5%, transparent))`
+					}}></div>
 					<div className="relative flex items-center gap-4">
 						<button
 							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -501,8 +517,13 @@ export default function IgyanAIPage() {
 							</svg>
 						</button>
 						<div className="relative">
-							<div className="absolute inset-0 animate-pulse rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-20 blur-md"></div>
-							<div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50">
+							<div className="absolute inset-0 animate-pulse rounded-full opacity-20 blur-md" style={{
+								background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+							}}></div>
+							<div className="relative flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg" style={{
+								background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
+								boxShadow: `0 10px 25px -10px var(--dashboard-primary)`
+							}}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -518,9 +539,12 @@ export default function IgyanAIPage() {
 							<h2 className="text-lg font-bold text-zinc-900 dark:text-white">
 								{aiName || "AI Companion"}
 							</h2>
-							<p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
+							<p className="text-xs font-medium" style={{color: 'var(--dashboard-muted)'}}>
 								{selectedNotes ? (
-									<span className="inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-2.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+									<span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5" style={{
+										backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)',
+										color: 'var(--dashboard-primary)'
+									}}>
 										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
 											<path d="M3.196 12.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 12.87z" />
 											<path d="M3.196 8.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 8.87z" />
@@ -554,8 +578,13 @@ export default function IgyanAIPage() {
 					{messages.length === 0 ? (
 						<div className="flex h-full flex-col items-center justify-center gap-8 text-center px-4">
 							<div className="relative">
-								<div className="absolute inset-0 animate-pulse rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-30 blur-2xl"></div>
-								<div className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-br from-purple-500 to-pink-500 shadow-2xl shadow-purple-500/50 animate-float">
+								<div className="absolute inset-0 animate-pulse rounded-full opacity-30 blur-2xl" style={{
+									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+								}}></div>
+								<div className="relative flex h-24 w-24 items-center justify-center rounded-3xl shadow-2xl animate-float" style={{
+									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
+									boxShadow: `0 25px 50px -20px var(--dashboard-primary)`
+								}}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										viewBox="0 0 24 24"
@@ -568,19 +597,28 @@ export default function IgyanAIPage() {
 								</div>
 							</div>
 							<div className="space-y-3">
-								<h3 className="text-3xl font-extrabold bg-linear-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+								<h3 className="text-3xl font-extrabold" style={{
+									background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 80%, #000), var(--dashboard-primary))`,
+									WebkitBackgroundClip: 'text',
+									WebkitTextFillColor: 'transparent',
+									backgroundClip: 'text'
+								}}>
 									Welcome to {aiName || "AI Companion"}! 🎤
 								</h3>
-								<p className="text-base text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+								<p className="text-base max-w-md mx-auto" style={{color: 'var(--dashboard-muted)'}}>
 									Press the microphone button below to start an interactive voice conversation
 								</p>
 							</div>
 
 							{/* Features Grid */}
 							<div className="grid gap-4 sm:grid-cols-2 max-w-3xl w-full mt-6">
-								<div className="group rounded-2xl border border-purple-200/50 bg-linear-to-br from-purple-50 to-white p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-300 dark:border-purple-900/30 dark:from-purple-900/20 dark:to-zinc-900">
+								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+								}}>
 									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-purple-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
+											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+										}}>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
@@ -591,18 +629,22 @@ export default function IgyanAIPage() {
 												<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
 											</svg>
 										</div>
-										<h4 className="font-bold text-zinc-900 dark:text-white">
+										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
 											Voice Input
 										</h4>
 									</div>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
 										Ask questions using your voice naturally
 									</p>
 								</div>
 
-								<div className="group rounded-2xl border border-pink-200/50 bg-linear-to-br from-pink-50 to-white p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/20 hover:border-pink-300 dark:border-pink-900/30 dark:from-pink-900/20 dark:to-zinc-900">
+								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+								}}>
 									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-pink-500 to-pink-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
+											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+										}}>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
@@ -613,18 +655,22 @@ export default function IgyanAIPage() {
 												<path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" />
 											</svg>
 										</div>
-										<h4 className="font-bold text-zinc-900 dark:text-white">
+										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
 											Voice Response
 										</h4>
 									</div>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
 										Get answers spoken back to you in natural voice
 									</p>
 								</div>
 
-								<div className="group rounded-2xl border border-indigo-200/50 bg-linear-to-br from-indigo-50 to-white p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/20 hover:border-indigo-300 dark:border-indigo-900/30 dark:from-indigo-900/20 dark:to-zinc-900">
+								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+								}}>
 									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-indigo-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
+											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+										}}>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
@@ -634,18 +680,22 @@ export default function IgyanAIPage() {
 												<path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
 											</svg>
 										</div>
-										<h4 className="font-bold text-zinc-900 dark:text-white">
+										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
 											Study Notes
 										</h4>
 									</div>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
 										Select topics from your curriculum for focused learning
 									</p>
 								</div>
 
-								<div className="group rounded-2xl border border-emerald-200/50 bg-linear-to-br from-emerald-50 to-white p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/20 hover:border-emerald-300 dark:border-emerald-900/30 dark:from-emerald-900/20 dark:to-zinc-900">
+								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+								}}>
 									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
+											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+										}}>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
@@ -655,11 +705,11 @@ export default function IgyanAIPage() {
 												<path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z" clipRule="evenodd" />
 											</svg>
 										</div>
-										<h4 className="font-bold text-zinc-900 dark:text-white">
+										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
 											Chat History
 										</h4>
 									</div>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
 										Auto-saved conversations with smart titles
 									</p>
 								</div>
@@ -676,7 +726,9 @@ export default function IgyanAIPage() {
 							))}
 							{isProcessing && (
 								<div className="flex gap-3 justify-start">
-									<div className="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-500">
+									<div className="flex h-8 w-8 items-center justify-center rounded-full" style={{
+										background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+									}}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 24 24"
@@ -707,8 +759,13 @@ export default function IgyanAIPage() {
 				</div>
 
 				{/* Input Area - Voice Recording */}
-				<div className="relative border-t border-purple-100 bg-white/60 backdrop-blur-md p-8 dark:border-purple-900/30 dark:bg-zinc-900/60">
-					<div className="absolute inset-0 bg-linear-to-t from-purple-500/5 via-pink-500/5 to-transparent"></div>
+				<div className="relative border-t backdrop-blur-md p-8" style={{
+					borderColor: 'var(--dashboard-border)',
+					backgroundColor: 'var(--dashboard-surface)'
+				}}>
+					<div className="absolute inset-0" style={{
+						background: `linear-gradient(0deg, color-mix(in srgb, var(--dashboard-primary) 5%, transparent), color-mix(in srgb, var(--dashboard-primary) 3%, transparent), transparent)`
+					}}></div>
 					<div className="relative flex flex-col items-center gap-5">
 						<div className="relative">
 							{/* Pulse rings for listening state */}
@@ -720,16 +777,33 @@ export default function IgyanAIPage() {
 							)}
 							{/* Glow effect for idle state */}
 							{!isListening && !isProcessing && (
-								<div className="absolute inset-0 -m-6 animate-pulse rounded-full bg-linear-to-br from-purple-500 to-pink-500 opacity-20 blur-2xl"></div>
+								<div className="absolute inset-0 -m-6 animate-pulse rounded-full opacity-20 blur-2xl" style={{
+									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+								}}></div>
 							)}
 							<button
 								onClick={toggleListening}
 								disabled={isProcessing}
-								className={`group relative flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 transform ${
-									isListening
-										? "bg-linear-to-br from-red-500 to-red-600 shadow-2xl shadow-red-500/50 scale-105"
-										: "bg-linear-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 hover:scale-110 shadow-2xl shadow-purple-500/50"
-								} disabled:opacity-50 disabled:cursor-not-allowed`}
+								className="group relative flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 transform shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+								style={{
+									background: isListening 
+										? 'linear-gradient(135deg, #ef4444, #dc2626)' 
+										: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`,
+									boxShadow: isListening 
+										? '0 25px 50px -20px rgba(239, 68, 68, 0.5)' 
+										: `0 25px 50px -20px var(--dashboard-primary)`,
+									transform: isListening ? 'scale(1.05)' : 'scale(1)'
+								}}
+								onMouseEnter={(e) => {
+									if (!isListening && !isProcessing) {
+										e.currentTarget.style.transform = 'scale(1.1)';
+									}
+								}}
+								onMouseLeave={(e) => {
+									if (!isListening && !isProcessing) {
+										e.currentTarget.style.transform = 'scale(1)';
+									}
+								}}
 							>
 								{isListening ? (
 									<svg
@@ -758,7 +832,7 @@ export default function IgyanAIPage() {
 							</button>
 						</div>
 						<div className="flex flex-col items-center gap-2">
-							<p className="text-base font-semibold text-zinc-900 dark:text-white text-center">
+							<p className="text-base font-semibold text-center" style={{color: 'var(--dashboard-heading)'}}>
 								{isListening
 									? "🎤 Listening... Speak now!"
 									: isProcessing
@@ -766,7 +840,7 @@ export default function IgyanAIPage() {
 									: "Click to start speaking"}
 							</p>
 							{!isListening && !isProcessing && (
-								<p className="text-sm text-zinc-600 dark:text-zinc-400 text-center max-w-lg leading-relaxed">
+								<p className="text-sm text-center max-w-lg leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
 									💡 <span className="font-medium">Pro tip:</span> Click the microphone, speak your question clearly, and the AI
 									will respond with voice!
 								</p>
