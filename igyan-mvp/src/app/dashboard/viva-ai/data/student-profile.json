@@ -1,0 +1,60 @@
+{
+	"name": "Akshat Srivastav",
+	"class": "9th",
+	"section": "A",
+	"age": 14,
+	"classTeacher": "Sneha Gupta",
+	"house": "Curie",
+	"school": {
+		"name": "Litera Valley School",
+		"location": "Patna, Bihar",
+		"board": "CBSE"
+	},
+	"interests": [
+		"AI",
+		"Entrepreneurship",
+		"Technology",
+		"Science",
+		"Stand-up Comedy"
+	],
+	"learningStyle": "Visual & Kinesthetic",
+	"strengths": [
+		"Breaking complex ideas into bite-sized logic",
+		"Connecting real-world startups to textbook concepts",
+		"Remembering examples with wordplay"
+	],
+	"growthAreas": [
+		"Revise physics numericals regularly",
+		"Write crisp steps in geometry proofs"
+	],
+	"academicGoals": [
+		"Crack NTSE Stage 1 this year",
+		"Score 95%+ in Mathematics unit test",
+		"Build an AI powered revision bot for classmates"
+	],
+	"recentWins": [
+		"Won the inter-school hackathon with a smart attendance tracker",
+		"Anchored the entrepreneurship club meet with improv jokes"
+	],
+	"sleepTime": "10:00 PM",
+	"studySchedule": {
+		"weekday": "7:30 PM – 9:00 PM",
+		"weekend": "10:00 AM – 12:00 PM"
+	},
+	"favoriteSubjects": [
+		"Mathematics",
+		"Physics",
+		"Computer Science"
+	],
+	"mentors": [
+		{
+			"name": "Ritu Sharma",
+			"role": "Entrepreneurship Club Mentor"
+		},
+		{
+			"name": "Anil Kumar",
+			"role": "Robotics Coach"
+		}
+	],
+	"funFact": "Akshat once convinced his math teacher to grade a pun-filled proof—and still got full marks!"
+}

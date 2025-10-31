@@ -1,12 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "../logo";
+import { useAuth } from "../../app/utils/auth_context";
+import { supabase } from "../../app/utils/supabase";
 
-export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed }) {
+export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
 	const pathname = usePathname();
+	const { user } = useAuth();
+	const [userAccess, setUserAccess] = useState({});
+	const [loadingAccess, setLoadingAccess] = useState(true);
+
+	// Fetch user access permissions
+	useEffect(() => {
+		if (user) {
+			fetchUserAccess();
+		}
+	}, [user]);
+
+	const fetchUserAccess = async () => {
+		if (!user) return;
+
+		// Super admin has access to everything
+		if (user.role === "super_admin") {
+			setLoadingAccess(false);
+			return;
+		}
+
+		try {
+			const { data, error } = await supabase
+				.from("user_access")
+				.select("*")
+				.eq("user_id", user.id);
+
+			if (error) throw error;
+
+			// Create access map
+			const accessMap = {};
+			data?.forEach((access) => {
+				accessMap[access.module_name] = access.access_type;
+			});
+
+			setUserAccess(accessMap);
+		} catch (error) {
+			console.error("Error fetching user access:", error);
+		} finally {
+			setLoadingAccess(false);
+		}
+	};
+
+	// Check if user has access to a module
+	const hasAccess = (moduleName) => {
+		if (!user) return false;
+		if (user.role === "super_admin") return true;
+		return userAccess[moduleName] && userAccess[moduleName] !== "none";
+	};
 
 	const navItems = [
 		{
@@ -65,6 +114,26 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						strokeLinecap="round"
 						strokeLinejoin="round"
 						d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+					/>
+				</svg>
+			),
+		},
+		{
+			name: "Viva AI",
+			href: "/dashboard/viva-ai",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
 					/>
 				</svg>
 			),
@@ -150,6 +219,87 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			name: "User Management",
+			href: "/dashboard/users",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+					/>
+				</svg>
+			),
+		},
+		{
+			name: "Student Management",
+			href: "/dashboard/student-management",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
+					/>
+				</svg>
+			),
+		},
+		{
+			name: "Attendance",
+			href: "/dashboard/attendance",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M9 12.75L11.25 15 15 9.75M21 12c0 4.971-4.03 9-9 9s-9-4.029-9-9 4.03-9 9-9 9 4.029 9 9z"
+					/>
+				</svg>
+			),
+		},
+		{
+			name: "User Access",
+			href: "/dashboard/user-access",
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+					/>
+				</svg>
+			),
+			superAdminOnly: true,
+		},
+		{
 			name: "Settings",
 			href: "/dashboard/settings",
 			icon: (
@@ -188,7 +338,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 
 			{/* Sidebar */}
 			<aside
-				className={`fixed left-0 top-0 z-50 h-screen transform border-r border-zinc-200 bg-white/95 backdrop-blur-xl transition-all duration-300 ease-in-out dark:border-zinc-800 dark:bg-zinc-900/95 lg:translate-x-0 ${
+				className={`dashboard-sidenav fixed left-0 top-0 z-50 h-screen transform border-r bg-white/95 backdrop-blur-xl transition-all duration-300 ease-in-out lg:translate-x-0 ${
 					isOpen ? "translate-x-0" : "-translate-x-full"
 				} ${isCollapsed ? "w-20" : "w-64"}`}
 			>
@@ -200,14 +350,26 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 							isCollapsed ? "lg:justify-center" : ""
 						}`}
 					>
-						<Logo variant={isCollapsed ? "compact" : "sidebar"} className="shrink-0" />
-						<span
-							className={`text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white ${
-								isCollapsed ? "lg:hidden" : ""
-							}`}
-						>
-							iGyanAI
-						</span>
+						{schoolData?.logo_url ? (
+							<img
+								src={schoolData.logo_url}
+								alt={schoolData.school_name || "School Logo"}
+								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md"
+							/>
+						) : (
+							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 shadow-md">
+								<span className="text-base font-bold text-white">
+									{schoolData?.school_name?.[0] || "iG"}
+								</span>
+							</div>
+						)}
+						{!isCollapsed && (
+							<span
+								className="text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white"
+							>
+								{schoolData?.school_name || "iGyanAI"}
+							</span>
+						)}
 					</Link>
 					<div className="flex items-center gap-2">
 						<button
@@ -257,6 +419,12 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				{/* Navigation */}
 				<nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden p-4">
 					{navItems.map((item) => {
+						// Skip super admin only items for non-super admins
+						if (item.superAdminOnly && user?.role !== "super_admin") return null;
+						
+						// Skip items user doesn't have access to (unless super admin)
+						if (!hasAccess(item.name) && user?.role !== "super_admin") return null;
+						
 						const isActive = pathname === item.href;
 						return (
 							<Link
