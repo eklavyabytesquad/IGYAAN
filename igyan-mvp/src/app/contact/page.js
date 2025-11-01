@@ -14,7 +14,7 @@ export default function ContactPage() {
         </p>
       </header>
 
-      <section className="mt-16 grid gap-10 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70 lg:grid-cols-[1.1fr_0.9fr]">
+  <section className="mt-16 grid gap-10 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/15 dark:border-slate-900 dark:bg-slate-950/75 lg:grid-cols-[1.1fr_0.9fr]">
         <form className="space-y-5">
           <div>
             <label htmlFor="name" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
@@ -25,7 +25,7 @@ export default function ContactPage() {
               name="name"
               type="text"
               placeholder="Priya Sharma"
-              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
               required
             />
           </div>
@@ -39,7 +39,7 @@ export default function ContactPage() {
                 name="email"
                 type="email"
                 placeholder="you@igyan.ai"
-                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
                 required
               />
             </div>
@@ -52,7 +52,7 @@ export default function ContactPage() {
                 name="organization"
                 type="text"
                 placeholder="Nova World School"
-                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
                 required
               />
             </div>
@@ -64,7 +64,7 @@ export default function ContactPage() {
             <select
               id="goal"
               name="goal"
-              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
             >
               <option>Launch Sudarshan Ai copilots across operations</option>
               <option>Personalize learning and careers</option>
@@ -81,19 +81,19 @@ export default function ContactPage() {
               name="message"
               rows={4}
               placeholder="Share your priorities, timelines, or challenges."
-              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
             />
           </div>
           <button
             type="submit"
-            className="w-full rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-indigo-400"
+            className="w-full rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-transform hover:-translate-y-0.5 hover:bg-sky-400"
           >
             Request strategy session
           </button>
         </form>
 
-        <aside className="space-y-6 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 shadow-sm dark:border-indigo-900/40 dark:bg-indigo-950/30">
-          <h2 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300">
+        <aside className="space-y-6 rounded-2xl border border-sky-100 bg-sky-50/75 p-6 shadow-sm shadow-sky-500/10 dark:border-sky-900/40 dark:bg-slate-900/50">
+          <h2 className="text-lg font-semibold text-sky-600 dark:text-sky-300">
             Need an immediate walkthrough?
           </h2>
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">

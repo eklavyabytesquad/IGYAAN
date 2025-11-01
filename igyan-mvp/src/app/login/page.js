@@ -1,103 +1,76 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/logo";
-import { useAuth } from "../utils/auth_context";
 
-export default function LoginPage() {
-	const { login } = useAuth();
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+const OPTIONS = [
+  {
+    href: "/login/institutional-suite",
+    label: "Institutional Suite",
+    badge: "Institutional Suite • Institutions",
+    description:
+      "School and network leaders sign in to manage Sudarshan Ai copilots, automate operations, and orchestrate campus-wide innovation.",
+  },
+  {
+    href: "/login/b2c",
+    label: "Learner & Family",
+    badge: "B2C • Personal",
+    description: "Students and families sign in to personalize copilots, access learning journeys, and track progress across devices.",
+  },
+];
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		setLoading(true);
-		setError("");
+export default function LoginLandingPage() {
+  return (
+    <div className="relative mx-auto flex min-h-[70vh] w-full max-w-5xl flex-col justify-center px-6 py-24">
+      <div className="pointer-events-none absolute left-14 top-10 h-40 w-40 rounded-full bg-sky-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-8 bottom-10 h-56 w-56 rounded-full bg-cyan-300/20 blur-3xl" />
 
-		const formData = new FormData(e.target);
-		const email = formData.get("email");
-		const password = formData.get("password");
+      <div className="relative overflow-hidden rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-xl space-y-5">
+            <Logo variant="card" />
+            <p className="inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-white/80 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-sky-300">
+              Choose your portal
+            </p>
+            <h1 className="text-3xl font-semibold text-zinc-900 dark:text-white">
+              Sign in to continue your iGyanAI journey.
+            </h1>
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              Pick the login experience that matches your role. You can switch anytime—both connect to the same secure platform.
+            </p>
+          </div>
 
-		const result = await login(email, password);
-
-		if (!result.success) {
-			setError(result.error);
-			setLoading(false);
-		}
-		// If successful, auth context will redirect to dashboard
-	};
-
-	return (
-		<div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center px-6 py-20">
-			<div className="rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70">
-				<div className="mb-6 flex justify-center">
-					<Logo variant="card" />
-				</div>
-				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-					Welcome back
-				</h1>
-				<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-					Access your iGyanAI dashboard and Sudarshan Ai copilots.
-				</p>
-
-				{error && (
-					<div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-						{error}
-					</div>
-				)}
-
-				<form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-					<div>
-						<label
-							htmlFor="email"
-							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-						>
-							Email address
-						</label>
-						<input
-							id="email"
-							name="email"
-							type="email"
-							placeholder="you@school.com"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-							required
-						/>
-					</div>
-					<div>
-						<label
-							htmlFor="password"
-							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-						>
-							Password
-						</label>
-						<input
-							id="password"
-							name="password"
-							type="password"
-							placeholder="••••••••"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-							required
-						/>
-					</div>
-					<button
-						type="submit"
-						disabled={loading}
-						className="w-full rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{loading ? "Logging in..." : "Log in"}
-					</button>
-				</form>
-				<p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
-					Need an account?{" "}
-					<Link
-						href="/register"
-						className="font-semibold text-indigo-500 transition-colors hover:text-indigo-400"
-					>
-						Create one
-					</Link>
-				</p>
-			</div>
-		</div>
-	);
+          <div className="grid w-full max-w-xl gap-5">
+            {OPTIONS.map((option) => (
+              <Link
+                key={option.href}
+                href={option.href}
+                className="group relative overflow-hidden rounded-2xl border border-sky-100 bg-white/95 p-6 text-left shadow-lg shadow-sky-500/10 transition-transform hover:-translate-y-1 dark:border-slate-900 dark:bg-slate-950/80"
+              >
+                <div className="pointer-events-none absolute -right-12 top-6 h-24 w-24 rounded-full bg-sky-400/15 blur-3xl transition-opacity group-hover:opacity-100" />
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-500 dark:text-sky-300">
+                  {option.badge}
+                </p>
+                <h2 className="mt-3 text-xl font-semibold text-zinc-900 transition-colors group-hover:text-sky-600 dark:text-white">
+                  {option.label}
+                </h2>
+                <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-300">{option.description}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-500 transition group-hover:translate-x-1 group-hover:text-sky-400">
+                  Continue
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    className="h-4 w-4"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

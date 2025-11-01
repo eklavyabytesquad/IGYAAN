@@ -61,7 +61,7 @@ export default function AboutPage() {
         {values.map((value) => (
           <article
             key={value.title}
-            className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70"
+            className="rounded-2xl border border-zinc-200 bg-white/85 p-6 shadow-md shadow-sky-500/15 transition-transform hover:-translate-y-1 dark:border-slate-900 dark:bg-slate-950/70"
           >
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
               {value.title}
@@ -73,14 +73,14 @@ export default function AboutPage() {
         ))}
       </section>
 
-      <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70">
+      <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
           Our journey
         </h2>
         <div className="mt-10 grid gap-10 sm:grid-cols-2">
           {timeline.map((event) => (
             <div key={event.year} className="space-y-3">
-              <p className="text-sm font-semibold uppercase tracking-wider text-indigo-500">
+              <p className="text-sm font-semibold uppercase tracking-wider text-sky-500">
                 {event.year}
               </p>
               <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
@@ -91,12 +91,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-  <section className="mt-20 rounded-3xl bg-linear-to-br from-zinc-900 via-indigo-800 to-indigo-500 px-8 py-16 text-white">
+  <section className="mt-20 rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-white shadow-2xl shadow-sky-900/30">
         <div className="max-w-3xl space-y-6">
           <h2 className="text-3xl font-semibold">
             Join our coalition of builders, educators, and dreamers.
           </h2>
-          <p className="text-base text-indigo-100">
+          <p className="text-base text-sky-100/90">
             We are actively partnering with school networks, governments, impact
             investors, and ecosystem catalysts. Let’s architect AI-first
             education at scale.
@@ -104,7 +104,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap gap-4">
             <Link
               href="/contact"
-              className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-indigo-700 shadow-lg shadow-indigo-900/30 transition-transform hover:-translate-y-0.5"
+              className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-sky-700 shadow-lg shadow-sky-900/30 transition-transform hover:-translate-y-0.5"
             >
               Partner with us
             </Link>

@@ -81,7 +81,7 @@ export default function RegisterPage() {
 
 	return (
 		<div className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center px-6 py-20">
-			<div className="rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70">
+			<div className="rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/15 dark:border-slate-900 dark:bg-slate-950/75">
 				<div className="mb-6 flex justify-center">
 					<Logo variant="card" />
 				</div>
@@ -135,7 +135,7 @@ export default function RegisterPage() {
 									</button>
 								</div>
 							) : (
-								<label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-indigo-500 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-indigo-500 dark:hover:bg-indigo-900/20">
+								<label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-sky-500 hover:bg-sky-50 dark:border-zinc-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-900/60">
 									<input
 										type="file"
 										accept="image/jpeg,image/jpg,image/png"
@@ -145,7 +145,7 @@ export default function RegisterPage() {
 									/>
 									{uploadingImage ? (
 										<svg
-											className="h-8 w-8 animate-spin text-indigo-500"
+											className="h-8 w-8 animate-spin text-sky-500"
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
 											viewBox="0 0 24 24"
@@ -211,7 +211,7 @@ export default function RegisterPage() {
 								name="firstName"
 								type="text"
 								placeholder="Priya"
-								className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+								className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
 								required
 							/>
 						</div>
@@ -227,7 +227,7 @@ export default function RegisterPage() {
 								name="lastName"
 								type="text"
 								placeholder="Sharma"
-								className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+								className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
 								required
 							/>
 						</div>
@@ -244,7 +244,7 @@ export default function RegisterPage() {
 							name="email"
 							type="email"
 							placeholder="you@school.com"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
 							required
 						/>
 					</div>
@@ -260,7 +260,7 @@ export default function RegisterPage() {
 							name="phone"
 							type="tel"
 							placeholder="+91 98765 43210"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
 						/>
 					</div>
 					<div>
@@ -275,7 +275,7 @@ export default function RegisterPage() {
 							name="password"
 							type="password"
 							placeholder="••••••••"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
 							required
 							minLength={8}
 						/>
@@ -286,7 +286,7 @@ export default function RegisterPage() {
 					<button
 						type="submit"
 						disabled={loading}
-						className="w-full rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+						className="w-full rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-transform hover:-translate-y-0.5 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{loading ? "Creating account..." : "Create workspace"}
 					</button>
@@ -295,7 +295,7 @@ export default function RegisterPage() {
 					Already have access?{" "}
 					<Link
 						href="/login"
-						className="font-semibold text-indigo-500 transition-colors hover:text-indigo-400"
+						className="font-semibold text-sky-500 transition-colors hover:text-sky-400"
 					>
 						Log in here
 					</Link>

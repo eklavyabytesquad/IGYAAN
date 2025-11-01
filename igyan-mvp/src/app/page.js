@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Logo from "@/components/logo";
+import { CheckCircle, XCircle } from "lucide-react";
 
 const highlights = [
   "Unified operating system for schools",
@@ -72,23 +73,81 @@ const heroSignals = [
   },
 ];
 
+const offeringMatrix = [
+  {
+    feature: "School-Level Innovation Cell & Startup Lab",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "yes" },
+  },
+  {
+    feature: "AI Tutor (Daily Task Automation, Mentor Chatbot)",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "yes", note: "Co-pilot" },
+  },
+  {
+    feature: "Homework Task Delivery & Tracking",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "Viva Mock Interview & AI Skill Evaluation",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "Centralized Events, Competitions, Hackathons",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "yes" },
+  },
+  {
+    feature: "AI Counsellor & Roadmap Generator",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "yes" },
+  },
+  {
+    feature: "AI Timetable & Smart Substitution Scheduler",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "Assignment/Test Creation (AI Assessment Builder)",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "Editable AI Report Cards (Smart Evaluation System)",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "AI Assessment Builder",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "no" },
+  },
+  {
+    feature: "Real-Time Pitch Deck Feedback (AI Shark Simulation)",
+    institutionalSuite: { status: "yes" },
+    b2c: { status: "yes", note: "Premium" },
+  },
+];
+
 export default function Home() {
   return (
     <div className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 -top-72 -z-20 h-160 bg-linear-to-b from-indigo-200/40 via-white to-transparent blur-3xl dark:from-indigo-950/70 dark:via-zinc-950/40 dark:to-transparent" />
-      <div className="pointer-events-none absolute left-[12%] top-20 -z-10 h-64 w-64 rounded-full bg-indigo-400/25 blur-3xl animate-float dark:bg-indigo-900/40" />
-      <div className="pointer-events-none absolute right-[8%] top-36 -z-10 h-80 w-80 rounded-full bg-sky-300/20 blur-3xl animate-spin-slow dark:bg-indigo-700/40" />
+  <div className="pointer-events-none absolute inset-x-0 -top-72 -z-20 h-160 bg-linear-to-b from-sky-200/40 via-white to-transparent blur-3xl dark:from-slate-950/70 dark:via-slate-950/40 dark:to-transparent" />
+  <div className="pointer-events-none absolute left-[12%] top-20 -z-10 h-64 w-64 rounded-full bg-sky-400/25 blur-3xl animate-float dark:bg-slate-900/40" />
+  <div className="pointer-events-none absolute right-[8%] top-36 -z-10 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl animate-spin-slow dark:bg-slate-800/40" />
       <section className="mx-auto w-full max-w-6xl px-6 pb-24 pt-24 sm:pt-28">
         <div className="relative grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <div className="mb-8 mt-2 flex justify-start sm:justify-start">
               <Logo variant="hero" priority />
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-600 shadow-sm dark:border-indigo-900/60 dark:bg-zinc-900/70 dark:text-indigo-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 shadow-sm dark:border-slate-800/60 dark:bg-zinc-900/70 dark:text-sky-300">
               AI-Native Learning OS
             </span>
             <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl lg:text-6xl dark:text-white">
-              Build <span className="bg-linear-to-r from-indigo-500 via-purple-500 to-sky-500 bg-clip-text text-transparent">future-first schools</span> with Sudarshan Ai copilots for every journey.
+              Build <span className="bg-linear-to-r from-sky-500 via-cyan-400 to-sky-300 bg-clip-text text-transparent">future-first schools</span> with Sudarshan Ai copilots for every journey.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
               iGyanAI unifies school operations, personalized learning, and venture incubation into a single intelligent fabric. Empower your community to learn, launch, and lead with confidence.
@@ -96,7 +155,7 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href="/register"
-                className="group inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 hover:bg-indigo-400"
+                className="group inline-flex items-center gap-2 rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-400/40 transition-all hover:-translate-y-0.5 hover:bg-sky-400"
               >
                 <span>Book a demo</span>
                 <svg
@@ -112,18 +171,18 @@ export default function Home() {
               </Link>
               <Link
                 href="/features"
-                className="rounded-lg border border-zinc-300 px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:border-indigo-400 hover:text-indigo-500 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-indigo-400 dark:hover:text-indigo-300"
+                className="rounded-lg border border-zinc-300 px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:border-sky-400 hover:text-sky-500 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-sky-400 dark:hover:text-sky-300"
               >
                 Explore features
               </Link>
             </div>
           </div>
-          <div className="relative isolate overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/80 p-8 shadow-2xl shadow-indigo-500/10 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/70">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-300/30 blur-3xl dark:bg-indigo-700/30" />
-            <div className="pointer-events-none absolute -left-12 bottom-0 h-32 w-32 rounded-full bg-sky-200/30 blur-3xl dark:bg-blue-900/30" />
+          <div className="relative isolate overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/80 p-8 shadow-2xl shadow-sky-500/10 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/70">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-sky-300/30 blur-3xl dark:bg-slate-800/30" />
+            <div className="pointer-events-none absolute -left-12 bottom-0 h-32 w-32 rounded-full bg-cyan-200/30 blur-3xl dark:bg-slate-900/30" />
             <div className="relative space-y-6">
               <div className="flex items-center gap-3">
-                <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300">
+                <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
                   Live campus snapshot
                 </span>
                 <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Auto-sync every 5 minutes</span>
@@ -135,14 +194,14 @@ export default function Home() {
                 {heroSignals.map((signal, index) => (
                   <div
                     key={signal.title}
-                    className="flex items-start justify-between rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-4 shadow-sm shadow-indigo-500/10 transition-transform animate-float dark:border-zinc-800/70 dark:bg-zinc-900/80"
+                    className="flex items-start justify-between rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-4 shadow-sm shadow-sky-500/10 transition-transform animate-float dark:border-zinc-800/70 dark:bg-zinc-900/80"
                     style={{ animationDelay: `${index * 0.3}s` }}
                   >
                     <div className="max-w-[220px]">
                       <p className="text-sm font-semibold text-zinc-900 dark:text-white">{signal.title}</p>
                       <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{signal.description}</p>
                     </div>
-                    <span className="ml-4 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-300">
+                    <span className="ml-4 rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-500 dark:bg-sky-500/20 dark:text-sky-300">
                       {signal.metric}
                     </span>
                   </div>
@@ -156,7 +215,7 @@ export default function Home() {
           {highlights.map((highlight, index) => (
             <div
               key={highlight}
-              className="animate-float rounded-xl border border-white/70 bg-white/70 p-4 text-sm font-medium text-zinc-600 shadow-lg shadow-indigo-100/40 backdrop-blur transition-transform hover:-translate-y-1 dark:border-zinc-800/60 dark:bg-zinc-900/80 dark:text-zinc-300"
+              className="animate-float rounded-xl border border-white/70 bg-white/70 p-4 text-sm font-medium text-zinc-600 shadow-lg shadow-sky-100/40 backdrop-blur transition-transform hover:-translate-y-1 dark:border-zinc-800/60 dark:bg-zinc-900/80 dark:text-zinc-300"
               style={{ animationDelay: `${index * 0.25}s` }}
             >
               {highlight}
@@ -164,7 +223,126 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-6 rounded-3xl bg-white/85 p-10 shadow-2xl shadow-indigo-500/10 ring-1 ring-white/60 backdrop-blur dark:bg-zinc-900/70 dark:ring-zinc-800/50 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-14">
+          <h2 className="text-3xl font-semibold text-zinc-900 dark:text-white">
+            Tailored journeys for institutions and individual learners
+          </h2>
+          <p className="mt-3 max-w-3xl text-base text-zinc-600 dark:text-zinc-300">
+            Choose the pathway that fits your community. Every feature below is mapped directly from the iGyan.ai offering matrix so your teams know exactly what is included.
+          </p>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            {[
+              {
+                key: "institutionalSuite",
+                title: "Institutional Suite • Institutions",
+                description: "Full-stack automation and innovation infrastructure for schools, districts, and education networks.",
+                badge: "Most comprehensive",
+                cardClass:
+                  "border-slate-900/70 bg-linear-to-br from-slate-950 via-slate-900 to-zinc-950 text-sky-50 shadow-sky-500/20 dark:border-slate-800/80",
+              },
+              {
+                key: "b2c",
+                title: "B2C • Learners & Families",
+                description: "Personal Sudarshan copilots that amplify growth for ambitious students and parents.",
+                badge: "Popular choice",
+                cardClass:
+                  "border-sky-200/70 bg-linear-to-br from-sky-600 via-cyan-500 to-sky-400 text-white shadow-[0_30px_60px_-25px_rgba(56,189,248,0.45)]",
+              },
+            ].map((plan) => {
+              const isDark = plan.key === "institutionalSuite";
+
+              return (
+                <div
+                  key={plan.key}
+                  className={`flex h-full flex-col overflow-hidden rounded-3xl border p-8 backdrop-blur ${plan.cardClass}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p
+                      className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${
+                        isDark
+                          ? "bg-sky-500/15 text-sky-100"
+                          : "bg-white/20 text-white/90"
+                      }`}
+                    >
+                      {plan.badge}
+                    </p>
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    <h3 className="text-2xl font-semibold">{plan.title}</h3>
+                    <p
+                      className={`text-sm leading-relaxed ${
+                        isDark ? "text-sky-100/80" : "text-white/80"
+                      }`}
+                    >
+                      {plan.description}
+                    </p>
+                  </div>
+                  <div className="mt-8 flex-1">
+                    <ul className="space-y-3">
+                      {offeringMatrix.map((feature) => {
+                        const status = feature[plan.key];
+                        const isAvailable = status.status === "yes";
+                        const Icon = isAvailable ? CheckCircle : XCircle;
+                        const statusLabel = isAvailable
+                          ? status.note
+                            ? `Yes · ${status.note}`
+                            : "Yes"
+                          : "Not included";
+
+                        return (
+                          <li
+                            key={`${plan.key}-${feature.feature}`}
+                            className={`flex items-start gap-3 rounded-xl border px-4 py-3 ${
+                              isDark
+                                ? "border-sky-500/15 bg-slate-900/70"
+                                : "border-white/20 bg-white/15"
+                            }`}
+                          >
+                            <Icon
+                              className={`mt-0.5 h-5 w-5 ${
+                                isAvailable
+                                  ? isDark
+                                    ? "text-sky-300"
+                                    : "text-white"
+                                  : isDark
+                                    ? "text-sky-200/40"
+                                    : "text-white/50"
+                              }`}
+                            />
+                            <div>
+                              <p className="text-sm font-medium leading-snug text-white">
+                                {feature.feature}
+                              </p>
+                              <p
+                                className={`text-xs font-medium ${
+                                  isDark ? "text-sky-200/70" : "text-white/75"
+                                }`}
+                              >
+                                {statusLabel}
+                              </p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <Link
+                    href={plan.key === "institutionalSuite" ? "/login/institutional-suite" : "/login/b2c"}
+                    className={`mt-10 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5 ${
+                        isDark
+                          ? "bg-sky-500 text-white shadow-sky-400/40 hover:bg-sky-400"
+                          : "bg-white/90 text-sky-700 shadow-black/20 hover:bg-white"
+                      }`}
+                  >
+                    Continue to sign in
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-12 grid gap-6 rounded-3xl bg-white/85 p-10 shadow-2xl shadow-sky-500/10 ring-1 ring-white/60 backdrop-blur dark:bg-slate-950/70 dark:ring-slate-900/60 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
               One platform to orchestrate every moment of the learning lifecycle
@@ -176,16 +354,16 @@ export default function Home() {
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}
-                  className="animate-float rounded-lg border border-indigo-100 bg-indigo-50/60 p-5 text-center shadow-sm dark:border-indigo-900/60 dark:bg-indigo-900/20"
+                  className="animate-float rounded-lg border border-sky-100 bg-sky-50/60 p-5 text-center shadow-sm shadow-sky-500/10 dark:border-sky-900/40 dark:bg-slate-900/40"
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
-                  <p className="text-2xl font-semibold text-indigo-600 dark:text-indigo-300">{stat.value}</p>
-                  <p className="mt-2 text-xs font-medium uppercase tracking-wider text-indigo-700/80 dark:text-indigo-200/80">{stat.label}</p>
+                  <p className="text-2xl font-semibold text-sky-600 dark:text-sky-300">{stat.value}</p>
+                  <p className="mt-2 text-xs font-medium uppercase tracking-wider text-sky-700/80 dark:text-sky-200/80">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-linear-to-br from-white via-indigo-50 to-indigo-100 p-8 dark:border-zinc-800 dark:from-zinc-900 dark:via-zinc-900 dark:to-indigo-950/40">
+          <div className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-linear-to-br from-white via-sky-50 to-white p-8 shadow-inner shadow-sky-100/40 dark:border-slate-800 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
             <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
               What if your school had its own AI mission control?
             </h3>
@@ -194,7 +372,7 @@ export default function Home() {
             </p>
             <Link
               href="/contact"
-              className="mt-6 inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400"
+              className="mt-6 inline-flex items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-transform hover:-translate-y-0.5 hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400"
             >
               Talk to our strategists
             </Link>
@@ -213,16 +391,16 @@ export default function Home() {
           {featureCards.map((feature, index) => (
             <article
               key={feature.title}
-              className="group flex flex-col rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-lg shadow-indigo-500/10 transition-transform hover:-translate-y-1.5 hover:border-indigo-300 dark:border-zinc-800 dark:bg-zinc-900/70"
+              className="group flex flex-col rounded-2xl border border-zinc-200 bg-white/85 p-6 shadow-lg shadow-sky-500/10 transition-transform hover:-translate-y-1.5 hover:border-sky-300 dark:border-slate-900 dark:bg-slate-950/70"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <h3 className="text-lg font-semibold text-zinc-900 transition-colors group-hover:text-indigo-500 dark:text-white">
+              <h3 className="text-lg font-semibold text-zinc-900 transition-colors group-hover:text-sky-500 dark:text-white">
                 {feature.title}
               </h3>
               <p className="mt-4 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{feature.description}</p>
               <Link
                 href="/features"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-500 transition-colors hover:text-indigo-400"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-500 transition-colors hover:text-sky-400"
               >
                 Learn more →
               </Link>
@@ -232,7 +410,7 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-  <div className="grid gap-10 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70 lg:grid-cols-[0.9fr_1.1fr]">
+  <div className="grid gap-10 rounded-3xl border border-slate-200/70 bg-white/90 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-6">
             <h2 className="text-3xl font-semibold text-zinc-900 dark:text-white">
               Meet the iGyanAI Sudarshan Ai Suite
@@ -242,7 +420,7 @@ export default function Home() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-500 transition-colors hover:text-indigo-400"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-sky-500 transition-colors hover:text-sky-400"
             >
               Request a custom pilot →
             </Link>
@@ -251,10 +429,10 @@ export default function Home() {
             {copilots.map((copilot, index) => (
               <div
                 key={copilot.name}
-                className="animate-float rounded-2xl border border-indigo-100 bg-indigo-50/70 p-6 shadow-sm dark:border-indigo-900/40 dark:bg-indigo-950/30"
+                className="animate-float rounded-2xl border border-sky-100 bg-sky-50/80 p-6 shadow-sm shadow-sky-500/10 dark:border-sky-900/40 dark:bg-slate-900/50"
                 style={{ animationDelay: `${index * 0.25}s` }}
               >
-                <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300">{copilot.name}</h3>
+                <h3 className="text-lg font-semibold text-sky-600 dark:text-sky-300">{copilot.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{copilot.description}</p>
               </div>
             ))}
@@ -263,17 +441,17 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-5xl px-6 pb-28">
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-zinc-900 via-indigo-800 to-indigo-500 px-8 py-16 text-center text-white shadow-2xl animate-glow">
+        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-center text-white shadow-2xl animate-glow">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent)]" />
           <div className="relative z-10 mx-auto max-w-2xl space-y-6">
             <h2 className="text-3xl font-semibold sm:text-4xl">Ready to launch your AI-first campus?</h2>
-            <p className="text-base text-indigo-100">
+            <p className="text-base text-sky-100/90">
               We partner with visionary schools to design future-forward experiences—from curriculum to capital access.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/contact"
-                className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-indigo-700 shadow-lg shadow-indigo-900/40 transition-transform hover:-translate-y-0.5"
+                className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-sky-700 shadow-lg shadow-sky-950/40 transition-transform hover:-translate-y-0.5"
               >
                 Connect with us
               </Link>

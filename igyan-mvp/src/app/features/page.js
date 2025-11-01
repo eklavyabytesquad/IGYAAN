@@ -66,7 +66,7 @@ export default function FeaturesPage() {
         {featureGroups.map((group) => (
           <article
             key={group.title}
-            className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-lg shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70"
+            className="rounded-2xl border border-zinc-200 bg-white/85 p-6 shadow-lg shadow-sky-500/15 transition-transform hover:-translate-y-1 dark:border-slate-900 dark:bg-slate-950/70"
           >
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
               {group.title}
@@ -74,7 +74,7 @@ export default function FeaturesPage() {
             <ul className="mt-4 space-y-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
               {group.items.map((item) => (
                 <li key={item} className="flex gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-500" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -83,7 +83,7 @@ export default function FeaturesPage() {
         ))}
       </section>
 
-      <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/90 p-10 shadow-2xl shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/70">
+      <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
           Automate mission-critical workflows
         </h2>
@@ -91,9 +91,9 @@ export default function FeaturesPage() {
           {automations.map((automation) => (
             <div
               key={automation.name}
-              className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 shadow-sm dark:border-indigo-900/40 dark:bg-indigo-950/30"
+              className="rounded-2xl border border-sky-100 bg-sky-50/75 p-6 shadow-sm shadow-sky-500/10 dark:border-sky-900/40 dark:bg-slate-900/50"
             >
-              <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300">
+              <h3 className="text-lg font-semibold text-sky-600 dark:text-sky-300">
                 {automation.name}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
@@ -104,17 +104,17 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl bg-linear-to-br from-zinc-900 via-indigo-800 to-indigo-600 px-8 py-16 text-white">
+      <section className="mt-20 rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-white shadow-2xl shadow-sky-900/30">
         <div className="max-w-3xl space-y-6">
           <h2 className="text-3xl font-semibold">
             Enterprise-grade AI governance
           </h2>
-          <ul className="space-y-3 text-base text-indigo-100">
+          <ul className="space-y-3 text-base text-sky-100/90">
             <li>Granular role-based access controls and consent management</li>
             <li>End-to-end encryption, audit logs, and compliance certifications</li>
             <li>Model observability with human-in-the-loop review workflows</li>
           </ul>
-          <p className="text-sm text-indigo-100/80">
+          <p className="text-sm text-sky-100/80">
             Deploy on iGyanAI cloud or within your secure infrastructure. All
             Sudarshan Ai copilots respect your policies and adapt to regulatory shifts.
           </p>
