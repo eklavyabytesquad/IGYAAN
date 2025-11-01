@@ -230,9 +230,13 @@ export default function DashboardPage() {
 	];
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-rose-50 p-6 lg:p-8 dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900">
+		<div className="dashboard-theme min-h-screen p-6 lg:p-8" style={{
+			background: 'var(--dashboard-background)'
+		}}>
 			<div className="mx-auto max-w-6xl space-y-8">
-				<header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white shadow-xl sm:p-10">
+				<header className="relative overflow-hidden rounded-3xl bg-gradient-to-r p-6 text-white shadow-xl sm:p-10" style={{
+					background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 80%, #000))`,
+				}}>
 					<div className="absolute inset-0 opacity-40 mix-blend-soft-light">
 						<div className="absolute -left-10 top-10 h-32 w-32 rounded-full bg-white/20 blur-3xl"></div>
 						<div className="absolute right-10 -bottom-10 h-48 w-48 rounded-full bg-white/10 blur-3xl"></div>
@@ -247,7 +251,7 @@ export default function DashboardPage() {
 								Track your goals, jump back into conversations, and keep that NTSE dream in sight. We saved your momentum so you can pick up right where you left off.
 							</p>
 							<div className="flex flex-wrap gap-3">
-								<Link href="/dashboard/viva-ai" className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/25">
+								<Link href="/dashboard/viva-ai" className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/30">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
 									</svg>
@@ -277,13 +281,15 @@ export default function DashboardPage() {
 
 				<section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 					{statCards.map((card) => (
-						<div key={card.label} className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/70 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-zinc-800/60 dark:bg-zinc-900/70">
-							<div className={`absolute inset-0 bg-gradient-to-br ${card.accent}`}></div>
+						<div key={card.label} className="dashboard-card relative overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
+							<div className={`absolute inset-0 bg-gradient-to-br ${card.accent}`} style={{
+								background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 15%, transparent), color-mix(in srgb, var(--dashboard-primary) 5%, transparent), transparent)`
+							}}></div>
 							<div className="relative flex items-start justify-between gap-3">
 								<div>
-									<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{card.label}</p>
-									<p className="mt-2 text-3xl font-semibold text-zinc-900 dark:text-white">{card.value}</p>
-									<p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">{card.trend}</p>
+									<p className="text-xs font-semibold uppercase tracking-wide" style={{color: 'var(--dashboard-muted)'}}>{card.label}</p>
+									<p className="mt-2 text-3xl font-semibold" style={{color: 'var(--dashboard-heading)'}}>{card.value}</p>
+									<p className="mt-1 text-xs" style={{color: 'var(--dashboard-muted)'}}>{card.trend}</p>
 								</div>
 								<div className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.iconBg}`}>
 									{card.icon}
@@ -295,28 +301,30 @@ export default function DashboardPage() {
 
 				<div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
 					<div className="space-y-6">
-						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<div>
-									<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Quick launchpad</h2>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400">Jump back into tools that keep your streak alive</p>
+									<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>Quick launchpad</h2>
+									<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>Jump back into tools that keep your streak alive</p>
 								</div>
-								<span className="rounded-full border border-zinc-200 px-3 py-1 text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">Recommended</span>
+								<span className="dashboard-pill rounded-full border px-3 py-1 text-xs">Recommended</span>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-2">
 								{quickActions.map((action) => (
-									<Link key={action.title} href={action.href} className="group relative flex h-full flex-col gap-4 rounded-2xl border border-zinc-200/80 bg-white/90 p-4 transition-all hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg dark:border-zinc-800/60 dark:bg-zinc-900/80">
-										<div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/0 via-purple-100/0 to-purple-100/40 opacity-0 transition group-hover:opacity-100 dark:from-white/0 dark:via-white/0 dark:to-purple-500/10"></div>
+									<Link key={action.title} href={action.href} className="group relative flex h-full flex-col gap-4 rounded-2xl border p-4 transition-all hover:-translate-y-1 hover:shadow-lg dashboard-card">
+										<div className="absolute inset-0 rounded-2xl opacity-0 transition group-hover:opacity-100" style={{
+											background: `linear-gradient(135deg, transparent, color-mix(in srgb, var(--dashboard-primary) 10%, transparent), color-mix(in srgb, var(--dashboard-primary) 20%, transparent))`
+										}}></div>
 										<div className="relative flex items-center gap-3">
 											<div className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.iconBg}`}>
 												{action.icon}
 											</div>
 											<div>
-												<p className="font-semibold text-zinc-900 transition group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-300">{action.title}</p>
-												<p className="text-xs text-zinc-600 dark:text-zinc-400">{action.description}</p>
+												<p className="font-semibold transition" style={{color: 'var(--dashboard-heading)'}}>{action.title}</p>
+												<p className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{action.description}</p>
 											</div>
 										</div>
-										<div className="relative mt-auto flex items-center gap-2 text-xs font-semibold text-purple-600 transition group-hover:translate-x-1 dark:text-purple-300">
+										<div className="relative mt-auto flex items-center gap-2 text-xs font-semibold transition group-hover:translate-x-1" style={{color: 'var(--dashboard-primary)'}}>
 											<span>Open</span>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
 												<path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h9M16.5 7.5v9M16.5 16.5h-9" />
@@ -327,22 +335,22 @@ export default function DashboardPage() {
 							</div>
 						</section>
 
-						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Today&apos;s focus board</h2>
-								<span className="text-xs text-zinc-500 dark:text-zinc-400">Curated for Akshat</span>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>Today&apos;s focus board</h2>
+								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>Curated for Akshat</span>
 							</div>
 							<ul className="space-y-4">
 								{focusAreas.map((item) => (
-									<li key={item.title} className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800/60 dark:bg-zinc-800/60">
+									<li key={item.title} className="dashboard-card-muted rounded-2xl p-4">
 										<div className="flex items-start justify-between gap-3">
 											<div>
-												<p className="text-sm font-semibold text-zinc-900 dark:text-white">{item.title}</p>
-												<p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">{item.detail}</p>
+												<p className="text-sm font-semibold" style={{color: 'var(--dashboard-heading)'}}>{item.title}</p>
+												<p className="mt-1 text-xs" style={{color: 'var(--dashboard-muted)'}}>{item.detail}</p>
 											</div>
 											<div className="flex gap-2">
 												{item.tags.map((tag) => (
-													<span key={tag} className="rounded-full bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-purple-600 dark:bg-white/10 dark:text-purple-200">
+													<span key={tag} className="dashboard-pill rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide">
 														{tag}
 													</span>
 												))}
@@ -353,16 +361,16 @@ export default function DashboardPage() {
 							</ul>
 						</section>
 
-						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">iGyanAI highlights</h2>
-								<Link href="/dashboard/viva-ai" className="text-xs font-semibold text-purple-600 hover:underline dark:text-purple-300">View chat log</Link>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>iGyanAI highlights</h2>
+								<Link href="/dashboard/viva-ai" className="text-xs font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>View chat log</Link>
 							</div>
 							<ul className="space-y-4">
 								{aiHighlights.map((highlight) => (
-									<li key={highlight.title} className="rounded-2xl border border-purple-200/60 bg-purple-50/70 p-4 dark:border-purple-800/60 dark:bg-purple-900/30">
-										<p className="text-sm font-semibold text-purple-900 dark:text-purple-100">{highlight.title}</p>
-										<p className="mt-1 text-xs text-purple-700 dark:text-purple-200">{highlight.detail}</p>
+									<li key={highlight.title} className="dashboard-pill rounded-2xl border p-4">
+										<p className="text-sm font-semibold" style={{color: 'var(--dashboard-heading)'}}>{highlight.title}</p>
+										<p className="mt-1 text-xs" style={{color: 'var(--dashboard-muted)'}}>{highlight.detail}</p>
 									</li>
 								))}
 							</ul>
@@ -370,9 +378,11 @@ export default function DashboardPage() {
 					</div>
 
 					<div className="space-y-6">
-						<section className="overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/85 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/75">
+						<section className="dashboard-card overflow-hidden rounded-3xl p-6">
 							<div className="flex items-start gap-4">
-								<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-semibold text-white">
+								<div className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-semibold text-white" style={{
+									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+								}}>
 									{user.full_name
 										?.split(" ")
 										.map((n) => n[0])
@@ -382,65 +392,68 @@ export default function DashboardPage() {
 								<div className="flex-1">
 									<div className="flex items-start justify-between">
 										<div>
-											<p className="text-lg font-semibold text-zinc-900 dark:text-white">{user.full_name}</p>
-											<p className="text-sm text-zinc-600 dark:text-zinc-400">{user.email}</p>
+											<p className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{user.full_name}</p>
+											<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>{user.email}</p>
 										</div>
-										<span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 dark:border-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200">Pro learner mode</span>
+										<span className="dashboard-pill rounded-full border px-3 py-1 text-xs font-semibold">Pro learner mode</span>
 									</div>
 									<div className="mt-4 grid gap-3">
-										<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+										<div className="flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
 											<span>Member since</span>
-											<span className="font-semibold text-zinc-900 dark:text-white">{new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
+											<span className="font-semibold" style={{color: 'var(--dashboard-heading)'}}>{new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
 										</div>
 										{user.phone && (
-											<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+											<div className="flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
 												<span>Phone</span>
-												<span className="font-semibold text-zinc-900 dark:text-white">{user.phone}</span>
+												<span className="font-semibold" style={{color: 'var(--dashboard-heading)'}}>{user.phone}</span>
 											</div>
 										)}
 										{session && (
-											<div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+											<div className="flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
 												<span>Device</span>
-												<span className="font-semibold text-zinc-900 dark:text-white">{session.device_type}</span>
+												<span className="font-semibold" style={{color: 'var(--dashboard-heading)'}}>{session.device_type}</span>
 											</div>
 										)}
 									</div>
 									<div className="mt-4 flex gap-2">
-										<Link href="/features" className="flex-1 rounded-xl border border-zinc-200 px-4 py-2 text-center text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">Edit profile</Link>
-										<Link href="/dashboard/viva-ai" className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 text-center text-sm font-semibold text-white transition hover:shadow-lg">Resume AI chat</Link>
+										<Link href="/features" className="flex-1 rounded-xl border px-4 py-2 text-center text-sm font-semibold transition" style={{
+											borderColor: 'var(--dashboard-border)',
+											color: 'var(--dashboard-text)'
+										}}>Edit profile</Link>
+										<Link href="/dashboard/viva-ai" className="dashboard-button flex-1 rounded-xl px-4 py-2 text-center text-sm font-semibold transition hover:shadow-lg">Resume AI chat</Link>
 									</div>
 								</div>
 							</div>
 						</section>
 
-						<section className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-zinc-800/60 dark:bg-zinc-900/70">
+						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Upcoming timeline</h2>
-								<span className="text-xs text-zinc-500 dark:text-zinc-400">Stay prepped</span>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>Upcoming timeline</h2>
+								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>Stay prepped</span>
 							</div>
 							<ul className="space-y-4">
 								{upcomingSessions.map((sessionItem) => (
-									<li key={sessionItem.title} className="flex items-start gap-3 rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800/50 dark:bg-zinc-800/60">
-										<div className="mt-1 h-2 w-2 rounded-full bg-purple-500"></div>
+									<li key={sessionItem.title} className="dashboard-card-muted flex items-start gap-3 rounded-2xl p-4">
+										<div className="mt-1 h-2 w-2 rounded-full" style={{backgroundColor: 'var(--dashboard-primary)'}}></div>
 										<div>
-											<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{sessionItem.time}</p>
-											<p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">{sessionItem.title}</p>
-											<p className="text-xs text-zinc-600 dark:text-zinc-400">{sessionItem.description}</p>
+											<p className="text-xs font-semibold uppercase tracking-wide" style={{color: 'var(--dashboard-muted)'}}>{sessionItem.time}</p>
+											<p className="mt-1 text-sm font-semibold" style={{color: 'var(--dashboard-heading)'}}>{sessionItem.title}</p>
+											<p className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{sessionItem.description}</p>
 										</div>
 									</li>
 								))}
 							</ul>
 						</section>
 
-						<section className="rounded-3xl border border-indigo-200/60 bg-indigo-50/70 p-6 shadow-sm dark:border-indigo-800/60 dark:bg-indigo-900/30">
-							<h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Goal tracker</h2>
-							<p className="mt-2 text-xs text-indigo-700 dark:text-indigo-200">You&apos;re 65% through this week&apos;s mission list. Celebrate small wins and log reflections with iGyanAI.</p>
-							<div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/60 dark:bg-white/10">
-								<div className="h-full w-[65%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+						<section className="dashboard-pill rounded-3xl border p-6">
+							<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>Goal tracker</h2>
+							<p className="mt-2 text-xs" style={{color: 'var(--dashboard-muted)'}}>You&apos;re 65% through this week&apos;s mission list. Celebrate small wins and log reflections with iGyanAI.</p>
+							<div className="mt-4 h-2 w-full overflow-hidden rounded-full" style={{backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)'}}>
+								<div className="h-full w-[65%] rounded-full" style={{backgroundColor: 'var(--dashboard-primary)'}}></div>
 							</div>
-							<div className="mt-4 flex items-center justify-between text-xs text-indigo-700 dark:text-indigo-200">
+							<div className="mt-4 flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
 								<span>3 objectives remaining</span>
-								<Link href="/dashboard/viva-ai" className="font-semibold hover:underline">Log progress</Link>
+								<Link href="/dashboard/viva-ai" className="font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>Log progress</Link>
 							</div>
 						</section>
 					</div>
