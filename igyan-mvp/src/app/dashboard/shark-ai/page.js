@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Upload, Send, FileText, Trash2, Loader2 } from 'lucide-react';
-import OpenAI from 'openai';
 
 export default function SharkAI() {
   const [messages, setMessages] = useState([]);
@@ -10,17 +9,12 @@ export default function SharkAI() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [assistantId, setAssistantId] = useState('');
-  const [threadId, setThreadId] = useState('');
+  const [fileId, setFileId] = useState('');
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-  
-  const openai = new OpenAI({
-    apiKey: API_KEY,
-    dangerouslyAllowBrowser: true, // Required for client-side usage
-  });
+  // Using Next.js API routes as proxy to avoid CORS issues
+  const API_URL = '/api/shark-ai';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,90 +24,90 @@ export default function SharkAI() {
     scrollToBottom();
   }, [messages]);
 
+  // API health check on mount
+  useEffect(() => {
+    console.log('Shark AI initialized - using Next.js API proxy');
+  }, []);
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      setUploadedFile(file);
-      setIsProcessing(true);
+    if (!file) return;
+
+    // Accept multiple file types
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'text/plain',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please upload a valid document (PDF, PPT, PPTX, TXT, DOC, or DOCX)');
+      return;
+    }
+
+    setUploadedFile(file);
+    setIsProcessing(true);
+
+    try {
+      console.log('Uploading file to AI Shark API:', file.name);
+      console.log('API URL:', `${API_URL}/upload`);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        body: formData,
+      }).catch(err => {
+        console.error('Network error:', err);
+        throw new Error('Network error. Please check your connection.');
+      });
+
+      console.log('Response status:', response.status);
       
-      try {
-        console.log('Uploading file to OpenAI:', file.name);
-        
-        // Upload file to OpenAI
-        const uploadedFile = await openai.files.create({
-          file: file,
-          purpose: 'assistants',
-        });
-        
-        console.log('File uploaded:', uploadedFile.id);
-
-        // Create assistant
-        const assistant = await openai.beta.assistants.create({
-          name: 'Shark AI - PDF Q&A Assistant',
-          instructions: 'You are Shark AI, an intelligent document analysis assistant for igyan education platform. Answer questions accurately based on the uploaded PDF file. Provide clear, concise, and helpful responses.',
-          model: 'gpt-4o-mini',
-          tools: [{ type: 'file_search' }],
-        });
-        
-        console.log('Assistant created:', assistant.id);
-
-        // Create vector store
-        const vectorStore = await openai.beta.vectorStores.create({
-          name: 'Shark AI Document Store',
-        });
-        
-        console.log('Vector store created:', vectorStore.id);
-
-        // Attach file to vector store
-        await openai.beta.vectorStores.files.create(
-          vectorStore.id,
-          { file_id: uploadedFile.id }
-        );
-        
-        console.log('File attached to vector store');
-
-        // Create thread with vector store
-        const thread = await openai.beta.threads.create({
-          tool_resources: {
-            file_search: {
-              vector_store_ids: [vectorStore.id],
-            },
-          },
-        });
-        
-        console.log('Thread created:', thread.id);
-        
-        // Store IDs
-        setAssistantId(assistant.id);
-        setThreadId(thread.id);
-        
-        setMessages([
-          {
-            role: 'assistant',
-            content: `📄 PDF uploaded successfully: ${file.name}. I've analyzed the document using OpenAI's advanced file search. You can now ask me questions about it!`,
-          },
-        ]);
-      } catch (error) {
-        console.error('Error processing PDF:', error);
-        setMessages([
-          {
-            role: 'assistant',
-            content: `❌ Sorry, there was an error processing your PDF: ${error.message}. Please try again.`,
-          },
-        ]);
-        setUploadedFile(null);
-      } finally {
-        setIsProcessing(false);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        throw new Error(errorData.error || 'Failed to upload file');
       }
-    } else {
-      alert('Please upload a valid PDF file');
+
+      const data = await response.json();
+      console.log('File uploaded successfully:', data);
+
+      setFileId(data.file_id);
+
+      setMessages([
+        {
+          role: 'assistant',
+          content: `📄 Document uploaded successfully: ${file.name}. I've analyzed the document and it's ready for questions. You can now ask me anything about it!`,
+        },
+      ]);
+    } catch (error) {
+      console.error('Error processing document:', error);
+      setMessages([
+        {
+          role: 'assistant',
+          content: `❌ Sorry, there was an error processing your document: ${error.message}. Please try again.`,
+        },
+      ]);
+      setUploadedFile(null);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleRemoveFile = () => {
     setUploadedFile(null);
-    setAssistantId('');
-    setThreadId('');
+    setFileId('');
     setMessages([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -121,7 +115,7 @@ export default function SharkAI() {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !uploadedFile || !assistantId || !threadId) return;
+    if (!inputMessage.trim() || !uploadedFile || !fileId) return;
 
     const userMessage = {
       role: 'user',
@@ -134,50 +128,78 @@ export default function SharkAI() {
     setIsLoading(true);
 
     try {
-      console.log('Sending message to thread:', currentQuestion);
-      
-      // Add message to thread
-      await openai.beta.threads.messages.create(threadId, {
-        role: 'user',
-        content: currentQuestion,
-      });
+      console.log('Sending question to AI Shark API:', currentQuestion);
+      console.log('File ID:', fileId);
 
-      // Run the assistant
-      const run = await openai.beta.threads.runs.create(threadId, {
-        assistant_id: assistantId,
-      });
-      
-      console.log('Run created:', run.id);
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
 
-      // Poll for completion
-      let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
-      
-      while (runStatus.status !== 'completed') {
-        if (['failed', 'cancelled', 'expired'].includes(runStatus.status)) {
-          console.error('Run failed with status:', runStatus.status);
-          throw new Error(`Run ${runStatus.status}`);
+      const response = await fetch(`${API_URL}/ask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file_id: fileId,
+          query: currentQuestion,
+        }),
+        signal: controller.signal,
+      }).catch(err => {
+        clearTimeout(timeoutId);
+        console.error('Network error:', err);
+        if (err.name === 'AbortError') {
+          throw new Error('Request timed out. The AI is taking too long to respond. Please try again.');
         }
-        
-        console.log('Waiting for completion... Status:', runStatus.status);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
-      }
-      
-      console.log('Run completed');
+        throw new Error('Network error. Please check your connection.');
+      });
 
-      // Get messages
-      const messagesResponse = await openai.beta.threads.messages.list(threadId);
-      const lastMessage = messagesResponse.data[0];
+      clearTimeout(timeoutId);
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        throw new Error(errorData.error || 'Failed to get response');
+      }
+
+      const data = await response.json();
+      console.log('Response received:', data);
+      console.log('Answer field:', data.answer);
+      console.log('Response field:', data.response);
+
+      // Check if we got a valid response (API returns "response" not "answer")
+      const answerText = data.answer || data.response;
+      
+      if (!data || !answerText) {
+        console.error('Invalid response format:', data);
+        throw new Error('Invalid response format from API. Expected "answer" or "response" field.');
+      }
 
       const assistantMessage = {
         role: 'assistant',
-        content: lastMessage.content[0].text.value,
+        content: answerText,
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-      console.log('Response received:', assistantMessage.content);
+      console.log('Adding assistant message:', assistantMessage);
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        console.log('Updated messages array:', newMessages);
+        return newMessages;
+      });
     } catch (error) {
       console.error('Error sending message:', error);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
       setMessages((prev) => [
         ...prev,
         {
@@ -186,6 +208,7 @@ export default function SharkAI() {
         },
       ]);
     } finally {
+      console.log('Setting isLoading to false');
       setIsLoading(false);
     }
   };
@@ -208,13 +231,13 @@ export default function SharkAI() {
                 🦈 Shark AI - Document Intelligence
               </h1>
               <p className="text-zinc-600 dark:text-zinc-400 mt-2 text-sm md:text-base">
-                Upload your PDF and ask intelligent questions about its content
+                Upload your documents (PDF, PPT, TXT, DOCX) and ask intelligent questions
               </p>
             </div>
             <div className="text-left md:text-right">
               <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">igyan AI Model</div>
               <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Powered by GPT-4</div>
-              <div className="text-xs text-red-500 dark:text-red-400 mt-1 font-semibold">⚠️ TEST MODE - API Key Exposed</div>
+              <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">✓ Secure API Service</div>
             </div>
           </div>
         </div>
@@ -235,12 +258,12 @@ export default function SharkAI() {
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <FileText className="mx-auto mb-4 text-zinc-400 dark:text-zinc-500" size={48} />
-                    <p className="text-zinc-700 dark:text-zinc-300 mb-2 font-medium">Click to upload PDF</p>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">or drag and drop</p>
+                    <p className="text-zinc-700 dark:text-zinc-300 mb-2 font-medium">Click to upload document</p>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">PDF, PPT, TXT, DOCX supported</p>
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept=".pdf"
+                      accept=".pdf,.ppt,.pptx,.txt,.doc,.docx"
                       onChange={handleFileUpload}
                       className="hidden"
                     />
@@ -281,9 +304,9 @@ export default function SharkAI() {
                     💡 Tips for best results:
                   </h3>
                   <ul className="text-xs text-indigo-800 dark:text-indigo-400 space-y-1">
-                    <li>• Upload clear, text-based PDFs</li>
+                    <li>• Upload clear, text-based documents</li>
+                    <li>• Supports: PDF, PPT, PPTX, TXT, DOC, DOCX</li>
                     <li>• Ask specific questions</li>
-                    <li>• Reference page numbers if needed</li>
                     <li>• Request summaries or explanations</li>
                   </ul>
                 </div>
@@ -304,7 +327,7 @@ export default function SharkAI() {
                         Welcome to Shark AI
                       </h3>
                       <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400">
-                        Upload a PDF document to start asking questions and get intelligent
+                        Upload a document (PDF, PPT, TXT, DOCX) to start asking questions and get intelligent
                         answers based on the content.
                       </p>
                     </div>
