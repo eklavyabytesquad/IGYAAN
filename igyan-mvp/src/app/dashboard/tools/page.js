@@ -86,19 +86,35 @@ const TOOL_DEFINITIONS = [
 		badge: "New"
 	},
 	{
-		id: "coming-soon-1",
-		name: "Quiz Generator",
-		description: "Create engaging quizzes and assessments automatically from any study material or topic.",
+		id: "quiz-me",
+		name: "Quiz Me",
+		description: "Test your knowledge with AI-generated quizzes. Get instant feedback with detailed explanations for each question.",
 		icon: (
 			<svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+			</svg>
+		),
+		href: "/dashboard/tools/quiz-me",
+		gradient: "from-violet-500 to-fuchsia-500",
+		bgGradient: "from-violet-50 to-fuchsia-50",
+		darkBgGradient: "dark:from-violet-900/20 dark:to-fuchsia-900/20",
+		category: "Assessment",
+		badge: "New"
+	},
+	{
+		id: "coming-soon-1",
+		name: "Flashcard Creator",
+		description: "Generate smart flashcards automatically from your notes and study materials for effective memorization.",
+		icon: (
+			<svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
 			</svg>
 		),
 		href: "#",
 		gradient: "from-green-500 to-lime-500",
 		bgGradient: "from-green-50 to-lime-50",
 		darkBgGradient: "dark:from-green-900/20 dark:to-lime-900/20",
-		category: "Assessment",
+		category: "Learning",
 		comingSoon: true
 	},
 	{
