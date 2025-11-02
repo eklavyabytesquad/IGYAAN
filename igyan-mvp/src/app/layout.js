@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "./utils/auth_context";
 import "./globals.css";
 
@@ -40,11 +41,13 @@ function LayoutContent({ children }) {
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
 			>
-				<LayoutContent>{children}</LayoutContent>
+				<ThemeProvider>
+					<LayoutContent>{children}</LayoutContent>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

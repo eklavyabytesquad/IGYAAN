@@ -475,7 +475,7 @@ export default function UserAccessPage() {
 
 			{/* Access Management Modal */}
 			{showModal && selectedUser && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+				<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim p-4">
 					<div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
 						<div className="mb-6 flex items-center justify-between">
 							<div>

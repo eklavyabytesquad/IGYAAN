@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./logo";
+import ThemeToggle from "./theme-toggle";
 
 const links = [
 	{ href: "/features", label: "Features" },
@@ -55,6 +56,7 @@ export default function Navbar() {
 					})}
 				</div>
 				<div className="hidden items-center gap-3 lg:flex">
+					<ThemeToggle />
 					<Link
 						href="/register"
 						className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.04] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
@@ -114,6 +116,10 @@ export default function Navbar() {
 							);
 						})}
 						<hr className="border-zinc-200 dark:border-zinc-700" />
+						<div className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200/70 bg-zinc-50/80 px-3 py-2 dark:border-zinc-700/60 dark:bg-zinc-900/70">
+							<span className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Theme</span>
+							<ThemeToggle />
+						</div>
 						<Link
 							href="/register"
 							className="rounded-lg bg-sky-500 px-3 py-2 text-center font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.03] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"

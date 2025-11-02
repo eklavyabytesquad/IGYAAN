@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -344,7 +345,7 @@ export default function UserManagementPage() {
 													No users yet
 												</p>
 												<p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-													Click "Add User" to create your first user
+													Click &quot;Add User&quot; to create your first user
 												</p>
 											</div>
 										</div>
@@ -448,7 +449,7 @@ export default function UserManagementPage() {
 
 			{/* Add User Modal */}
 			{showAddModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+				<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim p-4 backdrop-blur-sm">
 					<div className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
 						<div className="mb-6 flex items-center justify-between">
 							<h2 className="text-2xl font-bold text-zinc-900 dark:text-white">

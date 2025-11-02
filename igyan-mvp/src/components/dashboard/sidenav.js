@@ -349,12 +349,12 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 	return (
 		<>
 			{/* Mobile Overlay */}
-			{isOpen && (
+			{isOpen ? (
 				<div
-					className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+					className="fixed inset-0 z-40 overlay-scrim backdrop-blur-sm lg:hidden"
 					onClick={() => setIsOpen(false)}
 				/>
-			)}
+			) : null}
 
 			{/* Sidebar */}
 			<aside

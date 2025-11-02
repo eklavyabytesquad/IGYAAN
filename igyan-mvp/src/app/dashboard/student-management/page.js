@@ -521,7 +521,7 @@ export default function StudentManagementPage() {
 
 			{/* Add Student Modal */}
 			{showAddModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+				<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim p-4">
 					<div className="w-full max-w-2xl rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
 						<div className="mb-6 flex items-center justify-between">
 							<h2 className="text-2xl font-bold text-zinc-900 dark:text-white">

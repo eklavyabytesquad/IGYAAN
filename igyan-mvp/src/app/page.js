@@ -77,79 +77,91 @@ const offeringMatrix = [
   {
     feature: "School-Level Innovation Cell & Startup Lab",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "yes" },
+  igyanAiLaunch: { status: "yes" },
   },
   {
     feature: "AI Tutor (Daily Task Automation, Mentor Chatbot)",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "yes", note: "Co-pilot" },
+  igyanAiLaunch: { status: "yes", note: "Co-pilot" },
   },
   {
     feature: "Homework Task Delivery & Tracking",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "Viva Mock Interview & AI Skill Evaluation",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "Centralized Events, Competitions, Hackathons",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "yes" },
+  igyanAiLaunch: { status: "yes" },
   },
   {
     feature: "AI Counsellor & Roadmap Generator",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "yes" },
+  igyanAiLaunch: { status: "yes" },
   },
   {
     feature: "AI Timetable & Smart Substitution Scheduler",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "Assignment/Test Creation (AI Assessment Builder)",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "Editable AI Report Cards (Smart Evaluation System)",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "AI Assessment Builder",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "no" },
+  igyanAiLaunch: { status: "no" },
   },
   {
     feature: "Real-Time Pitch Deck Feedback (AI Shark Simulation)",
     institutionalSuite: { status: "yes" },
-    b2c: { status: "yes", note: "Premium" },
+  igyanAiLaunch: { status: "yes", note: "Premium" },
   },
 ];
 
 export default function Home() {
   return (
     <div className="relative overflow-hidden">
-  <div className="pointer-events-none absolute inset-x-0 -top-72 -z-20 h-160 bg-linear-to-b from-sky-200/40 via-white to-transparent blur-3xl dark:from-slate-950/70 dark:via-slate-950/40 dark:to-transparent" />
-  <div className="pointer-events-none absolute left-[12%] top-20 -z-10 h-64 w-64 rounded-full bg-sky-400/25 blur-3xl animate-float dark:bg-slate-900/40" />
-  <div className="pointer-events-none absolute right-[8%] top-36 -z-10 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl animate-spin-slow dark:bg-slate-800/40" />
+  <div
+    className="pointer-events-none absolute inset-x-0 -top-72 -z-20 h-160 blur-3xl"
+    style={{ background: "var(--hero-gradient-top)" }}
+    aria-hidden="true"
+  />
+  <div
+    className="pointer-events-none absolute left-[12%] top-20 -z-10 h-64 w-64 rounded-full blur-3xl animate-float"
+    style={{ background: "var(--hero-bubble-left)" }}
+    aria-hidden="true"
+  />
+  <div
+    className="pointer-events-none absolute right-[8%] top-36 -z-10 h-80 w-80 rounded-full blur-3xl animate-spin-slow"
+    style={{ background: "var(--hero-bubble-right)" }}
+    aria-hidden="true"
+  />
       <section className="mx-auto w-full max-w-6xl px-6 pb-24 pt-24 sm:pt-28">
         <div className="relative grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <div className="mb-8 mt-2 flex justify-start sm:justify-start">
               <Logo variant="hero" priority />
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 shadow-sm dark:border-slate-800/60 dark:bg-zinc-900/70 dark:text-sky-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70 dark:text-sky-300">
               AI-Native Learning OS
             </span>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl lg:text-6xl dark:text-white">
+            <h1 className="theme-heading mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               Build <span className="bg-linear-to-r from-sky-500 via-cyan-400 to-sky-300 bg-clip-text text-transparent">future-first schools</span> with Sudarshan Ai copilots for every journey.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
+            <p className="theme-muted mt-6 max-w-2xl text-lg leading-relaxed">
               iGyanAI unifies school operations, personalized learning, and venture incubation into a single intelligent fabric. Empower your community to learn, launch, and lead with confidence.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -171,35 +183,43 @@ export default function Home() {
               </Link>
               <Link
                 href="/features"
-                className="rounded-lg border border-zinc-300 px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:border-sky-400 hover:text-sky-500 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-sky-400 dark:hover:text-sky-300"
+                className="rounded-lg border border-sky-200 px-5 py-3 text-sm font-semibold text-sky-700 transition-colors hover:border-sky-400 hover:text-sky-500 dark:border-slate-700 dark:text-zinc-200 dark:hover:border-sky-400 dark:hover:text-sky-300"
               >
                 Explore features
               </Link>
             </div>
           </div>
-          <div className="relative isolate overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/80 p-8 shadow-2xl shadow-sky-500/10 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/70">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-sky-300/30 blur-3xl dark:bg-slate-800/30" />
-            <div className="pointer-events-none absolute -left-12 bottom-0 h-32 w-32 rounded-full bg-cyan-200/30 blur-3xl dark:bg-slate-900/30" />
+          <div className="theme-surface relative isolate overflow-hidden rounded-3xl border p-8 shadow-2xl shadow-sky-500/10 backdrop-blur">
+            <div
+              className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full blur-3xl"
+              style={{ background: "var(--hero-card-spark-top)" }}
+              aria-hidden="true"
+            />
+            <div
+              className="pointer-events-none absolute -left-12 bottom-0 h-32 w-32 rounded-full blur-3xl"
+              style={{ background: "var(--hero-card-spark-bottom)" }}
+              aria-hidden="true"
+            />
             <div className="relative space-y-6">
               <div className="flex items-center gap-3">
                 <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
                   Live campus snapshot
                 </span>
-                <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Auto-sync every 5 minutes</span>
+                <span className="theme-muted text-xs font-medium">Auto-sync every 5 minutes</span>
               </div>
-              <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              <p className="theme-muted text-sm leading-relaxed">
                 Leadership Sudarshan Ai copilots surface opportunities and risks before they appear. See how your school evolves in real time.
               </p>
               <div className="space-y-3">
                 {heroSignals.map((signal, index) => (
                   <div
                     key={signal.title}
-                    className="flex items-start justify-between rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-4 shadow-sm shadow-sky-500/10 transition-transform animate-float dark:border-zinc-800/70 dark:bg-zinc-900/80"
+                    className="theme-surface flex items-start justify-between rounded-2xl border px-4 py-4 shadow-sm shadow-sky-500/10 transition-transform animate-float"
                     style={{ animationDelay: `${index * 0.3}s` }}
                   >
                     <div className="max-w-[220px]">
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-white">{signal.title}</p>
-                      <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{signal.description}</p>
+                      <p className="theme-heading text-sm font-semibold">{signal.title}</p>
+                      <p className="theme-muted mt-1 text-xs leading-relaxed">{signal.description}</p>
                     </div>
                     <span className="ml-4 rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-500 dark:bg-sky-500/20 dark:text-sky-300">
                       {signal.metric}
@@ -215,7 +235,7 @@ export default function Home() {
           {highlights.map((highlight, index) => (
             <div
               key={highlight}
-              className="animate-float rounded-xl border border-white/70 bg-white/70 p-4 text-sm font-medium text-zinc-600 shadow-lg shadow-sky-100/40 backdrop-blur transition-transform hover:-translate-y-1 dark:border-zinc-800/60 dark:bg-zinc-900/80 dark:text-zinc-300"
+              className="theme-surface-muted animate-float rounded-xl border p-4 text-sm font-medium shadow-lg shadow-sky-100/40 backdrop-blur transition-transform hover:-translate-y-1 dark:border-slate-800/60"
               style={{ animationDelay: `${index * 0.25}s` }}
             >
               {highlight}
@@ -224,10 +244,10 @@ export default function Home() {
         </div>
 
         <div className="mt-14">
-          <h2 className="text-3xl font-semibold text-zinc-900 dark:text-white">
+          <h2 className="theme-heading text-3xl font-semibold">
             Tailored journeys for institutions and individual learners
           </h2>
-          <p className="mt-3 max-w-3xl text-base text-zinc-600 dark:text-zinc-300">
+          <p className="theme-muted mt-3 max-w-3xl text-base">
             Choose the pathway that fits your community. Every feature below is mapped directly from the iGyan.ai offering matrix so your teams know exactly what is included.
           </p>
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -241,8 +261,8 @@ export default function Home() {
                   "border-slate-900/70 bg-linear-to-br from-slate-950 via-slate-900 to-zinc-950 text-sky-50 shadow-sky-500/20 dark:border-slate-800/80",
               },
               {
-                key: "b2c",
-                title: "B2C • Learners & Families",
+                key: "igyanAiLaunch",
+                title: "iGyan AI Launch • Learners & Families",
                 description: "Personal Sudarshan copilots that amplify growth for ambitious students and parents.",
                 badge: "Popular choice",
                 cardClass:
@@ -327,7 +347,7 @@ export default function Home() {
                     </ul>
                   </div>
                   <Link
-                    href={plan.key === "institutionalSuite" ? "/login/institutional-suite" : "/login/b2c"}
+                    href={plan.key === "institutionalSuite" ? "/login/institutional-suite" : "/login/launch-pad"}
                     className={`mt-10 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5 ${
                         isDark
                           ? "bg-sky-500 text-white shadow-sky-400/40 hover:bg-sky-400"
@@ -342,12 +362,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-6 rounded-3xl bg-white/85 p-10 shadow-2xl shadow-sky-500/10 ring-1 ring-white/60 backdrop-blur dark:bg-slate-950/70 dark:ring-slate-900/60 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="theme-surface mt-12 grid gap-6 rounded-3xl border p-10 shadow-2xl shadow-sky-500/10 backdrop-blur lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
+            <h2 className="theme-heading text-2xl font-semibold">
               One platform to orchestrate every moment of the learning lifecycle
             </h2>
-            <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
+            <p className="theme-muted text-base leading-relaxed">
               From admissions to alumni ventures, iGyanAI syncs your data, workflows, and community into a responsive system that learns with you.
             </p>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -363,11 +383,11 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-linear-to-br from-white via-sky-50 to-white p-8 shadow-inner shadow-sky-100/40 dark:border-slate-800 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+          <div className="theme-surface-muted flex h-full flex-col justify-between rounded-2xl border bg-linear-to-br from-white via-sky-50 to-white p-8 shadow-inner shadow-sky-100/40 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+            <h3 className="theme-heading text-lg font-semibold">
               What if your school had its own AI mission control?
             </h3>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+            <p className="theme-muted mt-4 text-sm leading-relaxed">
               iGyanAI fuses data across academics, operations, and community to surface recommendations in real time. Discover opportunities, prevent drop-offs, and launch passion-driven ventures with ease.
             </p>
             <Link
@@ -381,23 +401,23 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-        <h2 className="text-center text-3xl font-semibold text-zinc-900 dark:text-white">
+        <h2 className="theme-heading text-center text-3xl font-semibold">
           Designed for modern school leaders
         </h2>
-        <p className="mx-auto mt-4 max-w-3xl text-center text-base text-zinc-600 dark:text-zinc-300">
+        <p className="theme-muted mx-auto mt-4 max-w-3xl text-center text-base">
           Whether you are scaling a network or reimagining a single campus, our modular Sudarshan Ai copilots adapt to your unique vision.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {featureCards.map((feature, index) => (
             <article
               key={feature.title}
-              className="group flex flex-col rounded-2xl border border-zinc-200 bg-white/85 p-6 shadow-lg shadow-sky-500/10 transition-transform hover:-translate-y-1.5 hover:border-sky-300 dark:border-slate-900 dark:bg-slate-950/70"
+              className="theme-surface group flex flex-col rounded-2xl border p-6 shadow-lg shadow-sky-500/10 transition-transform hover:-translate-y-1.5 hover:border-sky-300"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <h3 className="text-lg font-semibold text-zinc-900 transition-colors group-hover:text-sky-500 dark:text-white">
+              <h3 className="theme-heading text-lg font-semibold transition-colors group-hover:text-sky-500">
                 {feature.title}
               </h3>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{feature.description}</p>
+              <p className="theme-muted mt-4 flex-1 text-sm leading-relaxed">{feature.description}</p>
               <Link
                 href="/features"
                 className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-500 transition-colors hover:text-sky-400"
@@ -410,12 +430,12 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-  <div className="grid gap-10 rounded-3xl border border-slate-200/70 bg-white/90 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="theme-surface grid gap-10 rounded-3xl border p-10 shadow-2xl shadow-sky-500/10 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-6">
-            <h2 className="text-3xl font-semibold text-zinc-900 dark:text-white">
+            <h2 className="theme-heading text-3xl font-semibold">
               Meet the iGyanAI Sudarshan Ai Suite
             </h2>
-            <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
+            <p className="theme-muted text-base leading-relaxed">
               Seamless assistants tuned for every stakeholder, powered by your data and large language models with enterprise-grade governance.
             </p>
             <Link
@@ -429,11 +449,11 @@ export default function Home() {
             {copilots.map((copilot, index) => (
               <div
                 key={copilot.name}
-                className="animate-float rounded-2xl border border-sky-100 bg-sky-50/80 p-6 shadow-sm shadow-sky-500/10 dark:border-sky-900/40 dark:bg-slate-900/50"
+                className="theme-surface-muted animate-float rounded-2xl border p-6 shadow-sm shadow-sky-500/10"
                 style={{ animationDelay: `${index * 0.25}s` }}
               >
-                <h3 className="text-lg font-semibold text-sky-600 dark:text-sky-300">{copilot.name}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{copilot.description}</p>
+                <h3 className="theme-heading text-lg font-semibold">{copilot.name}</h3>
+                <p className="theme-muted mt-2 text-sm leading-relaxed">{copilot.description}</p>
               </div>
             ))}
           </div>

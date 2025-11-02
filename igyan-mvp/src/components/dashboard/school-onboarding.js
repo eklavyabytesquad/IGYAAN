@@ -142,7 +142,7 @@ export default function SchoolOnboarding({ userId, onComplete }) {
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+		<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim backdrop-blur-sm p-4">
 			<div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
 				{/* Header */}
 				<div className="sticky top-0 border-b border-zinc-200 bg-white/95 backdrop-blur-xl px-8 py-6 dark:border-zinc-800 dark:bg-zinc-900/95">

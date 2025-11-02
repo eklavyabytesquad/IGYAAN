@@ -21,12 +21,12 @@ const VARIANT_COPY = {
     signupLabel: "Request workspace access",
     footerPrompt: "Need to invite your leadership team?",
   },
-  b2c: {
-    badge: "B2C • Learners & Families",
+  igyanAiLaunch: {
+    badge: "iGyan AI Launch • Learners & Families",
     title: "Log in to your Sudarshan learner copilots",
     subtitle:
       "Stay on top of daily learning plans, passion projects, and venture studio challenges curated for curious minds and ambitious families.",
-    highlight: "learner portal",
+    highlight: "iGyan AI Launch",
     accentRing: "from-sky-400/30 via-blue-400/10 to-transparent",
     gradient: "from-white via-sky-50 to-white",
     helper:
@@ -34,7 +34,7 @@ const VARIANT_COPY = {
     helperLink: { href: "/contact", label: "Request an invite" },
     signupHref: "/register",
     signupLabel: "Create your personal account",
-    footerPrompt: "First time discovering iGyanAI?",
+  footerPrompt: "First time discovering iGyan AI Launch?",
   },
 };
 
@@ -63,7 +63,7 @@ export default function LoginForm({ variant = "institutionalSuite" }) {
 
   return (
     <div className="mx-auto flex min-h-[72vh] w-full max-w-2xl flex-col justify-center px-6 py-20">
-      <div className="relative overflow-hidden rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/15 dark:border-slate-900 dark:bg-slate-950/80">
+      <div className="theme-surface relative overflow-hidden rounded-3xl border p-10 shadow-2xl shadow-sky-500/15">
         <div
           className={`pointer-events-none absolute -top-24 right-[-15%] h-56 w-56 rounded-full bg-linear-to-br ${config.accentRing} blur-3xl`}
         />
@@ -75,8 +75,8 @@ export default function LoginForm({ variant = "institutionalSuite" }) {
           <p className="inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-white/80 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-sky-300">
             {config.badge}
           </p>
-          <h1 className="mt-5 text-2xl font-semibold text-zinc-900 dark:text-white">{config.title}</h1>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{config.subtitle}</p>
+          <h1 className="theme-heading mt-5 text-2xl font-semibold">{config.title}</h1>
+          <p className="theme-muted mt-3 text-sm leading-relaxed">{config.subtitle}</p>
 
           {error ? (
             <div className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300">
