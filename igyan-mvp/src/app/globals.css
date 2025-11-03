@@ -436,6 +436,17 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
     }
   }
 
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .animate-float {
     animation: float 10s ease-in-out infinite;
   }
@@ -446,5 +457,9 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
 
   .animate-spin-slow {
     animation: spin-slow 18s linear infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }

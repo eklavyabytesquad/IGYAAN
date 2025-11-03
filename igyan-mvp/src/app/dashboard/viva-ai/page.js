@@ -23,6 +23,9 @@ export default function IgyanAIPage() {
 	const [activeTab, setActiveTab] = useState("chats");
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 	const [aiName, setAiName] = useState("");
+	const [inputMode, setInputMode] = useState("voice"); // "voice" or "text"
+	const [textInput, setTextInput] = useState("");
+	const [isSpeaking, setIsSpeaking] = useState(false);
 	const recognitionRef = useRef(null);
 	const messagesEndRef = useRef(null);
 	const synthRef = useRef(null);
@@ -47,7 +50,7 @@ export default function IgyanAIPage() {
 				recognition.onresult = (event) => {
 					const speechResult = event.results[0][0].transcript;
 					setTranscript(speechResult);
-					processVoiceInput(speechResult);
+					processInput(speechResult, true);
 				};
 
 				recognition.onerror = (event) => {
@@ -215,13 +218,13 @@ export default function IgyanAIPage() {
 		}
 	};
 
-	const processVoiceInput = async (transcribedText) => {
+	const processInput = async (inputText, isVoice = true) => {
 		setIsProcessing(true);
 
 		// Add user message
 		const userMessage = {
 			role: "user",
-			content: transcribedText,
+			content: inputText,
 			timestamp: new Date().toISOString(),
 			hasAudio: false,
 		};
@@ -271,7 +274,7 @@ export default function IgyanAIPage() {
 						...messages.slice(-5).map(m => ({ role: m.role, content: m.content })),
 						{
 							role: "user",
-							content: transcribedText,
+							content: inputText,
 						},
 					],
 					temperature: 0.7,
@@ -295,8 +298,10 @@ export default function IgyanAIPage() {
 			};
 			setMessages((prev) => [...prev, aiMessage]);
 
-			// Speak the response using Web Speech API
-			speakText(aiResponse);
+			// Speak the response using Web Speech API (only if voice mode or user preference)
+			if (isVoice || inputMode === "voice") {
+				speakText(aiResponse);
+			}
 		} catch (error) {
 			console.error("Error processing voice:", error);
 			const errorMessage = {
@@ -335,7 +340,27 @@ export default function IgyanAIPage() {
 				utterance.voice = femaleVoice;
 			}
 
+			// Add event listeners
+			utterance.onstart = () => {
+				setIsSpeaking(true);
+			};
+
+			utterance.onend = () => {
+				setIsSpeaking(false);
+			};
+
+			utterance.onerror = () => {
+				setIsSpeaking(false);
+			};
+
 			synthRef.current.speak(utterance);
+		}
+	};
+
+	const stopSpeaking = () => {
+		if (synthRef.current) {
+			synthRef.current.cancel();
+			setIsSpeaking(false);
 		}
 	};
 
@@ -343,6 +368,8 @@ export default function IgyanAIPage() {
 		if (isListening) {
 			stopListening();
 		} else {
+			// Stop any ongoing speech when starting to listen
+			stopSpeaking();
 			startListening();
 		}
 	};
@@ -350,6 +377,31 @@ export default function IgyanAIPage() {
 	const replayAudio = (messageContent) => {
 		speakText(messageContent);
 	};
+
+	const handleTextSubmit = () => {
+		if (!textInput.trim() || isProcessing) return;
+		
+		processInput(textInput.trim(), false);
+		setTextInput("");
+	};
+
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+			handleTextSubmit();
+		}
+	};
+
+	// Stop speech when changing tabs or modes
+	useEffect(() => {
+		return () => {
+			stopSpeaking();
+		};
+	}, [activeTab]);
+
+	useEffect(() => {
+		stopSpeaking();
+	}, [inputMode]);
 
 	if (loading) {
 		return (
@@ -570,6 +622,24 @@ export default function IgyanAIPage() {
 								</span>
 							</div>
 						)}
+						{isSpeaking && (
+							<button
+								onClick={stopSpeaking}
+								className="flex items-center gap-2.5 rounded-full bg-purple-100 px-4 py-2 transition-all hover:bg-purple-200 dark:bg-purple-900/30 dark:hover:bg-purple-900/50"
+								title="Stop speaking"
+							>
+								<div className="relative flex h-3 w-3">
+									<span className="absolute inline-flex h-full w-full animate-pulse rounded-full bg-purple-500 opacity-75"></span>
+									<span className="relative inline-flex h-3 w-3 rounded-full bg-purple-500"></span>
+								</div>
+								<span className="text-sm font-semibold text-purple-600 dark:text-purple-400">
+									Speaking...
+								</span>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-purple-600 dark:text-purple-400">
+									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
+								</svg>
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -722,6 +792,8 @@ export default function IgyanAIPage() {
 									key={index}
 									message={message}
 									onReplay={replayAudio}
+									onStop={stopSpeaking}
+									isSpeaking={isSpeaking}
 								/>
 							))}
 							{isProcessing && (
@@ -758,94 +830,179 @@ export default function IgyanAIPage() {
 					)}
 				</div>
 
-				{/* Input Area - Voice Recording */}
-				<div className="relative border-t backdrop-blur-md p-8" style={{
+				{/* Input Area - Voice and Text */}
+				<div className="relative border-t backdrop-blur-md p-4" style={{
 					borderColor: 'var(--dashboard-border)',
 					backgroundColor: 'var(--dashboard-surface)'
 				}}>
 					<div className="absolute inset-0" style={{
 						background: `linear-gradient(0deg, color-mix(in srgb, var(--dashboard-primary) 5%, transparent), color-mix(in srgb, var(--dashboard-primary) 3%, transparent), transparent)`
 					}}></div>
-					<div className="relative flex flex-col items-center gap-5">
-						<div className="relative">
-							{/* Pulse rings for listening state */}
-							{isListening && (
-								<>
-									<div className="absolute inset-0 -m-8 animate-ping rounded-full bg-red-500 opacity-20"></div>
-									<div className="absolute inset-0 -m-4 animate-pulse rounded-full bg-red-500 opacity-30"></div>
-								</>
-							)}
-							{/* Glow effect for idle state */}
-							{!isListening && !isProcessing && (
-								<div className="absolute inset-0 -m-6 animate-pulse rounded-full opacity-20 blur-2xl" style={{
-									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
-								}}></div>
-							)}
+					<div className="relative space-y-3">
+						{/* Mode Toggle */}
+						<div className="flex items-center justify-center gap-2">
 							<button
-								onClick={toggleListening}
-								disabled={isProcessing}
-								className="group relative flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 transform shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
-								style={{
-									background: isListening 
-										? 'linear-gradient(135deg, #ef4444, #dc2626)' 
-										: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`,
-									boxShadow: isListening 
-										? '0 25px 50px -20px rgba(239, 68, 68, 0.5)' 
-										: `0 25px 50px -20px var(--dashboard-primary)`,
-									transform: isListening ? 'scale(1.05)' : 'scale(1)'
-								}}
-								onMouseEnter={(e) => {
-									if (!isListening && !isProcessing) {
-										e.currentTarget.style.transform = 'scale(1.1)';
-									}
-								}}
-								onMouseLeave={(e) => {
-									if (!isListening && !isProcessing) {
-										e.currentTarget.style.transform = 'scale(1)';
-									}
-								}}
+								onClick={() => setInputMode("voice")}
+								className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+									inputMode === "voice"
+										? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+										: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+								}`}
 							>
-								{isListening ? (
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="h-12 w-12 text-white transition-transform group-hover:scale-90"
-									>
-										<path
-											fillRule="evenodd"
-											d="M4.5 7.5a3 3 0 013-3h9a3 3 0 013 3v9a3 3 0 01-3 3h-9a3 3 0 01-3-3v-9z"
-											clipRule="evenodd"
-										/>
-									</svg>
-								) : (
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="h-12 w-12 text-white transition-transform group-hover:scale-110"
-									>
-										<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-										<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-									</svg>
-								)}
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+									<path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z" />
+									<path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 3.06 2.29 5.585 5.25 5.954V17.5h-1.5a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-1.5v-1.546A6.001 6.001 0 0016 10v-.357a.75.75 0 00-1.5 0V10a4.5 4.5 0 01-9 0v-.357z" />
+								</svg>
+								Voice Mode
+							</button>
+							<button
+								onClick={() => setInputMode("text")}
+								className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+									inputMode === "text"
+										? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+										: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+								}`}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+									<path fillRule="evenodd" d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.67 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 001.28.53l3.58-3.579a.78.78 0 01.527-.224 41.202 41.202 0 005.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0010 2zm0 7a1 1 0 100-2 1 1 0 000 2zM8 8a1 1 0 11-2 0 1 1 0 012 0zm5 1a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+								</svg>
+								Text Mode
 							</button>
 						</div>
-						<div className="flex flex-col items-center gap-2">
-							<p className="text-base font-semibold text-center" style={{color: 'var(--dashboard-heading)'}}>
-								{isListening
-									? "🎤 Listening... Speak now!"
-									: isProcessing
-									? "⚡ Processing your voice..."
-									: "Click to start speaking"}
-							</p>
-							{!isListening && !isProcessing && (
-								<p className="text-sm text-center max-w-lg leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
-									💡 <span className="font-medium">Pro tip:</span> Click the microphone, speak your question clearly, and the AI
-									will respond with voice!
+
+						{/* Voice Input */}
+						{inputMode === "voice" && (
+							<div className="flex flex-col items-center gap-3 py-2">
+								<div className="relative">
+									{/* Pulse rings for listening state */}
+									{isListening && (
+										<>
+											<div className="absolute inset-0 -m-6 animate-ping rounded-full bg-red-500 opacity-20"></div>
+											<div className="absolute inset-0 -m-3 animate-pulse rounded-full bg-red-500 opacity-30"></div>
+										</>
+									)}
+									{/* Glow effect for idle state */}
+									{!isListening && !isProcessing && (
+										<div className="absolute inset-0 -m-4 animate-pulse rounded-full opacity-20 blur-xl" style={{
+											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+										}}></div>
+									)}
+									<button
+										onClick={toggleListening}
+										disabled={isProcessing}
+										className="group relative flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 transform shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+										style={{
+											background: isListening 
+												? 'linear-gradient(135deg, #ef4444, #dc2626)' 
+												: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`,
+											boxShadow: isListening 
+												? '0 20px 40px -15px rgba(239, 68, 68, 0.5)' 
+												: `0 20px 40px -15px var(--dashboard-primary)`,
+											transform: isListening ? 'scale(1.05)' : 'scale(1)'
+										}}
+										onMouseEnter={(e) => {
+											if (!isListening && !isProcessing) {
+												e.currentTarget.style.transform = 'scale(1.1)';
+											}
+										}}
+										onMouseLeave={(e) => {
+											if (!isListening && !isProcessing) {
+												e.currentTarget.style.transform = 'scale(1)';
+											}
+										}}
+									>
+										{isListening ? (
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 24 24"
+												fill="currentColor"
+												className="h-8 w-8 text-white transition-transform group-hover:scale-90"
+											>
+												<path
+													fillRule="evenodd"
+													d="M4.5 7.5a3 3 0 013-3h9a3 3 0 013 3v9a3 3 0 01-3 3h-9a3 3 0 01-3-3v-9z"
+													clipRule="evenodd"
+												/>
+											</svg>
+										) : (
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 24 24"
+												fill="currentColor"
+												className="h-8 w-8 text-white transition-transform group-hover:scale-110"
+											>
+												<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+												<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+											</svg>
+										)}
+									</button>
+								</div>
+								<p className="text-sm font-medium text-center" style={{color: 'var(--dashboard-heading)'}}>
+									{isListening
+										? "🎤 Listening..."
+										: isProcessing
+										? "⚡ Processing..."
+										: "Click mic to speak"}
 								</p>
-							)}
-						</div>
+							</div>
+						)}
+
+						{/* Text Input */}
+						{inputMode === "text" && (
+							<div className="flex gap-2">
+								<div className="relative flex-1">
+									<textarea
+										value={textInput}
+										onChange={(e) => setTextInput(e.target.value)}
+										onKeyPress={handleKeyPress}
+										placeholder="Type your message here..."
+										rows="2"
+										className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										disabled={isProcessing}
+									/>
+									<button
+										onClick={toggleListening}
+										disabled={isProcessing}
+										className={`absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg p-2 transition-all ${
+											isListening
+												? 'bg-red-500 text-white animate-pulse'
+												: 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600'
+										}`}
+										title={isListening ? 'Stop recording' : 'Use voice input'}
+									>
+										{isListening ? (
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+												<path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z" />
+												<path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 3.06 2.29 5.585 5.25 5.954V17.5h-1.5a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-1.5v-1.546A6.001 6.001 0 0016 10v-.357a.75.75 0 00-1.5 0V10a4.5 4.5 0 01-9 0v-.357z" />
+											</svg>
+										) : (
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+												<path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z" />
+												<path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 3.06 2.29 5.585 5.25 5.954V17.5h-1.5a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-1.5v-1.546A6.001 6.001 0 0016 10v-.357a.75.75 0 00-1.5 0V10a4.5 4.5 0 01-9 0v-.357z" />
+											</svg>
+										)}
+									</button>
+								</div>
+								<button
+									onClick={handleTextSubmit}
+									disabled={!textInput.trim() || isProcessing}
+									className="flex items-center justify-center rounded-xl px-6 text-white transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+									style={{
+										background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+									}}
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+										<path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
+									</svg>
+								</button>
+							</div>
+						)}
+
+						<p className="text-xs text-center" style={{color: 'var(--dashboard-muted)'}}>
+							{inputMode === "text" 
+								? "Press Enter to send • Shift+Enter for new line • Click mic for voice"
+								: "Speak your question clearly and the AI will respond with voice"}
+						</p>
 					</div>
 				</div>
 			</div>

@@ -31,6 +31,8 @@ export default function AICopilotPage() {
 	const [generatingTitle, setGeneratingTitle] = useState(false);
 	const [selectedMode, setSelectedMode] = useState(null);
 	const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
+	const [isListening, setIsListening] = useState(false);
+	const [recognition, setRecognition] = useState(null);
 	const messagesEndRef = useRef(null);
 
 	useEffect(() => {
@@ -66,6 +68,48 @@ export default function AICopilotPage() {
 			}
 		}
 	}, [user]);
+
+	// Initialize speech recognition
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+			if (SpeechRecognition) {
+				const recognitionInstance = new SpeechRecognition();
+				recognitionInstance.continuous = true;
+				recognitionInstance.interimResults = true;
+				recognitionInstance.lang = 'en-US';
+
+				recognitionInstance.onresult = (event) => {
+					let interimTranscript = '';
+					let finalTranscript = '';
+
+					for (let i = event.resultIndex; i < event.results.length; i++) {
+						const transcript = event.results[i][0].transcript;
+						if (event.results[i].isFinal) {
+							finalTranscript += transcript + ' ';
+						} else {
+							interimTranscript += transcript;
+						}
+					}
+
+					if (finalTranscript) {
+						setInputMessage(prev => prev + finalTranscript);
+					}
+				};
+
+				recognitionInstance.onerror = (event) => {
+					console.error('Speech recognition error:', event.error);
+					setIsListening(false);
+				};
+
+				recognitionInstance.onend = () => {
+					setIsListening(false);
+				};
+
+				setRecognition(recognitionInstance);
+			}
+		}
+	}, []);
 
 	// Auto-scroll to bottom
 	useEffect(() => {
@@ -379,6 +423,22 @@ IMPORTANT FORMATTING RULES:
 
 	const handleNotesSelect = (notes) => {
 		setSelectedNotes(notes);
+	};
+
+	// Toggle speech recognition
+	const toggleSpeechRecognition = () => {
+		if (!recognition) {
+			alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+			return;
+		}
+
+		if (isListening) {
+			recognition.stop();
+			setIsListening(false);
+		} else {
+			recognition.start();
+			setIsListening(true);
+		}
 	};
 
 	if (loading) {
@@ -748,15 +808,39 @@ IMPORTANT FORMATTING RULES:
 					
 					<div className="p-4">
 						<div className="flex gap-2">
-							<textarea
-								value={inputMessage}
-								onChange={(e) => setInputMessage(e.target.value)}
-								onKeyPress={handleKeyPress}
-								placeholder="Ask me anything..."
-								rows="1"
-								className="flex-1 resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-								disabled={isTyping}
-							/>
+							<div className="relative flex-1">
+								<textarea
+									value={inputMessage}
+									onChange={(e) => setInputMessage(e.target.value)}
+									onKeyPress={handleKeyPress}
+									placeholder="Ask me anything..."
+									rows="1"
+									className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+									disabled={isTyping}
+								/>
+								<button
+									onClick={toggleSpeechRecognition}
+									className={`absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg p-2 transition-all ${
+										isListening
+											? 'bg-red-500 text-white animate-pulse'
+											: 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600'
+									}`}
+									title={isListening ? 'Stop recording' : 'Start voice input'}
+									disabled={isTyping}
+								>
+									{isListening ? (
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+											<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+											<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+										</svg>
+									) : (
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+											<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+											<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+										</svg>
+									)}
+								</button>
+							</div>
 							<button
 								onClick={handleSendMessage}
 								disabled={!inputMessage.trim() || isTyping}
@@ -768,7 +852,7 @@ IMPORTANT FORMATTING RULES:
 							</button>
 						</div>
 						<p className="mt-2 text-xs text-zinc-500 text-center">
-							Press Enter to send • Shift+Enter for new line
+							Press Enter to send • Shift+Enter for new line • Click mic for voice input
 						</p>
 					</div>
 				</div>
