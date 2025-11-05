@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Upload, Send, FileText, Trash2, Loader2 } from 'lucide-react';
+import { Upload, Send, FileText, Trash2, Loader2, Mic, StopCircle, Timer } from 'lucide-react';
 
 export default function SharkAI() {
   const [messages, setMessages] = useState([]);
@@ -10,8 +10,19 @@ export default function SharkAI() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [fileId, setFileId] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [isPitchMode, setIsPitchMode] = useState(false);
+  const [pitchTimer, setPitchTimer] = useState(300); // 5 minutes in seconds
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [pdfContent, setPdfContent] = useState('');
+  const [pdfTitle, setPdfTitle] = useState('');
+  const [hasStartedPitch, setHasStartedPitch] = useState(false);
+  const [pitchTranscript, setPitchTranscript] = useState('');
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const timerIntervalRef = useRef(null);
+  const synthRef = useRef(null);
 
   // Using Next.js API routes as proxy to avoid CORS issues
   const API_URL = '/api/shark-ai';
@@ -24,10 +35,126 @@ export default function SharkAI() {
     scrollToBottom();
   }, [messages]);
 
-  // API health check on mount
+  // Initialize Speech Recognition and Speech Synthesis
   useEffect(() => {
-    console.log('Shark AI initialized - using Next.js API proxy');
+    if (typeof window !== 'undefined') {
+      // Speech Recognition
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          if (finalTranscript) {
+            setPitchTranscript(prev => prev + finalTranscript);
+            setInputMessage(prev => prev + finalTranscript);
+          }
+        };
+
+        recognition.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+      }
+
+      // Speech Synthesis
+      synthRef.current = window.speechSynthesis;
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
   }, []);
+
+  // Timer countdown
+  useEffect(() => {
+    if (timerRunning && pitchTimer > 0) {
+      timerIntervalRef.current = setInterval(() => {
+        setPitchTimer(prev => {
+          if (prev <= 1) {
+            stopPitchRecording();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    }
+
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
+  }, [timerRunning, pitchTimer]);
+
+  const speakText = (text) => {
+    if (synthRef.current) {
+      synthRef.current.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      synthRef.current.speak(utterance);
+    }
+  };
+
+  const extractPDFContent = async (file) => {
+    try {
+      // Use the extract-pdf API route
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/extract-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to extract PDF content');
+      }
+
+      const data = await response.json();
+      return {
+        content: data.text || '',
+        title: data.title || file.name
+      };
+    } catch (error) {
+      console.error('Error extracting PDF:', error);
+      return {
+        content: '',
+        title: file.name
+      };
+    }
+  };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -53,7 +180,11 @@ export default function SharkAI() {
 
     try {
       console.log('Uploading file to AI Shark API:', file.name);
-      console.log('API URL:', `${API_URL}/upload`);
+
+      // Extract PDF content first
+      const { content, title } = await extractPDFContent(file);
+      setPdfContent(content);
+      setPdfTitle(title);
 
       const formData = new FormData();
       formData.append('file', file);
@@ -85,12 +216,19 @@ export default function SharkAI() {
 
       setFileId(data.file_id);
 
+      // Personalized greeting based on PDF
+      const greeting = `🦈 Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document "${title}". I'm excited to hear about your idea!\n\n📋 I've analyzed your business plan and I'm ready to evaluate your pitch. When you're ready, click the "Start Pitch" button below. You'll have 5 minutes to present your idea using voice or text.\n\n💡 I'll be evaluating:\n• Clarity and structure of your pitch\n• Understanding of your business model\n• Market opportunity and competition\n• Financial projections and ask\n• Your passion and communication skills\n\nTake a deep breath, and when you're ready, let's hear what you've got! 🎤`;
+
       setMessages([
         {
           role: 'assistant',
-          content: `📄 Document uploaded successfully: ${file.name}. I've analyzed the document and it's ready for questions. You can now ask me anything about it!`,
+          content: greeting,
         },
       ]);
+
+      // Speak the greeting
+      speakText(`Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document about ${title}. I'm excited to hear about your idea! When you're ready, click the Start Pitch button. You'll have 5 minutes to present your idea. Good luck!`);
+
     } catch (error) {
       console.error('Error processing document:', error);
       setMessages([
@@ -109,8 +247,166 @@ export default function SharkAI() {
     setUploadedFile(null);
     setFileId('');
     setMessages([]);
+    setPdfContent('');
+    setPdfTitle('');
+    setIsPitchMode(false);
+    setHasStartedPitch(false);
+    setPitchTranscript('');
+    setPitchTimer(300);
+    setTimerRunning(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+    if (synthRef.current) {
+      synthRef.current.cancel();
+    }
+  };
+
+  const startPitchMode = () => {
+    setIsPitchMode(true);
+    setHasStartedPitch(true);
+    setPitchTimer(300);
+    setPitchTranscript('');
+    setInputMessage('');
+    setTimerRunning(true);
+
+    const startMessage = "🎬 Your 5-minute pitch timer has started! Speak clearly and confidently. You can use the microphone button to record your voice, or type your pitch. Remember to cover your business model, market opportunity, and what you're asking for. Good luck!";
+    
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: startMessage,
+    }]);
+
+    speakText("Your pitch timer has started! You have 5 minutes. Good luck!");
+  };
+
+  const stopPitchRecording = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+    setIsListening(false);
+    setTimerRunning(false);
+
+    if (pitchTranscript.trim() || inputMessage.trim()) {
+      // Auto-submit the pitch
+      handleSubmitPitch();
+    }
+  };
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const handleSubmitPitch = async () => {
+    const fullPitch = inputMessage.trim();
+    
+    if (!fullPitch) {
+      alert('Please provide your pitch before submitting!');
+      return;
+    }
+
+    setTimerRunning(false);
+    setIsPitchMode(false);
+
+    const userMessage = {
+      role: 'user',
+      content: fullPitch,
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setPitchTranscript('');
+    setIsLoading(true);
+
+    try {
+      // Evaluate the pitch using AI
+      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. 
+
+BUSINESS DOCUMENT CONTENT:
+${pdfContent.substring(0, 3000)}
+
+ENTREPRENEUR'S PITCH:
+${fullPitch}
+
+EVALUATION CRITERIA:
+1. Pitch Clarity & Structure (0-20 points)
+2. Business Model Understanding (0-20 points)
+3. Market Opportunity (0-20 points)
+4. Financial Projections & Ask (0-20 points)
+5. Communication & Passion (0-20 points)
+
+Provide a detailed evaluation with:
+- Overall Score (out of 100)
+- Breakdown by criteria with scores
+- Strengths of the pitch
+- Areas for improvement
+- Whether you'd invest (Yes/No/Maybe) and why
+- Specific advice for the entrepreneur
+
+Be constructive but honest, like a real Shark Tank investor. Use emojis to make it engaging.`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are Shark AI, a sharp and experienced investor who evaluates business pitches. You are tough but fair, and provide constructive feedback.',
+            },
+            {
+              role: 'user',
+              content: evaluationPrompt,
+            },
+          ],
+          temperature: 0.7,
+          max_tokens: 1500,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get evaluation');
+      }
+
+      const data = await response.json();
+      const evaluation = data.choices[0].message.content;
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: evaluation,
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      // Speak a summary
+      speakText("Thank you for your pitch! I've completed my evaluation. Check the detailed feedback on screen.");
+
+    } catch (error) {
+      console.error('Error evaluating pitch:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `❌ Sorry, there was an error evaluating your pitch: ${error.message}`,
+      }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -214,10 +510,16 @@ export default function SharkAI() {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !isPitchMode) {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -369,29 +671,102 @@ export default function SharkAI() {
 
               {/* Input Area */}
               <div className="border-t border-zinc-200 dark:border-zinc-700 p-3 md:p-4">
+                {/* Pitch Mode Controls */}
+                {uploadedFile && !hasStartedPitch && (
+                  <div className="mb-3 flex justify-center">
+                    <button
+                      onClick={startPitchMode}
+                      disabled={isProcessing}
+                      className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg"
+                    >
+                      <Timer size={20} />
+                      Start Your 5-Minute Pitch 🎤
+                    </button>
+                  </div>
+                )}
+
+                {/* Timer Display */}
+                {isPitchMode && timerRunning && (
+                  <div className="mb-3 flex items-center justify-center gap-4 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-lg p-3 border border-red-200 dark:border-red-800">
+                    <div className="flex items-center gap-2">
+                      <Timer className={`${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`} size={24} />
+                      <span className={`text-2xl font-bold ${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'}`}>
+                        {formatTime(pitchTimer)}
+                      </span>
+                    </div>
+                    <button
+                      onClick={stopPitchRecording}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all flex items-center gap-2 font-medium"
+                    >
+                      <StopCircle size={18} />
+                      Stop & Submit
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder={
-                      uploadedFile
-                        ? 'Ask a question about your document...'
-                        : 'Upload a PDF first to start chatting...'
-                    }
-                    disabled={!uploadedFile || isLoading || isProcessing}
-                    className="flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed disabled:text-zinc-500 dark:disabled:text-zinc-500 transition-colors"
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!inputMessage.trim() || !uploadedFile || isLoading || isProcessing}
-                    className="px-4 md:px-6 py-2 md:py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base font-medium shadow-sm"
-                  >
-                    <Send size={18} className="md:w-5 md:h-5" />
-                    <span className="hidden sm:inline">Send</span>
-                  </button>
+                  <div className="relative flex-1">
+                    <textarea
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder={
+                        isPitchMode
+                          ? '🎤 Pitch your idea here... Use the mic button or type. You have 5 minutes!'
+                          : uploadedFile && !hasStartedPitch
+                          ? 'Click "Start Pitch" button above to begin your 5-minute pitch!'
+                          : uploadedFile
+                          ? 'Ask a question about your document...'
+                          : 'Upload a PDF first to start...'
+                      }
+                      rows={isPitchMode ? "4" : "2"}
+                      disabled={!uploadedFile || isLoading || isProcessing || (!isPitchMode && hasStartedPitch)}
+                      className="w-full resize-none px-3 md:px-4 py-2 md:py-3 pr-12 text-sm md:text-base border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed disabled:text-zinc-500 dark:disabled:text-zinc-500 transition-colors"
+                    />
+                    {isPitchMode && (
+                      <button
+                        onClick={toggleListening}
+                        disabled={isLoading || isProcessing}
+                        className={`absolute right-2 top-2 p-2 rounded-lg transition-all ${
+                          isListening
+                            ? 'bg-red-500 text-white animate-pulse'
+                            : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50'
+                        }`}
+                        title={isListening ? 'Stop recording' : 'Start voice input'}
+                      >
+                        {isListening ? (
+                          <StopCircle size={20} />
+                        ) : (
+                          <Mic size={20} />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  {isPitchMode ? (
+                    <button
+                      onClick={handleSubmitPitch}
+                      disabled={!inputMessage.trim() || isLoading}
+                      className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base font-medium shadow-sm"
+                    >
+                      <Send size={18} className="md:w-5 md:h-5" />
+                      <span className="hidden sm:inline">Submit Pitch</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!inputMessage.trim() || !uploadedFile || isLoading || isProcessing || !hasStartedPitch}
+                      className="px-4 md:px-6 py-2 md:py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base font-medium shadow-sm"
+                    >
+                      <Send size={18} className="md:w-5 md:h-5" />
+                      <span className="hidden sm:inline">Send</span>
+                    </button>
+                  )}
                 </div>
+                {isPitchMode && (
+                  <p className="mt-2 text-xs text-center text-zinc-600 dark:text-zinc-400">
+                    💡 Tip: Click the mic button to use voice, or type your pitch. Cover your business model, market, and what you need!
+                  </p>
+                )}
               </div>
             </div>
           </div>
