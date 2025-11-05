@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
@@ -41,7 +42,25 @@ function LayoutContent({ children }) {
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning data-theme="dark" className="dark">
+			<head>
+				<Script id="force-dark-theme" strategy="beforeInteractive">{`
+					(function ensureDarkTheme(){
+						var root = document.documentElement;
+						if (!root) return;
+						root.classList.add('dark');
+						root.dataset.theme = 'dark';
+						if (document.body) {
+							document.body.style.colorScheme = 'dark';
+						}
+						try {
+							window.localStorage.setItem('igyan-theme', 'dark');
+						} catch (error) {
+							/* ignore storage access issues */
+						}
+					})();
+				`}</Script>
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
 			>
