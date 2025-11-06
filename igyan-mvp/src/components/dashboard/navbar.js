@@ -236,7 +236,10 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 									{user?.role === 'faculty' ? 'Faculty' : 
 									 user?.role === 'super_admin' ? 'Super Admin' :
 									 user?.role === 'co_admin' ? 'Co-Admin' :
-									 schoolData?.school_name || 'Student'}
+									 user?.role === 'b2c_student' ? 'Student' :
+									 user?.role === 'b2c_mentor' ? 'Mentor' :
+									 user?.role === 'student' ? (schoolData?.school_name || 'Student') :
+									 'User'}
 								</p>
 							</div>
 							<svg

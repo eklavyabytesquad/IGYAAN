@@ -13,7 +13,22 @@ export default function DashboardLayout({ children }) {
 	const [isCollapsed, setIsCollapsed] = useState(false);
 	const [schoolData, setSchoolData] = useState(null);
 	const [activeTheme, setActiveTheme] = useState("indigo");
-	const { user } = useAuth();
+	const { user, logout } = useAuth();
+
+	// Validate user has valid dashboard role access
+	useEffect(() => {
+		if (!user) return;
+		
+		const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty'];
+		const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+		const ALL_VALID_ROLES = [...INSTITUTIONAL_ROLES, ...LAUNCH_PAD_ROLES];
+		
+		if (!ALL_VALID_ROLES.includes(user.role)) {
+			// User doesn't have any valid role for dashboard
+			alert("Access denied. Invalid user role.");
+			logout();
+		}
+	}, [user, logout]);
 
 	// Restore theme preference on mount
 	useEffect(() => {
@@ -60,6 +75,13 @@ export default function DashboardLayout({ children }) {
 	useEffect(() => {
 		const fetchSchoolData = async () => {
 			if (!user?.id) return;
+
+			// B2C users don't have school data
+			const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+			if (LAUNCH_PAD_ROLES.includes(user.role)) {
+				setSchoolData(null);
+				return;
+			}
 
 			try {
 				// First check if user has a school_id

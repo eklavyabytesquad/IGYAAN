@@ -126,7 +126,7 @@ export function AuthProvider({ children }) {
 		}
 	};
 
-	const register = async (email, password, fullName, phone = null, imageBase64 = null) => {
+	const register = async (email, password, fullName, phone = null, imageBase64 = null, role = "student") => {
 		try {
 			const passwordHash = await hashPassword(password);
 
@@ -139,8 +139,8 @@ export function AuthProvider({ children }) {
 						full_name: fullName,
 						phone,
 						image_base64: imageBase64,
-						role: "super_admin", // Set as super_admin for first-time users
-						school_id: null, // Will be set after school onboarding
+						role: role, // Role assigned based on registration portal
+						school_id: null, // Will be set after school onboarding (for institutional users)
 					},
 				])
 				.select()
@@ -150,7 +150,7 @@ export function AuthProvider({ children }) {
 				throw userError;
 			}
 
-			// Auto-login after registration
+			// Auto-login after registration (no variant check needed for register)
 			await login(email, password);
 
 			return { success: true, data: userData };
@@ -160,7 +160,7 @@ export function AuthProvider({ children }) {
 		}
 	};
 
-	const login = async (email, password) => {
+	const login = async (email, password, loginVariant = null) => {
 		try {
 			const passwordHash = await hashPassword(password);
 
@@ -174,6 +174,21 @@ export function AuthProvider({ children }) {
 
 			if (userError || !userData) {
 				throw new Error("Invalid email or password");
+			}
+
+			// Define allowed roles based on login variant
+			const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty'];
+			const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+
+			// Validate role based on login variant
+			if (loginVariant === "institutionalSuite") {
+				if (!INSTITUTIONAL_ROLES.includes(userData.role)) {
+					throw new Error("Access denied. This portal is for institutional users (super_admin, co_admin, student, faculty) only. Please use the iGyan AI Launch portal for B2C access.");
+				}
+			} else if (loginVariant === "igyanAiLaunch") {
+				if (!LAUNCH_PAD_ROLES.includes(userData.role)) {
+					throw new Error("Access denied. This portal is for B2C users (b2c_student, b2c_mentor) only. Please use the Institutional Suite portal.");
+				}
 			}
 
 			// Create session
