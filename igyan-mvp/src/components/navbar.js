@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./logo";
-import ThemeToggle from "./theme-toggle";
 
 const links = [
 	{ href: "/features", label: "Features" },
@@ -28,7 +27,7 @@ export default function Navbar() {
 			<nav className="flex w-full max-w-5xl items-center justify-between rounded-xl border border-zinc-200/80 bg-white/85 px-5 py-3 shadow-lg shadow-zinc-900/10 transition-all dark:border-zinc-700/60 dark:bg-zinc-900/80">
 				<Link
 					href="/"
-					className="flex items-center gap-3 text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-sky-500 dark:text-zinc-100 dark:hover:text-sky-400"
+					className="flex items-center gap-3 text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
 				>
 					<Logo variant="nav" />
 					<span className="leading-tight">iGyanAI</span>
@@ -41,22 +40,27 @@ export default function Navbar() {
 							<Link
 								key={href}
 								href={href}
-								className={`relative transition-colors hover:text-sky-500 dark:hover:text-sky-400 ${
+								className={`relative transition-colors hover:text-indigo-500 dark:hover:text-indigo-400 ${
 									isActive
-										? "text-sky-500 dark:text-sky-300"
+										? "text-indigo-500 dark:text-indigo-400"
 										: "text-zinc-600 dark:text-zinc-300"
 								}`}
 							>
 								{label}
 								{isActive ? (
-									<span className="absolute -bottom-2 left-0 h-0.5 w-full rounded-full bg-sky-500 dark:bg-sky-400" />
+									<span className="absolute -bottom-2 left-0 h-0.5 w-full rounded-full bg-indigo-500 dark:bg-indigo-400" />
 								) : null}
 							</Link>
 						);
 					})}
 				</div>
 				<div className="hidden items-center gap-3 lg:flex">
-					<ThemeToggle />
+					<Link
+						href="/login"
+						className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:border-indigo-500 hover:text-indigo-500 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-indigo-400 dark:hover:text-indigo-400"
+					>
+						Log in
+					</Link>
 					<Link
 						href="/register"
 						className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.04] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
@@ -67,7 +71,7 @@ export default function Navbar() {
 				<button
 					type="button"
 					onClick={() => setIsOpen((prev) => !prev)}
-					className="inline-flex items-center justify-center rounded-lg border border-transparent p-2 text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-sky-300 lg:hidden"
+					className="inline-flex items-center justify-center rounded-lg border border-transparent p-2 text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-indigo-300 lg:hidden"
 					aria-expanded={isOpen}
 					aria-label="Toggle navigation"
 				>
@@ -107,8 +111,8 @@ export default function Navbar() {
 									href={href}
 									className={`rounded-lg px-3 py-2 transition-colors ${
 										isActive
-											? "bg-sky-50 text-sky-600 dark:bg-slate-900/60 dark:text-sky-300"
-											: "text-zinc-600 hover:bg-zinc-100 hover:text-sky-500 dark:text-zinc-300 dark:hover:bg-zinc-800"
+											? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300"
+											: "text-zinc-600 hover:bg-zinc-100 hover:text-indigo-500 dark:text-zinc-300 dark:hover:bg-zinc-800"
 									}`}
 								>
 									{label}
@@ -116,10 +120,12 @@ export default function Navbar() {
 							);
 						})}
 						<hr className="border-zinc-200 dark:border-zinc-700" />
-						<div className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200/70 bg-zinc-50/80 px-3 py-2 dark:border-zinc-700/60 dark:bg-zinc-900/70">
-							<span className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Theme</span>
-							<ThemeToggle />
-						</div>
+						<Link
+							href="/login"
+							className="rounded-lg px-3 py-2 font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-indigo-500 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-indigo-300"
+						>
+							Log in
+						</Link>
 						<Link
 							href="/register"
 							className="rounded-lg bg-sky-500 px-3 py-2 text-center font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.45)] transition duration-200 hover:scale-[1.03] hover:bg-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.75)] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"

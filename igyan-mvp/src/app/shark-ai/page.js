@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/components/logo";
 
@@ -81,9 +82,18 @@ export default function SharkAiPage() {
 						</div>
 					</div>
 					<div className="relative w-full max-w-md lg:max-w-lg">
-						<div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-sky-500/60 via-blue-500/20 to-transparent blur-3xl" />
-						<div className="relative overflow-hidden rounded-[32px] border border-slate-700/60 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 p-8 shadow-xl shadow-sky-500/20">
-							<SharkIllustration />
+						<div className="absolute -inset-4 rounded-4xl bg-linear-to-br from-sky-500/60 via-blue-500/20 to-transparent blur-3xl" />
+						<div className="relative overflow-hidden rounded-4xl border border-slate-700/60 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 p-8 shadow-xl shadow-sky-500/20">
+							<div className="relative mx-auto aspect-320/220 w-full max-w-[360px]">
+								<Image
+									src="/asset/shark.png"
+									alt="Shark AI hero illustration"
+									fill
+									priority
+									className="object-contain"
+									sizes="(max-width: 768px) 100vw, 360px"
+								/>
+							</div>
 							<div className="mt-6 space-y-3 text-sm text-slate-300">
 								<p className="font-semibold text-white">Deal radar snapshot</p>
 								<ul className="space-y-2">
@@ -190,71 +200,5 @@ export default function SharkAiPage() {
 				</div>
 			</footer>
 		</div>
-	);
-}
-
-function SharkIllustration() {
-	return (
-		<svg
-			viewBox="0 0 320 220"
-			role="img"
-			aria-labelledby="shark-ai-graphic"
-			className="h-auto w-full text-slate-200"
-		>
-			<title id="shark-ai-graphic">Stylised shark swimming across analytics wave</title>
-			<defs>
-				<linearGradient id="shark-body" x1="0%" x2="100%" y1="0%" y2="0%">
-					<stop offset="0%" stopColor="rgba(14,165,233,0.8)" />
-					<stop offset="100%" stopColor="rgba(59,130,246,0.9)" />
-				</linearGradient>
-				<linearGradient id="ocean" x1="0%" x2="0%" y1="0%" y2="100%">
-					<stop offset="0%" stopColor="rgba(10,37,64,0.7)" />
-					<stop offset="100%" stopColor="rgba(15,23,42,0.95)" />
-				</linearGradient>
-			</defs>
-			<rect x="0" y="100" width="320" height="120" rx="18" fill="url(#ocean)" />
-			<path
-				d="M20 160c40-30 120-40 180-20s80 10 100-10"
-				fill="none"
-				stroke="rgba(56,189,248,0.45)"
-				strokeWidth="10"
-				strokeLinecap="round"
-			/>
-			<path
-				d="M60 120c18-28 68-60 120-48 44 9 70 36 110 28-12 18-34 30-58 34-10 2-20 2-30 0-12-2-24 0-34 6-26 16-70 10-108-20z"
-				fill="url(#shark-body)"
-				opacity="0.95"
-			/>
-			<path
-				d="M130 96l22-44 18 50"
-				fill="none"
-				stroke="rgba(165,243,252,0.6)"
-				strokeWidth="6"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-			<circle cx="190" cy="114" r="6" fill="rgba(15,23,42,0.9)" />
-			<circle cx="188" cy="112" r="2" fill="rgba(226,232,240,0.9)" />
-			<path
-				d="M238 125c5 6 14 6 24 0"
-				stroke="rgba(15,23,42,0.7)"
-				strokeWidth="4"
-				strokeLinecap="round"
-			/>
-			<path
-				d="M88 140c-6 10-6 24 0 32 10-10 24-16 42-14"
-				fill="none"
-				stroke="rgba(125,211,252,0.6)"
-				strokeWidth="6"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-			<path
-				d="M24 180h272"
-				stroke="rgba(148,163,184,0.35)"
-				strokeWidth="2"
-				opacity="0.9"
-			/>
-		</svg>
 	);
 }
