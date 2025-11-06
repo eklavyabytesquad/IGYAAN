@@ -455,4 +455,79 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
   .animate-slide-up {
     animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Custom Scrollbar for Shark AI */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+  }
+
+  html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(129, 140, 248, 0.3);
+  }
+
+  html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(129, 140, 248, 0.5);
+  }
+
+  /* Background grid pattern */
+  .bg-grid-white\/10 {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Animated moving grid background */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  html[data-theme="dark"] .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(129, 140, 248, 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(129, 140, 248, 0.15) 1px, transparent 1px);
+  }
+
+  .animate-grid-move {
+    animation: grid-move 20s linear infinite;
+  }
+
+  @keyframes grid-move {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(40px, 40px);
+    }
+  }
 }
