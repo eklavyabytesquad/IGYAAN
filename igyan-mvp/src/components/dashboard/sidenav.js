@@ -24,6 +24,9 @@ const ROLE_BASED_NAV_CONFIG = {
 	copilot: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
+	gyanSage: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
 	vivaAi: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
@@ -228,6 +231,28 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						strokeLinecap="round"
 						strokeLinejoin="round"
 						d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+					/>
+				</svg>
+			),
+		},
+		{
+			key: 'gyanSage',
+			name: "GyanSage",
+			href: "/dashboard/gyanisage",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.gyanSage.allowedRoles,
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"
 					/>
 				</svg>
 			),
@@ -674,7 +699,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 								onClick={() => setIsOpen(false)}
 								className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
 									isActive
-										? "bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm ring-1 ring-indigo-500/20 dark:from-indigo-500/20 dark:to-purple-500/20 dark:text-indigo-400"
+										? "bg-linear-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm ring-1 ring-indigo-500/20 dark:from-indigo-500/20 dark:to-purple-500/20 dark:text-indigo-400"
 										: "text-zinc-700 hover:bg-zinc-100/80 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
 								} ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
 								title={isCollapsed ? item.name : ""}
