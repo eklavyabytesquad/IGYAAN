@@ -471,30 +471,62 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
     }
   }
 
-  /* Custom Scrollbar for Shark AI */
+  /* Futuristic Slim Scrollbar for Shark AI */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+    background: linear-gradient(to bottom, rgba(99, 102, 241, 0.03), rgba(168, 85, 247, 0.03));
+    border-radius: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.3);
-    border-radius: 10px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6, #ec4899);
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.4),
+                0 0 12px rgba(139, 92, 246, 0.2),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.3);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(180deg, #4f46e5, #7c3aed, #db2777);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.6),
+                0 0 16px rgba(139, 92, 246, 0.3),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #4338ca, #6d28d9, #be185d);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.8),
+                0 0 20px rgba(139, 92, 246, 0.4),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5);
+  }
+
+  /* Dark theme scrollbar */
+  html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-track {
+    background: linear-gradient(to bottom, rgba(129, 140, 248, 0.05), rgba(192, 132, 252, 0.05));
   }
 
   html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(129, 140, 248, 0.3);
+    background: linear-gradient(180deg, #818cf8, #a78bfa, #f472b6);
+    box-shadow: 0 0 8px rgba(129, 140, 248, 0.5),
+                0 0 14px rgba(167, 139, 250, 0.3),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.2);
   }
 
   html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(129, 140, 248, 0.5);
+    background: linear-gradient(180deg, #6366f1, #8b5cf6, #ec4899);
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.7),
+                0 0 18px rgba(167, 139, 250, 0.4),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.3);
+  }
+
+  html[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #4f46e5, #7c3aed, #db2777);
+    box-shadow: 0 0 12px rgba(129, 140, 248, 0.9),
+                0 0 22px rgba(167, 139, 250, 0.5),
+                inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
   }
 
   /* Background grid pattern */
@@ -528,6 +560,82 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
     }
     100% {
       transform: translate(40px, 40px);
+    }
+  }
+
+  /* Sound-reactive wave animations */
+  .animate-sound-wave-1 {
+    animation: sound-wave-1 1.5s ease-in-out infinite;
+  }
+
+  .animate-sound-wave-2 {
+    animation: sound-wave-2 2s ease-in-out infinite;
+  }
+
+  .animate-sound-wave-3 {
+    animation: sound-wave-3 2.5s ease-in-out infinite;
+  }
+
+  @keyframes sound-wave-1 {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes sound-wave-2 {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes sound-wave-3 {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1.25);
+      opacity: 0.1;
+    }
+  }
+
+  /* Shimmer animation for progress bars */
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Slide up animation for popups */
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  @keyframes slide-up {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 }

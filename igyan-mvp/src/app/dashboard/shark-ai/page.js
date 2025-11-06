@@ -19,6 +19,7 @@ export default function SharkAI() {
   const [pdfTitle, setPdfTitle] = useState('');
   const [hasStartedPitch, setHasStartedPitch] = useState(false);
   const [pitchTranscript, setPitchTranscript] = useState('');
+  const [showPitchWarning, setShowPitchWarning] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -180,7 +181,7 @@ export default function SharkAI() {
     setIsProcessing(true);
 
     try {
-      console.log('Uploading file to AI Shark API:', file.name);
+      console.log('Uploading file to Shark Ai API: Shark', file.name);
 
       // Extract PDF content first
       const { content, title } = await extractPDFContent(file);
@@ -304,12 +305,49 @@ export default function SharkAI() {
     }
 
     if (isListening) {
+      // Stop listening
       recognitionRef.current.stop();
       setIsListening(false);
+      setTimerRunning(false);
     } else {
+      // Show warning popup before starting
+      if (!hasStartedPitch) {
+        setShowPitchWarning(true);
+      } else {
+        // Already started, just continue recording
+        recognitionRef.current.start();
+        setIsListening(true);
+      }
+    }
+  };
+
+  const startPitchWithMic = () => {
+    // Close popup
+    setShowPitchWarning(false);
+    
+    // Start pitch mode
+    setIsPitchMode(true);
+    setHasStartedPitch(true);
+    setPitchTimer(300);
+    setPitchTranscript('');
+    setInputMessage('');
+    setTimerRunning(true);
+
+    // Add start message
+    const startMessage = "🎬 Your 5-minute pitch timer has started! Speak clearly and confidently. Remember to cover: 1) Company Introduction (1-2 min), 2) Problem & Solution (1 min), 3) Business Model (1 min), 4) Market Opportunity (1 min), 5) The Ask (30 sec). Good luck!";
+    
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: startMessage,
+    }]);
+
+    // Start voice recognition
+    if (recognitionRef.current) {
       recognitionRef.current.start();
       setIsListening(true);
     }
+
+    speakText("Your pitch timer has started! You have 5 minutes. Good luck!");
   };
 
   const handleSubmitPitch = async () => {
@@ -354,7 +392,7 @@ export default function SharkAI() {
         throw new Error('Document session not found. Please re-upload your file and try again.');
       }
 
-      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. You must be critical and honest in your assessment.
+      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. You must be critical and honest in your assessment.Your response must be sharp and in a proper structural format.
 
 BUSINESS DOCUMENT INSIGHTS (truncated to 3,000 characters):
 ${pdfContent.substring(0, 3000)}
@@ -376,15 +414,34 @@ EVALUATION REQUIREMENTS (ONLY IF PITCH IS VALID):
 4. Financial Projections & Ask (0-20 points) - Are there clear, realistic financial goals and specific asks?
 5. Communication & Passion (0-20 points) - Does the entrepreneur communicate effectively and show genuine passion?
 
-Respond with:
-- Overall Score (out of 100)
-- Score breakdown for each criterion
-- Top strengths of the pitch (or why it failed if invalid)
-- Key areas for improvement
-- Whether you would invest (Yes/No/Maybe) with reasoning
-- Actionable advice for the entrepreneur
+IMPORTANT FORMATTING INSTRUCTIONS:
+You MUST format your response using clear markdown-style structure with headers, bullet points, and sections. Use this exact format:
 
-Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/100 and explain why. Use engaging language with a few relevant emojis. Response should come in a structured, organised & pretty format.`;
+# 🎯 PITCH EVALUATION RESULTS
+
+## 📊 Overall Score: [X]/100
+
+## 🔍 Score Breakdown:
+• **Pitch Clarity & Structure:** [X]/20
+• **Business Model Understanding:** [X]/20
+• **Market Opportunity:** [X]/20
+• **Financial Projections & Ask:** [X]/20
+• **Communication & Passion:** [X]/20
+
+## ✅ Key Strengths:
+[List 2-3 main strengths as bullet points]
+
+## ⚠️ Areas for Improvement:
+[List 2-3 areas needing work as bullet points]
+
+## 💰 Investment Decision: [Yes/No/Maybe]
+**Reasoning:** [1-2 sentences explaining the decision]
+
+## 🚀 Actionable Advice:
+[Provide 3-4 specific, actionable recommendations as bullet points]
+
+Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/100 and explain why. Use engaging language with relevant emojis.
+After every point change line`;
 
       const response = await fetch(`${API_URL}/ask`, {
         method: 'POST',
@@ -415,9 +472,25 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
         throw new Error('Evaluation response missing expected fields.');
       }
 
+      // Parse the evaluation to extract scores
+      const scoreMatch = evaluation.match(/Overall Score.*?(\d+)\/100/i);
+      const clarityMatch = evaluation.match(/Pitch Clarity.*?(\d+)\/20/i);
+      const businessMatch = evaluation.match(/Business Model.*?(\d+)\/20/i);
+      const marketMatch = evaluation.match(/Market Opportunity.*?(\d+)\/20/i);
+      const financialMatch = evaluation.match(/Financial.*?(\d+)\/20/i);
+      const communicationMatch = evaluation.match(/Communication.*?(\d+)\/20/i);
+
       const assistantMessage = {
         role: 'assistant',
         content: evaluation,
+        scores: {
+          overall: scoreMatch ? parseInt(scoreMatch[1]) : null,
+          clarity: clarityMatch ? parseInt(clarityMatch[1]) : null,
+          business: businessMatch ? parseInt(businessMatch[1]) : null,
+          market: marketMatch ? parseInt(marketMatch[1]) : null,
+          financial: financialMatch ? parseInt(financialMatch[1]) : null,
+          communication: communicationMatch ? parseInt(communicationMatch[1]) : null,
+        }
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -447,7 +520,7 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
     setIsLoading(true);
 
     try {
-      console.log('Sending question to AI Shark API:', currentQuestion);
+      console.log('Sending question to Shark Ai API:', currentQuestion);
       console.log('File ID:', fileId);
 
       // Add timeout to prevent hanging
@@ -557,16 +630,24 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 md:gap-6">
           {/* Left Sidebar - Shark Avatar & Upload */}
           <div className="xl:col-span-4">
-            <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 dark:from-indigo-700 dark:via-purple-700 dark:to-blue-700 rounded-2xl shadow-xl p-6 xl:sticky xl:top-6 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 dark:from-indigo-700 dark:via-purple-700 dark:to-blue-700 rounded-2xl shadow-xl p-6 relative overflow-hidden h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] flex flex-col">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl"></div>
               
-              <div className="relative">
-                {/* Shark Avatar Section */}
-                <div className="flex flex-col items-center mb-6">
+              <div className="relative flex-1 overflow-y-auto custom-scrollbar">
+                {/* Shark Avatar Section with Sound Reactive Animation */}
+                <div className="flex flex-col items-center mb-6 mt-8">
                   <div className="relative">
-                    <div className="w-48 h-48 rounded-full bg-linear-to-br from-blue-400/20 to-purple-500/20 backdrop-blur-sm flex items-center justify-center mb-4 border-4 border-white/20 shadow-2xl">
+                    {/* Sound wave rings */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className={`absolute w-48 h-48 rounded-full border-2 border-blue-400/60 ${isListening ? 'animate-sound-wave-1' : ''}`}></div>
+                      <div className={`absolute w-56 h-56 rounded-full border-2 border-purple-400/50 ${isListening ? 'animate-sound-wave-2' : ''}`}></div>
+                      <div className={`absolute w-64 h-64 rounded-full border-2 border-indigo-400/40 ${isListening ? 'animate-sound-wave-3' : ''}`}></div>
+                    </div>
+                    
+                    {/* Main avatar circle */}
+                    <div className={`w-48 h-48 rounded-full bg-linear-to-br from-blue-400/30 to-purple-500/30 backdrop-blur-sm flex items-center justify-center mb-4 border-4 border-white/30 shadow-2xl relative z-10 transition-all duration-300 ${isListening ? 'scale-105 shadow-blue-500/50' : ''}`}>
                       <Image 
                         src="/asset/ai-shark/suitshark.png" 
                         alt="Shark AI"
@@ -576,29 +657,58 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
                         priority
                       />
                     </div>
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
-                      <div className="flex items-center gap-2">
-                        <Mic className="w-3 h-3 text-white" />
-                        <span className="text-xs font-semibold text-white">Standing by</span>
-                      </div>
-                    </div>
+                    
                   </div>
                   
-                  <h2 className="text-2xl font-bold text-white text-center mb-2">Meet Shark AI</h2>
-                  <p className="text-white/80 text-center text-sm leading-relaxed px-4">
-                    I am your investor-style copilot. Upload a business deck, pitch with confidence, and I will evaluate your idea in real time—just like the boardroom, but friendlier.
-                  </p>
+                  <h2 className="text-2xl font-bold text-white text-center mb-6 mt-4">AI Shark</h2>
                 </div>
 
-                {/* Status Badges */}
-                <div className="flex gap-2 justify-center mb-6">
-                  <div className="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-                    <span className="text-xs font-medium text-white">DOCUMENT INSIGHT</span>
+                {/* Big Microphone Button with Live Transcription */}
+                {uploadedFile && (
+                  <div className="mb-6">
+                    <div className="flex flex-col items-center gap-4">
+                      {/* Big Mic Button */}
+                      <button
+                        onClick={toggleListening}
+                        disabled={isProcessing || isLoading}
+                        className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+                          isListening
+                            ? 'bg-red-500 shadow-lg shadow-red-500/50 scale-110'
+                            : 'bg-white/20 hover:bg-white/30 backdrop-blur-md border-2 border-white/40 hover:scale-105'
+                        }`}
+                      >
+                        {isListening ? (
+                          <>
+                            <div className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></div>
+                            <StopCircle className="w-10 h-10 text-white relative z-10" />
+                          </>
+                        ) : (
+                          <Mic className="w-10 h-10 text-white" />
+                        )}
+                      </button>
+                      
+                      {/* Status Text */}
+                      <div className="text-center">
+                        <p className="text-white font-semibold text-sm">
+                          {isListening ? '🔴 Recording...' : '🎤 Tap to speak'}
+                        </p>
+                      </div>
+
+                      {/* Live Transcription Display */}
+                      {isListening && pitchTranscript && (
+                        <div className="w-full bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 animate-fade-in">
+                          <div className="flex items-start gap-2 mb-2">
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse mt-1.5"></div>
+                            <span className="text-xs font-semibold text-white/80 uppercase tracking-wide">Live Transcription</span>
+                          </div>
+                          <p className="text-white text-sm leading-relaxed max-h-32 overflow-y-auto custom-scrollbar">
+                            {pitchTranscript}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="px-3 py-1.5 bg-emerald-500/20 backdrop-blur-sm rounded-lg border border-emerald-400/30">
-                    <span className="text-xs font-medium text-emerald-100">READY</span>
-                  </div>
-                </div>
+                )}
 
                 {/* Upload Section */}
                 <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 mb-4">
@@ -684,9 +794,27 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
 
           {/* Main Chat Area */}
           <div className="xl:col-span-8">
-            <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 dark:border-zinc-700/50 flex flex-col h-[calc(100vh-12rem)] md:h-[calc(100vh-14rem)]">
+            <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
+              {/* Chat Header */}
+              <div className="border-b border-zinc-200 dark:border-zinc-700 px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-800 rounded-t-2xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-zinc-800 dark:text-white">Pitch Conversation</h2>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
+                      {uploadedFile ? `Analyzing: ${uploadedFile.name}` : 'Upload a document to start'}
+                    </p>
+                  </div>
+                  {hasStartedPitch && timerRunning && (
+                    <div className="flex items-center gap-2 bg-white dark:bg-zinc-700 px-3 py-1.5 rounded-lg shadow-sm">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Live</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-zinc-50 dark:bg-zinc-900/50 custom-scrollbar">
                 {messages.length === 0 && !uploadedFile && (
                   <div className="h-full flex items-center justify-center">
                     <div className="text-center max-w-lg px-4">
@@ -715,30 +843,369 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
                 )}
 
                 {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
-                    } animate-fade-in`}
-                  >
+                  <div key={index}>
                     <div
-                      className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-3.5 text-sm md:text-base shadow-lg ${
-                        message.role === 'user'
-                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
-                          : 'bg-white dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-600'
-                      }`}
+                      className={`flex ${
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                      } animate-fade-in`}
                     >
-                      <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                      <div
+                        className={`max-w-[90%] md:max-w-[80%] rounded-xl px-4 py-3 shadow-md ${
+                          message.role === 'user'
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 rounded-br-sm'
+                            : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-bl-sm'
+                        }`}
+                      >
+                        {message.role === 'assistant' && (
+                          <div className="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                              AI
+                            </div>
+                            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Shark AI</span>
+                          </div>
+                        )}
+                        
+                        {/* User message - simple white text */}
+                        {message.role === 'user' ? (
+                          <p className="text-white text-sm leading-relaxed font-medium whitespace-pre-wrap">
+                            {message.content}
+                          </p>
+                        ) : (
+                        /* Assistant message - formatted with styling */
+                        <div className="text-sm leading-relaxed">
+                          {message.content.split('\n').map((line, i) => {
+                            // Handle headers with emojis
+                            if (line.startsWith('# ')) {
+                              const content = line.substring(2).trim();
+                              return (
+                                <div key={i} className="mb-3 mt-1">
+                                  <h1 className="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight">
+                                    {content}
+                                  </h1>
+                                  <div className="h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-1.5"></div>
+                                </div>
+                              );
+                            }
+                            if (line.startsWith('## ')) {
+                              const content = line.substring(3).trim();
+                              return (
+                                <h2 key={i} className="text-base md:text-lg font-bold mb-2 mt-3 text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                                  <span className="w-0.5 h-4 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></span>
+                                  {content}
+                                </h2>
+                              );
+                            }
+                            if (line.startsWith('### ')) {
+                              const content = line.substring(4).trim();
+                              return (
+                                <h3 key={i} className="text-sm md:text-base font-semibold mb-1.5 mt-2 text-zinc-700 dark:text-zinc-300">
+                                  {content}
+                                </h3>
+                              );
+                            }
+                            // Handle bullet points with better styling
+                            if (line.startsWith('• ') || line.startsWith('- ')) {
+                              const content = line.substring(2).trim();
+                              const boldMatch = content.match(/\*\*(.*?)\*\*/);
+                              if (boldMatch) {
+                                const parts = content.split(/\*\*(.*?)\*\*/);
+                                return (
+                                  <div key={i} className="flex items-start gap-2 mb-1.5 ml-1">
+                                    <span className="text-indigo-500 dark:text-indigo-400 mt-0.5 text-base flex-shrink-0">•</span>
+                                    <span className="flex-1 text-sm leading-relaxed">
+                                      {parts.map((part, idx) => 
+                                        idx % 2 === 1 ? (
+                                          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">{part}</strong>
+                                        ) : (
+                                          <span key={idx} className="text-zinc-700 dark:text-zinc-300">{part}</span>
+                                        )
+                                      )}
+                                    </span>
+                                  </div>
+                                );
+                              }
+                              return (
+                                <div key={i} className="flex items-start gap-2 mb-1.5 ml-1">
+                                  <span className="text-indigo-500 dark:text-indigo-400 mt-0.5 text-base flex-shrink-0">•</span>
+                                  <span className="flex-1 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">{content}</span>
+                                </div>
+                              );
+                            }
+                            // Handle bold text with background highlight
+                            if (line.includes('**')) {
+                              const parts = line.split(/\*\*(.*?)\*\*/);
+                              return (
+                                <p key={i} className="mb-2 text-sm leading-relaxed">
+                                  {parts.map((part, idx) => 
+                                    idx % 2 === 1 ? (
+                                      <strong key={idx} className="font-bold text-zinc-900 dark:text-white">{part}</strong>
+                                    ) : (
+                                      <span key={idx} className="text-zinc-700 dark:text-zinc-300">{part}</span>
+                                    )
+                                  )}
+                                </p>
+                              );
+                            }
+                            // Regular paragraph with better line height
+                            if (line.trim()) {
+                              return <p key={i} className="mb-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{line}</p>;
+                            }
+                            return <div key={i} className="h-1"></div>;
+                          })}
+                        </div>
+                        )}
+                      </div>
                     </div>
+                    
+                    {/* Advanced Graphical Representation - Pie Chart & Bar Chart */}
+                    {message.role === 'assistant' && message.scores && message.scores.overall !== null && (
+                      <div className="flex justify-start mt-4 animate-fade-in">
+                        <div className="max-w-[90%] md:max-w-[80%] w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 rounded-2xl p-4 md:p-5 shadow-xl border border-indigo-200 dark:border-indigo-900">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-base md:text-lg font-bold text-zinc-800 dark:text-white flex items-center gap-2">
+                              <span className="text-lg">📊</span>
+                              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                Performance Analytics
+                              </span>
+                            </h3>
+                          </div>
+                          
+                          {/* Overall Score Circle with Enhanced Design */}
+                          <div className="flex justify-center mb-4">
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-xl"></div>
+                              <div className="relative w-32 h-32 md:w-36 md:h-36">
+                                <svg className="w-full h-full transform -rotate-90">
+                                  {/* Background circle */}
+                                  <circle
+                                    cx="50%"
+                                    cy="50%"
+                                    r="45%"
+                                    stroke="currentColor"
+                                    strokeWidth="8"
+                                    fill="none"
+                                    className="text-zinc-200 dark:text-zinc-700"
+                                  />
+                                  {/* Animated progress circle */}
+                                  <circle
+                                    cx="50%"
+                                    cy="50%"
+                                    r="45%"
+                                    stroke="url(#scoreGradient)"
+                                    strokeWidth="8"
+                                    fill="none"
+                                    strokeDasharray={`${2 * Math.PI * (message.scores.overall >= 70 ? 86 : message.scores.overall >= 40 ? 90 : 85)}`}
+                                    strokeDashoffset={`${2 * Math.PI * 87 * (1 - message.scores.overall / 100)}`}
+                                    className="transition-all duration-1500 ease-out"
+                                    strokeLinecap="round"
+                                    style={{ filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.5))' }}
+                                  />
+                                  <defs>
+                                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                      <stop offset="0%" style={{ stopColor: message.scores.overall >= 70 ? '#10b981' : message.scores.overall >= 40 ? '#f59e0b' : '#ef4444' }} />
+                                      <stop offset="100%" style={{ stopColor: message.scores.overall >= 70 ? '#059669' : message.scores.overall >= 40 ? '#d97706' : '#dc2626' }} />
+                                    </linearGradient>
+                                  </defs>
+                                </svg>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                  <span className="text-3xl md:text-4xl font-black text-zinc-800 dark:text-white">
+                                    {message.scores.overall}
+                                  </span>
+                                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                    / 100
+                                  </span>
+                                  <span className={`text-xs font-bold mt-1.5 px-2 py-0.5 rounded-full ${
+                                    message.scores.overall >= 70 ? 'bg-green-500 text-white' :
+                                    message.scores.overall >= 40 ? 'bg-yellow-500 text-white' :
+                                    'bg-red-500 text-white'
+                                  }`}>
+                                    {message.scores.overall >= 70 ? 'Excellent' : message.scores.overall >= 40 ? 'Moderate' : 'Needs Work'}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Pie Chart Visualization */}
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            {/* Pie Chart */}
+                            <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-lg border border-zinc-200 dark:border-zinc-700">
+                              <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-3 flex items-center gap-1.5">
+                                <span>🥧</span> Score Distribution
+                              </h4>
+                              <div className="flex justify-center items-center">
+                                {(() => {
+                                  const scores = [
+                                    { value: message.scores.clarity || 0, color: '#3b82f6', label: 'Clarity' },
+                                    { value: message.scores.business || 0, color: '#a855f7', label: 'Business' },
+                                    { value: message.scores.market || 0, color: '#6366f1', label: 'Market' },
+                                    { value: message.scores.financial || 0, color: '#ec4899', label: 'Financial' },
+                                    { value: message.scores.communication || 0, color: '#06b6d4', label: 'Communication' },
+                                  ];
+                                  const total = scores.reduce((sum, s) => sum + s.value, 0);
+                                  let currentAngle = 0;
+                                  
+                                  return (
+                                    <div className="relative w-36 h-36 md:w-40 md:h-40">
+                                      <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-90">
+                                        {total > 0 ? scores.map((score, idx) => {
+                                          const percentage = score.value / total;
+                                          const angle = percentage * 360;
+                                          const startAngle = currentAngle;
+                                          currentAngle += angle;
+                                          
+                                          const startRad = (startAngle * Math.PI) / 180;
+                                          const endRad = (currentAngle * Math.PI) / 180;
+                                          const x1 = 100 + 80 * Math.cos(startRad);
+                                          const y1 = 100 + 80 * Math.sin(startRad);
+                                          const x2 = 100 + 80 * Math.cos(endRad);
+                                          const y2 = 100 + 80 * Math.sin(endRad);
+                                          const largeArc = angle > 180 ? 1 : 0;
+                                          
+                                          return (
+                                            <path
+                                              key={idx}
+                                              d={`M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                                              fill={score.color}
+                                              className="transition-all duration-500 hover:opacity-80 cursor-pointer"
+                                              style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
+                                            />
+                                          );
+                                        }) : (
+                                          <circle cx="100" cy="100" r="80" fill="#e5e7eb" className="dark:fill-zinc-700" />
+                                        )}
+                                        {/* Center white circle */}
+                                        <circle cx="100" cy="100" r="50" fill="white" className="dark:fill-zinc-900" />
+                                      </svg>
+                                      <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="text-center">
+                                          <div className="text-xl font-bold text-zinc-800 dark:text-white">{total}</div>
+                                          <div className="text-xs text-zinc-600 dark:text-zinc-400">Total</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                              {/* Legend */}
+                              <div className="mt-3 space-y-1.5">
+                                {[
+                                  { label: 'Clarity', value: message.scores.clarity, color: 'bg-blue-500' },
+                                  { label: 'Business', value: message.scores.business, color: 'bg-purple-500' },
+                                  { label: 'Market', value: message.scores.market, color: 'bg-indigo-500' },
+                                  { label: 'Financial', value: message.scores.financial, color: 'bg-pink-500' },
+                                  { label: 'Communication', value: message.scores.communication, color: 'bg-cyan-500' },
+                                ].map((item, idx) => (
+                                  <div key={idx} className="flex items-center justify-between text-xs">
+                                    <div className="flex items-center gap-2">
+                                      <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
+                                      <span className="text-zinc-700 dark:text-zinc-300">{item.label}</span>
+                                    </div>
+                                    <span className="font-bold text-zinc-800 dark:text-white">{item.value}/20</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Bar Chart */}
+                            <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-lg border border-zinc-200 dark:border-zinc-700">
+                              <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-3 flex items-center gap-1.5">
+                                <span>📊</span> Performance Bars
+                              </h4>
+                              <div className="space-y-2.5">
+                                {[
+                                  { label: 'Pitch Clarity', value: message.scores.clarity, max: 20, color: 'from-blue-500 to-blue-600', icon: '🎯' },
+                                  { label: 'Business Model', value: message.scores.business, max: 20, color: 'from-purple-500 to-purple-600', icon: '💼' },
+                                  { label: 'Market Opportunity', value: message.scores.market, max: 20, color: 'from-indigo-500 to-indigo-600', icon: '🌍' },
+                                  { label: 'Financial & Ask', value: message.scores.financial, max: 20, color: 'from-pink-500 to-pink-600', icon: '💰' },
+                                  { label: 'Communication', value: message.scores.communication, max: 20, color: 'from-cyan-500 to-cyan-600', icon: '💬' },
+                                ].map((item, idx) => item.value !== null && (
+                                  <div key={idx} className="group">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-sm">{item.icon}</span>
+                                        <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">{item.label}</span>
+                                      </div>
+                                      <span className="text-xs font-bold text-zinc-800 dark:text-white bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-full">
+                                        {item.value}/{item.max}
+                                      </span>
+                                    </div>
+                                    <div className="relative h-6 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden shadow-inner">
+                                      <div
+                                        className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-1000 ease-out flex items-center justify-end px-2 group-hover:shadow-lg`}
+                                        style={{ 
+                                          width: `${(item.value / item.max) * 100}%`,
+                                          minWidth: item.value > 0 ? '8%' : '0%'
+                                        }}
+                                      >
+                                        {item.value > 0 && (
+                                          <span className="text-xs font-bold text-white drop-shadow">
+                                            {Math.round((item.value / item.max) * 100)}%
+                                          </span>
+                                        )}
+                                      </div>
+                                      {/* Animated shine effect */}
+                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer pointer-events-none"></div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Investment Decision Badge */}
+                          {message.content.match(/Investment Decision:?\s*(Yes|No|Maybe)/i) && (
+                            <div className="flex justify-center">
+                              {(() => {
+                                const decision = message.content.match(/Investment Decision:?\s*(Yes|No|Maybe)/i)[1];
+                                const badges = {
+                                  'Yes': { 
+                                    bg: 'bg-gradient-to-r from-green-500 to-emerald-500', 
+                                    icon: '✓', 
+                                    text: 'INVESTMENT APPROVED',
+                                    glow: 'shadow-green-500/50'
+                                  },
+                                  'Maybe': { 
+                                    bg: 'bg-gradient-to-r from-yellow-500 to-orange-500', 
+                                    icon: '⚡', 
+                                    text: 'CAN BE UNDER CONSIDERATION',
+                                    glow: 'shadow-yellow-500/50'
+                                  },
+                                  'No': { 
+                                    bg: 'bg-gradient-to-r from-red-500 to-rose-500', 
+                                    icon: '✗', 
+                                    text: 'NOT INVESTING',
+                                    glow: 'shadow-red-500/50'
+                                  }
+                                };
+                                const badge = badges[decision];
+                                return (
+                                  <div className={`${badge.bg} text-white px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm flex items-center gap-2 shadow-xl ${badge.glow} transform hover:scale-105 transition-all`}>
+                                    <span className="text-lg animate-pulse">{badge.icon}</span>
+                                    <span className="tracking-wide">{badge.text}</span>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
 
                 {isLoading && (
                   <div className="flex justify-start animate-fade-in">
-                    <div className="bg-white dark:bg-zinc-700 rounded-2xl px-5 py-4 shadow-lg border border-zinc-200 dark:border-zinc-600">
+                    <div className="bg-white dark:bg-zinc-800 rounded-2xl rounded-bl-sm px-4 py-3 shadow-md border border-zinc-200 dark:border-zinc-700 max-w-[80%] md:max-w-[70%]">
+                      <div className="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                          AI
+                        </div>
+                        <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Shark AI</span>
+                      </div>
                       <div className="flex items-center space-x-3">
-                        <Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={20} />
-                        <span className="text-zinc-700 dark:text-zinc-300 text-sm md:text-base font-medium">Analyzing pitch...</span>
+                        <Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={18} />
+                        <span className="text-zinc-700 dark:text-zinc-300 text-sm">Analyzing your pitch...</span>
                       </div>
                     </div>
                   </div>
@@ -748,36 +1215,24 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
               </div>
 
               {/* Input Area */}
-              <div className="border-t border-zinc-200/70 dark:border-zinc-700/70 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm p-3 md:p-4">
-                {/* Pitch Mode Controls */}
-                {uploadedFile && !hasStartedPitch && (
-                  <div className="mb-3 flex justify-center">
-                    <button
-                      onClick={startPitchMode}
-                      disabled={isProcessing}
-                      className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 text-lg"
-                    >
-                      <Timer size={24} />
-                      <span>Start 5-Minute Pitch</span>
-                      <span className="text-2xl">🎤</span>
-                    </button>
-                  </div>
-                )}
-
+              <div className="border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-4 rounded-b-2xl">
                 {/* Timer Display */}
                 {isPitchMode && timerRunning && (
-                  <div className="mb-3 flex flex-col sm:flex-row items-center justify-center gap-3 bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 dark:from-red-900/20 dark:via-orange-900/20 dark:to-yellow-900/20 rounded-2xl p-4 border-2 border-red-300 dark:border-red-800 shadow-lg">
-                    <div className="flex items-center gap-3 bg-white/80 dark:bg-zinc-800/80 px-5 py-3 rounded-xl shadow-md">
-                      <Timer className={`${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`} size={28} />
-                      <span className={`text-3xl font-bold tabular-nums ${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`}>
-                        {formatTime(pitchTimer)}
-                      </span>
+                  <div className="mb-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/10 dark:to-red-900/10 rounded-xl p-3 border border-orange-200 dark:border-orange-800">
+                    <div className="flex items-center gap-3">
+                      <Timer className={`${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`} size={20} />
+                      <div>
+                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 block">Time Remaining</span>
+                        <span className={`text-2xl font-bold tabular-nums ${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`}>
+                          {formatTime(pitchTimer)}
+                        </span>
+                      </div>
                     </div>
                     <button
                       onClick={stopPitchRecording}
-                      className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
+                      className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-all flex items-center gap-2 font-semibold shadow-md"
                     >
-                      <StopCircle size={20} />
+                      <StopCircle size={16} />
                       Stop & Submit
                     </button>
                   </div>
@@ -798,25 +1253,25 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
                           ? 'Ask me anything about your document...'
                           : 'Upload a document first to get started...'
                       }
-                      rows={isPitchMode ? "4" : "2"}
+                      rows={isPitchMode ? "3" : "1"}
                       disabled={!uploadedFile || isLoading || isProcessing || (!isPitchMode && hasStartedPitch)}
-                      className="w-full resize-none px-4 md:px-5 py-3 md:py-3.5 pr-14 text-sm md:text-base border-2 border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:focus:ring-indigo-400 disabled:bg-zinc-50 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed disabled:text-zinc-400 dark:disabled:text-zinc-500 transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-500 shadow-sm"
+                      className="w-full resize-none px-4 py-3 pr-14 text-sm border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed disabled:text-zinc-400 dark:disabled:text-zinc-500 transition-all placeholder:text-zinc-500 dark:placeholder:text-zinc-500"
                     />
                     {isPitchMode && (
                       <button
                         onClick={toggleListening}
                         disabled={isLoading || isProcessing}
-                        className={`absolute right-3 top-3 p-2.5 rounded-xl transition-all shadow-lg ${
+                        className={`absolute right-2 top-2 p-2 rounded-lg transition-all ${
                           isListening
-                            ? 'bg-red-500 text-white animate-pulse ring-4 ring-red-300 dark:ring-red-800'
-                            : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60 hover:shadow-xl'
+                            ? 'bg-red-500 text-white animate-pulse'
+                            : 'bg-indigo-500 text-white hover:bg-indigo-600'
                         }`}
                         title={isListening ? 'Stop recording' : 'Start voice input'}
                       >
                         {isListening ? (
-                          <StopCircle size={22} />
+                          <StopCircle size={18} />
                         ) : (
-                          <Mic size={22} />
+                          <Mic size={18} />
                         )}
                       </button>
                     )}
@@ -825,26 +1280,26 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
                     <button
                       onClick={handleSubmitPitch}
                       disabled={!inputMessage.trim() || isLoading}
-                      className="px-5 md:px-7 py-3 md:py-3.5 bg-linear-to-r from-emerald-600 to-teal-600 text-white rounded-2xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+                      className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-semibold shadow-md"
                     >
-                      <Send size={20} className="md:w-5 md:h-5" />
-                      <span className="hidden sm:inline">Submit</span>
+                      <Send size={18} />
+                      Submit Pitch
                     </button>
                   ) : (
                     <button
                       onClick={handleSendMessage}
                       disabled={!inputMessage.trim() || !uploadedFile || isLoading || isProcessing || !hasStartedPitch}
-                      className="px-5 md:px-7 py-3 md:py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-2xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base font-bold shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+                      className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-semibold shadow-md"
                     >
-                      <Send size={20} className="md:w-5 md:h-5" />
-                      <span className="hidden sm:inline">Send</span>
+                      <Send size={18} />
+                      Send
                     </button>
                   )}
                 </div>
                 {isPitchMode && (
-                  <div className="mt-3 text-center">
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-2 inline-flex items-center gap-2">
-                      <Mic className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <div className="mt-2">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                      <Mic className="w-3 h-3" />
                       <span>Use voice or type • Cover business model, market & funding needs</span>
                     </p>
                   </div>
@@ -853,6 +1308,89 @@ Be brutally honest. If the pitch is garbage, say so. If it's gibberish, give 0/1
             </div>
           </div>
         </div>
+
+        {/* Pitch Warning Popup */}
+        {showPitchWarning && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8 border-2 border-indigo-200 dark:border-indigo-700 relative animate-slide-up">
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                  <Timer className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-zinc-800 dark:text-white">
+                  5-Minute Pitch Timer
+                </h3>
+              </div>
+
+              {/* Warning Message */}
+              <div className="mb-6">
+                <p className="text-zinc-700 dark:text-zinc-300 mb-4 leading-relaxed">
+                  You will have <span className="font-bold text-orange-600 dark:text-orange-400">exactly 5 minutes</span> to present your pitch. Structure your time wisely:
+                </p>
+                
+                <div className="space-y-3 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
+                    <div>
+                      <p className="font-semibold text-zinc-800 dark:text-white">Company Introduction</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">1-2 minutes • Who you are & what you do</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
+                    <div>
+                      <p className="font-semibold text-zinc-800 dark:text-white">Problem & Solution</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">1 minute • The pain point & your fix</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
+                    <div>
+                      <p className="font-semibold text-zinc-800 dark:text-white">Business Model</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">1 minute • How you make money</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">4</div>
+                    <div>
+                      <p className="font-semibold text-zinc-800 dark:text-white">Market Opportunity</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">1 minute • Market size & competition</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">5</div>
+                    <div>
+                      <p className="font-semibold text-zinc-800 dark:text-white">The Ask</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">30 seconds • Funding & terms</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowPitchWarning(false)}
+                  className="flex-1 px-6 py-3 bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-xl hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={startPitchWithMic}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all font-bold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <Mic size={20} />
+                  Start Pitch
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
