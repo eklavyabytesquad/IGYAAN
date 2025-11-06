@@ -1,11 +1,17 @@
 export default function VoiceMessage({ message, onReplay, onStop, isSpeaking }) {
 	const isUser = message.role === "user";
+	const isQuiz = message.isQuiz;
+	const isReport = message.isReport;
 
 	return (
 		<div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
 			{!isUser && (
-				<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-500 text-sm font-bold text-white">
-					AI
+				<div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${
+					isQuiz 
+						? "bg-gradient-to-br from-green-500 to-emerald-500"
+						: "bg-gradient-to-br from-purple-500 to-pink-500"
+				}`}>
+					{isQuiz ? "🎯" : "AI"}
 				</div>
 			)}
 			
@@ -13,11 +19,21 @@ export default function VoiceMessage({ message, onReplay, onStop, isSpeaking }) 
 				<div
 					className={`rounded-2xl px-4 py-3 ${
 						isUser
-							? "bg-linear-to-br from-purple-500 to-pink-500 text-white"
+							? "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
+							: isReport
+							? "bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-700"
+							: isQuiz
+							? "bg-gradient-to-br from-green-50 to-white border border-green-200 dark:from-green-900/10 dark:to-zinc-800 dark:border-green-700"
 							: "border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"
 					}`}
 				>
-					<p className={`text-sm ${isUser ? "text-white" : "text-zinc-900 dark:text-white"}`}>
+					<p className={`text-sm whitespace-pre-wrap ${
+						isUser 
+							? "text-white" 
+							: isQuiz
+							? "text-zinc-900 dark:text-white"
+							: "text-zinc-900 dark:text-white"
+					}`}>
 						{message.content}
 					</p>
 				</div>
