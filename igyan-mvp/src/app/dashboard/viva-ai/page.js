@@ -114,39 +114,39 @@ export default function IgyanAIPage() {
 		}
 	}, [user, loading, router]);
 
-	// Load AI name from localStorage or set default
+	// Load student profile from database
 	useEffect(() => {
-		if (user) {
-			const savedName = localStorage.getItem(`ai-companion-name-${user.id}`);
-			if (savedName) {
-				setAiName(savedName);
-			} else {
-				const studentFirstName = user.full_name?.split(" ")[0] || "Student";
-				setAiName(`${studentFirstName}'s Companion`);
-			}
-		}
-	}, [user]);
+		const loadProfile = async () => {
+			if (!user) return;
 
-	// Load student profile from localStorage or show setup
-	useEffect(() => {
-		if (user) {
-			const profileKey = `student-profile-${user.id}`;
-			const savedProfile = localStorage.getItem(profileKey);
-			
-			if (savedProfile) {
-				try {
-					const parsedProfile = JSON.parse(savedProfile);
-					setStudentProfile(parsedProfile);
+			try {
+				// Load AI name from localStorage
+				const savedName = localStorage.getItem(`ai-companion-name-${user.id}`);
+				if (savedName) {
+					setAiName(savedName);
+				} else {
+					const studentFirstName = user.full_name?.split(" ")[0] || "Student";
+					setAiName(`${studentFirstName}'s Companion`);
+				}
+
+				// Load profile from database
+				const response = await fetch(`/api/student-profile?userId=${user.id}`);
+				const data = await response.json();
+
+				if (response.ok && data.profile) {
+					setStudentProfile(data.profile);
 					setShowProfileSetup(false);
-				} catch (error) {
-					console.error("Error parsing saved profile:", error);
+				} else {
+					// No profile exists, show setup modal
 					setShowProfileSetup(true);
 				}
-			} else {
-				// No profile exists, show setup modal
+			} catch (error) {
+				console.error("Error loading profile:", error);
 				setShowProfileSetup(true);
 			}
-		}
+		};
+
+		loadProfile();
 	}, [user]);
 
 	useEffect(() => {
@@ -259,14 +259,32 @@ export default function IgyanAIPage() {
 		localStorage.setItem(`ai-companion-name-${user.id}`, newName);
 	};
 
-	const handleProfileSave = (profileData) => {
-		// Save to localStorage
-		const profileKey = `student-profile-${user.id}`;
-		localStorage.setItem(profileKey, JSON.stringify(profileData));
-		
-		// Update state
-		setStudentProfile(profileData);
-		setShowProfileSetup(false);
+	const handleProfileSave = async (profileData) => {
+		try {
+			const response = await fetch('/api/student-profile', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					userId: user.id,
+					profile: profileData,
+				}),
+			});
+
+			if (response.ok) {
+				// Update state
+				setStudentProfile(profileData);
+				setShowProfileSetup(false);
+			} else {
+				const error = await response.json();
+				console.error("Error saving profile:", error);
+				alert("Failed to save profile. Please try again.");
+			}
+		} catch (error) {
+			console.error("Error saving profile:", error);
+			alert("Failed to save profile. Please try again.");
+		}
 	};
 
 	const startListening = () => {
