@@ -278,7 +278,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 		{
 			key: 'contentGenerator',
-			name: "Content Generator",
+			name: "Pitch Deck Generator",
 			href: "/dashboard/content-generator",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.contentGenerator.allowedRoles,
 			icon: (
