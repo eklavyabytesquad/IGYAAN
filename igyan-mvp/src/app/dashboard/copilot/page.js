@@ -444,15 +444,13 @@ IMPORTANT FORMATTING RULES:
 	if (loading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
-				<div className="text-center">
-					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading AI Copilot...</p>
-				</div>
+			<div className="text-center">
+				<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+				<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading Sudarshan AI...</p>
 			</div>
-		);
-	}
-
-	if (!user) return null;
+		</div>
+	);
+	}	if (!user) return null;
 
 	return (
 		<div className="flex h-[calc(100vh-4rem)] gap-4 p-4 lg:p-6">
@@ -599,7 +597,7 @@ IMPORTANT FORMATTING RULES:
 										<span className="text-xl animate-[wiggle_1s_ease-in-out_3]">✨</span>
 									</span>
 								) : (
-									"AI Copilot"
+									"Sudarshan AI"
 								)}
 							</h2>
 							<p className="text-xs text-zinc-600 dark:text-zinc-400">Powered by iGyan AI</p>
@@ -633,9 +631,9 @@ IMPORTANT FORMATTING RULES:
 								</svg>
 							</div>
 							<div>
-								<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
-									Welcome to AI Copilot!
-								</h3>
+							<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
+								Welcome to Sudarshan AI!
+							</h3>
 								<p className="mt-2 text-zinc-600 dark:text-zinc-400">
 									{selectedMode 
 										? `${AI_MODES.find(m => m.id === selectedMode)?.name} • Ready to help you learn`
