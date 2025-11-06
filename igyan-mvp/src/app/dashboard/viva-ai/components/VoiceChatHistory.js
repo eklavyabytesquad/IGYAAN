@@ -7,41 +7,41 @@ export default function VoiceChatHistory({ onSelectChat, currentChatId, userId }
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
 	useEffect(() => {
-		loadChats();
+		if (userId) {
+			loadChats();
+		}
 	}, [userId]);
 
-	const loadChats = () => {
-		if (typeof window === "undefined") return;
-		
-		const allKeys = Object.keys(localStorage);
-		const chatKeys = allKeys.filter(key => key.startsWith(`viva-chat-${userId}-`));
-		
-		const loadedChats = chatKeys.map(key => {
-			try {
-				const chatData = JSON.parse(localStorage.getItem(key));
-				return {
-					id: key.replace(`viva-chat-${userId}-`, ""),
-					...chatData
-				};
-			} catch (e) {
-				return null;
+	const loadChats = async () => {
+		try {
+			const response = await fetch(`/api/voice-chat?userId=${userId}`);
+			const data = await response.json();
+			
+			if (response.ok) {
+				setChats(data.chats || []);
 			}
-		}).filter(Boolean);
-
-		// Sort by last updated
-		loadedChats.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
-		setChats(loadedChats);
+		} catch (error) {
+			console.error("Error loading chats:", error);
+		}
 	};
 
-	const handleDeleteChat = (chatId) => {
-		const storageKey = `viva-chat-${userId}-${chatId}`;
-		localStorage.removeItem(storageKey);
-		loadChats();
-		setShowDeleteConfirm(null);
-		
-		// If deleting current chat, notify parent
-		if (currentChatId === chatId) {
-			onSelectChat(null);
+	const handleDeleteChat = async (chatId) => {
+		try {
+			const response = await fetch(`/api/voice-chat?userId=${userId}&chatId=${chatId}`, {
+				method: 'DELETE',
+			});
+
+			if (response.ok) {
+				loadChats();
+				setShowDeleteConfirm(null);
+				
+				// If deleting current chat, notify parent
+				if (currentChatId === chatId) {
+					onSelectChat(null);
+				}
+			}
+		} catch (error) {
+			console.error("Error deleting chat:", error);
 		}
 	};
 
@@ -60,6 +60,13 @@ export default function VoiceChatHistory({ onSelectChat, currentChatId, userId }
 		if (diffDays < 7) return `${diffDays} days ago`;
 		return date.toLocaleDateString();
 	};
+
+	// Expose loadChats to parent
+	useEffect(() => {
+		if (window) {
+			window.reloadVoiceChats = loadChats;
+		}
+	}, []);
 
 	return (
 		<div className="flex h-full flex-col">
@@ -127,7 +134,7 @@ export default function VoiceChatHistory({ onSelectChat, currentChatId, userId }
 									</button>
 								</div>
 								<p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
-									{formatDate(chat.lastUpdated)}
+									{formatDate(chat.updated_at)}
 								</p>
 							</button>
 

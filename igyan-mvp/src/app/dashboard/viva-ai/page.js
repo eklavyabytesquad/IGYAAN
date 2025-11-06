@@ -153,55 +153,95 @@ export default function IgyanAIPage() {
 		scrollToBottom();
 	}, [messages]);
 
-	// Load chat from localStorage
+	// Load chat from database
 	useEffect(() => {
 		if (currentChatId && user) {
 			loadChat(currentChatId);
 		}
 	}, [currentChatId, user]);
 
-	// Save chat to localStorage when messages change
+	// Save chat to database when messages change
 	useEffect(() => {
-		if (currentChatId && messages.length > 0 && user) {
+		if (messages.length > 0 && user) {
 			saveChat();
 		}
-	}, [messages, currentChatId, user]);
+	}, [messages, user]);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
 
-	const loadChat = (chatId) => {
-		const storageKey = `viva-chat-${user.id}-${chatId}`;
-		const savedChat = localStorage.getItem(storageKey);
-		if (savedChat) {
-			const chatData = JSON.parse(savedChat);
-			setMessages(chatData.messages || []);
-			setSelectedNotes(chatData.selectedNotes || null);
+	const loadChat = async (chatId) => {
+		try {
+			const response = await fetch(`/api/voice-chat?userId=${user.id}`);
+			const data = await response.json();
+			
+			if (response.ok) {
+				const chat = data.chats?.find(c => c.id === chatId);
+				if (chat) {
+					setMessages(chat.messages || []);
+					setSelectedNotes(chat.selected_notes || null);
+				}
+			}
+		} catch (error) {
+			console.error("Error loading chat:", error);
 		}
 	};
 
 	const saveChat = async () => {
-		const storageKey = `viva-chat-${user.id}-${currentChatId}`;
-		
-		// Generate title if this is a new chat (first message)
-		let title = "New Voice Chat";
-		const existingChat = localStorage.getItem(storageKey);
-		if (existingChat) {
-			title = JSON.parse(existingChat).title;
-		} else if (messages.length > 0) {
-			// Generate AI title from first user message
-			title = await generateChatTitle(messages[0].content);
-		}
+		try {
+			let title = "New Voice Chat";
+			let chatIdToSave = currentChatId;
+			
+			// Check if chat already exists
+			const checkResponse = await fetch(`/api/voice-chat?userId=${user.id}`);
+			if (checkResponse.ok) {
+				const { chats } = await checkResponse.json();
+				const existingChat = chats?.find(c => c.id === chatIdToSave);
+				
+				if (existingChat) {
+					// Updating existing chat - keep its title
+					title = existingChat.title;
+				} else if (messages.length > 0) {
+					// New chat - generate title from first user message
+					const firstUserMsg = messages.find(m => m.role === "user");
+					if (firstUserMsg) {
+						title = await generateChatTitle(firstUserMsg.content);
+					}
+				}
+			}
 
-		const chatData = {
-			title,
-			messages,
-			selectedNotes,
-			lastUpdated: new Date().toISOString(),
-		};
-		
-		localStorage.setItem(storageKey, JSON.stringify(chatData));
+			// Save to database
+			const response = await fetch('/api/voice-chat', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					userId: user.id,
+					chatId: chatIdToSave,
+					title,
+					messages,
+					selectedNotes,
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				
+				// If this was a new chat, update the currentChatId with the returned ID
+				if (!chatIdToSave && data.chat && data.chat.id) {
+					setCurrentChatId(data.chat.id);
+				}
+				
+				// Reload chat list
+				if (window.reloadVoiceChats) {
+					window.reloadVoiceChats();
+				}
+			}
+		} catch (error) {
+			console.error("Error saving chat:", error);
+		}
 	};
 
 	const generateChatTitle = async (firstMessage) => {
@@ -241,8 +281,8 @@ export default function IgyanAIPage() {
 
 	const handleSelectChat = (chatId) => {
 		if (chatId === null) {
-			// New chat
-			setCurrentChatId(Date.now().toString());
+			// New chat - use UUID-like format
+			setCurrentChatId(null);
 			setMessages([]);
 			setSelectedNotes(null);
 		} else {
@@ -498,11 +538,6 @@ export default function IgyanAIPage() {
 	}
 
 	if (!user) return null;
-
-	// Initialize chat ID if needed
-	if (!currentChatId && messages.length === 0) {
-		setCurrentChatId(Date.now().toString());
-	}
 
 	return (
 		<>
