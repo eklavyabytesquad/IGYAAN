@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import studentProfile from "../data/student-profile.json";
 
-export default function StudentProfile({ aiName, onAiNameChange }) {
+export default function StudentProfile({ aiName, onAiNameChange, studentProfile, userId, onProfileUpdate }) {
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [tempName, setTempName] = useState(aiName || "");
+	const [showEditProfile, setShowEditProfile] = useState(false);
 
 	const handleSaveName = () => {
 		if (tempName.trim()) {
@@ -19,17 +19,33 @@ export default function StudentProfile({ aiName, onAiNameChange }) {
 		setIsEditingName(false);
 	};
 
+	// If no profile data, show message
+	if (!studentProfile || !studentProfile.name) {
+		return (
+			<div className="space-y-4 text-center p-6">
+				<div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8 text-purple-500">
+						<path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
+					</svg>
+				</div>
+				<p className="text-sm text-zinc-600 dark:text-zinc-400">
+					Complete your profile setup to personalize your AI learning experience
+				</p>
+			</div>
+		);
+	}
+
 	return (
 		<div className="space-y-4">
 			<div className="text-center">
-				<div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-500 text-2xl font-bold text-white">
+				<div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-bold text-white">
 					{studentProfile.name.split(" ").map((n) => n[0]).join("")}
 				</div>
 				<h3 className="text-lg font-bold text-zinc-900 dark:text-white">
 					{studentProfile.name}
 				</h3>
 				<p className="text-sm text-zinc-600 dark:text-zinc-400">
-					Class {studentProfile.class} Student
+					{studentProfile.class ? `Class ${studentProfile.class} Student` : 'Student'}
 				</p>
 			</div>
 

@@ -20,10 +20,18 @@ export default function DashboardPage() {
 		}
 	}, [user, loading, router]);
 
-	// Check if user has a school
+	// Check if user has a school (only for institutional users)
 	useEffect(() => {
 		const checkSchool = async () => {
 			if (!user) return;
+
+			// B2C users don't need school onboarding
+			const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+			if (LAUNCH_PAD_ROLES.includes(user.role)) {
+				setHasSchool(true); // Skip school check for B2C users
+				setCheckingSchool(false);
+				return;
+			}
 
 			try {
 				// Check if user has created a school
@@ -79,6 +87,8 @@ export default function DashboardPage() {
 	}
 
 	const firstName = user.full_name?.split(" ")[0] || "Learner";
+	const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+	const isB2CUser = LAUNCH_PAD_ROLES.includes(user.role);
 
 	const statCards = [
 		{
@@ -244,6 +254,15 @@ export default function DashboardPage() {
 					<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 						<div className="space-y-3">
 							<Logo variant="header" />
+							{isB2CUser && (
+								<div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold backdrop-blur">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+										<path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
+										<path d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
+									</svg>
+									iGyan AI Launch Pad
+								</div>
+							)}
 							<h1 className="text-3xl font-semibold sm:text-4xl">
 								Hey {firstName}, ready for another brilliant session?
 							</h1>
@@ -395,9 +414,22 @@ export default function DashboardPage() {
 											<p className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{user.full_name}</p>
 											<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>{user.email}</p>
 										</div>
-										<span className="dashboard-pill rounded-full border px-3 py-1 text-xs font-semibold">Pro learner mode</span>
+										<span className="dashboard-pill rounded-full border px-3 py-1 text-xs font-semibold">
+											{isB2CUser ? 'Launch Pad' : 'Pro learner mode'}
+										</span>
 									</div>
 									<div className="mt-4 grid gap-3">
+										<div className="flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
+											<span>Role</span>
+											<span className="font-semibold" style={{color: 'var(--dashboard-heading)'}}>
+												{user.role === 'b2c_student' ? 'Student' :
+												 user.role === 'b2c_mentor' ? 'Mentor' :
+												 user.role === 'faculty' ? 'Faculty' :
+												 user.role === 'super_admin' ? 'Super Admin' :
+												 user.role === 'co_admin' ? 'Co-Admin' :
+												 user.role === 'student' ? 'Student' : 'User'}
+											</span>
+										</div>
 										<div className="flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
 											<span>Member since</span>
 											<span className="font-semibold" style={{color: 'var(--dashboard-heading)'}}>{new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>

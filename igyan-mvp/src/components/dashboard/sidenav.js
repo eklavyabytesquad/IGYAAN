@@ -6,13 +6,86 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "../../app/utils/auth_context";
 import { supabase } from "../../app/utils/supabase";
 
+// Role-based navigation configuration
+// Each nav item can specify which roles have access
+// If allowedRoles is not specified, all roles have access
+// If allowedRoles is empty array, only super_admin has access (via superAdminOnly flag)
+const ROLE_BASED_NAV_CONFIG = {
+	// Common items (available to all roles)
+	dashboard: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	tools: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	courses: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	copilot: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	vivaAi: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	sharkAi: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	performance: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	settings: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+	
+	// Institutional only items (not for B2C users)
+	contentGenerator: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+	},
+	reports: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	assignments: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+	},
+	questionPaper: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	facultySubstitution: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	userManagement: {
+		allowedRoles: ['super_admin', 'co_admin'],
+	},
+	studentManagement: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	attendance: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	userAccess: {
+		allowedRoles: ['super_admin'],
+		superAdminOnly: true,
+	},
+	schoolProfile: {
+		allowedRoles: ['super_admin', 'co_admin'],
+	},
+	
+	// B2C specific items
+	mentors: {
+		allowedRoles: ['b2c_student', 'b2c_mentor'],
+	},
+	incubationHub: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+	},
+};
+
 export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
 	const pathname = usePathname();
 	const { user } = useAuth();
 	const [userAccess, setUserAccess] = useState({});
 	const [loadingAccess, setLoadingAccess] = useState(true);
 
-	// Fetch user access permissions
+	// Fetch user access permissions for institutional users
 	useEffect(() => {
 		if (user) {
 			fetchUserAccess();
@@ -22,8 +95,9 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 	const fetchUserAccess = async () => {
 		if (!user) return;
 
-		// Super admin has access to everything
-		if (user.role === "super_admin") {
+		// Super admin and B2C users don't need user_access table
+		const B2C_ROLES = ['b2c_student', 'b2c_mentor'];
+		if (user.role === "super_admin" || B2C_ROLES.includes(user.role)) {
 			setLoadingAccess(false);
 			return;
 		}
@@ -50,17 +124,31 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		}
 	};
 
-	// Check if user has access to a module
-	const hasAccess = (moduleName) => {
+	// Check if user has access to a module based on role and permissions
+	const hasAccess = (itemKey, allowedRoles, superAdminOnly) => {
 		if (!user) return false;
+		
+		// Super admin has access to everything
 		if (user.role === "super_admin") return true;
+		
+		// Check if user's role is in allowed roles
+		if (allowedRoles && !allowedRoles.includes(user.role)) return false;
+		
+		// For B2C users, role-based access is sufficient
+		const B2C_ROLES = ['b2c_student', 'b2c_mentor'];
+		if (B2C_ROLES.includes(user.role)) return true;
+		
+		// For institutional users, also check user_access table
+		const moduleName = itemKey.replace(/([A-Z])/g, ' $1').trim();
 		return userAccess[moduleName] && userAccess[moduleName] !== "none";
 	};
 
 	const navItems = [
 		{
+			key: 'dashboard',
 			name: "Dashboard",
 			href: "/dashboard",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.dashboard.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -79,8 +167,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'tools',
 			name: "AI Tools",
 			href: "/dashboard/tools",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.tools.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -99,8 +189,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'courses',
 			name: "My Courses",
 			href: "/dashboard/courses",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.courses.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -119,8 +211,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'copilot',
 			name: "Sudarshan Ai",
 			href: "/dashboard/copilot",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.copilot.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -139,8 +233,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'vivaAi',
 			name: "Viva AI",
 			href: "/dashboard/viva-ai",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.vivaAi.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -159,8 +255,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'sharkAi',
 			name: "Shark AI",
 			href: "/dashboard/shark-ai",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.sharkAi.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -179,8 +277,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'contentGenerator',
 			name: "Content Generator",
 			href: "/dashboard/content-generator",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.contentGenerator.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -199,8 +299,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'reports',
 			name: "Reports",
 			href: "/dashboard/reports",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.reports.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -219,8 +321,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'assignments',
 			name: "Assignments",
 			href: "/dashboard/assignments",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.assignments.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -239,8 +343,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'questionPaper',
 			name: "Question Paper",
 			href: "/dashboard/question-paper",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.questionPaper.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -259,8 +365,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'incubationHub',
 			name: "Incubation Hub",
 			href: "/dashboard/incubation-hub",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.incubationHub.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -279,8 +387,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'performance',
 			name: "Performance",
 			href: "/dashboard/performance",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.performance.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -299,8 +409,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'facultySubstitution',
 			name: "Faculty Substitution",
 			href: "/dashboard/faculty-substitution",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.facultySubstitution.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -319,8 +431,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'mentors',
 			name: "Mentors",
 			href: "/dashboard/messages",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.mentors.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -339,8 +453,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'userManagement',
 			name: "User Management",
 			href: "/dashboard/users",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.userManagement.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -359,8 +475,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'studentManagement',
 			name: "Student Management",
 			href: "/dashboard/student-management",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.studentManagement.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -379,8 +497,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'attendance',
 			name: "Attendance",
 			href: "/dashboard/attendance",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.attendance.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -399,8 +519,11 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'userAccess',
 			name: "User Access",
 			href: "/dashboard/user-access",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.userAccess.allowedRoles,
+			superAdminOnly: ROLE_BASED_NAV_CONFIG.userAccess.superAdminOnly,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -417,11 +540,12 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 					/>
 				</svg>
 			),
-			superAdminOnly: true,
 		},
 		{
+			key: 'settings',
 			name: "Settings",
 			href: "/dashboard/settings",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.settings.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -539,26 +663,23 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				{/* Navigation */}
 				<nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 					{navItems.map((item) => {
-						// Skip super admin only items for non-super admins
-						if (item.superAdminOnly && user?.role !== "super_admin") return null;
-						
-						// Skip items user doesn't have access to (unless super admin)
-						if (!hasAccess(item.name) && user?.role !== "super_admin") return null;
+						// Skip items based on role-based access control
+						if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 						
 						const isActive = pathname === item.href;
 						return (
 							<Link
-								key={item.name}
+								key={item.key}
 								href={item.href}
 								onClick={() => setIsOpen(false)}
 								className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
 									isActive
-										? "bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-900/30 dark:text-indigo-400"
-										: "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+										? "bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm ring-1 ring-indigo-500/20 dark:from-indigo-500/20 dark:to-purple-500/20 dark:text-indigo-400"
+										: "text-zinc-700 hover:bg-zinc-100/80 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
 								} ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
 								title={isCollapsed ? item.name : ""}
 							>
-								<div className={`${isCollapsed ? "lg:mx-auto" : ""}`}>
+								<div className={`${isCollapsed ? "lg:mx-auto" : ""} ${isActive ? "scale-110" : ""} transition-transform`}>
 									{item.icon}
 								</div>
 								<span
@@ -568,6 +689,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 								>
 									{item.name}
 								</span>
+								{/* Active indicator */}
+								{isActive && !isCollapsed && (
+									<div className="ml-auto h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400"></div>
+								)}
 								{/* Tooltip for collapsed state */}
 								{isCollapsed && (
 									<div className="invisible absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-zinc-900 px-3 py-2 text-xs font-medium text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900 lg:block hidden">

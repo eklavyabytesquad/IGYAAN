@@ -53,12 +53,15 @@ export default function LoginForm({ variant = "institutionalSuite" }) {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const result = await login(email, password);
+    // Pass variant to login function for role-based access control
+    const result = await login(email, password, variant);
 
     if (!result.success) {
       setError(result.error);
       setLoading(false);
     }
+    // Role validation is handled in auth context
+    // Successful login redirects to dashboard automatically
   };
 
   return (
