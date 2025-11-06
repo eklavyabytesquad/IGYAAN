@@ -7,7 +7,6 @@ import VoiceChatHistory from "./components/VoiceChatHistory";
 import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
 import VoiceMessage from "./components/VoiceMessage";
-import ProfileSetupForm from "./components/ProfileSetupForm";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -114,6 +113,19 @@ export default function IgyanAIPage() {
 		}
 	}, [user, loading, router]);
 
+	// Load or prompt for student profile
+	useEffect(() => {
+		if (user) {
+			const savedProfile = localStorage.getItem(`student-profile-${user.id}`);
+			if (savedProfile) {
+				setStudentProfile(JSON.parse(savedProfile));
+			} else {
+				// Show profile setup for new users
+				setShowProfileSetup(true);
+			}
+		}
+	}, [user]);
+
 	// Load AI name from localStorage or set default
 	useEffect(() => {
 		if (user) {
@@ -123,28 +135,6 @@ export default function IgyanAIPage() {
 			} else {
 				const studentFirstName = user.full_name?.split(" ")[0] || "Student";
 				setAiName(`${studentFirstName}'s Companion`);
-			}
-		}
-	}, [user]);
-
-	// Load student profile from localStorage or show setup
-	useEffect(() => {
-		if (user) {
-			const profileKey = `student-profile-${user.id}`;
-			const savedProfile = localStorage.getItem(profileKey);
-			
-			if (savedProfile) {
-				try {
-					const parsedProfile = JSON.parse(savedProfile);
-					setStudentProfile(parsedProfile);
-					setShowProfileSetup(false);
-				} catch (error) {
-					console.error("Error parsing saved profile:", error);
-					setShowProfileSetup(true);
-				}
-			} else {
-				// No profile exists, show setup modal
-				setShowProfileSetup(true);
 			}
 		}
 	}, [user]);
@@ -257,16 +247,6 @@ export default function IgyanAIPage() {
 	const handleAiNameChange = (newName) => {
 		setAiName(newName);
 		localStorage.setItem(`ai-companion-name-${user.id}`, newName);
-	};
-
-	const handleProfileSave = (profileData) => {
-		// Save to localStorage
-		const profileKey = `student-profile-${user.id}`;
-		localStorage.setItem(profileKey, JSON.stringify(profileData));
-		
-		// Update state
-		setStudentProfile(profileData);
-		setShowProfileSetup(false);
 	};
 
 	const startListening = () => {
@@ -486,35 +466,469 @@ export default function IgyanAIPage() {
 		setCurrentChatId(Date.now().toString());
 	}
 
+	const handleSaveProfile = (profileData) => {
+		const updatedProfile = { ...DEFAULT_PROFILE, ...profileData };
+		setStudentProfile(updatedProfile);
+		localStorage.setItem(`student-profile-${user.id}`, JSON.stringify(updatedProfile));
+		setShowProfileSetup(false);
+	};
+
 	return (
 		<>
 			{/* Profile Setup Modal */}
 			{showProfileSetup && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-					<div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl border border-purple-200/50 bg-white dark:border-purple-900/30 dark:bg-zinc-900 shadow-2xl">
-						<div className="sticky top-0 z-10 p-6 border-b" style={{
-							background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
-							borderColor: 'var(--dashboard-border)'
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+					<div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-purple-200/50 bg-white shadow-2xl dark:border-purple-900/30 dark:bg-zinc-900">
+						<div className="sticky top-0 z-10 border-b p-6 backdrop-blur-md" style={{
+							background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
 						}}>
-							<h2 className="text-2xl font-bold text-white drop-shadow-sm">
-								✨ Welcome! Let's Set Up Your Profile
-							</h2>
-							<p className="text-white/80 text-sm mt-1">
-								Tell us about yourself to personalize your learning experience
-							</p>
+							<div className="flex items-center gap-4">
+								<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 text-white">
+										<path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
+									</svg>
+								</div>
+								<div>
+									<h2 className="text-2xl font-bold text-white">Welcome to iGyan AI! 👋</h2>
+									<p className="text-sm text-white/90">Let's set up your personalized learning profile</p>
+								</div>
+							</div>
 						</div>
-						<ProfileSetupForm 
-							onSave={handleProfileSave} 
-							userName={user?.full_name || ""} 
-						/>
+						
+						<ProfileSetupForm onSave={handleSaveProfile} userName={user.full_name} />
 					</div>
 				</div>
 			)}
 
+			{/* Main Viva AI Interface */}
 			<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6" style={{
 				background: 'var(--dashboard-background)'
 			}}>
 				{/* Sidebar */}
+				<div className={`${isSidebarOpen ? "w-80" : "w-0"} shrink-0 transition-all duration-300 overflow-hidden`}>
+					<div className="flex h-full flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80">
+					{/* Sidebar Header with Gradient */}
+					<div className="relative border-b p-6 overflow-hidden" style={{
+						background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
+						borderColor: 'var(--dashboard-border)'
+					}}>
+						<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
+						<div className="relative flex items-center gap-3">
+							<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									className="h-7 w-7 text-white"
+								>
+									<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+									<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+								</svg>
+							</div>
+							<div>
+								<h2 className="text-lg font-bold text-white drop-shadow-sm">
+									{aiName || "AI Companion"}
+								</h2>
+								<p className="text-xs text-white/90 font-medium">
+									Voice Learning Assistant
+								</p>
+							</div>
+						</div>
+					</div>
+						{/* Tabs */}
+						<div className="flex border-b" style={{
+							borderColor: 'var(--dashboard-border)',
+							background: `linear-gradient(180deg, color-mix(in srgb, var(--dashboard-primary) 8%, transparent), transparent)`
+						}}>
+							<button
+								onClick={() => setActiveTab("chats")}
+								className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+								style={{
+									color: activeTab === "chats" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+								}}
+							>
+								{activeTab === "chats" && (
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+										background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+									}}></div>
+								)}
+								<div className="flex items-center justify-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+										<path fillRule="evenodd" d="M3.43 2.524A41.29 41.29 0 0110 2c2.236 0 4.43.18 6.57.524 1.437.231 2.43 1.49 2.43 2.902v5.148c0 1.413-.993 2.67-2.43 2.902a41.202 41.202 0 01-5.183.501.78.78 0 00-.528.224l-3.579 3.58A.75.75 0 016 17.25v-3.443a41.033 41.033 0 01-2.57-.33C1.993 13.244 1 11.986 1 10.573V5.426c0-1.413.993-2.67 2.43-2.902z" clipRule="evenodd" />
+									</svg>
+									Chats
+								</div>
+							</button>
+							<button
+								onClick={() => setActiveTab("profile")}
+								className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+								style={{
+									color: activeTab === "profile" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+								}}
+							>
+								{activeTab === "profile" && (
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+										background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+									}}></div>
+								)}
+								<div className="flex items-center justify-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+										<path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+									</svg>
+									Profile
+								</div>
+							</button>
+							<button
+								onClick={() => setActiveTab("notes")}
+								className={`group flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 relative`}
+								style={{
+									color: activeTab === "notes" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+								}}
+							>
+								{activeTab === "notes" && (
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full" style={{
+										background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, transparent))`
+									}}></div>
+								)}
+								<div className="flex items-center justify-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+										<path d="M3.196 12.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 12.87z" />
+										<path d="M3.196 8.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 8.87z" />
+										<path d="M10.38 1.103a.75.75 0 00-.76 0l-7.25 4.25a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.76 0l7.25-4.25a.75.75 0 000-1.294l-7.25-4.25z" />
+									</svg>
+									Notes
+								</div>
+							</button>
+						</div>
+
+						{/* Tab Content */}
+						<div className="flex-1 overflow-y-auto p-4">
+							{activeTab === "chats" && (
+								<VoiceChatHistory
+									onSelectChat={handleSelectChat}
+									currentChatId={currentChatId}
+									userId={user?.id}
+								/>
+							)}
+							{activeTab === "profile" && (
+								<StudentProfile 
+									aiName={aiName}
+									onAiNameChange={handleAiNameChange}
+									studentProfile={studentProfile}
+									userId={user?.id}
+									onProfileUpdate={(updatedProfile) => {
+										setStudentProfile(updatedProfile);
+										localStorage.setItem(`student-profile-${user.id}`, JSON.stringify(updatedProfile));
+									}}
+								/>
+							)}
+							{activeTab === "notes" && (
+								<NotesSelector
+									onNotesSelect={handleNotesSelect}
+									selectedNotes={selectedNotes}
+								/>
+							)}
+						</div>
+					</div>
+				</div>
+
+				{/* Main Chat Area */}
+				<div className="flex flex-1 flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80 overflow-hidden">{/* Rest of chat interface continues here... */}
+	const [formData, setFormData] = useState({
+		name: userName || "",
+		class: "",
+		section: "",
+		age: "",
+		schoolName: "",
+		schoolLocation: "",
+		interests: "",
+		learningStyle: "",
+		academicGoals: "",
+		favoriteSubjects: "",
+		sleepTime: "",
+		studyScheduleWeekday: "",
+		studyScheduleWeekend: ""
+	});
+
+	const handleChange = (e) => {
+		setFormData(prev => ({
+			...prev,
+			[e.target.name]: e.target.value
+		}));
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		
+		const profileData = {
+			name: formData.name,
+			class: formData.class,
+			section: formData.section,
+			age: parseInt(formData.age) || "",
+			classTeacher: "",
+			house: "",
+			school: {
+				name: formData.schoolName,
+				location: formData.schoolLocation,
+				board: ""
+			},
+			interests: formData.interests.split(',').map(i => i.trim()).filter(Boolean),
+			learningStyle: formData.learningStyle,
+			strengths: [],
+			growthAreas: [],
+			academicGoals: formData.academicGoals.split(',').map(g => g.trim()).filter(Boolean),
+			recentWins: [],
+			sleepTime: formData.sleepTime,
+			studySchedule: {
+				weekday: formData.studyScheduleWeekday,
+				weekend: formData.studyScheduleWeekend
+			},
+			favoriteSubjects: formData.favoriteSubjects.split(',').map(s => s.trim()).filter(Boolean),
+			mentors: [],
+			funFact: ""
+		};
+
+		onSave(profileData);
+	};
+
+	return (
+		<form onSubmit={handleSubmit} className="p-6 space-y-6">
+			{/* Basic Info */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-purple-500">
+						<path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+					</svg>
+					Basic Information
+				</h3>
+				
+				<div className="grid gap-4 sm:grid-cols-2">
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Full Name *</label>
+						<input
+							type="text"
+							name="name"
+							value={formData.name}
+							onChange={handleChange}
+							required
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="Enter your full name"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Age *</label>
+						<input
+							type="number"
+							name="age"
+							value={formData.age}
+							onChange={handleChange}
+							required
+							min="5"
+							max="100"
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="Your age"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Class/Grade *</label>
+						<input
+							type="text"
+							name="class"
+							value={formData.class}
+							onChange={handleChange}
+							required
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="e.g., 9th, 10th"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Section</label>
+						<input
+							type="text"
+							name="section"
+							value={formData.section}
+							onChange={handleChange}
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="e.g., A, B"
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* School Info */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-purple-500">
+						<path fillRule="evenodd" d="M9.664 1.319a.75.75 0 01.672 0 41.059 41.059 0 018.198 5.424.75.75 0 01-.254 1.285 31.372 31.372 0 00-7.86 3.83.75.75 0 01-.84 0 31.508 31.508 0 00-2.08-1.287V9.394c0-.244.116-.463.302-.592a35.504 35.504 0 013.305-2.033.75.75 0 00-.714-1.319 37 37 0 00-3.446 2.12A2.216 2.216 0 006 9.393v.38a31.293 31.293 0 00-4.28-1.746.75.75 0 01-.254-1.285 41.059 41.059 0 018.198-5.424z" clipRule="evenodd" />
+					</svg>
+					School Details
+				</h3>
+				
+				<div className="grid gap-4 sm:grid-cols-2">
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">School Name *</label>
+						<input
+							type="text"
+							name="schoolName"
+							value={formData.schoolName}
+							onChange={handleChange}
+							required
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="Your school name"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">School Location *</label>
+						<input
+							type="text"
+							name="schoolLocation"
+							value={formData.schoolLocation}
+							onChange={handleChange}
+							required
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="City, State"
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* Learning Profile */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-purple-500">
+						<path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.357-.442 3 3 0 00-4.308-3.517 6.484 6.484 0 011.907 3.96 2.32 2.32 0 01-.026.654zM18 8a2 2 0 11-4 0 2 2 0 014 0zM5.304 16.19a.844.844 0 01-.277-.71 5 5 0 019.947 0 .843.843 0 01-.277.71A6.975 6.975 0 0110 18a6.974 6.974 0 01-4.696-1.81z" />
+					</svg>
+					Learning Profile
+				</h3>
+				
+				<div>
+					<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Interests (comma-separated)</label>
+					<input
+						type="text"
+						name="interests"
+						value={formData.interests}
+						onChange={handleChange}
+						className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+						placeholder="e.g., AI, Science, Sports, Music"
+					/>
+				</div>
+				
+				<div>
+					<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Favorite Subjects (comma-separated)</label>
+					<input
+						type="text"
+						name="favoriteSubjects"
+						value={formData.favoriteSubjects}
+						onChange={handleChange}
+						className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+						placeholder="e.g., Mathematics, Physics, English"
+					/>
+				</div>
+				
+				<div>
+					<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Learning Style</label>
+					<select
+						name="learningStyle"
+						value={formData.learningStyle}
+						onChange={handleChange}
+						className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+					>
+						<option value="">Select your learning style</option>
+						<option value="Visual">Visual</option>
+						<option value="Auditory">Auditory</option>
+						<option value="Kinesthetic">Kinesthetic</option>
+						<option value="Visual & Kinesthetic">Visual & Kinesthetic</option>
+						<option value="Auditory & Visual">Auditory & Visual</option>
+					</select>
+				</div>
+				
+				<div>
+					<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Academic Goals (comma-separated)</label>
+					<textarea
+						name="academicGoals"
+						value={formData.academicGoals}
+						onChange={handleChange}
+						rows="2"
+						className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+						placeholder="e.g., Score 90%+ in finals, Improve problem-solving skills"
+					/>
+				</div>
+			</div>
+
+			{/* Study Schedule */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-purple-500">
+						<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+					</svg>
+					Study Schedule
+				</h3>
+				
+				<div className="grid gap-4 sm:grid-cols-2">
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Weekday Study Time</label>
+						<input
+							type="text"
+							name="studyScheduleWeekday"
+							value={formData.studyScheduleWeekday}
+							onChange={handleChange}
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="e.g., 7:00 PM - 9:00 PM"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Weekend Study Time</label>
+						<input
+							type="text"
+							name="studyScheduleWeekend"
+							value={formData.studyScheduleWeekend}
+							onChange={handleChange}
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+							placeholder="e.g., 10:00 AM - 12:00 PM"
+						/>
+					</div>
+					
+					<div>
+						<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Sleep Time</label>
+						<input
+							type="time"
+							name="sleepTime"
+							value={formData.sleepTime}
+							onChange={handleChange}
+							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* Submit Button */}
+			<div className="flex gap-3 pt-4 border-t">
+				<button
+					type="submit"
+					className="flex-1 rounded-xl px-6 py-3 text-white font-semibold transition-all hover:-translate-y-0.5 shadow-lg"
+					style={{
+						background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
+					}}
+				>
+					Save Profile & Start Learning 🚀
+				</button>
+			</div>
+		</form>
+	);
+}
+
+// Main page component return
+function VivaAIMain() {
+	return (
+		<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6" style={{
+			background: 'var(--dashboard-background)'
+		}}>
+			{/* Sidebar */}
 			<div className={`${isSidebarOpen ? "w-80" : "w-0"} shrink-0 transition-all duration-300 overflow-hidden`}>
 				<div className="flex h-full flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80">
 				{/* Sidebar Header with Gradient */}
@@ -624,9 +1038,6 @@ export default function IgyanAIPage() {
 							<StudentProfile 
 								aiName={aiName}
 								onAiNameChange={handleAiNameChange}
-								studentProfile={studentProfile}
-								userId={user?.id}
-								onProfileUpdate={() => setShowProfileSetup(true)}
 							/>
 						)}
 						{activeTab === "notes" && (
@@ -1097,6 +1508,5 @@ export default function IgyanAIPage() {
 				</div>
 			</div>
 		</div>
-		</>
 	);
 }

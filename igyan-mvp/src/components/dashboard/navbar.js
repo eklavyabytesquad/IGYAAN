@@ -62,14 +62,18 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 		router.push("/login");
 	};
 
+	// Determine if user is B2C
+	const isB2CUser = user?.role === 'b2c_student' || user?.role === 'b2c_mentor';
+
 	return (
-		<header className="dashboard-nav sticky top-0 z-30 border-b backdrop-blur-xl">
+		<header className="dashboard-nav sticky top-0 z-30 border-b border-zinc-200/80 bg-white/80 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-zinc-900/80">
 			<div className="flex h-16 items-center justify-between px-6">
 				{/* Left Section */}
 				<div className="flex items-center gap-4">
 					<button
 						onClick={onMenuClick}
-						className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 lg:hidden"
+						className="rounded-lg p-2 text-zinc-600 transition-all hover:bg-zinc-100 hover:scale-105 dark:text-zinc-400 dark:hover:bg-zinc-800 lg:hidden"
+						aria-label="Toggle menu"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +92,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 					</button>
 
 					{/* Search Bar */}
-				<div className="hidden items-center md:flex">
+					<div className="hidden items-center md:flex">
 						<div className="relative">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +100,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400"
+								className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
 							>
 								<path
 									strokeLinecap="round"
@@ -106,8 +110,8 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 							</svg>
 							<input
 								type="text"
-								placeholder="Search courses, assignments..."
-								className="w-64 rounded-lg border border-zinc-200 bg-zinc-50/50 py-2 pl-10 pr-4 text-sm text-zinc-900 placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-white dark:placeholder-zinc-400 lg:w-80"
+								placeholder={isB2CUser ? "Search tools, courses..." : "Search courses, assignments..."}
+								className="w-64 rounded-xl border border-zinc-200 bg-zinc-50/50 py-2.5 pl-10 pr-4 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:w-80 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-white dark:placeholder-zinc-400 lg:w-80"
 							/>
 						</div>
 					</div>
@@ -115,8 +119,19 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 
 				{/* Right Section */}
 				<div className="flex items-center gap-3">
+					{/* Portal Badge */}
+					{isB2CUser && (
+						<div className="hidden sm:flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-4 py-1.5 ring-1 ring-cyan-500/20 dark:from-cyan-500/20 dark:to-blue-500/20">
+							<div className="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></div>
+							<span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">Launch Pad</span>
+						</div>
+					)}
+
 					{/* Mobile Search */}
-					<button className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 md:hidden">
+					<button 
+						className="rounded-lg p-2 text-zinc-600 transition-all hover:bg-zinc-100 hover:scale-105 dark:text-zinc-400 dark:hover:bg-zinc-800 md:hidden"
+						aria-label="Search"
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
@@ -137,9 +152,10 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 					<div className="relative" ref={notificationsRef}>
 						<button
 							onClick={toggleNotifications}
-							className="relative rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:text-zinc-400 dark:hover:bg-zinc-800"
+							className="relative rounded-lg p-2 text-zinc-600 transition-all hover:bg-zinc-100 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:text-zinc-400 dark:hover:bg-zinc-800"
 							aria-haspopup="true"
 							aria-expanded={isNotificationsOpen}
+							aria-label="Notifications"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +172,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 								/>
 							</svg>
 							{notifications > 0 && (
-								<span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white">
+								<span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-[10px] font-bold text-white shadow-lg ring-2 ring-white dark:ring-zinc-900">
 									{notifications}
 								</span>
 							)}
@@ -211,16 +227,21 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 					<div className="relative" ref={dropdownRef}>
 						<button
 							onClick={() => setIsProfileOpen(!isProfileOpen)}
-							className="flex items-center gap-3 rounded-lg p-1.5 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+							className="flex items-center gap-3 rounded-xl p-1.5 transition-all hover:bg-zinc-100/80 hover:shadow-sm dark:hover:bg-zinc-800/80"
+							aria-label="User menu"
 						>
 							{user?.image_base64 ? (
 								<img
 									src={user.image_base64}
 									alt={user?.full_name || "User"}
-									className="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-500/20"
+									className="h-9 w-9 rounded-full object-cover ring-2 ring-offset-2 ring-indigo-500/30 dark:ring-offset-zinc-900"
 								/>
 							) : (
-								<div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-sm font-semibold text-white ring-2 ring-indigo-500/20">
+								<div className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white ring-2 ring-offset-2 dark:ring-offset-zinc-900 ${
+									isB2CUser 
+										? 'bg-gradient-to-br from-cyan-500 to-blue-500 ring-cyan-500/30' 
+										: 'bg-gradient-to-br from-indigo-500 to-purple-500 ring-indigo-500/30'
+								}`}>
 									{user?.full_name
 										?.split(" ")
 										.map((n) => n[0])
@@ -232,12 +253,22 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 								<p className="text-sm font-semibold text-zinc-900 dark:text-white">
 									{user?.full_name?.split(" ")[0] || "User"}
 								</p>
-								<p className="text-xs text-zinc-500 dark:text-zinc-400">
+								<p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
 									{user?.role === 'faculty' ? 'Faculty' : 
 									 user?.role === 'super_admin' ? 'Super Admin' :
 									 user?.role === 'co_admin' ? 'Co-Admin' :
-									 user?.role === 'b2c_student' ? 'Student' :
-									 user?.role === 'b2c_mentor' ? 'Mentor' :
+									 user?.role === 'b2c_student' ? (
+										<>
+											<span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-500"></span>
+											Student
+										</>
+									 ) :
+									 user?.role === 'b2c_mentor' ? (
+										<>
+											<span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-500"></span>
+											Mentor
+										</>
+									 ) :
 									 user?.role === 'student' ? (schoolData?.school_name || 'Student') :
 									 'User'}
 								</p>
@@ -248,7 +279,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className={`hidden h-4 w-4 text-zinc-600 transition-transform dark:text-zinc-400 lg:block ${
+								className={`hidden h-4 w-4 text-zinc-600 transition-transform duration-200 dark:text-zinc-400 lg:block ${
 									isProfileOpen ? "rotate-180" : ""
 								}`}
 							>
@@ -262,17 +293,23 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 
 						{/* Dropdown Menu */}
 						{isProfileOpen && (
-							<div className="absolute right-0 mt-2 w-64 origin-top-right rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-800">
-								<div className="border-b border-zinc-100 p-4 dark:border-zinc-700">
+							<div className="absolute right-0 mt-2 w-72 origin-top-right rounded-xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-800 animate-in fade-in slide-in-from-top-2 duration-200">
+								<div className={`border-b border-zinc-100 p-4 dark:border-zinc-700 ${isB2CUser ? 'bg-gradient-to-br from-cyan-500/5 to-blue-500/5' : ''}`}>
 									<div className="flex items-center gap-3">
 										{user?.image_base64 ? (
 											<img
 												src={user.image_base64}
 												alt={user?.full_name || "User"}
-												className="h-12 w-12 rounded-full object-cover ring-2 ring-indigo-500/30"
+												className={`h-12 w-12 rounded-full object-cover ring-2 ring-offset-2 ${
+													isB2CUser ? 'ring-cyan-500/30' : 'ring-indigo-500/30'
+												}`}
 											/>
 										) : (
-											<div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-lg font-semibold text-white ring-2 ring-indigo-500/30">
+											<div className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white ring-2 ${
+												isB2CUser 
+													? 'bg-gradient-to-br from-cyan-500 to-blue-500 ring-cyan-500/30' 
+													: 'bg-gradient-to-br from-indigo-500 to-purple-500 ring-indigo-500/30'
+											}`}>
 												{user?.full_name
 													?.split(" ")
 													.map((n) => n[0])
@@ -287,6 +324,14 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 											<p className="mt-0.5 text-xs text-zinc-500 truncate dark:text-zinc-400">
 												{user?.email}
 											</p>
+											{isB2CUser && (
+												<div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-2 py-0.5 ring-1 ring-cyan-500/20">
+													<div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+													<span className="text-[10px] font-semibold uppercase tracking-wide text-cyan-600 dark:text-cyan-400">
+														Launch Pad
+													</span>
+												</div>
+											)}
 										</div>
 									</div>
 								</div>
