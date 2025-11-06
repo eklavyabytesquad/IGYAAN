@@ -333,61 +333,63 @@ export default function SharkAI() {
     setIsLoading(true);
 
     try {
-      // Evaluate the pitch using AI
-      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. 
+      if (!fileId) {
+        throw new Error('Document session not found. Please re-upload your file and try again.');
+      }
 
-BUSINESS DOCUMENT CONTENT:
+      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches.
+
+BUSINESS DOCUMENT INSIGHTS (truncated to 3,000 characters):
 ${pdfContent.substring(0, 3000)}
 
 ENTREPRENEUR'S PITCH:
 ${fullPitch}
 
-EVALUATION CRITERIA:
+EVALUATION REQUIREMENTS:
 1. Pitch Clarity & Structure (0-20 points)
 2. Business Model Understanding (0-20 points)
 3. Market Opportunity (0-20 points)
 4. Financial Projections & Ask (0-20 points)
 5. Communication & Passion (0-20 points)
 
-Provide a detailed evaluation with:
+Respond with:
 - Overall Score (out of 100)
-- Breakdown by criteria with scores
-- Strengths of the pitch
-- Areas for improvement
-- Whether you'd invest (Yes/No/Maybe) and why
-- Specific advice for the entrepreneur
+- Score breakdown for each criterion
+- Top strengths of the pitch
+- Key areas for improvement
+- Whether you would invest (Yes/No/Maybe) with reasoning
+- Actionable advice for the entrepreneur
 
-Be constructive but honest, like a real Shark Tank investor. Use emojis to make it engaging.`;
+Be constructive but honest, like a real Shark Tank investor. Use engaging language with a few relevant emojis.Response should come in a structured ,organised & pretty format.`;
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch(`${API_URL}/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are Shark AI, a sharp and experienced investor who evaluates business pitches. You are tough but fair, and provide constructive feedback.',
-            },
-            {
-              role: 'user',
-              content: evaluationPrompt,
-            },
-          ],
-          temperature: 0.7,
-          max_tokens: 1500,
+          file_id: fileId,
+          query: evaluationPrompt,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get evaluation');
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          throw new Error(`Failed to get evaluation: ${response.status} ${errorText}`);
+        }
+        throw new Error(errorData.error || 'Failed to get evaluation');
       }
 
       const data = await response.json();
-      const evaluation = data.choices[0].message.content;
+      const evaluation = data.answer || data.response;
+
+      if (!evaluation) {
+        throw new Error('Evaluation response missing expected fields.');
+      }
 
       const assistantMessage = {
         role: 'assistant',
@@ -395,10 +397,7 @@ Be constructive but honest, like a real Shark Tank investor. Use emojis to make 
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-
-      // Speak a summary
       speakText("Thank you for your pitch! I've completed my evaluation. Check the detailed feedback on screen.");
-
     } catch (error) {
       console.error('Error evaluating pitch:', error);
       setMessages(prev => [...prev, {
@@ -677,7 +676,7 @@ Be constructive but honest, like a real Shark Tank investor. Use emojis to make 
                     <button
                       onClick={startPitchMode}
                       disabled={isProcessing}
-                      className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg"
+                      className="px-6 py-3 bg-linear-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg"
                     >
                       <Timer size={20} />
                       Start Your 5-Minute Pitch 🎤
@@ -687,7 +686,7 @@ Be constructive but honest, like a real Shark Tank investor. Use emojis to make 
 
                 {/* Timer Display */}
                 {isPitchMode && timerRunning && (
-                  <div className="mb-3 flex items-center justify-center gap-4 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-lg p-3 border border-red-200 dark:border-red-800">
+                  <div className="mb-3 flex items-center justify-center gap-4 bg-linear-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-lg p-3 border border-red-200 dark:border-red-800">
                     <div className="flex items-center gap-2">
                       <Timer className={`${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-orange-600 dark:text-orange-400'}`} size={24} />
                       <span className={`text-2xl font-bold ${pitchTimer <= 60 ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'}`}>
@@ -746,7 +745,7 @@ Be constructive but honest, like a real Shark Tank investor. Use emojis to make 
                     <button
                       onClick={handleSubmitPitch}
                       disabled={!inputMessage.trim() || isLoading}
-                      className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base font-medium shadow-sm"
+                      className="px-4 md:px-6 py-2 md:py-3 bg-linear-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base font-medium shadow-sm"
                     >
                       <Send size={18} className="md:w-5 md:h-5" />
                       <span className="hidden sm:inline">Submit Pitch</span>
