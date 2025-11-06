@@ -23,40 +23,52 @@ export default function PublicEvents() {
   }, [user]);
 
   const fetchPublicEvents = async () => {
-    const { data, error } = await supabase
+    // Fetch events
+    const { data: eventsData, error: eventsError } = await supabase
       .from('events')
-      .select(`
-        *,
-        schools:school_id (
-          id,
-          school_name,
-          city,
-          state,
-          country,
-          contact_email,
-          contact_phone
-        )
-      `)
+      .select('*')
       .eq('is_public', true)
       .order('start_date', { ascending: true });
 
-    if (error) {
-      console.error('Error fetching events:', error);
-      alert('Failed to load events. Please check if schools table exists and has proper foreign key.');
+    if (eventsError) {
+      console.error('Error fetching events:', eventsError);
+      alert('Failed to load events.');
       return;
     }
 
-    if (data) {
-      setEvents(data);
+    if (eventsData && eventsData.length > 0) {
+      // Get unique school IDs
+      const schoolIds = [...new Set(eventsData.map(event => event.school_id))];
       
-      // Extract unique schools for filter dropdown
-      const uniqueSchools = {};
-      data.forEach(event => {
-        if (event.schools && event.school_id && !uniqueSchools[event.school_id]) {
-          uniqueSchools[event.school_id] = event.schools;
-        }
-      });
-      setSchools(uniqueSchools);
+      // Fetch school details for all school IDs
+      const { data: schoolsData, error: schoolsError } = await supabase
+        .from('schools')
+        .select('id, school_name, city, state, country, contact_email, contact_phone')
+        .in('id', schoolIds);
+
+      if (schoolsError) {
+        console.warn('Error fetching schools:', schoolsError);
+      }
+
+      // Create a map of school data
+      const schoolsMap = {};
+      if (schoolsData) {
+        schoolsData.forEach(school => {
+          schoolsMap[school.id] = school;
+        });
+      }
+
+      // Attach school data to events
+      const eventsWithSchools = eventsData.map(event => ({
+        ...event,
+        schools: schoolsMap[event.school_id] || null
+      }));
+
+      setEvents(eventsWithSchools);
+      setSchools(schoolsMap);
+    } else {
+      setEvents([]);
+      setSchools({});
     }
   };
 
