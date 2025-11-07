@@ -12,8 +12,8 @@ const OPTIONS = [
   },
   {
     href: "/register/launch-pad",
-    label: "iGyan AI Launch",
-    badge: "iGyan AI Launch  Personal",
+    label: "Professional Suite",
+    badge: "Professional Suite  Personal",
     description: "Create your personal account to access learning journeys, personalized copilots, and track progress. For B2C students and mentors.",
   },
 ];

@@ -183,9 +183,9 @@ export function AuthProvider({ children }) {
 			// Validate role based on login variant
 			if (loginVariant === "institutionalSuite") {
 				if (!INSTITUTIONAL_ROLES.includes(userData.role)) {
-					throw new Error("Access denied. This portal is for institutional users (super_admin, co_admin, student, faculty) only. Please use the iGyan AI Launch portal for B2C access.");
+					throw new Error("Access denied. This portal is for institutional users (super_admin, co_admin, student, faculty) only. Please use the Professional Suite portal for B2C access.");
 				}
-			} else if (loginVariant === "igyanAiLaunch") {
+			} else if (loginVariant === "professionalSuite") {
 				if (!LAUNCH_PAD_ROLES.includes(userData.role)) {
 					throw new Error("Access denied. This portal is for B2C users (b2c_student, b2c_mentor) only. Please use the Institutional Suite portal.");
 				}
