@@ -13,6 +13,16 @@ export default function HomeworkManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [activeTab, setActiveTab] = useState('mcq'); // mcq or viva
+  
+  // AI Generator State
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiConfig, setAiConfig] = useState({
+    topic: '',
+    numQuestions: 5,
+    questionType: 'mcq',
+    subject: ''
+  });
 
   const [formData, setFormData] = useState({
     title: '',
@@ -194,6 +204,65 @@ export default function HomeworkManagement() {
     setFormData({ ...formData, viva_questions: updated });
   };
 
+  const generateQuestionsWithAI = async () => {
+    if (!aiConfig.topic || !aiConfig.subject) {
+      alert('Please fill in topic and subject');
+      return;
+    }
+
+    setAiGenerating(true);
+    try {
+      const response = await fetch('/api/generate-questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(aiConfig)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate questions');
+      }
+
+      const data = await response.json();
+      
+      // Add generated questions to form
+      if (aiConfig.questionType === 'mcq') {
+        setFormData({
+          ...formData,
+          mcq_questions: [...formData.mcq_questions, ...data.questions],
+          type: 'mcq',
+          subject: aiConfig.subject
+        });
+        setActiveTab('mcq');
+      } else {
+        setFormData({
+          ...formData,
+          viva_questions: [...formData.viva_questions, ...data.questions],
+          type: 'viva',
+          subject: aiConfig.subject
+        });
+        setActiveTab('viva');
+      }
+
+      setShowAIGenerator(false);
+      setShowModal(true);
+      alert(`Successfully generated ${data.questions.length} questions!`);
+      
+      // Reset AI config
+      setAiConfig({
+        topic: '',
+        numQuestions: 5,
+        questionType: 'mcq',
+        subject: ''
+      });
+    } catch (error) {
+      console.error('AI Generation Error:', error);
+      alert('Failed to generate questions: ' + error.message);
+    } finally {
+      setAiGenerating(false);
+    }
+  };
+
   const filteredAssignments = assignments.filter(assignment => {
     const matchesSearch = assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          assignment.subject.toLowerCase().includes(searchTerm.toLowerCase());
@@ -230,13 +299,24 @@ export default function HomeworkManagement() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-amber-400/40"
-          >
-            <Plus size={20} />
-            <span>Create Assignment</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowAIGenerator(true)}
+              className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>AI Generate</span>
+            </button>
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-amber-400/40"
+            >
+              <Plus size={20} />
+              <span>Create Manual</span>
+            </button>
+          </div>
         </div>
 
         {/* Search & Filter */}
@@ -355,6 +435,153 @@ export default function HomeworkManagement() {
           </div>
         )}
       </div>
+
+      {/* AI Generator Modal */}
+      {showAIGenerator && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-2xl rounded-3xl border border-white/60 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-zinc-900">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 p-3 text-white">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+                  AI Question Generator
+                </h2>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Let AI create questions for you instantly
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  Question Type
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setAiConfig({ ...aiConfig, questionType: 'mcq' })}
+                    className={`rounded-xl border-2 p-4 text-center font-semibold transition ${
+                      aiConfig.questionType === 'mcq'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                        : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
+                    }`}
+                  >
+                    <FileText className="mx-auto mb-2" size={24} />
+                    MCQ Questions
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAiConfig({ ...aiConfig, questionType: 'viva' })}
+                    className={`rounded-xl border-2 p-4 text-center font-semibold transition ${
+                      aiConfig.questionType === 'viva'
+                        ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
+                        : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
+                    }`}
+                  >
+                    <Mic className="mx-auto mb-2" size={24} />
+                    Viva Questions
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={aiConfig.subject}
+                    onChange={(e) => setAiConfig({ ...aiConfig, subject: e.target.value })}
+                    placeholder="e.g., Mathematics, Physics"
+                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                    Number of Questions
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={aiConfig.numQuestions}
+                    onChange={(e) => setAiConfig({ ...aiConfig, numQuestions: parseInt(e.target.value) })}
+                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  Topic/Chapter
+                </label>
+                <textarea
+                  required
+                  value={aiConfig.topic}
+                  onChange={(e) => setAiConfig({ ...aiConfig, topic: e.target.value })}
+                  placeholder="e.g., Photosynthesis in Plants, Quadratic Equations, French Revolution"
+                  rows={3}
+                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                />
+                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                  💡 Be specific for better results. Include key concepts you want to test.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>Note:</strong> AI will generate high-quality questions based on your topic. 
+                  {aiConfig.questionType === 'mcq' 
+                    ? ' MCQs will include 4 options with correct answers marked.'
+                    : ' Viva questions will include suggested comprehensive answers.'}
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAIGenerator(false);
+                    setAiConfig({ topic: '', numQuestions: 5, questionType: 'mcq', subject: '' });
+                  }}
+                  disabled={aiGenerating}
+                  className="flex-1 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={generateQuestionsWithAI}
+                  disabled={aiGenerating || !aiConfig.topic || !aiConfig.subject}
+                  className="flex-1 rounded-xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {aiGenerating ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      <span>Generating...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>Generate Questions</span>
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create/Edit Modal */}
       {showModal && (
