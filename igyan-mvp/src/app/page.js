@@ -299,51 +299,41 @@ export default function Home() {
                   </div>
                   <div className="mt-8 flex-1">
                     <ul className="space-y-3">
-                      {offeringMatrix.map((feature) => {
-                        const status = feature[plan.key];
-                        const isAvailable = status.status === "yes";
-                        const Icon = isAvailable ? CheckCircle : XCircle;
-                        const statusLabel = isAvailable
-                          ? status.note
-                            ? `Yes · ${status.note}`
-                            : "Yes"
-                          : "Not included";
+                      {offeringMatrix
+                        .filter((feature) => feature[plan.key].status === "yes")
+                        .map((feature) => {
+                          const status = feature[plan.key];
+                          const statusLabel = status.note ? `${status.note}` : "Included";
 
-                        return (
-                          <li
-                            key={`${plan.key}-${feature.feature}`}
-                            className={`flex items-start gap-3 rounded-xl border px-4 py-3 ${
-                              isDark
-                                ? "border-sky-500/15 bg-slate-900/70"
-                                : "border-white/20 bg-white/15"
-                            }`}
-                          >
-                            <Icon
-                              className={`mt-0.5 h-5 w-5 ${
-                                isAvailable
-                                  ? isDark
-                                    ? "text-sky-300"
-                                    : "text-white"
-                                  : isDark
-                                    ? "text-sky-200/40"
-                                    : "text-white/50"
+                          return (
+                            <li
+                              key={`${plan.key}-${feature.feature}`}
+                              className={`flex items-start gap-3 rounded-xl border px-4 py-3 ${
+                                isDark
+                                  ? "border-sky-500/15 bg-slate-900/70"
+                                  : "border-white/20 bg-white/15"
                               }`}
-                            />
-                            <div>
-                              <p className="text-sm font-medium leading-snug text-white">
-                                {feature.feature}
-                              </p>
-                              <p
-                                className={`text-xs font-medium ${
-                                  isDark ? "text-sky-200/70" : "text-white/75"
+                            >
+                              <CheckCircle
+                                className={`mt-0.5 h-5 w-5 ${
+                                  isDark ? "text-sky-300" : "text-white"
                                 }`}
-                              >
-                                {statusLabel}
-                              </p>
-                            </div>
-                          </li>
-                        );
-                      })}
+                              />
+                              <div>
+                                <p className="text-sm font-medium leading-snug text-white">
+                                  {feature.feature}
+                                </p>
+                                <p
+                                  className={`text-xs font-medium ${
+                                    isDark ? "text-sky-200/70" : "text-white/75"
+                                  }`}
+                                >
+                                  {statusLabel}
+                                </p>
+                              </div>
+                            </li>
+                          );
+                        })}
                     </ul>
                   </div>
                   <Link
