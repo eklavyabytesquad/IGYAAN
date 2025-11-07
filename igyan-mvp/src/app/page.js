@@ -166,7 +166,7 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
-                href="/register"
+                href="/contact"
                 className="group inline-flex items-center gap-2 rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-400/40 transition-all hover:-translate-y-0.5 hover:bg-sky-400"
               >
                 <span>Book a demo</span>
