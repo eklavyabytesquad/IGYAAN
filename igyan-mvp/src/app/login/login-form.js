@@ -21,12 +21,12 @@ const VARIANT_COPY = {
     signupLabel: "Request workspace access",
     footerPrompt: "Need to invite your leadership team?",
   },
-  igyanAiLaunch: {
-    badge: "iGyan AI Launch • Learners & Families",
+  professionalSuite: {
+    badge: "Professional Suite • Learners & Families",
     title: "Log in to your Sudarshan learner copilots",
     subtitle:
       "Stay on top of daily learning plans, passion projects, and venture studio challenges curated for curious minds and ambitious families.",
-    highlight: "iGyan AI Launch",
+    highlight: "Professional Suite",
     accentRing: "from-sky-400/30 via-blue-400/10 to-transparent",
     gradient: "from-white via-sky-50 to-white",
     helper:
@@ -34,7 +34,7 @@ const VARIANT_COPY = {
     helperLink: { href: "/contact", label: "Request an invite" },
     signupHref: "/register",
     signupLabel: "Create your personal account",
-  footerPrompt: "First time discovering iGyan AI Launch?",
+  footerPrompt: "First time discovering Professional Suite?",
   },
 };
 

@@ -86,7 +86,7 @@ export default function SharkAiPage() {
 						<div className="relative overflow-hidden rounded-4xl border border-slate-700/60 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 p-8 shadow-xl shadow-sky-500/20">
 							<div className="relative mx-auto aspect-320/220 w-full max-w-[360px]">
 								<Image
-									src="/asset/shark.png"
+									src="/asset/ai-shark/shark.png"
 									alt="Shark AI hero illustration"
 									fill
 									priority

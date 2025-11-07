@@ -96,7 +96,7 @@ export default function LaunchPadRegister() {
 				</div>
 				<div className="mb-4">
 					<span className="inline-block rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300">
-						iGyan AI Launch Pad
+						Professional Suite
 					</span>
 				</div>
 				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">

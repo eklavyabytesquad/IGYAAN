@@ -75,59 +75,59 @@ const heroSignals = [
 
 const offeringMatrix = [
   {
-    feature: "School-Level Innovation Cell & Startup Lab",
+    feature: "Institutional Innovation & Virtual Incubation Hub",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "yes" },
+    professionalSuite: { status: "yes", note: "Personal Innovation Space" },
   },
   {
-    feature: "AI Tutor (Daily Task Automation, Mentor Chatbot)",
-    institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "yes", note: "Co-pilot" },
+    feature: "AI Faculty Assistant / Sudarshan AI",
+    institutionalSuite: { status: "yes", note: "Institution-Branded Tutor" },
+    professionalSuite: { status: "yes", note: "Your Personal Co-Pilot" },
   },
   {
-    feature: "Homework Task Delivery & Tracking",
+    feature: "AI Homework & Task Management System",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    professionalSuite: { status: "no" },
   },
   {
-    feature: "Viva Mock Interview & AI Skill Evaluation",
-    institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    feature: "AI Viva Intelligence / VivaVerse",
+    institutionalSuite: { status: "yes", note: "Voice-Based Evaluation" },
+    professionalSuite: { status: "yes", note: "AI Conversations" },
   },
   {
-    feature: "Centralized Events, Competitions, Hackathons",
-    institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "yes" },
+    feature: "Events & Competition Dashboard",
+    institutionalSuite: { status: "yes", note: "Institutional Dashboard" },
+    professionalSuite: { status: "yes", note: "Global Events Hub" },
   },
   {
-    feature: "AI Counsellor & Roadmap Generator",
-    institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "yes" },
+    feature: "Buddy AI Counsellor / GyaniSage",
+    institutionalSuite: { status: "yes", note: "Student Growth Roadmap" },
+    professionalSuite: { status: "yes", note: "Life Direction Sessions" },
   },
   {
     feature: "AI Timetable & Smart Substitution Scheduler",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    professionalSuite: { status: "yes", note: "Smart Study Scheduler" },
   },
   {
-    feature: "Assignment/Test Creation (AI Assessment Builder)",
+    feature: "AI Assessment & Evaluation Suite",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    professionalSuite: { status: "no" },
   },
   {
-    feature: "Editable AI Report Cards (Smart Evaluation System)",
+    feature: "AI-Driven Report Card System",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    professionalSuite: { status: "no" },
   },
   {
-    feature: "AI Assessment Builder",
+    feature: "Institutional Insights Dashboard",
     institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "no" },
+    professionalSuite: { status: "no" },
   },
   {
-    feature: "Real-Time Pitch Deck Feedback (AI Shark Simulation)",
-    institutionalSuite: { status: "yes" },
-  igyanAiLaunch: { status: "yes", note: "Premium" },
+    feature: "AI Shark Simulation – Real-Time Pitch Feedback",
+    institutionalSuite: { status: "no" },
+    professionalSuite: { status: "yes" },
   },
 ];
 
@@ -255,15 +255,15 @@ export default function Home() {
               {
                 key: "institutionalSuite",
                 title: "Institutional Suite • Institutions",
-                description: "Full-stack automation and innovation infrastructure for schools, districts, and education networks.",
+                description: "Transforming Institutions into Intelligent Learning Ecosystems with comprehensive AI-powered tools for education management.",
                 badge: "Most comprehensive",
                 cardClass:
                   "border-slate-900/70 bg-linear-to-br from-slate-950 via-slate-900 to-zinc-950 text-sky-50 shadow-sky-500/20 dark:border-slate-800/80",
               },
               {
-                key: "igyanAiLaunch",
-                title: "iGyan AI Launch • Learners & Families",
-                description: "Personal Sudarshan copilots that amplify growth for ambitious students and parents.",
+                key: "professionalSuite",
+                title: "Professional Suite • Learners & Families",
+                description: "Foundation for Learners & Family – Personal AI copilots and learning tools that empower students and parents.",
                 badge: "Popular choice",
                 cardClass:
                   "border-sky-200/70 bg-linear-to-br from-sky-600 via-cyan-500 to-sky-400 text-white shadow-[0_30px_60px_-25px_rgba(56,189,248,0.45)]",

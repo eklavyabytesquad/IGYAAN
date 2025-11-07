@@ -11,8 +11,8 @@ const OPTIONS = [
   },
   {
     href: "/login/launch-pad",
-    label: "iGyan AI Launch",
-    badge: "iGyan AI Launch • Personal",
+    label: "Professional Suite",
+    badge: "Professional Suite • Personal",
     description: "Students and families sign in to personalize copilots, access learning journeys, and track progress across devices.",
   },
 ];
