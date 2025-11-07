@@ -10,6 +10,10 @@ import { supabase } from "../../app/utils/supabase";
 // Each nav item can specify which roles have access
 // If allowedRoles is not specified, all roles have access
 // If allowedRoles is empty array, only super_admin has access (via superAdminOnly flag)
+// 
+// IMPORTANT: Role-based access is PRIMARY!
+// The user_access table is ONLY for additional restrictions by super_admin
+// By default, users with allowed roles will see items unless explicitly restricted in user_access
 const ROLE_BASED_NAV_CONFIG = {
 	// Common items (available to all roles)
 	dashboard: {
@@ -56,6 +60,7 @@ const ROLE_BASED_NAV_CONFIG = {
 	facultySubstitution: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
 	},
+
 	userManagement: {
 		allowedRoles: ['super_admin', 'co_admin'],
 	},
@@ -107,6 +112,8 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 	const [loadingAccess, setLoadingAccess] = useState(true);
 
 	// Fetch user access permissions for institutional users
+	// NOTE: user_access table is ONLY for restrictions, not requirements
+	// Users see items based on role by default, unless explicitly restricted here
 	useEffect(() => {
 		if (user) {
 			fetchUserAccess();
@@ -131,7 +138,8 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 
 			if (error) throw error;
 
-			// Create access map
+			// Create access map for RESTRICTIONS ONLY
+			// Empty map means no restrictions = full access based on role
 			const accessMap = {};
 			data?.forEach((access) => {
 				accessMap[access.module_name] = access.access_type;
@@ -159,9 +167,21 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		const B2C_ROLES = ['b2c_student', 'b2c_mentor'];
 		if (B2C_ROLES.includes(user.role)) return true;
 		
-		// For institutional users, also check user_access table
+		// For institutional users (faculty, co_admin, student):
+		// Role-based access is PRIMARY - user_access table is only for ADDITIONAL restrictions
+		// If user has the role, they should see the item unless explicitly restricted in user_access
 		const moduleName = itemKey.replace(/([A-Z])/g, ' $1').trim();
-		return userAccess[moduleName] && userAccess[moduleName] !== "none";
+		
+		// If user_access is still loading, allow access based on role (optimistic UI)
+		if (loadingAccess) return true;
+		
+		// If module exists in user_access, check if it's explicitly denied
+		if (userAccess.hasOwnProperty(moduleName)) {
+			return userAccess[moduleName] !== "none";
+		}
+		
+		// If module NOT in user_access table, allow access based on role (default allow)
+		return true;
 	};
 
 	const navItems = [
@@ -341,72 +361,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				</svg>
 			),
 		},
-		{
-			key: 'reports',
-			name: "Reports",
-			href: "/dashboard/reports",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.reports.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
-					/>
-				</svg>
-			),
-		},
-		{
-			key: 'assignments',
-			name: "Assignments",
-			href: "/dashboard/assignments",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.assignments.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
-					/>
-				</svg>
-			),
-		},
-		{
-			key: 'questionPaper',
-			name: "Question Paper",
-			href: "/dashboard/question-paper",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.questionPaper.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-					/>
-				</svg>
-			),
-		},
+
 		{
 			key: 'incubationHub',
 			name: "Incubation Hub",
@@ -447,28 +402,6 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						strokeLinecap="round"
 						strokeLinejoin="round"
 						d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
-					/>
-				</svg>
-			),
-		},
-		{
-			key: 'facultySubstitution',
-			name: "Faculty Substitution",
-			href: "/dashboard/faculty-substitution",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.facultySubstitution.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9 2.25h.008v.008H12v-.008z"
 					/>
 				</svg>
 			),
@@ -627,72 +560,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				</svg>
 			),
 		},
-		{
-			key: 'homeworkManagement',
-			name: "Homework Management",
-			href: "/dashboard/homework",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.homeworkManagement.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-					/>
-				</svg>
-			),
-		},
-		{
-			key: 'homeworkStudent',
-			name: "My Homework",
-			href: "/dashboard/homework/student",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.homeworkStudent.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-			),
-		},
-		{
-			key: 'homeworkReports',
-			name: "AI Homework Reports",
-			href: "/dashboard/homework/reports",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.homeworkReports.allowedRoles,
-			icon: (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					className="h-5 w-5"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
-					/>
-				</svg>
-			),
-		},
+
 		{
 			key: 'userAccess',
 			name: "User Access",

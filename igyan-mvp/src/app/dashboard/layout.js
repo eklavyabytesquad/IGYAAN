@@ -5,6 +5,7 @@ import { useAuth } from "../utils/auth_context";
 import { supabase } from "../utils/supabase";
 import DashboardNavbar from "../../components/dashboard/navbar";
 import DashboardSidenav from "../../components/dashboard/sidenav";
+import FacultySidenav from "../../components/dashboard/faculty-sidenav";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -128,14 +129,24 @@ export default function DashboardLayout({ children }) {
 
 	return (
 		<div className="dashboard-theme flex h-screen overflow-hidden">
-			{/* Sidebar */}
-			<DashboardSidenav
-				isOpen={isSidenavOpen}
-				setIsOpen={setIsSidenavOpen}
-				isCollapsed={isCollapsed}
-				setIsCollapsed={setIsCollapsed}
-				schoolData={schoolData}
-			/>
+			{/* Sidebar - Use Faculty Sidenav for faculty role */}
+			{user?.role === 'faculty' ? (
+				<FacultySidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
+					schoolData={schoolData}
+				/>
+			) : (
+				<DashboardSidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
+					schoolData={schoolData}
+				/>
+			)}
 
 			{/* Main Content Area */}
 			<div className={`flex flex-1 flex-col transition-all duration-300 ${
