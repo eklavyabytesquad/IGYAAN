@@ -1,0 +1,72 @@
+/* PDF Viewer Styles */
+.react-pdf__Page {
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.react-pdf__Page__canvas {
+  max-width: 100%;
+  height: auto !important;
+  border-radius: 0.5rem;
+}
+
+.react-pdf__Page__textContent {
+  border-radius: 0.5rem;
+}
+
+.react-pdf__Page__annotations {
+  border-radius: 0.5rem;
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .react-pdf__Page {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  }
+}
+
+/* Scrollbar styling */
+.pdf-viewer-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.pdf-viewer-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.pdf-viewer-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.pdf-viewer-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Dark mode scrollbar */
+@media (prefers-color-scheme: dark) {
+  .pdf-viewer-container::-webkit-scrollbar-track {
+    background: #1f1f1f;
+  }
+
+  .pdf-viewer-container::-webkit-scrollbar-thumb {
+    background: #555;
+  }
+
+  .pdf-viewer-container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
+}
