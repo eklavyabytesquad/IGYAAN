@@ -100,7 +100,7 @@ const offeringMatrix = [
     professionalSuite: { status: "yes", note: "Global Events Hub" },
   },
   {
-    feature: "Buddy AI Counsellor / GyaniSage",
+    feature: "Buddy AI Counsellor / Gyani Sage",
     institutionalSuite: { status: "yes", note: "Student Growth Roadmap" },
     professionalSuite: { status: "yes", note: "Life Direction Sessions" },
   },

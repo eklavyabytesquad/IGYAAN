@@ -6,6 +6,7 @@ import { supabase } from "../utils/supabase";
 import DashboardNavbar from "../../components/dashboard/navbar";
 import DashboardSidenav from "../../components/dashboard/sidenav";
 import FacultySidenav from "../../components/dashboard/faculty-sidenav";
+import StudentSidenav from "../../components/dashboard/student-sidenav";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -129,9 +130,17 @@ export default function DashboardLayout({ children }) {
 
 	return (
 		<div className="dashboard-theme flex h-screen overflow-hidden">
-			{/* Sidebar - Use Faculty Sidenav for faculty role */}
+			{/* Sidebar - Role-based navigation */}
 			{user?.role === 'faculty' ? (
 				<FacultySidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
+					schoolData={schoolData}
+				/>
+			) : user?.role === 'student' ? (
+				<StudentSidenav
 					isOpen={isSidenavOpen}
 					setIsOpen={setIsSidenavOpen}
 					isCollapsed={isCollapsed}

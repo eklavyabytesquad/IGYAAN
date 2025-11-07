@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, Heart, Brain, Target, Sparkles, BookOpen, TrendingUp } from 'lucide-react';
 import OpenAI from 'openai';
 
-export default function GyanSage() {
+export default function gyanisage() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ export default function GyanSage() {
       name: 'Life Counselling',
       icon: Heart,
       description: 'Personal guidance and emotional support',
-      systemPrompt: `You are GyanSage, a compassionate AI counsellor for students at igyan education platform. You provide:
+      systemPrompt: `You are Gyani Sage, a compassionate AI counsellor for students at igyan education platform. You provide:
 - Empathetic emotional support and mental health guidance
 - Life direction and personal growth advice
 - Stress management and well-being strategies
@@ -39,7 +39,7 @@ Be warm, understanding, and supportive. Ask follow-up questions to understand st
       name: 'Career Roadmap',
       icon: Target,
       description: 'Career planning and professional growth',
-      systemPrompt: `You are GyanSage, an expert career counsellor and roadmap planner for students at igyan education platform. You provide:
+      systemPrompt: `You are Gyani Sage, an expert career counsellor and roadmap planner for students at igyan education platform. You provide:
 - Personalized career path recommendations
 - Skills development roadmaps
 - Industry insights and trends
@@ -53,7 +53,7 @@ Be insightful, data-driven, and motivational. Help students create actionable ca
       name: 'Academic Growth',
       icon: BookOpen,
       description: 'Study strategies and academic excellence',
-      systemPrompt: `You are GyanSage, an academic excellence coach for students at igyan education platform. You provide:
+      systemPrompt: `You are Gyani Sage, an academic excellence coach for students at igyan education platform. You provide:
 - Effective study techniques and learning strategies
 - Time management and productivity tips
 - Exam preparation and stress management
@@ -67,7 +67,7 @@ Be encouraging, practical, and results-oriented. Help students achieve their aca
       name: 'Personal Development',
       icon: TrendingUp,
       description: 'Self-improvement and life skills',
-      systemPrompt: `You are GyanSage, a personal development mentor for students at igyan education platform. You provide:
+      systemPrompt: `You are Gyani Sage, a personal development mentor for students at igyan education platform. You provide:
 - Self-awareness and personality development
 - Communication and leadership skills
 - Financial literacy and life skills
@@ -91,7 +91,7 @@ Be inspiring, practical, and holistic. Help students become well-rounded individ
     setMessages([
       {
         role: 'assistant',
-        content: `🙏 Namaste! I'm **GyanSage**, your AI counsellor and growth companion.\n\n**${currentMode.name}** mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
+        content: `🙏 Namaste! I'm **Gyani Sage**, your AI counsellor and growth companion.\n\n**${currentMode.name}** mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
       },
     ]);
     setConversationHistory([]);
@@ -120,7 +120,7 @@ Be inspiring, practical, and holistic. Help students become well-rounded individ
           messages: [
             {
               role: 'system',
-              content: `You are GyanSage, an expert career counsellor and roadmap planner. When creating career roadmaps, you MUST format them as structured JSON with clear phases, milestones, and timelines.
+              content: `You are Gyani Sage, an expert career counsellor and roadmap planner. When creating career roadmaps, you MUST format them as structured JSON with clear phases, milestones, and timelines.
 
 FORMAT YOUR RESPONSE AS JSON:
 {
@@ -238,7 +238,7 @@ Create 4-6 phases with clear progression.`,
               <Brain size={24} />
             </span>
             <div>
-              <h2 className="text-lg font-bold text-amber-600 dark:text-amber-400">GyanSage</h2>
+              <h2 className="text-lg font-bold text-amber-600 dark:text-amber-400">Gyani Sage</h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">AI Counsellor</p>
             </div>
           </div>
@@ -371,7 +371,7 @@ Create 4-6 phases with clear progression.`,
                     {message.role === 'assistant' && (
                       <div className="mb-2 flex items-center gap-2 text-amber-600 dark:text-amber-400">
                         <ModeIcon className="h-4 w-4" />
-                        <span className="text-xs font-semibold uppercase tracking-wide">GyanSage</span>
+                        <span className="text-xs font-semibold uppercase tracking-wide">Gyani Sage</span>
                       </div>
                     )}
                     <div className="whitespace-pre-wrap text-sm leading-relaxed sm:text-base">
@@ -386,7 +386,7 @@ Create 4-6 phases with clear progression.`,
               <div className="flex justify-start">
                 <div className="flex items-center gap-3 rounded-3xl bg-linear-to-r from-amber-100 to-orange-100 px-6 py-4 text-sm text-amber-700 shadow-lg dark:from-amber-950 dark:to-orange-950 dark:text-amber-300">
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>GyanSage is reflecting on your message...</span>
+                  <span>Gyani Sage is reflecting on your message...</span>
                 </div>
               </div>
             )}

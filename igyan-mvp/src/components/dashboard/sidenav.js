@@ -28,7 +28,7 @@ const ROLE_BASED_NAV_CONFIG = {
 	copilot: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
-	gyanSage: {
+	gyanisage: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
 	vivaAi: {
@@ -274,10 +274,10 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
-			key: 'gyanSage',
-			name: "GyanSage",
+			key: 'gyanisage',
+			name: "Gyani Sage",
 			href: "/dashboard/gyanisage",
-			allowedRoles: ROLE_BASED_NAV_CONFIG.gyanSage.allowedRoles,
+			allowedRoles: ROLE_BASED_NAV_CONFIG.gyanisage.allowedRoles,
 			icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
