@@ -75,7 +75,7 @@ export default function B2CStudentSidenav({ isOpen, setIsOpen, isCollapsed, setI
 		{
 			key: 'copilot',
 			name: "Sudarshan AI",
-			href: "/dashboard/copilot",
+			href: "/dashboard/sudarshan",
 			icon: (
 				<Image src="/asset/sudarshanai/sudarshanicon.png" alt="Sudarshan AI" width={20} height={20} className="object-contain nav-icon-adaptive" />
 			),

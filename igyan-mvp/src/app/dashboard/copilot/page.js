@@ -51,6 +51,7 @@ export default function AICopilotPage() {
 			const savedChats = localStorage.getItem(`chat_history_${user.id}`);
 			const savedSessionMemories = localStorage.getItem(`session_memories_${user.id}`);
 			const savedOverallMemories = localStorage.getItem(`overall_memories_${user.id}`);
+			const savedProfile = localStorage.getItem(`student_profile_${user.id}`);
 			
 			if (savedChats) {
 				const chats = JSON.parse(savedChats);

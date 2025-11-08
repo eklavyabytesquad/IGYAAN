@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 export default function ProfileSetupModal({ initialData, onSave, onClose }) {
 	const [formData, setFormData] = useState({
 		name: "",
-		aiName: "Sudarshan AI",
 		class: "",
 		school: {
 			name: "",
@@ -105,35 +104,19 @@ export default function ProfileSetupModal({ initialData, onSave, onClose }) {
 					<div className="space-y-4">
 						<h3 className="text-sm font-semibold text-zinc-900 dark:text-white">Personal Information</h3>
 						
-						<div className="grid gap-4 sm:grid-cols-2">
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Your Name <span className="text-red-500">*</span>
-								</label>
-								<input
-									type="text"
-									name="name"
-									value={formData.name}
-									onChange={handleInputChange}
-									placeholder="Enter your name"
-									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-									required
-								/>
-							</div>
-
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									AI Assistant Name
-								</label>
-								<input
-									type="text"
-									name="aiName"
-									value={formData.aiName}
-									onChange={handleInputChange}
-									placeholder="E.g., Sudarshan AI, My Tutor"
-									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-								/>
-							</div>
+						<div>
+							<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+								Your Name <span className="text-red-500">*</span>
+							</label>
+							<input
+								type="text"
+								name="name"
+								value={formData.name}
+								onChange={handleInputChange}
+								placeholder="Enter your name"
+								className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+								required
+							/>
 						</div>
 
 						<div>

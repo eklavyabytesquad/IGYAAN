@@ -231,7 +231,7 @@ export default function AICopilotPage() {
 
 	// Build context from selected notes and profile
 	const buildContextPrompt = () => {
-		let context = `You are helping ${studentProfile.name}, a Class ${studentProfile.class} student from ${studentProfile.school.name}, ${studentProfile.school.location}. `;
+		let context = `You are Sudarshan AI, helping ${studentProfile.name}, a Class ${studentProfile.class} student from ${studentProfile.school.name}, ${studentProfile.school.location}. `;
 		context += `Their class teacher is ${studentProfile.classTeacher}. `;
 		context += `The student is interested in ${studentProfile.interests.join(", ")}. `;
 		context += `Their sleep time is ${studentProfile.sleepTime}. `;
