@@ -13,7 +13,6 @@ import MemoryList from "./components/MemoryList";
 import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
 import ModeSelector, { AI_MODES } from "./components/ModeSelector";
-import studentProfile from "./data/student-profile.json";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
