@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Download, BookOpen, Sparkles, CheckCircle, Loader2 } from 'lucide-react';
+import { FileText, Download, BookOpen, Sparkles, CheckCircle, Loader2, Copy, Check } from 'lucide-react';
 import { cbseData, getSubjects, getTopics } from './data/cbseData';
 import { generateMCQPDF } from './utils/mcqPDFGenerator';
 import OpenAI from 'openai';
@@ -17,6 +17,7 @@ export default function DashboardAssignmentsPage() {
   const [generatedMCQs, setGeneratedMCQs] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const subjects = selectedClass ? getSubjects(selectedClass) : [];
   const topics = selectedClass && selectedSubject ? getTopics(selectedSubject, selectedClass) : [];
@@ -160,6 +161,19 @@ IMPORTANT:
     }
   };
 
+  const handleCopyText = async () => {
+    if (!generatedMCQs) return;
+    
+    try {
+      await navigator.clipboard.writeText(generatedMCQs);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      console.error('Error copying text:', error);
+      alert('Failed to copy text. Please try again.');
+    }
+  };
+
   const handleReset = () => {
     setSelectedClass('');
     setSelectedSubject('');
@@ -170,6 +184,7 @@ IMPORTANT:
     setQuestionTypes({});
     setGeneratedMCQs('');
     setShowPreview(false);
+    setIsCopied(false);
   };
 
   return (
@@ -419,11 +434,27 @@ IMPORTANT:
         {showPreview && generatedMCQs && (
           <div className="mx-auto max-w-5xl space-y-6">
             <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
                   Generated Questions Preview
                 </h2>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={handleCopyText}
+                    className="flex items-center gap-2 rounded-xl bg-linear-to-r from-blue-500 to-indigo-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:shadow-blue-400/40"
+                  >
+                    {isCopied ? (
+                      <>
+                        <Check size={18} />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} />
+                        Copy Text
+                      </>
+                    )}
+                  </button>
                   <button
                     onClick={handleDownloadPDF}
                     className="flex items-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-teal-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:shadow-emerald-400/40"
@@ -460,27 +491,63 @@ IMPORTANT:
 
         {/* Info Cards */}
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900 dark:bg-indigo-900/20">
-            <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">
+          <div 
+            className="rounded-2xl border p-4"
+            style={{
+              borderColor: 'var(--dashboard-border)',
+              backgroundColor: 'var(--dashboard-surface-solid)',
+            }}
+          >
+            <p 
+              className="text-sm font-semibold"
+              style={{ color: 'var(--dashboard-primary)' }}
+            >
               AI-Powered
             </p>
-            <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-300">
+            <p 
+              className="mt-1 text-xs"
+              style={{ color: 'var(--dashboard-text)' }}
+            >
               Questions generated using advanced AI following CBSE curriculum
             </p>
           </div>
-          <div className="rounded-2xl border border-purple-200 bg-purple-50 p-4 dark:border-purple-900 dark:bg-purple-900/20">
-            <p className="text-sm font-semibold text-purple-900 dark:text-purple-100">
+          <div 
+            className="rounded-2xl border p-4"
+            style={{
+              borderColor: 'var(--dashboard-border)',
+              backgroundColor: 'var(--dashboard-surface-solid)',
+            }}
+          >
+            <p 
+              className="text-sm font-semibold"
+              style={{ color: 'var(--dashboard-primary)' }}
+            >
               Instant PDF
             </p>
-            <p className="mt-1 text-xs text-purple-700 dark:text-purple-300">
+            <p 
+              className="mt-1 text-xs"
+              style={{ color: 'var(--dashboard-text)' }}
+            >
               Download professional PDFs with answer keys automatically
             </p>
           </div>
-          <div className="rounded-2xl border border-pink-200 bg-pink-50 p-4 dark:border-pink-900 dark:bg-pink-900/20">
-            <p className="text-sm font-semibold text-pink-900 dark:text-pink-100">
+          <div 
+            className="rounded-2xl border p-4"
+            style={{
+              borderColor: 'var(--dashboard-border)',
+              backgroundColor: 'var(--dashboard-surface-solid)',
+            }}
+          >
+            <p 
+              className="text-sm font-semibold"
+              style={{ color: 'var(--dashboard-primary)' }}
+            >
               Fully Customizable
             </p>
-            <p className="mt-1 text-xs text-pink-700 dark:text-pink-300">
+            <p 
+              className="mt-1 text-xs"
+              style={{ color: 'var(--dashboard-text)' }}
+            >
               Choose count, difficulty, and question types for perfect assessments
             </p>
           </div>
