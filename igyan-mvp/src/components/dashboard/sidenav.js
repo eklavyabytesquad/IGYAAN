@@ -619,11 +619,13 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md"
 							/>
 						) : (
-							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 shadow-md">
-								<span className="text-base font-bold text-white">
-									{schoolData?.school_name?.[0] || "iG"}
-								</span>
-							</div>
+							<Image
+								src="/logo2.jpg"
+								alt="IGYAN.AI"
+								width={40}
+								height={40}
+								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md ring-2 ring-indigo-500/20"
+							/>
 						)}
 						{!isCollapsed && (
 							<span

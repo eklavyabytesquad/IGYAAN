@@ -187,11 +187,13 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md ring-2 ring-indigo-500/20"
 							/>
 						) : (
-							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md ring-2 ring-indigo-500/20">
-								<span className="text-base font-bold text-white">
-									{schoolData?.school_name?.[0] || "iG"}
-								</span>
-							</div>
+							<Image
+								src="/logo2.jpg"
+								alt="IGYAN.AI"
+								width={40}
+								height={40}
+								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md ring-2 ring-indigo-500/20"
+							/>
 						)}
 						{!isCollapsed && (
 							<span className="text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white">
