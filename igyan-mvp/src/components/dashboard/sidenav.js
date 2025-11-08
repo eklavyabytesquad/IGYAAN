@@ -307,7 +307,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 		{
 			key: 'sharkAi',
-			name: "Shark AI",
+			name: "AI Shark",
 			href: "/dashboard/shark-ai",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.sharkAi.allowedRoles,
 			icon: (
