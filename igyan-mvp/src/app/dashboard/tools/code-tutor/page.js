@@ -148,10 +148,10 @@ IMPORTANT:
 					return (
 						<div key={index} className="my-4 overflow-hidden rounded-xl border shadow-lg" style={{
 							borderColor: 'var(--dashboard-border)',
-							background: 'rgba(15, 23, 42, 0.6)'
+							background: 'var(--dashboard-surface-muted)'
 						}}>
 							<div className="flex items-center justify-between px-4 py-2.5" style={{
-								background: 'rgba(30, 41, 59, 0.8)',
+								background: 'var(--dashboard-background-contrast)',
 								borderBottom: '1px solid var(--dashboard-border)'
 							}}>
 								<div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ IMPORTANT:
 										<div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
 										<div className="h-3 w-3 rounded-full bg-green-500/80"></div>
 									</div>
-									<span className="ml-3 text-sm font-semibold" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+									<span className="ml-3 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										{PROGRAMMING_LANGUAGES.find(l => l.value === language)?.label || language}
 									</span>
 								</div>
@@ -196,12 +196,12 @@ IMPORTANT:
 									margin: 0,
 									borderRadius: 0,
 									fontSize: "0.875rem",
-									background: 'rgba(15, 23, 42, 0.4)',
+									background: '#1e293b',
 									padding: '1rem',
 								}}
 								showLineNumbers
 								lineNumberStyle={{
-									color: 'rgba(148, 163, 184, 0.5)',
+									color: '#64748b',
 									paddingRight: '1rem',
 									minWidth: '2.5rem'
 								}}
@@ -220,7 +220,7 @@ IMPORTANT:
 				<div key={index} className="leading-relaxed">
 					{part.split('\n').filter(line => line.trim()).map((line, i) => (
 						<p key={i} className="mb-3 text-[15px] leading-7" style={{
-							color: 'rgba(255, 255, 255, 0.95)'
+							color: 'var(--dashboard-text)'
 						}}>
 							{line}
 						</p>
@@ -330,20 +330,19 @@ IMPORTANT:
 										onClick={() => setInputMessage(suggestion)}
 										className="rounded-xl border px-5 py-3.5 text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-lg"
 										style={{
-											borderColor: 'rgba(255, 255, 255, 0.1)',
-											background: 'rgba(255, 255, 255, 0.03)',
-											color: 'rgba(255, 255, 255, 0.85)',
-											backdropFilter: 'blur(10px)'
+											borderColor: 'var(--dashboard-border)',
+											background: 'var(--dashboard-surface)',
+											color: 'var(--dashboard-text)'
 										}}
 										onMouseEnter={(e) => {
 											e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
-											e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)';
-											e.currentTarget.style.color = 'rgba(147, 197, 253, 1)';
+											e.currentTarget.style.background = 'var(--dashboard-surface-muted)';
+											e.currentTarget.style.color = 'var(--dashboard-primary)';
 										}}
 										onMouseLeave={(e) => {
-											e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-											e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-											e.currentTarget.style.color = 'rgba(255, 255, 255, 0.85)';
+											e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+											e.currentTarget.style.background = 'var(--dashboard-surface)';
+											e.currentTarget.style.color = 'var(--dashboard-text)';
 										}}
 									>
 										{suggestion}
@@ -374,15 +373,14 @@ IMPORTANT:
 								}`} style={{
 									background: message.role === "user" 
 										? 'linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))' 
-										: 'rgba(255, 255, 255, 0.03)',
-									backdropFilter: message.role === "assistant" ? 'blur(10px)' : 'none',
+										: 'var(--dashboard-surface)',
 									borderWidth: '1px',
 									borderColor: message.role === "user" 
 										? 'transparent' 
-										: 'rgba(255, 255, 255, 0.08)'
+										: 'var(--dashboard-border)'
 								}}>
 									{message.role === "user" ? (
-										<p className="text-[15px] leading-7" style={{ color: 'rgba(255, 255, 255, 0.98)' }}>
+										<p className="text-[15px] leading-7" style={{ color: 'var(--dashboard-primary-foreground)' }}>
 											{message.content}
 										</p>
 									) : (
@@ -414,9 +412,8 @@ IMPORTANT:
 								</svg>
 							</div>
 							<div className="rounded-2xl rounded-bl-sm border px-6 py-5 shadow-md" style={{
-								background: 'rgba(255, 255, 255, 0.03)',
-								backdropFilter: 'blur(10px)',
-								borderColor: 'rgba(255, 255, 255, 0.08)'
+								background: 'var(--dashboard-surface)',
+								borderColor: 'var(--dashboard-border)'
 							}}>
 								<div className="flex items-center gap-2.5">
 									<div className="h-2.5 w-2.5 animate-bounce rounded-full shadow-lg" style={{ 
@@ -437,10 +434,10 @@ IMPORTANT:
 					)}
 
 					{error && (
-						<div className="rounded-xl border px-5 py-4 text-sm font-medium shadow-lg backdrop-blur-sm" style={{
+						<div className="rounded-xl border px-5 py-4 text-sm font-medium shadow-lg" style={{
 							background: 'rgba(239, 68, 68, 0.1)',
-							borderColor: 'rgba(239, 68, 68, 0.3)',
-							color: 'rgba(252, 165, 165, 1)'
+							borderColor: 'rgba(239, 68, 68, 0.4)',
+							color: '#ef4444'
 						}}>
 							<div className="flex items-center gap-3">
 								<svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -456,9 +453,9 @@ IMPORTANT:
 			</div>
 
 			{/* Input Area */}
-			<div className="border-t px-6 py-5 backdrop-blur-xl" style={{ 
+			<div className="border-t px-6 py-5" style={{ 
 				borderColor: 'var(--dashboard-border)',
-				background: 'rgba(0, 0, 0, 0.3)'
+				background: 'var(--dashboard-card)'
 			}}>
 				<form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
 					<div className="flex gap-3">
@@ -467,20 +464,19 @@ IMPORTANT:
 							value={inputMessage}
 							onChange={(e) => setInputMessage(e.target.value)}
 							placeholder={`Ask me anything about ${PROGRAMMING_LANGUAGES.find(l => l.value === selectedLanguage)?.label}...`}
-							className="flex-1 rounded-xl border px-5 py-4 text-[15px] transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 placeholder:text-opacity-50"
+							className="flex-1 rounded-xl border px-5 py-4 text-[15px] transition-all focus:outline-none focus:ring-2"
 							style={{
-								borderColor: 'rgba(255, 255, 255, 0.1)',
-								background: 'rgba(255, 255, 255, 0.05)',
-								color: 'rgba(255, 255, 255, 0.95)',
-								backdropFilter: 'blur(10px)'
+								borderColor: 'var(--dashboard-border)',
+								background: 'var(--dashboard-surface)',
+								color: 'var(--dashboard-text)'
 							}}
 							onFocus={(e) => {
 								e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
-								e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+								e.currentTarget.style.boxShadow = `0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)`;
 							}}
 							onBlur={(e) => {
-								e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-								e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+								e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+								e.currentTarget.style.boxShadow = 'none';
 							}}
 							disabled={isGenerating}
 						/>

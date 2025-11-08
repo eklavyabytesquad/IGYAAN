@@ -102,6 +102,22 @@ const TOOL_DEFINITIONS = [
 		badge: "New"
 	},
 	{
+		id: "code-tutor",
+		name: "Code Tutor",
+		description: "Interactive AI coding assistant that teaches programming in 14+ languages with syntax highlighting and real-time explanations.",
+		icon: (
+			<svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+			</svg>
+		),
+		href: "/dashboard/tools/code-tutor",
+		gradient: "from-indigo-500 to-violet-500",
+		bgGradient: "from-indigo-50 to-violet-50",
+		darkBgGradient: "dark:from-indigo-900/20 dark:to-violet-900/20",
+		category: "Programming",
+		badge: "New"
+	},
+	{
 		id: "coming-soon-1",
 		name: "Flashcard Creator",
 		description: "Generate smart flashcards automatically from your notes and study materials for effective memorization.",
@@ -135,22 +151,6 @@ const TOOL_DEFINITIONS = [
 	},
 	{
 		id: "coming-soon-3",
-		name: "Code Tutor",
-		description: "Interactive AI coding assistant that helps you learn programming through guided practice.",
-		icon: (
-			<svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-			</svg>
-		),
-		href: "#",
-		gradient: "from-indigo-500 to-violet-500",
-		bgGradient: "from-indigo-50 to-violet-50",
-		darkBgGradient: "dark:from-indigo-900/20 dark:to-violet-900/20",
-		category: "Programming",
-		comingSoon: true
-	},
-	{
-		id: "coming-soon-4",
 		name: "Presentation Builder",
 		description: "Convert your ideas into stunning presentations with AI-generated content and design.",
 		icon: (
