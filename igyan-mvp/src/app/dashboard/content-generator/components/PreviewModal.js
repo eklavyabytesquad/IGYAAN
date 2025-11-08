@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, Presentation, X } from 'lucide-react';
+import { FileText, Presentation, X, Download } from 'lucide-react';
 
 export default function PreviewModal({ content, title, type, onClose, onDownload }) {
   if (!content) return null;
@@ -8,45 +8,40 @@ export default function PreviewModal({ content, title, type, onClose, onDownload
   const sections = content.split('\n\n').filter(section => section.trim());
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl px-4 py-10 sm:py-12">
-  <div className="flex w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/20 bg-white/95 shadow-2xl backdrop-blur dark:border-white/10 dark:bg-zinc-900/95 max-h-[85vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(12px)' }}>
+      <div className="flex w-full max-w-4xl flex-col overflow-hidden rounded-3xl shadow-2xl max-h-[90vh]" style={{ backgroundColor: 'var(--dashboard-surface-solid)', borderColor: 'var(--dashboard-border)', borderWidth: '1px' }}>
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/50 bg-white/60 px-6 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/70">
-          <div className="flex items-center gap-3">
-            {type === 'ppt' ? (
-              <span className="rounded-2xl bg-linear-to-r from-indigo-500 to-purple-500 p-2 text-white shadow">
-                <Presentation size={22} />
-              </span>
-            ) : (
-              <span className="rounded-2xl bg-linear-to-r from-emerald-500 to-sky-500 p-2 text-white shadow">
-                <FileText size={22} />
-              </span>
-            )}
+        <div className="flex items-center justify-between border-b px-6 py-5" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
+          <div className="flex items-center gap-4">
+            <span className="rounded-2xl p-3 text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
+              {type === 'ppt' ? <Presentation size={24} /> : <FileText size={24} />}
+            </span>
             <div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              <h3 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                 {title}
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-sm mt-1" style={{ color: 'var(--dashboard-muted)' }}>
                 {type === 'ppt' ? 'PowerPoint Presentation' : 'PDF Document'} Preview
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-zinc-500 transition hover:bg-zinc-200/60 hover:text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
+            className="rounded-xl p-2 transition hover:opacity-80"
+            style={{ backgroundColor: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-muted)' }}
           >
-            <X size={20} />
+            <X size={22} />
           </button>
         </div>
 
         {/* Content Preview */}
-  <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
           {type === 'ppt' ? (
             <div className="space-y-6">
               {/* Title Slide */}
-              <div className="rounded-2xl bg-linear-to-r from-indigo-600 via-purple-500 to-fuchsia-500 p-10 text-center text-white shadow-xl">
-                <h1 className="text-3xl font-bold tracking-tight drop-shadow-md">{title}</h1>
-                <p className="text-sm opacity-90">Powered by igyan AI</p>
+              <div className="rounded-2xl p-10 text-center text-white shadow-xl" style={{ background: 'var(--dashboard-primary)' }}>
+                <h1 className="text-3xl font-bold tracking-tight mb-2">{title}</h1>
+                <p className="text-sm opacity-90">Powered by IGYAN AI</p>
               </div>
 
               {/* Content Slides */}
@@ -61,15 +56,19 @@ export default function PreviewModal({ content, title, type, onClose, onDownload
                 return (
                   <div
                     key={index}
-                    className="rounded-2xl border border-zinc-200 bg-white/95 p-6 shadow-lg dark:border-zinc-700 dark:bg-zinc-800/80"
+                    className="rounded-2xl border p-6 shadow-lg transition hover:shadow-xl"
+                    style={{ 
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)'
+                    }}
                   >
-                    <h2 className="mb-3 text-xl font-semibold text-indigo-600 dark:text-indigo-300">
+                    <h2 className="mb-3 text-xl font-bold" style={{ color: 'var(--dashboard-primary)' }}>
                       {slideTitle}
                     </h2>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed" style={{ color: 'var(--dashboard-text)' }}>
                       {slideContent}
                     </div>
-                    <div className="mt-4 text-right text-xs font-medium text-zinc-400">
+                    <div className="mt-4 text-right text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>
                       Slide {index + 2}
                     </div>
                   </div>
@@ -77,14 +76,14 @@ export default function PreviewModal({ content, title, type, onClose, onDownload
               })}
             </div>
           ) : (
-            <div className="rounded-2xl border border-zinc-200 bg-white/95 p-8 shadow-xl dark:border-zinc-700 dark:bg-zinc-800/80">
+            <div className="rounded-2xl border p-8 shadow-xl" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
               {/* PDF Preview */}
-              <div className="mb-6 border-b border-zinc-200 pb-4 dark:border-zinc-600">
-                <h1 className="mb-2 text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
+              <div className="mb-6 border-b pb-4" style={{ borderColor: 'var(--dashboard-border)' }}>
+                <h1 className="mb-2 text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                   {title}
                 </h1>
-                <p className="text-sm italic text-zinc-500 dark:text-zinc-400">
-                  Powered by igyan AI
+                <p className="text-sm italic" style={{ color: 'var(--dashboard-muted)' }}>
+                  Powered by IGYAN AI
                 </p>
               </div>
               
@@ -99,9 +98,10 @@ export default function PreviewModal({ content, title, type, onClose, onDownload
                           key={lineIndex}
                           className={`mb-2 ${
                             isHeading
-                              ? 'text-lg font-bold text-zinc-900 dark:text-zinc-100 mt-4'
-                              : 'text-zinc-700 dark:text-zinc-300'
+                              ? 'text-lg font-bold mt-4'
+                              : ''
                           }`}
+                          style={{ color: isHeading ? 'var(--dashboard-heading)' : 'var(--dashboard-text)' }}
                         >
                           {line.replace('#', '').trim()}
                         </p>
@@ -115,21 +115,29 @@ export default function PreviewModal({ content, title, type, onClose, onDownload
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-white/60 bg-white/70 px-6 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/70">
-          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+        <div className="flex items-center justify-between border-t px-6 py-4" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
+          <p className="text-sm font-semibold" style={{ color: 'var(--dashboard-muted)' }}>
             {sections.length + 1} {type === 'ppt' ? 'slides' : 'pages'}
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="rounded-xl border border-zinc-200/70 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="rounded-xl px-5 py-2.5 text-sm font-semibold transition hover:opacity-80"
+              style={{
+                borderColor: 'var(--dashboard-border)',
+                borderWidth: '1px',
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                color: 'var(--dashboard-text)'
+              }}
             >
               Close
             </button>
             <button
               onClick={onDownload}
-              className="rounded-xl bg-linear-to-r from-indigo-500 via-purple-500 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:shadow-indigo-400/30"
+              className="rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-lg transition hover:opacity-90 flex items-center gap-2"
+              style={{ background: 'var(--dashboard-primary)' }}
             >
+              <Download size={16} />
               Download {type === 'ppt' ? 'PPT' : 'PDF'}
             </button>
           </div>
