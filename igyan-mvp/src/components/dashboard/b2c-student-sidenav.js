@@ -82,7 +82,7 @@ export default function B2CStudentSidenav({ isOpen, setIsOpen, isCollapsed, setI
 		},
 		{
 			key: 'gyanisage',
-			name: "Gyani Sage",
+			name: "GyanAI Sage",
 			href: "/dashboard/gyanisage",
 			icon: (
 				<svg

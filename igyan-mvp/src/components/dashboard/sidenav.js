@@ -263,7 +263,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 		{
 			key: 'gyanisage',
-			name: "Gyani Sage",
+			name: "Buddy AI",
 			href: "/dashboard/gyanisage",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.gyanisage.allowedRoles,
 			icon: (

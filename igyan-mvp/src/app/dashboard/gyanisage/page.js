@@ -3,8 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, Heart, Brain, Target, Sparkles, BookOpen, TrendingUp } from 'lucide-react';
 import OpenAI from 'openai';
+import { useAuth } from '../../utils/auth_context';
+import Image from 'next/image';
 
-export default function gyanisage() {
+export default function GyanisagePage() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,13 +22,19 @@ export default function gyanisage() {
     dangerouslyAllowBrowser: true,
   });
 
+  // Determine branding based on user role
+  const isB2C = user?.role === 'b2c_student' || user?.role === 'b2c_mentor';
+  const brandName = isB2C ? 'GyanAI Sage' : 'Buddy AI';
+  const shortName = isB2C ? 'Gyani Sage' : 'Buddy AI';
+  const brandImage = isB2C ? '/asset/gyanaisage.jpg' : '/asset/buddyai.jpg';
+
   const modes = [
     {
       id: 'counselling',
       name: 'Life Counselling',
       icon: Heart,
       description: 'Personal guidance and emotional support',
-      systemPrompt: `You are Gyani Sage, a compassionate AI counsellor for students at igyan education platform. You provide:
+      systemPrompt: `You are ${shortName}, a compassionate AI counsellor for students at igyan education platform. You provide:
 - Empathetic emotional support and mental health guidance
 - Life direction and personal growth advice
 - Stress management and well-being strategies
@@ -39,7 +48,7 @@ Be warm, understanding, and supportive. Ask follow-up questions to understand st
       name: 'Career Roadmap',
       icon: Target,
       description: 'Career planning and professional growth',
-      systemPrompt: `You are Gyani Sage, an expert career counsellor and roadmap planner for students at igyan education platform. You provide:
+      systemPrompt: `You are ${shortName}, an expert career counsellor and roadmap planner for students at igyan education platform. You provide:
 - Personalized career path recommendations
 - Skills development roadmaps
 - Industry insights and trends
@@ -53,7 +62,7 @@ Be insightful, data-driven, and motivational. Help students create actionable ca
       name: 'Academic Growth',
       icon: BookOpen,
       description: 'Study strategies and academic excellence',
-      systemPrompt: `You are Gyani Sage, an academic excellence coach for students at igyan education platform. You provide:
+      systemPrompt: `You are ${shortName}, an academic excellence coach for students at igyan education platform. You provide:
 - Effective study techniques and learning strategies
 - Time management and productivity tips
 - Exam preparation and stress management
@@ -67,7 +76,7 @@ Be encouraging, practical, and results-oriented. Help students achieve their aca
       name: 'Personal Development',
       icon: TrendingUp,
       description: 'Self-improvement and life skills',
-      systemPrompt: `You are Gyani Sage, a personal development mentor for students at igyan education platform. You provide:
+      systemPrompt: `You are ${shortName}, a personal development mentor for students at igyan education platform. You provide:
 - Self-awareness and personality development
 - Communication and leadership skills
 - Financial literacy and life skills
@@ -91,11 +100,11 @@ Be inspiring, practical, and holistic. Help students become well-rounded individ
     setMessages([
       {
         role: 'assistant',
-        content: `🙏 Namaste! I'm **Gyani Sage**, your AI counsellor and growth companion.\n\n**${currentMode.name}** mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
+        content: `🙏 Namaste! I'm **${shortName}**, your AI counsellor and growth companion.\n\n**${currentMode.name}** mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
       },
     ]);
     setConversationHistory([]);
-  }, [selectedMode]);
+  }, [selectedMode, shortName]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
@@ -120,7 +129,7 @@ Be inspiring, practical, and holistic. Help students become well-rounded individ
           messages: [
             {
               role: 'system',
-              content: `You are Gyani Sage, an expert career counsellor and roadmap planner. When creating career roadmaps, you MUST format them as structured JSON with clear phases, milestones, and timelines.
+              content: `You are ${shortName}, an expert career counsellor and roadmap planner. When creating career roadmaps, you MUST format them as structured JSON with clear phases, milestones, and timelines.
 
 FORMAT YOUR RESPONSE AS JSON:
 {
@@ -234,14 +243,17 @@ Create 4-6 phases with clear progression.`,
       <aside className="hidden w-64 flex-col gap-3 lg:flex">
         <div className="dashboard-card rounded-2xl p-4 shadow-xl">
           <div className="mb-4 flex items-center gap-3">
-            <span 
-              className="rounded-xl p-3 text-white shadow-lg"
-              style={{ background: 'var(--dashboard-primary)' }}
-            >
-              <Brain size={24} />
-            </span>
+            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl shadow-lg">
+              <Image 
+                src={brandImage}
+                alt={brandName}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
             <div>
-              <h2 className="text-lg font-bold" style={{ color: 'var(--dashboard-primary)' }}>Gyani Sage</h2>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--dashboard-primary)' }}>{brandName}</h2>
               <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>AI Counsellor</p>
             </div>
           </div>
@@ -394,7 +406,7 @@ Create 4-6 phases with clear progression.`,
                     {message.role === 'assistant' && (
                       <div className="mb-2 flex items-center gap-2" style={{ color: 'var(--dashboard-primary)' }}>
                         <ModeIcon className="h-4 w-4" />
-                        <span className="text-xs font-semibold uppercase tracking-wide">Gyani Sage</span>
+                        <span className="text-xs font-semibold uppercase tracking-wide">{shortName}</span>
                       </div>
                     )}
                     <div 
@@ -414,7 +426,7 @@ Create 4-6 phases with clear progression.`,
                   className="flex items-center gap-3 rounded-3xl px-6 py-4 text-sm shadow-lg dashboard-card"
                 >
                   <Loader2 className="h-5 w-5 animate-spin" style={{ color: 'var(--dashboard-primary)' }} />
-                  <span style={{ color: 'var(--dashboard-text)' }}>Gyani Sage is reflecting on your message...</span>
+                  <span style={{ color: 'var(--dashboard-text)' }}>{shortName} is reflecting on your message...</span>
                 </div>
               </div>
             )}
