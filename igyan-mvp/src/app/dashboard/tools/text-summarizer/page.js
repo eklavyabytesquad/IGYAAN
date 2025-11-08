@@ -138,52 +138,72 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 	if (loading) {
 		return (
 			<div className="flex h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent"></div>
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-slate-900 dark:via-emerald-900/20 dark:to-slate-900">
+		<div className="min-h-screen" style={{ backgroundColor: 'var(--dashboard-background)' }}>
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				{/* Header */}
 				<div className="mb-8">
 					<div className="flex items-center gap-3 mb-4">
 						<button
 							onClick={() => router.back()}
-							className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+							className="flex h-10 w-10 items-center justify-center rounded-lg border transition-colors"
+							style={{
+								borderColor: 'var(--dashboard-border)',
+								backgroundColor: 'var(--dashboard-surface-solid)',
+								color: 'var(--dashboard-muted)'
+							}}
+							onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-muted)'}
+							onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-solid)'}
 						>
 							<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 							</svg>
 						</button>
 						<div>
-							<h1 className="text-3xl font-bold text-slate-900 dark:text-white">Text Summarizer</h1>
-							<p className="text-slate-600 dark:text-slate-400 mt-1">Transform long content into concise, clear summaries</p>
+							<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Text Summarizer</h1>
+							<p className="mt-1" style={{ color: 'var(--dashboard-muted)' }}>Transform long content into concise, clear summaries</p>
 						</div>
 					</div>
 				</div>
 
 				<div className="grid gap-8 lg:grid-cols-2">
 					{/* Input Form */}
-					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-						<h2 className="mb-6 text-xl font-bold text-slate-900 dark:text-white">Input Text</h2>
+					<div className="rounded-2xl border shadow-lg dashboard-card p-6" style={{ borderColor: 'var(--dashboard-border)' }}>
+						<h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Input Text</h2>
 						
 						<form onSubmit={handleSubmit} className="space-y-5">
 							<div>
-								<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Text to Summarize <span className="text-red-500">*</span>
 								</label>
 								<textarea
 									name="text"
 									value={formData.text}
 									onChange={handleInputChange}
+									onFocus={(e) => {
+										e.target.style.borderColor = 'var(--dashboard-primary)';
+										e.target.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+									}}
+									onBlur={(e) => {
+										e.target.style.borderColor = 'var(--dashboard-border)';
+										e.target.style.boxShadow = 'none';
+									}}
 									rows={12}
-									className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+									className="w-full rounded-lg border px-4 py-3"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
 									placeholder="Paste your text here... (article, document, notes, etc.)"
 									required
 								/>
-								<div className="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+								<div className="mt-2 flex items-center justify-between text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 									<span>
 										{formData.text.trim() ? `${formData.text.trim().split(/\s+/).length} words, ${formData.text.length} characters` : "0 words"}
 									</span>
@@ -195,14 +215,27 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 
 							<div className="grid gap-4 sm:grid-cols-3">
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Length
 									</label>
 									<select
 										name="length"
 										value={formData.length}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+										onFocus={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-primary)';
+											e.target.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-border)';
+											e.target.style.boxShadow = 'none';
+										}}
+										className="w-full rounded-lg border px-4 py-2.5"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									>
 										<option value="short">Short</option>
 										<option value="medium">Medium</option>
@@ -211,14 +244,27 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 								</div>
 
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Format
 									</label>
 									<select
 										name="format"
 										value={formData.format}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+										onFocus={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-primary)';
+											e.target.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-border)';
+											e.target.style.boxShadow = 'none';
+										}}
+										className="w-full rounded-lg border px-4 py-2.5"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									>
 										<option value="paragraph">Paragraph</option>
 										<option value="bullets">Bullet Points</option>
@@ -227,14 +273,27 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 								</div>
 
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Tone
 									</label>
 									<select
 										name="tone"
 										value={formData.tone}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+										onFocus={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-primary)';
+											e.target.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.target.style.borderColor = 'var(--dashboard-border)';
+											e.target.style.boxShadow = 'none';
+										}}
+										className="w-full rounded-lg border px-4 py-2.5"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									>
 										<option value="neutral">Neutral</option>
 										<option value="casual">Casual</option>
@@ -247,7 +306,12 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 							<button
 								type="submit"
 								disabled={summarizing || !formData.text.trim()}
-								className="w-full rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+								className="w-full rounded-lg px-6 py-3 font-semibold text-white shadow-lg transition-all hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+								style={{
+									background: 'linear-gradient(to right, var(--dashboard-primary), var(--dashboard-primary-hover))'
+								}}
+								onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.transform = 'translateY(-1px)')}
+								onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
 							>
 								{summarizing ? (
 									<span className="flex items-center justify-center gap-2">
@@ -270,14 +334,17 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 					</div>
 
 					{/* Results */}
-					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+					<div className="rounded-2xl border shadow-lg dashboard-card p-6" style={{ borderColor: 'var(--dashboard-border)' }}>
 						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-xl font-bold text-slate-900 dark:text-white">Summary</h2>
+							<h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Summary</h2>
 							{summary && (
 								<div className="flex gap-2">
 									<button
 										onClick={copySummary}
-										className="flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+										className="flex items-center gap-1 rounded-lg dashboard-card-muted px-3 py-1.5 text-sm font-medium transition-colors"
+										style={{ color: 'var(--dashboard-text)' }}
+										onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-muted)'}
+										onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-solid)'}
 										title="Copy to clipboard"
 									>
 										<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -287,7 +354,13 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 									</button>
 									<button
 										onClick={downloadSummary}
-										className="flex items-center gap-1 rounded-lg bg-emerald-100 px-3 py-1.5 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/50"
+										className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+										style={{
+											backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)',
+											color: 'var(--dashboard-primary)'
+										}}
+										onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--dashboard-primary) 25%, transparent)'}
+										onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)'}
 										title="Download summary"
 									>
 										<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -300,27 +373,31 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 						</div>
 
 						{error && (
-							<div className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200">
+							<div className="rounded-lg border p-4" style={{
+								backgroundColor: 'rgba(239, 68, 68, 0.1)',
+								borderColor: 'rgba(239, 68, 68, 0.3)',
+								color: '#ef4444'
+							}}>
 								{error}
 							</div>
 						)}
 
 						{!summary && !summarizing && !error && (
 							<div className="flex flex-col items-center justify-center py-12 text-center">
-								<div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-									<svg className="h-10 w-10 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full dashboard-pill">
+									<svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--dashboard-primary)' }}>
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
 									</svg>
 								</div>
-								<h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">No summary yet</h3>
-								<p className="text-sm text-slate-600 dark:text-slate-400">Paste your text and click "Generate Summary" to get started!</p>
+								<h3 className="mb-2 text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>No summary yet</h3>
+								<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>Paste your text and click "Generate Summary" to get started!</p>
 							</div>
 						)}
 
 						{summarizing && (
 							<div className="flex flex-col items-center justify-center py-12">
-								<div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent mb-4"></div>
-								<p className="text-slate-600 dark:text-slate-400">AI is analyzing and summarizing your text...</p>
+								<div className="h-12 w-12 animate-spin rounded-full border-4 border-t-transparent mb-4" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+								<p style={{ color: 'var(--dashboard-muted)' }}>AI is analyzing and summarizing your text...</p>
 							</div>
 						)}
 
@@ -328,24 +405,27 @@ Provide ONLY the summary, no additional commentary or explanations.`;
 							<div className="space-y-6">
 								{/* Statistics */}
 								<div className="grid grid-cols-3 gap-4">
-									<div className="rounded-xl bg-linear-to-br from-blue-50 to-cyan-50 p-4 dark:from-blue-900/20 dark:to-cyan-900/20">
-										<div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{stats.reduction}%</div>
-										<div className="text-xs font-medium text-slate-600 dark:text-slate-400">Reduction</div>
+									<div className="rounded-xl dashboard-card-muted p-4">
+										<div className="text-2xl font-bold" style={{ color: 'var(--dashboard-primary)' }}>{stats.reduction}%</div>
+										<div className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>Reduction</div>
 									</div>
-									<div className="rounded-xl bg-linear-to-br from-purple-50 to-pink-50 p-4 dark:from-purple-900/20 dark:to-pink-900/20">
-										<div className="text-2xl font-bold text-purple-700 dark:text-purple-400">{stats.originalWords}</div>
-										<div className="text-xs font-medium text-slate-600 dark:text-slate-400">Original Words</div>
+									<div className="rounded-xl dashboard-card-muted p-4">
+										<div className="text-2xl font-bold" style={{ color: 'var(--dashboard-primary)' }}>{stats.originalWords}</div>
+										<div className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>Original Words</div>
 									</div>
-									<div className="rounded-xl bg-linear-to-br from-emerald-50 to-teal-50 p-4 dark:from-emerald-900/20 dark:to-teal-900/20">
-										<div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{stats.summarizedWords}</div>
-										<div className="text-xs font-medium text-slate-600 dark:text-slate-400">Summary Words</div>
+									<div className="rounded-xl dashboard-card-muted p-4">
+										<div className="text-2xl font-bold" style={{ color: 'var(--dashboard-primary)' }}>{stats.summarizedWords}</div>
+										<div className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>Summary Words</div>
 									</div>
 								</div>
 
 								{/* Summary Content */}
-								<div className="rounded-xl border border-emerald-100 bg-linear-to-br from-emerald-50 to-teal-50 p-6 dark:border-emerald-900/30 dark:from-emerald-900/10 dark:to-teal-900/10">
-									<div className="prose prose-sm max-w-none dark:prose-invert">
-										<div className="text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+								<div className="rounded-xl border p-6" style={{
+									borderColor: 'color-mix(in srgb, var(--dashboard-primary) 20%, transparent)',
+									backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 5%, transparent)'
+								}}>
+									<div className="prose prose-sm max-w-none">
+										<div className="leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--dashboard-text)' }}>
 											{summary}
 										</div>
 									</div>
