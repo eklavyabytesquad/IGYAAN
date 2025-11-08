@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../utils/auth_context";
 import { supabase } from "../utils/supabase";
 import Link from "next/link";
+import Image from "next/image";
 import SchoolOnboarding from "../../components/dashboard/school-onboarding";
-import Logo from "@/components/logo";
 
 export default function DashboardPage() {
 	const { user, session, loading } = useAuth();
@@ -252,9 +252,24 @@ export default function DashboardPage() {
 						<div className="absolute right-10 -bottom-10 h-48 w-48 rounded-full bg-white/10 blur-3xl"></div>
 					</div>
 					<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-						<div className="space-y-3">
-							<Logo variant="header" />
-							{isB2CUser && (
+					<div className="space-y-5">
+						<div className="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-white/40 bg-white/20 px-6 py-4 shadow-2xl ring-2 ring-white/30">
+							<div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/50 bg-white shadow-xl ring-4 ring-white/40 flex items-center justify-center">
+								<Image
+									src="/logo1.png"
+									alt="IGYAN.AI Logo"
+									width={180}
+									height={180}
+									className="object-contain"
+									priority
+								/>
+							</div>
+							<div className="space-y-1">
+								<p className="text-sm font-bold uppercase tracking-[0.3em] text-white drop-shadow-lg">Talent in Motion</p>
+								<h2 className="text-3xl font-bold text-white drop-shadow-lg">IGYAN.AI</h2>
+							</div>
+						</div>
+						{isB2CUser && (
 								<div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold backdrop-blur">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
 										<path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
