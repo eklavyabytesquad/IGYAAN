@@ -42,7 +42,7 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 			subItems: [
 				{
 					key: 'aiTestGenerator',
-					name: "MCQ Creator",
+					name: "AI Question Builder",
 					href: "/dashboard/assignments",
 					icon: "🤖",
 				},
@@ -61,7 +61,7 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				{
 					key: 'gamifiedAssignments',
 					name: "Gamified Assignments",
-					href: "/dashboard/homework",
+					href: "/dashboard/gamified-assignments",
 					icon: "🏆",
 				},
 				{
