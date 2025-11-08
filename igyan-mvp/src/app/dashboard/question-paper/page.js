@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { FileQuestion, Upload, Sparkles, Download, History, Wand2, Loader2 } from 'lucide-react';
+import { FileQuestion, Upload, Sparkles, Download, History, Wand2, Loader2, Copy, CheckCircle } from 'lucide-react';
 import { cbseData, getSubjects, getTopics } from '../assignments/data/cbseData';
-import QuestionPaperChatbot from './components/QuestionPaperChatbot';
 import { generateQuestionPaperPDF } from './utils/questionPaperPDFGenerator';
 
 export default function QuestionPaperGeneratorPage() {
@@ -13,27 +12,66 @@ export default function QuestionPaperGeneratorPage() {
   const [selectedTopic, setSelectedTopic] = useState('');
   const [oldContent, setOldContent] = useState('');
   const [customPrompt, setCustomPrompt] = useState('');
-  const [showChatbot, setShowChatbot] = useState(false);
   const [generatedPaper, setGeneratedPaper] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const [examDuration, setExamDuration] = useState('3');
   const [totalMarks, setTotalMarks] = useState('100');
 
   const subjects = selectedClass ? getSubjects(selectedClass) : [];
   const topics = selectedClass && selectedSubject ? getTopics(selectedSubject, selectedClass) : [];
 
-  const handleStartGeneration = () => {
-    if (activeTab === 'new' && selectedClass && selectedSubject && selectedTopic) {
-      setShowChatbot(true);
-      setGeneratedPaper('');
-    } else if (activeTab === 'old-data' && oldContent && customPrompt) {
-      setShowChatbot(true);
-      setGeneratedPaper('');
-    }
-  };
+  const handleStartGeneration = async () => {
+    setIsGenerating(true);
+    setGeneratedPaper('');
+    
+    try {
+      let prompt = '';
+      
+      if (activeTab === 'new') {
+        const classInfo = cbseData.classes.find(c => c.id === selectedClass)?.name || selectedClass;
+        prompt = `Generate a comprehensive CBSE question paper with the following details:
+- Class: ${classInfo}
+- Subject: ${selectedSubject}
+- Topic: ${selectedTopic}
+- Exam Duration: ${examDuration} hours
+- Total Marks: ${totalMarks}
 
-  const handlePaperGenerated = (paper) => {
-    setGeneratedPaper(paper);
+Create a professional question paper with:
+1. Proper sections (VSA, SA, LA, or appropriate sections)
+2. Clear question numbering
+3. Marks allocation for each question
+4. Instructions for students
+5. CBSE pattern compliance
+6. Mix of remembering, understanding, and application level questions
+
+Format the output as a complete question paper ready for printing.`;
+      } else {
+        prompt = `Based on the following old question paper content, ${customPrompt}
+
+Old Question Paper:
+${oldContent}
+
+Generate a new question paper following CBSE format with proper sections, marks, and instructions.`;
+      }
+
+      const response = await fetch('/api/generate-questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate question paper');
+
+      const data = await response.json();
+      setGeneratedPaper(data.content || data.questions || '');
+    } catch (error) {
+      console.error('Error generating question paper:', error);
+      alert('Failed to generate question paper. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleGeneratePDF = async () => {
@@ -41,16 +79,18 @@ export default function QuestionPaperGeneratorPage() {
     
     setIsGeneratingPDF(true);
     try {
-      const classInfo = cbseData.classes.find(c => c.id === selectedClass)?.name || selectedClass;
+      const classInfo = activeTab === 'new' 
+        ? cbseData.classes.find(c => c.id === selectedClass)?.name || selectedClass
+        : 'Custom';
       const doc = generateQuestionPaperPDF(
         generatedPaper,
         classInfo,
-        selectedSubject,
+        selectedSubject || 'Various Subjects',
         selectedTopic || 'Various Topics',
         examDuration,
         totalMarks
       );
-      doc.save(`QuestionPaper_${selectedClass}_${selectedSubject}_${Date.now()}.pdf`);
+      doc.save(`QuestionPaper_${Date.now()}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
@@ -59,13 +99,20 @@ export default function QuestionPaperGeneratorPage() {
     }
   };
 
+  const handleCopyContent = () => {
+    if (!generatedPaper) return;
+    
+    navigator.clipboard.writeText(generatedPaper);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
   const handleReset = () => {
     setSelectedClass('');
     setSelectedSubject('');
     setSelectedTopic('');
     setOldContent('');
     setCustomPrompt('');
-    setShowChatbot(false);
     setGeneratedPaper('');
   };
 
@@ -99,10 +146,13 @@ export default function QuestionPaperGeneratorPage() {
         </div>
 
         {/* Tab Switcher */}
-        {!showChatbot && (
+        {!generatedPaper && (
           <div className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white/80 p-2 dark:border-zinc-800 dark:bg-zinc-900/80">
             <button
-              onClick={() => setActiveTab('new')}
+              onClick={() => {
+                setActiveTab('new');
+                setGeneratedPaper('');
+              }}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition ${
                 activeTab === 'new'
                   ? 'bg-linear-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
@@ -113,7 +163,10 @@ export default function QuestionPaperGeneratorPage() {
               Generate New Paper
             </button>
             <button
-              onClick={() => setActiveTab('old-data')}
+              onClick={() => {
+                setActiveTab('old-data');
+                setGeneratedPaper('');
+              }}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition ${
                 activeTab === 'old-data'
                   ? 'bg-linear-to-r from-purple-500 to-pink-600 text-white shadow-lg'
@@ -128,7 +181,7 @@ export default function QuestionPaperGeneratorPage() {
       </header>
 
       {/* Content Area */}
-      {!showChatbot ? (
+      {!generatedPaper ? (
         <div className="mx-auto max-w-6xl space-y-6">
           {/* New Paper Generation */}
           {activeTab === 'new' && (
@@ -240,10 +293,20 @@ export default function QuestionPaperGeneratorPage() {
                 <div className="flex justify-center">
                   <button
                     onClick={handleStartGeneration}
-                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl"
+                    disabled={isGenerating}
+                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <Sparkles size={24} />
-                    Generate Question Paper
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="animate-spin" size={24} />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={24} />
+                        Generate Question Paper
+                      </>
+                    )}
                   </button>
                 </div>
               )}
@@ -319,10 +382,20 @@ Examples:
                 <div className="flex justify-center">
                   <button
                     onClick={handleStartGeneration}
-                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl"
+                    disabled={isGenerating}
+                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <Sparkles size={24} />
-                    Generate from Old Data
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="animate-spin" size={24} />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={24} />
+                        Generate from Old Data
+                      </>
+                    )}
                   </button>
                 </div>
               )}
@@ -369,7 +442,7 @@ Examples:
           </div>
         </div>
       ) : (
-        /* Chatbot Section */
+        /* Generated Content Section */
         <div className="mx-auto max-w-7xl space-y-6">
           {/* Summary Bar */}
           <div className="rounded-2xl border border-zinc-200 bg-linear-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 dark:border-zinc-800 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30">
@@ -409,50 +482,75 @@ Examples:
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-            {/* Chatbot */}
-            <QuestionPaperChatbot
-              mode={activeTab}
-              selectedClass={cbseData.classes.find(c => c.id === selectedClass)?.name || ''}
-              selectedSubject={selectedSubject}
-              selectedTopic={selectedTopic}
-              oldContent={oldContent}
-              customPrompt={customPrompt}
-              examDuration={examDuration}
-              totalMarks={totalMarks}
-              onGenerate={handlePaperGenerated}
-            />
+            {/* Content Display */}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Generated Question Paper</h3>
+                <button
+                  onClick={handleCopyContent}
+                  className="flex items-center gap-2 rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  {isCopied ? (
+                    <>
+                      <CheckCircle size={16} className="text-green-500" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+              
+              <div className="prose prose-zinc max-w-none dark:prose-invert">
+                <pre className="whitespace-pre-wrap rounded-xl bg-zinc-50 p-6 text-sm leading-relaxed text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100">
+{generatedPaper}
+                </pre>
+              </div>
+            </div>
 
             {/* Actions Panel */}
             <div className="space-y-4">
               <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="mb-4 font-semibold text-zinc-900 dark:text-white">Actions</h3>
                 
-                <button
-                  onClick={handleGeneratePDF}
-                  disabled={!generatedPaper || isGeneratingPDF}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-teal-600 px-4 py-3 font-semibold text-white shadow-lg transition hover:scale-105 hover:shadow-emerald-400/40 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {isGeneratingPDF ? (
-                    <>
-                      <Loader2 className="animate-spin" size={18} />
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download size={18} />
-                      <span>Download PDF</span>
-                    </>
-                  )}
-                </button>
+                <div className="space-y-3">
+                  <button
+                    onClick={handleGeneratePDF}
+                    disabled={!generatedPaper || isGeneratingPDF}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-teal-600 px-4 py-3 font-semibold text-white shadow-lg transition hover:scale-105 hover:shadow-emerald-400/40 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isGeneratingPDF ? (
+                      <>
+                        <Loader2 className="animate-spin" size={18} />
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download size={18} />
+                        <span>Download PDF</span>
+                      </>
+                    )}
+                  </button>
 
-                <div className="mt-4 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-                  <p className="mb-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">Sample Prompts:</p>
-                  <ul className="space-y-1 text-xs text-zinc-600 dark:text-zinc-400">
-                    <li>• "Generate 30 questions with section-wise breakdown"</li>
-                    <li>• "Include 5 VSA, 10 SA, 5 LA questions"</li>
-                    <li>• "Add diagram-based questions"</li>
-                    <li>• "Make it CBSE board exam level"</li>
-                  </ul>
+                  <button
+                    onClick={handleCopyContent}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 px-4 py-3 font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  >
+                    {isCopied ? (
+                      <>
+                        <CheckCircle size={18} className="text-green-500" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} />
+                        <span>Copy Content</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
 
