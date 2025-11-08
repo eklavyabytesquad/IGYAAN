@@ -488,6 +488,7 @@ export default function EventsManagement() {
                     value={formData.start_date}
                     onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                     className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
 
@@ -499,6 +500,7 @@ export default function EventsManagement() {
                     value={formData.end_date}
                     onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                     className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
               </div>
@@ -524,6 +526,7 @@ export default function EventsManagement() {
                     value={formData.registration_deadline}
                     onChange={(e) => setFormData({ ...formData, registration_deadline: e.target.value })}
                     className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
               </div>
