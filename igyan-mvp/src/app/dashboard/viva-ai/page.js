@@ -1198,9 +1198,16 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 									</p>
 								</div>
 
-								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
-									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
-								}}>
+								<div 
+									className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer" 
+									style={{
+										background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+									}}
+									onClick={() => {
+										setIsSidebarOpen(true);
+										setActiveTab("chats");
+									}}
+								>
 									<div className="flex items-center gap-3 mb-3">
 										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
 											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
