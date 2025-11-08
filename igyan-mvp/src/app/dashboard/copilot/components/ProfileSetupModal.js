@@ -69,7 +69,11 @@ export default function ProfileSetupModal({ initialData, onSave, onClose }) {
 		onSave(formData);
 	};
 
-	const canClose = initialData !== null;
+	const handleClose = () => {
+		if (onClose) {
+			onClose();
+		}
+	};
 
 	return (
 		<div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -81,19 +85,18 @@ export default function ProfileSetupModal({ initialData, onSave, onClose }) {
 							{initialData ? "Edit Your Profile" : "Setup Your Profile"}
 						</h2>
 						<p className="text-sm text-zinc-600 dark:text-zinc-400">
-							Personalize your AI learning experience
+							Personalize your AI learning experience (optional)
 						</p>
 					</div>
-					{canClose && (
-						<button
-							onClick={onClose}
-							className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-								<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
-							</svg>
-						</button>
-					)}
+					<button
+						onClick={handleClose}
+						className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+						title="Close"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+							<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+						</svg>
+					</button>
 				</div>
 
 				{/* Form */}
@@ -263,15 +266,13 @@ export default function ProfileSetupModal({ initialData, onSave, onClose }) {
 
 					{/* Actions */}
 					<div className="flex gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-						{canClose && (
-							<button
-								type="button"
-								onClick={onClose}
-								className="flex-1 rounded-lg border-2 border-zinc-300 px-4 py-2.5 font-semibold text-zinc-700 transition-colors hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
-							>
-								Cancel
-							</button>
-						)}
+						<button
+							type="button"
+							onClick={handleClose}
+							className="flex-1 rounded-lg border-2 border-zinc-300 px-4 py-2.5 font-semibold text-zinc-700 transition-colors hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
+						>
+							{initialData ? "Cancel" : "Skip for Now"}
+						</button>
 						<button
 							type="submit"
 							className="flex-1 rounded-lg bg-indigo-500 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-indigo-600"

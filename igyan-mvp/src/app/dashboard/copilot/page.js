@@ -70,6 +70,13 @@ export default function AICopilotPage() {
 			if (savedOverallMemories) {
 				setOverallMemories(JSON.parse(savedOverallMemories));
 			}
+
+			if (savedProfile) {
+				setStudentProfile(JSON.parse(savedProfile));
+			} else {
+				// Show profile setup if no profile exists
+				setShowProfileSetup(true);
+			}
 		}
 	}, [user]);
 
@@ -488,10 +495,8 @@ IMPORTANT FORMATTING RULES:
 					initialData={studentProfile}
 					onSave={handleSaveProfile}
 					onClose={() => {
-						if (studentProfile) {
-							setShowProfileSetup(false);
-							setIsEditingProfile(false);
-						}
+						setShowProfileSetup(false);
+						setIsEditingProfile(false);
 					}}
 				/>
 			)}
