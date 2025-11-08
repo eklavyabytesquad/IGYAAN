@@ -276,25 +276,25 @@ export default function HomeworkManagement() {
   if (!isTeacher) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p className="text-zinc-600">Only teachers can access this page.</p>
+        <p style={{ color: 'var(--dashboard-muted)' }}>Only teachers can access this page.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-full flex-col gap-6 overflow-hidden bg-linear-to-br from-amber-50 via-orange-50 to-yellow-50 p-4 lg:p-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="dashboard-theme flex h-screen w-full flex-col gap-6 overflow-hidden p-4 lg:p-8">
       {/* Header */}
-      <header className="rounded-3xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <header className="dashboard-card rounded-3xl p-6 shadow-2xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-4">
-            <span className="rounded-2xl bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 p-4 text-white shadow-lg">
+            <span className="rounded-2xl p-4 text-white shadow-lg" style={{ backgroundColor: 'var(--dashboard-primary)' }}>
               <BookOpen size={28} />
             </span>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: 'var(--dashboard-heading)' }}>
                 Homework Management
               </h1>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 sm:text-base">
+              <p className="mt-2 text-sm sm:text-base" style={{ color: 'var(--dashboard-muted)' }}>
                 Create gamified homework, MCQs, and virtual viva questions
               </p>
             </div>
@@ -302,7 +302,8 @@ export default function HomeworkManagement() {
           <div className="flex gap-3">
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40"
+              className="flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition"
+              style={{ backgroundColor: '#a855f7' }}
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -311,7 +312,11 @@ export default function HomeworkManagement() {
             </button>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-amber-400/40"
+              className="flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold shadow-lg transition"
+              style={{ 
+                backgroundColor: 'var(--dashboard-primary)',
+                color: 'var(--dashboard-primary-foreground)'
+              }}
             >
               <Plus size={20} />
               <span>Create Manual</span>
@@ -322,21 +327,31 @@ export default function HomeworkManagement() {
         {/* Search & Filter */}
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" style={{ color: 'var(--dashboard-muted)' }} />
             <input
               type="text"
               placeholder="Search assignments..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-zinc-200 bg-white px-10 py-2.5 text-sm outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-200/70 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="w-full rounded-xl px-10 py-2.5 text-sm outline-none transition focus:ring-2"
+              style={{
+                border: '1px solid var(--dashboard-border)',
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                color: 'var(--dashboard-text)'
+              }}
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter size={20} className="text-zinc-500" />
+            <Filter size={20} style={{ color: 'var(--dashboard-muted)' }} />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="rounded-xl px-4 py-2.5 text-sm outline-none transition"
+              style={{
+                border: '1px solid var(--dashboard-border)',
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                color: 'var(--dashboard-text)'
+              }}
             >
               <option value="all">All Types</option>
               <option value="mcq">MCQ</option>
@@ -347,19 +362,28 @@ export default function HomeworkManagement() {
 
         {/* Stats */}
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950">
-            <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">Total Assignments</p>
-            <p className="mt-1 text-2xl font-bold text-amber-900 dark:text-amber-100">{assignments.length}</p>
+          <div className="rounded-xl p-3" style={{ 
+            backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'
+          }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--dashboard-primary)' }}>Total Assignments</p>
+            <p className="mt-1 text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>{assignments.length}</p>
           </div>
-          <div className="rounded-xl border border-orange-200 bg-orange-50 p-3 dark:border-orange-900 dark:bg-orange-950">
-            <p className="text-xs font-semibold text-orange-600 dark:text-orange-400">MCQ Tests</p>
-            <p className="mt-1 text-2xl font-bold text-orange-900 dark:text-orange-100">
+          <div className="rounded-xl p-3" style={{ 
+            backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'
+          }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--dashboard-primary)' }}>MCQ Tests</p>
+            <p className="mt-1 text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
               {assignments.filter(a => a.type === 'mcq').length}
             </p>
           </div>
-          <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900 dark:bg-yellow-950">
-            <p className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Virtual Viva</p>
-            <p className="mt-1 text-2xl font-bold text-yellow-900 dark:text-yellow-100">
+          <div className="rounded-xl p-3" style={{ 
+            backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'
+          }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--dashboard-primary)' }}>Virtual Viva</p>
+            <p className="mt-1 text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
               {assignments.filter(a => a.type === 'viva').length}
             </p>
           </div>
@@ -367,21 +391,25 @@ export default function HomeworkManagement() {
       </header>
 
       {/* Assignments Grid */}
-      <div className="flex-1 overflow-y-auto rounded-3xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <div className="dashboard-card flex-1 overflow-y-auto rounded-3xl p-6 shadow-2xl">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredAssignments.map((assignment) => (
             <div
               key={assignment.id}
-              className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white shadow-lg transition hover:shadow-xl dark:border-white/10 dark:bg-zinc-900"
+              className="group relative overflow-hidden rounded-2xl shadow-lg transition hover:shadow-xl"
+              style={{
+                border: '1px solid var(--dashboard-border)',
+                backgroundColor: 'var(--dashboard-surface-solid)'
+              }}
             >
               <div className="p-5">
                 <div className="mb-3 flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="mb-1 text-lg font-bold text-zinc-800 dark:text-zinc-100">{assignment.title}</h3>
-                    <span className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-semibold ${
-                      assignment.type === 'mcq' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300' :
-                      'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
-                    }`}>
+                    <h3 className="mb-1 text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{assignment.title}</h3>
+                    <span className={`inline-flex items-center rounded-lg px-2 py-1 text-xs font-semibold`} style={{
+                      backgroundColor: assignment.type === 'mcq' ? '#dbeafe' : '#f3e8ff',
+                      color: assignment.type === 'mcq' ? '#1e40af' : '#6b21a8'
+                    }}>
                       {assignment.type === 'mcq' ? <FileText size={12} className="mr-1" /> : <Mic size={12} className="mr-1" />}
                       {assignment.type.toUpperCase()}
                     </span>
@@ -389,22 +417,24 @@ export default function HomeworkManagement() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(assignment)}
-                      className="rounded-lg p-2 text-amber-600 transition hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950"
+                      className="rounded-lg p-2 transition"
+                      style={{ color: 'var(--dashboard-primary)' }}
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => handleDelete(assignment.id)}
-                      className="rounded-lg p-2 text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
+                      className="rounded-lg p-2 transition"
+                      style={{ color: '#dc2626' }}
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
 
-                <p className="mb-4 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">{assignment.description}</p>
+                <p className="mb-4 line-clamp-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>{assignment.description}</p>
 
-                <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
+                <div className="space-y-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                   <div className="flex items-center gap-2">
                     <BookOpen size={14} />
                     <span className="font-semibold">{assignment.subject}</span>
@@ -430,7 +460,7 @@ export default function HomeworkManagement() {
         </div>
 
         {filteredAssignments.length === 0 && (
-          <div className="flex h-64 items-center justify-center text-zinc-500">
+          <div className="flex h-64 items-center justify-center" style={{ color: 'var(--dashboard-muted)' }}>
             <p>No assignments found. Create your first assignment!</p>
           </div>
         )}
@@ -439,18 +469,18 @@ export default function HomeworkManagement() {
       {/* AI Generator Modal */}
       {showAIGenerator && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-3xl border border-white/60 bg-white p-8 shadow-2xl dark:border-white/10 dark:bg-zinc-900">
+          <div className="dashboard-card w-full max-w-2xl rounded-3xl p-8 shadow-2xl">
             <div className="mb-6 flex items-center gap-3">
-              <div className="rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 p-3 text-white">
+              <div className="rounded-2xl p-3 text-white" style={{ backgroundColor: '#a855f7' }}>
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                   AI Question Generator
                 </h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
                   Let AI create questions for you instantly
                 </p>
               </div>
@@ -458,18 +488,23 @@ export default function HomeworkManagement() {
 
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                   Question Type
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setAiConfig({ ...aiConfig, questionType: 'mcq' })}
-                    className={`rounded-xl border-2 p-4 text-center font-semibold transition ${
-                      aiConfig.questionType === 'mcq'
-                        ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
-                        : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                    }`}
+                    className={`rounded-xl border-2 p-4 text-center font-semibold transition`}
+                    style={aiConfig.questionType === 'mcq' ? {
+                      borderColor: '#3b82f6',
+                      backgroundColor: '#dbeafe',
+                      color: '#1e40af'
+                    } : {
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     <FileText className="mx-auto mb-2" size={24} />
                     MCQ Questions
@@ -477,11 +512,16 @@ export default function HomeworkManagement() {
                   <button
                     type="button"
                     onClick={() => setAiConfig({ ...aiConfig, questionType: 'viva' })}
-                    className={`rounded-xl border-2 p-4 text-center font-semibold transition ${
-                      aiConfig.questionType === 'viva'
-                        ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
-                        : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                    }`}
+                    className={`rounded-xl border-2 p-4 text-center font-semibold transition`}
+                    style={aiConfig.questionType === 'viva' ? {
+                      borderColor: '#a855f7',
+                      backgroundColor: '#f3e8ff',
+                      color: '#7e22ce'
+                    } : {
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     <Mic className="mx-auto mb-2" size={24} />
                     Viva Questions
@@ -491,7 +531,7 @@ export default function HomeworkManagement() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                     Subject
                   </label>
                   <input
@@ -500,12 +540,17 @@ export default function HomeworkManagement() {
                     value={aiConfig.subject}
                     onChange={(e) => setAiConfig({ ...aiConfig, subject: e.target.value })}
                     placeholder="e.g., Mathematics, Physics"
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                  <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                     Number of Questions
                   </label>
                   <input
@@ -514,13 +559,18 @@ export default function HomeworkManagement() {
                     max="20"
                     value={aiConfig.numQuestions}
                     onChange={(e) => setAiConfig({ ...aiConfig, numQuestions: parseInt(e.target.value) })}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                   Topic/Chapter
                 </label>
                 <textarea
@@ -529,15 +579,23 @@ export default function HomeworkManagement() {
                   onChange={(e) => setAiConfig({ ...aiConfig, topic: e.target.value })}
                   placeholder="e.g., Photosynthesis in Plants, Quadratic Equations, French Revolution"
                   rows={3}
-                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200/70 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                  style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-text)'
+                  }}
                 />
-                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="mt-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                   💡 Be specific for better results. Include key concepts you want to test.
                 </p>
               </div>
 
-              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
-                <p className="text-sm text-amber-800 dark:text-amber-200">
+              <div className="rounded-xl p-4" style={{
+                border: '1px solid #fcd34d',
+                backgroundColor: '#fef3c7'
+              }}>
+                <p className="text-sm" style={{ color: '#92400e' }}>
                   <strong>Note:</strong> AI will generate high-quality questions based on your topic. 
                   {aiConfig.questionType === 'mcq' 
                     ? ' MCQs will include 4 options with correct answers marked.'
@@ -553,7 +611,12 @@ export default function HomeworkManagement() {
                     setAiConfig({ topic: '', numQuestions: 5, questionType: 'mcq', subject: '' });
                   }}
                   disabled={aiGenerating}
-                  className="flex-1 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
+                  style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-text)'
+                  }}
                 >
                   Cancel
                 </button>
@@ -561,7 +624,8 @@ export default function HomeworkManagement() {
                   type="button"
                   onClick={generateQuestionsWithAI}
                   disabled={aiGenerating || !aiConfig.topic || !aiConfig.subject}
-                  className="flex-1 rounded-xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: '#a855f7' }}
                 >
                   {aiGenerating ? (
                     <div className="flex items-center justify-center gap-2">
@@ -586,8 +650,8 @@ export default function HomeworkManagement() {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-          <div className="my-8 w-full max-w-4xl rounded-3xl border border-white/60 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-zinc-900 max-h-[90vh] overflow-y-auto">
-            <h2 className="mb-6 text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+          <div className="dashboard-card my-8 w-full max-w-4xl rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h2 className="mb-6 text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
               {editingAssignment ? 'Edit Assignment' : 'Create New Assignment'}
             </h2>
 
@@ -595,52 +659,72 @@ export default function HomeworkManagement() {
               {/* Basic Info */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Title</label>
+                  <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Title</label>
                   <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                     placeholder="Assignment title"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Subject</label>
+                  <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Subject</label>
                   <input
                     type="text"
                     required
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                     placeholder="Mathematics, Science, etc."
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Description</label>
+                <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Description</label>
                 <textarea
                   required
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                  style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-text)'
+                  }}
                   placeholder="Assignment instructions..."
                 />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Type</label>
+                  <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Type</label>
                   <select
                     value={formData.type}
                     onChange={(e) => {
                       setFormData({ ...formData, type: e.target.value });
                       setActiveTab(e.target.value);
                     }}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     <option value="mcq">MCQ Test</option>
                     <option value="viva">Virtual Viva</option>
@@ -648,39 +732,50 @@ export default function HomeworkManagement() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Deadline</label>
+                  <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Deadline</label>
                   <input
                     type="datetime-local"
                     required
                     value={formData.deadline}
                     onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Max Marks</label>
+                  <label className="mb-1 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>Max Marks</label>
                   <input
                     type="number"
                     required
                     value={formData.max_marks}
                     onChange={(e) => setFormData({ ...formData, max_marks: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-amber-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
                     placeholder="100"
                   />
                 </div>
               </div>
 
               {/* Questions Section */}
-              <div className="mt-6 rounded-xl border-2 border-dashed border-zinc-200 p-4 dark:border-zinc-700">
+              <div className="mt-6 rounded-xl border-2 border-dashed p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">
+                  <h3 className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                     {formData.type === 'mcq' ? 'MCQ Questions' : 'Viva Questions'}
                   </h3>
                   <button
                     type="button"
                     onClick={formData.type === 'mcq' ? addMCQQuestion : addVivaQuestion}
-                    className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-600"
+                    className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                    style={{ backgroundColor: 'var(--dashboard-primary)' }}
                   >
                     <Plus size={16} />
                     Add Question
@@ -689,9 +784,12 @@ export default function HomeworkManagement() {
 
                 {/* MCQ Questions */}
                 {formData.type === 'mcq' && formData.mcq_questions.map((q, qIndex) => (
-                  <div key={q.id} className="mb-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                  <div key={q.id} className="mb-4 rounded-xl p-4" style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-muted)'
+                  }}>
                     <div className="mb-3 flex items-start justify-between">
-                      <h4 className="font-semibold text-zinc-700 dark:text-zinc-300">Question {qIndex + 1}</h4>
+                      <h4 className="font-semibold" style={{ color: 'var(--dashboard-text)' }}>Question {qIndex + 1}</h4>
                       <button
                         type="button"
                         onClick={() => removeMCQQuestion(qIndex)}
@@ -706,7 +804,12 @@ export default function HomeworkManagement() {
                       value={q.question}
                       onChange={(e) => updateMCQQuestion(qIndex, 'question', e.target.value)}
                       placeholder="Enter question"
-                      className="mb-3 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                      className="mb-3 w-full rounded-lg px-3 py-2 text-sm"
+                      style={{
+                        border: '1px solid var(--dashboard-border)',
+                        backgroundColor: 'var(--dashboard-surface-solid)',
+                        color: 'var(--dashboard-text)'
+                      }}
                     />
                     <div className="space-y-2">
                       {q.options.map((opt, optIndex) => (
@@ -724,7 +827,12 @@ export default function HomeworkManagement() {
                             value={opt}
                             onChange={(e) => updateMCQOption(qIndex, optIndex, e.target.value)}
                             placeholder={`Option ${optIndex + 1}`}
-                            className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                            className="flex-1 rounded-lg px-3 py-2 text-sm"
+                            style={{
+                              border: '1px solid var(--dashboard-border)',
+                              backgroundColor: 'var(--dashboard-surface-solid)',
+                              color: 'var(--dashboard-text)'
+                            }}
                           />
                         </div>
                       ))}
@@ -737,18 +845,26 @@ export default function HomeworkManagement() {
                         value={q.marks}
                         onChange={(e) => updateMCQQuestion(qIndex, 'marks', parseInt(e.target.value))}
                         placeholder="Marks"
-                        className="w-24 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                        className="w-24 rounded-lg px-3 py-2 text-sm"
+                        style={{
+                          border: '1px solid var(--dashboard-border)',
+                          backgroundColor: 'var(--dashboard-surface-solid)',
+                          color: 'var(--dashboard-text)'
+                        }}
                       />
-                      <span className="ml-2 text-xs text-zinc-600 dark:text-zinc-400">marks</span>
+                      <span className="ml-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>marks</span>
                     </div>
                   </div>
                 ))}
 
                 {/* Viva Questions */}
                 {formData.type === 'viva' && formData.viva_questions.map((q, qIndex) => (
-                  <div key={q.id} className="mb-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                  <div key={q.id} className="mb-4 rounded-xl p-4" style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-muted)'
+                  }}>
                     <div className="mb-3 flex items-start justify-between">
-                      <h4 className="font-semibold text-zinc-700 dark:text-zinc-300">Question {qIndex + 1}</h4>
+                      <h4 className="font-semibold" style={{ color: 'var(--dashboard-text)' }}>Question {qIndex + 1}</h4>
                       <button
                         type="button"
                         onClick={() => removeVivaQuestion(qIndex)}
@@ -763,14 +879,24 @@ export default function HomeworkManagement() {
                       value={q.question}
                       onChange={(e) => updateVivaQuestion(qIndex, 'question', e.target.value)}
                       placeholder="Enter viva question"
-                      className="mb-3 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                      className="mb-3 w-full rounded-lg px-3 py-2 text-sm"
+                      style={{
+                        border: '1px solid var(--dashboard-border)',
+                        backgroundColor: 'var(--dashboard-surface-solid)',
+                        color: 'var(--dashboard-text)'
+                      }}
                     />
                     <textarea
                       value={q.suggested_answer}
                       onChange={(e) => updateVivaQuestion(qIndex, 'suggested_answer', e.target.value)}
                       placeholder="Suggested answer (optional)"
                       rows={2}
-                      className="mb-3 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                      className="mb-3 w-full rounded-lg px-3 py-2 text-sm"
+                      style={{
+                        border: '1px solid var(--dashboard-border)',
+                        backgroundColor: 'var(--dashboard-surface-solid)',
+                        color: 'var(--dashboard-text)'
+                      }}
                     />
                     <div>
                       <input
@@ -780,16 +906,21 @@ export default function HomeworkManagement() {
                         value={q.marks}
                         onChange={(e) => updateVivaQuestion(qIndex, 'marks', parseInt(e.target.value))}
                         placeholder="Marks"
-                        className="w-24 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                        className="w-24 rounded-lg px-3 py-2 text-sm"
+                        style={{
+                          border: '1px solid var(--dashboard-border)',
+                          backgroundColor: 'var(--dashboard-surface-solid)',
+                          color: 'var(--dashboard-text)'
+                        }}
                       />
-                      <span className="ml-2 text-xs text-zinc-600 dark:text-zinc-400">marks</span>
+                      <span className="ml-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>marks</span>
                     </div>
                   </div>
                 ))}
 
                 {((formData.type === 'mcq' && formData.mcq_questions.length === 0) ||
                   (formData.type === 'viva' && formData.viva_questions.length === 0)) && (
-                  <div className="py-8 text-center text-sm text-zinc-500">
+                  <div className="py-8 text-center text-sm" style={{ color: 'var(--dashboard-muted)' }}>
                     No questions added yet. Click "Add Question" to get started.
                   </div>
                 )}
@@ -800,13 +931,19 @@ export default function HomeworkManagement() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="flex-1 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold transition hover:opacity-90"
+                  style={{
+                    border: '1px solid var(--dashboard-border)',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-text)'
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-amber-400/40"
+                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:opacity-90"
+                  style={{ backgroundColor: 'var(--dashboard-primary)' }}
                 >
                   {editingAssignment ? 'Update Assignment' : 'Create Assignment'}
                 </button>

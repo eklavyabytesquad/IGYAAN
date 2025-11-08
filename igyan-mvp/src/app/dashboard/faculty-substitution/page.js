@@ -156,56 +156,64 @@ export default function FacultySubstitutionPage() {
 	);
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800 p-6 lg:p-10">
-			<header className="mb-8">
+		<div className="dashboard-theme min-h-screen p-6 lg:p-10">
+			<header className="dashboard-card mb-8 rounded-3xl p-6 shadow-xl">
 				<Logo variant="header" className="mb-3" />
-				<h1 className="text-4xl font-bold text-zinc-900 dark:text-white">
+				<h1 className="text-4xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 					Faculty Substitution System
 				</h1>
-				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
+				<p className="mt-2" style={{ color: 'var(--dashboard-muted)' }}>
 					Intelligent algorithm-based faculty replacement with AI-powered reasoning
 				</p>
 			</header>
 
 			{/* Tab Navigation */}
-			<div className="mb-6 flex gap-2 border-b border-zinc-200 dark:border-zinc-700">
+			<div className="mb-6 flex gap-2" style={{ borderBottom: '2px solid var(--dashboard-border)' }}>
 				<button
 					onClick={() => setActiveTab("calendar")}
 					className={`px-6 py-3 font-semibold transition ${
-						activeTab === "calendar"
-							? "border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-							: "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+						activeTab === "calendar" ? "border-b-2" : ""
 					}`}
+					style={{
+						borderColor: activeTab === "calendar" ? 'var(--dashboard-primary)' : 'transparent',
+						color: activeTab === "calendar" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+					}}
 				>
 					Calendar View
 				</button>
 				<button
 					onClick={() => setActiveTab("request")}
 					className={`px-6 py-3 font-semibold transition ${
-						activeTab === "request"
-							? "border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-							: "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+						activeTab === "request" ? "border-b-2" : ""
 					}`}
+					style={{
+						borderColor: activeTab === "request" ? 'var(--dashboard-primary)' : 'transparent',
+						color: activeTab === "request" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+					}}
 				>
 					Request Substitution
 				</button>
 				<button
 					onClick={() => setActiveTab("faculty")}
 					className={`px-6 py-3 font-semibold transition ${
-						activeTab === "faculty"
-							? "border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-							: "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+						activeTab === "faculty" ? "border-b-2" : ""
 					}`}
+					style={{
+						borderColor: activeTab === "faculty" ? 'var(--dashboard-primary)' : 'transparent',
+						color: activeTab === "faculty" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+					}}
 				>
 					Faculty Directory
 				</button>
 				<button
 					onClick={() => setActiveTab("history")}
 					className={`px-6 py-3 font-semibold transition ${
-						activeTab === "history"
-							? "border-b-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-							: "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+						activeTab === "history" ? "border-b-2" : ""
 					}`}
+					style={{
+						borderColor: activeTab === "history" ? 'var(--dashboard-primary)' : 'transparent',
+						color: activeTab === "history" ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)'
+					}}
 				>
 					History ({substitutionHistory.length})
 				</button>
@@ -223,13 +231,17 @@ export default function FacultySubstitutionPage() {
 									date.setMonth(date.getMonth() - 1);
 									setSelectedDate(date.toISOString().split("T")[0]);
 								}}
-								className="rounded-full border border-zinc-300 p-2 text-zinc-600 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-300"
+								className="rounded-full border p-2 transition"
+								style={{ 
+									borderColor: 'var(--dashboard-border)',
+									color: 'var(--dashboard-text)'
+								}}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
 									<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 								</svg>
 							</button>
-							<h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+							<h2 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 								{new Date(selectedDate).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
 							</h2>
 							<button
@@ -238,7 +250,11 @@ export default function FacultySubstitutionPage() {
 									date.setMonth(date.getMonth() + 1);
 									setSelectedDate(date.toISOString().split("T")[0]);
 								}}
-								className="rounded-full border border-zinc-300 p-2 text-zinc-600 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-300"
+								className="rounded-full border p-2 transition"
+								style={{ 
+									borderColor: 'var(--dashboard-border)',
+									color: 'var(--dashboard-text)'
+								}}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
 									<path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -247,27 +263,34 @@ export default function FacultySubstitutionPage() {
 						</div>
 						<button
 							onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}
-							className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-300"
+							className="rounded-xl border px-4 py-2 text-sm font-semibold transition"
+							style={{
+								borderColor: 'var(--dashboard-border)',
+								color: 'var(--dashboard-text)'
+							}}
 						>
 							Today
 						</button>
 					</div>
 
 					{/* Calendar Grid */}
-					<div className="rounded-3xl border border-zinc-200 bg-white/90 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/90 overflow-hidden">
-						<div className="grid grid-cols-7 bg-zinc-50 dark:bg-zinc-800/60">
+					<div className="dashboard-card rounded-3xl shadow-lg overflow-hidden">
+						<div className="grid grid-cols-7" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
 							{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-								<div key={day} className="p-4 text-center text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+								<div key={day} className="p-4 text-center text-xs font-semibold" style={{ color: 'var(--dashboard-muted)' }}>
 									{day}
 								</div>
 							))}
 						</div>
 						<div>
 							{monthMatrix.map((week, weekIdx) => (
-								<div key={weekIdx} className="grid grid-cols-7 border-t border-zinc-200 dark:border-zinc-800">
+								<div key={weekIdx} className="grid grid-cols-7" style={{ borderTop: '1px solid var(--dashboard-border)' }}>
 									{week.map((day, dayIdx) => {
 										if (!day) {
-											return <div key={dayIdx} className="min-h-[120px] border-r border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-900/40" />;
+											return <div key={dayIdx} className="min-h-[120px]" style={{ 
+												borderRight: '1px solid var(--dashboard-border)',
+												backgroundColor: 'var(--dashboard-surface-muted)'
+											}} />;
 										}
 
 										const dateStr = day.toISOString().split("T")[0];
@@ -278,13 +301,18 @@ export default function FacultySubstitutionPage() {
 											<div
 												key={dayIdx}
 												onClick={() => setSelectedDate(dateStr)}
-												className={`min-h-[120px] border-r border-zinc-200 p-2 transition cursor-pointer dark:border-zinc-800 ${
-													isSelected ? "bg-indigo-50 dark:bg-indigo-900/20" : "hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-												}`}
+												className={`min-h-[120px] p-2 transition cursor-pointer`}
+												style={{
+													borderRight: '1px solid var(--dashboard-border)',
+													backgroundColor: isSelected ? 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' : 'transparent'
+												}}
 											>
 												<div className={`text-sm font-semibold mb-2 ${
-													isToday ? "rounded-full bg-indigo-600 text-white w-7 h-7 flex items-center justify-center" : "text-zinc-900 dark:text-white"
-												}`}>
+													isToday ? "rounded-full w-7 h-7 flex items-center justify-center text-white" : ""
+												}`} style={{
+													backgroundColor: isToday ? 'var(--dashboard-primary)' : 'transparent',
+													color: isToday ? 'white' : 'var(--dashboard-text)'
+												}}>
 													{day.getDate()}
 												</div>
 												<div className="space-y-1 text-xs">
@@ -294,18 +322,18 @@ export default function FacultySubstitutionPage() {
 														return (
 															<div
 																key={idx}
-																className={`rounded px-2 py-1 truncate ${
-																	absent
-																		? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-																		: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-																}`}
+																className={`rounded px-2 py-1 truncate`}
+																style={{
+																	backgroundColor: absent ? '#fee2e2' : '#dbeafe',
+																	color: absent ? '#991b1b' : '#1e40af'
+																}}
 															>
 																P{cls.period}: {cls.className}
 															</div>
 														);
 													})}
 													{classSchedule[dateStr]?.length > 3 && (
-														<div className="text-zinc-500 dark:text-zinc-400">
+														<div style={{ color: 'var(--dashboard-muted)' }}>
 															+{classSchedule[dateStr].length - 3} more
 														</div>
 													)}
@@ -319,18 +347,18 @@ export default function FacultySubstitutionPage() {
 					</div>
 
 					{/* Daily Schedule Detail - Class-wise */}
-					<div className="rounded-3xl border border-zinc-200 bg-white/90 p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/90">
+					<div className="dashboard-card rounded-3xl p-6 shadow-lg">
 						<div className="flex items-center justify-between mb-6">
 							<div>
-								<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
+								<h3 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 									Class Schedule
 								</h3>
-								<p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+								<p className="text-sm mt-1" style={{ color: 'var(--dashboard-muted)' }}>
 									{new Date(selectedDate).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
 								</p>
 							</div>
-							<div className="rounded-xl bg-indigo-50 px-4 py-2 dark:bg-indigo-900/30">
-								<p className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">
+							<div className="rounded-xl px-4 py-2" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' }}>
+								<p className="text-sm font-semibold" style={{ color: 'var(--dashboard-primary)' }}>
 									{uniqueClasses.length} Classes
 								</p>
 							</div>
@@ -352,7 +380,11 @@ export default function FacultySubstitutionPage() {
 								return (
 									<div
 										key={className}
-										className="rounded-2xl border border-zinc-200 bg-gradient-to-r from-white to-zinc-50/50 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-800/50"
+										className="rounded-2xl shadow-sm transition hover:shadow-md"
+										style={{
+											border: '1px solid var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)'
+										}}
 									>
 										{/* Class Header - Dropdown Toggle */}
 										<button
@@ -360,23 +392,28 @@ export default function FacultySubstitutionPage() {
 											className="w-full flex items-center justify-between p-5 text-left"
 										>
 											<div className="flex items-center gap-4">
-												<div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
+												<div className="flex h-14 w-14 items-center justify-center rounded-xl shadow-md" style={{
+													backgroundColor: 'var(--dashboard-primary)'
+												}}>
 													<span className="text-xl font-bold text-white">
 														{className.replace(/[^0-9]/g, '')}
 													</span>
 												</div>
 												<div>
-													<h4 className="text-lg font-bold text-zinc-900 dark:text-white">
+													<h4 className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 														Class {className}
 													</h4>
-													<p className="text-sm text-zinc-600 dark:text-zinc-400">
+													<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 														{hasClasses ? `${Object.keys(classPeriods).length} periods scheduled` : "No classes today"}
 													</p>
 												</div>
 											</div>
 											<div className="flex items-center gap-3">
 												{absentCount > 0 && (
-													<span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+													<span className="rounded-full px-3 py-1 text-xs font-semibold" style={{
+														backgroundColor: '#fee2e2',
+														color: '#991b1b'
+													}}>
 														{absentCount} Absent
 													</span>
 												)}
@@ -386,9 +423,10 @@ export default function FacultySubstitutionPage() {
 													fill="none"
 													stroke="currentColor"
 													strokeWidth="2"
-													className={`h-5 w-5 text-zinc-400 transition-transform ${
+													className={`h-5 w-5 transition-transform ${
 														isExpanded ? "rotate-180" : ""
 													}`}
+													style={{ color: 'var(--dashboard-muted)' }}
 												>
 													<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 												</svg>
@@ -397,7 +435,7 @@ export default function FacultySubstitutionPage() {
 
 										{/* Expanded Class Details */}
 										{isExpanded && hasClasses && (
-											<div className="border-t border-zinc-200 p-5 dark:border-zinc-800">
+											<div className="p-5" style={{ borderTop: '1px solid var(--dashboard-border)' }}>
 												<div className="space-y-4">
 													{[1, 2, 3, 4, 5, 6, 7, 8].map((period) => {
 														const periodItems = classPeriods[period.toString()] || [];
@@ -406,19 +444,25 @@ export default function FacultySubstitutionPage() {
 														return (
 															<div
 																key={period}
-																className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900"
+																className="rounded-xl p-4"
+																style={{
+																	border: '1px solid var(--dashboard-border)',
+																	backgroundColor: 'var(--dashboard-surface-solid)'
+																}}
 															>
 																<div className="flex items-center gap-3 mb-3">
-																	<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-																		<span className="text-sm font-bold text-indigo-700 dark:text-indigo-400">
+																	<div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{
+																		backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)'
+																	}}>
+																		<span className="text-sm font-bold" style={{ color: 'var(--dashboard-primary)' }}>
 																			P{period}
 																		</span>
 																	</div>
 																	<div>
-																		<h5 className="font-semibold text-zinc-900 dark:text-white">
+																		<h5 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 																			Period {period}
 																		</h5>
-																		<p className="text-xs text-zinc-500 dark:text-zinc-400">
+																		<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 																			{periodItems[0]?.subject}
 																		</p>
 																	</div>
@@ -431,25 +475,27 @@ export default function FacultySubstitutionPage() {
 																	return (
 																		<div
 																			key={item.facultyId}
-																			className={`rounded-lg p-4 ${
-																				absent
-																					? "bg-red-50 border-2 border-red-200 dark:bg-red-900/20 dark:border-red-800"
-																					: "bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700"
-																			}`}
+																			className={`rounded-lg p-4`}
+																			style={{
+																				backgroundColor: absent ? '#fef2f2' : 'var(--dashboard-surface-muted)',
+																				border: absent ? '2px solid #fecaca' : '1px solid var(--dashboard-border)'
+																			}}
 																		>
 																			<div className="flex items-start justify-between mb-3">
 																				<div className="flex-1">
 																					<div className="flex items-center gap-2 mb-2">
-																						<p className="font-semibold text-zinc-900 dark:text-white">
+																						<p className="font-semibold" style={{ color: 'var(--dashboard-text)' }}>
 																							{teacher?.name}
 																						</p>
 																						{absent && (
-																							<span className="rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+																							<span className="rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{
+																								backgroundColor: '#dc2626'
+																							}}>
 																								ABSENT
 																							</span>
 																						)}
 																					</div>
-																					<div className="grid grid-cols-2 gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+																					<div className="grid grid-cols-2 gap-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 																						<p>📚 Subject: <span className="font-medium">{teacher?.subject}</span></p>
 																						<p>🎓 Experience: <span className="font-medium">{teacher?.experience} years</span></p>
 																						<p>⭐ Specialization: <span className="font-medium">{teacher?.specialization}</span></p>
@@ -464,7 +510,12 @@ export default function FacultySubstitutionPage() {
 																						setSelectedTeacher(teacher);
 																						setShowTeacherModal(true);
 																					}}
-																					className="flex-1 rounded-lg border-2 border-indigo-300 bg-white px-3 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50 dark:border-indigo-700 dark:bg-zinc-900 dark:text-indigo-400 dark:hover:bg-indigo-900/20"
+																					className="flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition"
+																					style={{
+																						border: `2px solid var(--dashboard-primary)`,
+																						backgroundColor: 'var(--dashboard-surface-solid)',
+																						color: 'var(--dashboard-primary)'
+																					}}
 																				>
 																					📋 More Details
 																				</button>
@@ -472,7 +523,8 @@ export default function FacultySubstitutionPage() {
 																					<>
 																						<button
 																							onClick={() => handleMarkPresent(item.facultyId, selectedDate, period.toString())}
-																							className="flex-1 rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+																							className="flex-1 rounded-lg px-3 py-2 text-sm font-semibold text-white transition"
+																							style={{ backgroundColor: '#16a34a' }}
 																						>
 																							✓ Mark Present
 																						</button>
@@ -482,7 +534,8 @@ export default function FacultySubstitutionPage() {
 																								setSelectedPeriod(period.toString());
 																								setActiveTab("request");
 																							}}
-																							className="flex-1 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+																							className="flex-1 rounded-lg px-3 py-2 text-sm font-semibold text-white transition"
+																							style={{ backgroundColor: 'var(--dashboard-primary)' }}
 																						>
 																							🔍 Find Substitute
 																						</button>
@@ -490,7 +543,12 @@ export default function FacultySubstitutionPage() {
 																				) : (
 																					<button
 																						onClick={() => handleMarkAbsent(item.facultyId, selectedDate, period.toString())}
-																						className="flex-1 rounded-lg border-2 border-red-300 bg-white px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-700 dark:bg-zinc-900 dark:text-red-400 dark:hover:bg-red-900/20"
+																						className="flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition"
+																						style={{
+																							border: '2px solid #fca5a5',
+																							backgroundColor: 'var(--dashboard-surface-solid)',
+																							color: '#dc2626'
+																						}}
 																					>
 																						✗ Mark Absent
 																					</button>
@@ -518,20 +576,25 @@ export default function FacultySubstitutionPage() {
 				<div className="grid gap-8 lg:grid-cols-2">
 					{/* Input Section */}
 					<div className="space-y-6">
-						<div className="rounded-3xl border border-zinc-200 bg-white/90 p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/90">
-							<h2 className="text-2xl font-semibold text-zinc-900 dark:text-white mb-6">
+						<div className="dashboard-card rounded-3xl p-8 shadow-lg">
+							<h2 className="text-2xl font-semibold mb-6" style={{ color: 'var(--dashboard-heading)' }}>
 								Substitution Request
 							</h2>
 
 							<div className="space-y-5">
 								<div>
-									<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+									<label className="block text-sm font-medium mb-2" style={{ color: 'var(--dashboard-text)' }}>
 										Absent Faculty Member
 									</label>
 									<select
 										value={absentFacultyId}
 										onChange={(e) => setAbsentFacultyId(e.target.value)}
-										className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition"
+										style={{
+											border: '1px solid var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									>
 										<option value="">Select faculty...</option>
 										{facultyData.map((faculty) => (
@@ -543,25 +606,35 @@ export default function FacultySubstitutionPage() {
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+									<label className="block text-sm font-medium mb-2" style={{ color: 'var(--dashboard-text)' }}>
 										Date
 									</label>
 									<input
 										type="date"
 										value={selectedDate}
 										onChange={(e) => setSelectedDate(e.target.value)}
-										className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition"
+										style={{
+											border: '1px solid var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									/>
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+									<label className="block text-sm font-medium mb-2" style={{ color: 'var(--dashboard-text)' }}>
 										Period
 									</label>
 									<select
 										value={selectedPeriod}
 										onChange={(e) => setSelectedPeriod(e.target.value)}
-										className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition"
+										style={{
+											border: '1px solid var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
 									>
 										{[1, 2, 3, 4, 5, 6, 7, 8].map((period) => (
 											<option key={period} value={period.toString()}>
@@ -574,16 +647,21 @@ export default function FacultySubstitutionPage() {
 								<button
 									onClick={handleSubstitutionRequest}
 									disabled={isLoading || !absentFacultyId}
-									className="w-full rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-4 font-semibold text-white shadow-lg transition hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+									className="w-full rounded-xl px-6 py-4 font-semibold text-white shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+									style={{
+										backgroundColor: 'var(--dashboard-primary)'
+									}}
 								>
 									{isLoading ? "Finding Best Substitute..." : "Find Substitute"}
 								</button>
 
-								<div className="rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20">
-									<p className="text-sm font-medium text-blue-900 dark:text-blue-300">
+								<div className="rounded-xl p-4" style={{
+									backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)'
+								}}>
+									<p className="text-sm font-medium" style={{ color: 'var(--dashboard-primary)' }}>
 										Available Faculty: {availableFaculty.length}
 									</p>
-									<p className="text-xs text-blue-700 dark:text-blue-400 mt-1">
+									<p className="text-xs mt-1" style={{ color: 'var(--dashboard-muted)' }}>
 										For {selectedDate}, Period {selectedPeriod}
 									</p>
 								</div>
@@ -596,16 +674,19 @@ export default function FacultySubstitutionPage() {
 						{substitutionResult ? (
 							<SubstitutionCard result={substitutionResult} />
 						) : (
-							<div className="rounded-3xl border border-zinc-200 bg-white/90 p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/90 flex items-center justify-center min-h-[400px]">
+							<div className="dashboard-card rounded-3xl p-8 shadow-lg flex items-center justify-center min-h-[400px]">
 								<div className="text-center">
-									<div className="mx-auto mb-4 h-20 w-20 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+									<div className="mx-auto mb-4 h-20 w-20 rounded-full flex items-center justify-center" style={{
+										backgroundColor: 'var(--dashboard-surface-muted)'
+									}}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
 											viewBox="0 0 24 24"
 											strokeWidth={1.5}
 											stroke="currentColor"
-											className="w-10 h-10 text-zinc-400"
+											className="w-10 h-10"
+											style={{ color: 'var(--dashboard-muted)' }}
 										>
 											<path
 												strokeLinecap="round"
@@ -614,10 +695,10 @@ export default function FacultySubstitutionPage() {
 											/>
 										</svg>
 									</div>
-									<h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+									<h3 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										No Substitution Yet
 									</h3>
-									<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+									<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 										Select an absent faculty member and click "Find Substitute" to see results
 									</p>
 								</div>
@@ -644,41 +725,39 @@ export default function FacultySubstitutionPage() {
 			{/* Success Message Toast */}
 			{showSuccessMessage && (
 				<div className="fixed bottom-6 right-6 z-50 animate-slide-up">
-					<div className={`rounded-2xl border-2 p-5 shadow-2xl backdrop-blur-sm ${
-						successMessage.includes("✓")
-							? "border-green-300 bg-green-50/95 dark:border-green-700 dark:bg-green-900/95"
-							: "border-red-300 bg-red-50/95 dark:border-red-700 dark:bg-red-900/95"
-					}`}>
+					<div className={`rounded-2xl p-5 shadow-2xl backdrop-blur-sm`} style={{
+						border: successMessage.includes("✓") ? '2px solid #86efac' : '2px solid #fca5a5',
+						backgroundColor: successMessage.includes("✓") ? '#f0fdf4' : '#fef2f2'
+					}}>
 						<div className="flex items-start gap-4">
-							<div className={`rounded-full p-2 ${
-								successMessage.includes("✓")
-									? "bg-green-100 dark:bg-green-800"
-									: "bg-red-100 dark:bg-red-800"
-							}`}>
+							<div className={`rounded-full p-2`} style={{
+								backgroundColor: successMessage.includes("✓") ? '#dcfce7' : '#fee2e2'
+							}}>
 								{successMessage.includes("✓") ? (
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-green-600 dark:text-green-400">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" style={{ color: '#16a34a' }}>
 										<path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
 									</svg>
 								) : (
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-red-600 dark:text-red-400">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" style={{ color: '#dc2626' }}>
 										<path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
 									</svg>
 								)}
 							</div>
 							<div className="flex-1">
-								<p className={`text-sm font-semibold ${
-									successMessage.includes("✓")
-										? "text-green-900 dark:text-green-100"
-										: "text-red-900 dark:text-red-100"
-								}`}>
+								<p className={`text-sm font-semibold`} style={{
+									color: successMessage.includes("✓") ? '#166534' : '#991b1b'
+								}}>
 									{successMessage}
 								</p>
 							</div>
 							<button
 								onClick={() => setShowSuccessMessage(false)}
-								className="rounded-lg p-1 hover:bg-white/50 dark:hover:bg-black/20"
+								className="rounded-lg p-1 transition"
+								style={{
+									color: 'var(--dashboard-muted)'
+								}}
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-zinc-600 dark:text-zinc-400">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
 									<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
 								</svg>
 							</button>
@@ -690,23 +769,26 @@ export default function FacultySubstitutionPage() {
 			{/* Teacher Details Modal */}
 			{showTeacherModal && selectedTeacher && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-					<div className="relative w-full max-w-2xl rounded-3xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+					<div className="dashboard-card relative w-full max-w-2xl rounded-3xl shadow-2xl">
 						{/* Modal Header */}
-						<div className="border-b border-zinc-200 p-6 dark:border-zinc-800">
+						<div className="p-6" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
 							<div className="flex items-start justify-between">
 								<div>
-									<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
+									<h3 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 										Faculty Details
 									</h3>
-									<p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+									<p className="text-sm mt-1" style={{ color: 'var(--dashboard-muted)' }}>
 										Complete profile information
 									</p>
 								</div>
 								<button
 									onClick={() => setShowTeacherModal(false)}
-									className="rounded-xl p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+									className="rounded-xl p-2 transition"
+									style={{
+										color: 'var(--dashboard-muted)'
+									}}
 								>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-zinc-600 dark:text-zinc-400">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 										<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
 									</svg>
 								</button>
@@ -716,18 +798,22 @@ export default function FacultySubstitutionPage() {
 						{/* Modal Body */}
 						<div className="p-6 space-y-6">
 							{/* Basic Info */}
-							<div className="rounded-2xl bg-linear-to-br from-indigo-50 to-purple-50 p-6 dark:from-indigo-900/20 dark:to-purple-900/20">
+							<div className="rounded-2xl p-6" style={{
+								backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)'
+							}}>
 								<div className="flex items-center gap-4 mb-4">
-									<div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-600 shadow-lg">
+									<div className="flex h-16 w-16 items-center justify-center rounded-full shadow-lg" style={{
+										backgroundColor: 'var(--dashboard-primary)'
+									}}>
 										<span className="text-2xl font-bold text-white">
 											{selectedTeacher.name.split(" ").map(n => n[0]).join("")}
 										</span>
 									</div>
 									<div>
-										<h4 className="text-xl font-bold text-zinc-900 dark:text-white">
+										<h4 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 											{selectedTeacher.name}
 										</h4>
-										<p className="text-sm text-zinc-600 dark:text-zinc-400">
+										<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 											{selectedTeacher.id}
 										</p>
 									</div>
@@ -736,34 +822,38 @@ export default function FacultySubstitutionPage() {
 
 							{/* Professional Details */}
 							<div className="grid gap-4 md:grid-cols-2">
-								<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-									<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-1">Subject</p>
-									<p className="text-lg font-bold text-zinc-900 dark:text-white">{selectedTeacher.subject}</p>
+								<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+									<p className="text-xs font-semibold mb-1" style={{ color: 'var(--dashboard-muted)' }}>Subject</p>
+									<p className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{selectedTeacher.subject}</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-									<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-1">Specialization</p>
-									<p className="text-lg font-bold text-zinc-900 dark:text-white">{selectedTeacher.specialization}</p>
+								<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+									<p className="text-xs font-semibold mb-1" style={{ color: 'var(--dashboard-muted)' }}>Specialization</p>
+									<p className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{selectedTeacher.specialization}</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-									<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-1">Experience</p>
-									<p className="text-lg font-bold text-zinc-900 dark:text-white">{selectedTeacher.experience} years</p>
+								<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+									<p className="text-xs font-semibold mb-1" style={{ color: 'var(--dashboard-muted)' }}>Experience</p>
+									<p className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{selectedTeacher.experience} years</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-									<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-1">Current Workload</p>
-									<p className="text-lg font-bold text-zinc-900 dark:text-white">
+								<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+									<p className="text-xs font-semibold mb-1" style={{ color: 'var(--dashboard-muted)' }}>Current Workload</p>
+									<p className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 										{selectedTeacher.currentSubstitutions}/{selectedTeacher.maxSubstitutionsPerWeek}
 									</p>
 								</div>
 							</div>
 
 							{/* Qualifications */}
-							<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-								<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">Qualifications</p>
+							<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+								<p className="text-xs font-semibold mb-3" style={{ color: 'var(--dashboard-muted)' }}>Qualifications</p>
 								<div className="flex flex-wrap gap-2">
 									{selectedTeacher.qualifications.map((qual, idx) => (
 										<span
 											key={idx}
-											className="rounded-lg bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
+											className="rounded-lg px-3 py-1 text-sm font-semibold"
+											style={{
+												backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)',
+												color: 'var(--dashboard-primary)'
+											}}
 										>
 											{qual}
 										</span>
@@ -772,13 +862,17 @@ export default function FacultySubstitutionPage() {
 							</div>
 
 							{/* Classes */}
-							<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-								<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">Assigned Classes</p>
+							<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+								<p className="text-xs font-semibold mb-3" style={{ color: 'var(--dashboard-muted)' }}>Assigned Classes</p>
 								<div className="flex flex-wrap gap-2">
 									{selectedTeacher.classes.map((cls, idx) => (
 										<span
 											key={idx}
-											className="rounded-lg bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+											className="rounded-lg px-3 py-1 text-sm font-semibold"
+											style={{
+												backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)',
+												color: 'var(--dashboard-primary)'
+											}}
 										>
 											{cls}
 										</span>
@@ -787,8 +881,8 @@ export default function FacultySubstitutionPage() {
 							</div>
 
 							{/* Preferred Periods */}
-							<div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
-								<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">Preferred Teaching Periods</p>
+							<div className="rounded-xl p-4" style={{ backgroundColor: 'var(--dashboard-surface-muted)' }}>
+								<p className="text-xs font-semibold mb-3" style={{ color: 'var(--dashboard-muted)' }}>Preferred Teaching Periods</p>
 								<div className="flex flex-wrap gap-2">
 									{selectedTeacher.preferredPeriods.map((period, idx) => (
 										<span
