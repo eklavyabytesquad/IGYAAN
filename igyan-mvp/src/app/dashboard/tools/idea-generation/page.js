@@ -143,41 +143,48 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 
 	if (loading) {
 		return (
-			<div className="flex h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
+			<div className="flex h-screen items-center justify-center" style={{ background: 'var(--dashboard-background)' }}>
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-white dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-900">
+		<div className="min-h-screen" style={{ background: 'var(--dashboard-background)' }}>
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				{/* Header */}
 				<div className="mb-8">
 					<div className="flex items-center gap-3 mb-4">
 						<button
 							onClick={() => router.back()}
-							className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+							className="flex h-10 w-10 items-center justify-center rounded-lg border transition-colors"
+							style={{
+								borderColor: 'var(--dashboard-border)',
+								background: 'var(--dashboard-surface-solid)',
+								color: 'var(--dashboard-text)'
+							}}
+							onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+							onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
 						>
 							<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 							</svg>
 						</button>
 						<div>
-							<h1 className="text-3xl font-bold text-slate-900 dark:text-white">Startup Idea Generator</h1>
-							<p className="text-slate-600 dark:text-slate-400 mt-1">AI-powered tool to discover your next big venture</p>
+							<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Startup Idea Generator</h1>
+							<p className="mt-1" style={{ color: 'var(--dashboard-muted)' }}>AI-powered tool to discover your next big venture</p>
 						</div>
 					</div>
 				</div>
 
 				<div className="grid gap-8 lg:grid-cols-2">
 					{/* Input Form */}
-					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-						<h2 className="mb-6 text-xl font-bold text-slate-900 dark:text-white">Tell Us About Your Vision</h2>
+					<div className="rounded-2xl border p-6 shadow-lg dashboard-card" style={{ borderColor: 'var(--dashboard-border)' }}>
+						<h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Tell Us About Your Vision</h2>
 						
 						<form onSubmit={handleSubmit} className="space-y-5">
 							<div>
-								<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Your Interests & Skills
 								</label>
 								<textarea
@@ -185,21 +192,47 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 									value={formData.interests}
 									onChange={handleInputChange}
 									rows={3}
-									className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+									className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 placeholder:opacity-60"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
+									onFocus={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+										e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+									}}
+									onBlur={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+										e.currentTarget.style.boxShadow = 'none';
+									}}
 									placeholder="E.g., Technology, coding, design, sustainability..."
 									required
 								/>
 							</div>
 
 							<div>
-								<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Industry
 								</label>
 								<select
 									name="industry"
 									value={formData.industry}
 									onChange={handleInputChange}
-									className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+									className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
+									onFocus={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+										e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+									}}
+									onBlur={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+										e.currentTarget.style.boxShadow = 'none';
+									}}
 									required
 								>
 									<option value="">Select an industry</option>
@@ -210,7 +243,7 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 							</div>
 
 							<div>
-								<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Problem You Want to Solve
 								</label>
 								<textarea
@@ -218,14 +251,27 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 									value={formData.problemArea}
 									onChange={handleInputChange}
 									rows={3}
-									className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+									className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 placeholder:opacity-60"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
+									onFocus={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+										e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+									}}
+									onBlur={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+										e.currentTarget.style.boxShadow = 'none';
+									}}
 									placeholder="What problem do you want to solve?"
 									required
 								/>
 							</div>
 
 							<div>
-								<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Target Audience
 								</label>
 								<input
@@ -233,7 +279,20 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 									name="targetAudience"
 									value={formData.targetAudience}
 									onChange={handleInputChange}
-									className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+									className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 placeholder:opacity-60"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
+									onFocus={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+										e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+									}}
+									onBlur={(e) => {
+										e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+										e.currentTarget.style.boxShadow = 'none';
+									}}
 									placeholder="E.g., College students, small businesses..."
 									required
 								/>
@@ -241,14 +300,27 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 
 							<div className="grid gap-4 sm:grid-cols-2">
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Budget Level
 									</label>
 									<select
 										name="budget"
 										value={formData.budget}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+										className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+											e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+											e.currentTarget.style.boxShadow = 'none';
+										}}
 									>
 										<option value="low">Low ($0-$10k)</option>
 										<option value="medium">Medium ($10k-$50k)</option>
@@ -257,14 +329,27 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 								</div>
 
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Timeframe
 									</label>
 									<select
 										name="timeframe"
 										value={formData.timeframe}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+										className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+											e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+											e.currentTarget.style.boxShadow = 'none';
+										}}
 									>
 										<option value="short">Quick Launch (1-3 months)</option>
 										<option value="medium">Medium (3-6 months)</option>
@@ -276,7 +361,12 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 							<button
 								type="submit"
 								disabled={generating}
-								className="w-full rounded-lg bg-linear-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-purple-700 hover:to-pink-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+								className="w-full rounded-lg px-6 py-3 font-semibold text-white shadow-lg transition-all hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+								style={{
+									background: 'linear-gradient(to right, var(--dashboard-primary), var(--dashboard-primary-hover))'
+								}}
+								onMouseEnter={(e) => !generating && (e.currentTarget.style.transform = 'translateY(-1px)')}
+								onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
 							>
 								{generating ? (
 									<span className="flex items-center justify-center gap-2">
@@ -299,38 +389,45 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 					</div>
 
 					{/* Results */}
-					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+					<div className="rounded-2xl border p-6 shadow-lg dashboard-card" style={{ borderColor: 'var(--dashboard-border)' }}>
 						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Startup Ideas</h2>
+							<h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Your Startup Ideas</h2>
 							{ideas.length > 0 && (
-								<span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+								<span className="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold" style={{
+									background: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)',
+									color: 'var(--dashboard-primary)'
+								}}>
 									{ideas.length} {ideas.length === 1 ? 'Idea' : 'Ideas'}
 								</span>
 							)}
 						</div>
 						
 						{error && (
-							<div className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200">
+							<div className="rounded-lg border p-4" style={{
+								background: 'rgba(239, 68, 68, 0.1)',
+								borderColor: 'rgba(239, 68, 68, 0.4)',
+								color: '#ef4444'
+							}}>
 								{error}
 							</div>
 						)}
 
 						{ideas.length === 0 && !generating && !error && (
 							<div className="flex flex-col items-center justify-center py-12 text-center">
-								<div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
-									<svg className="h-10 w-10 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full dashboard-pill">
+									<svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--dashboard-primary)' }}>
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
 									</svg>
 								</div>
-								<h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">No ideas generated yet</h3>
-								<p className="text-sm text-slate-600 dark:text-slate-400">Fill out the form and click "Generate Ideas" to get started!</p>
+								<h3 className="mb-2 text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>No ideas generated yet</h3>
+								<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>Fill out the form and click "Generate Ideas" to get started!</p>
 							</div>
 						)}
 
 						{generating && (
 							<div className="flex flex-col items-center justify-center py-12">
-								<div className="h-12 w-12 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mb-4"></div>
-								<p className="text-slate-600 dark:text-slate-400">AI is crafting amazing ideas for you...</p>
+								<div className="h-12 w-12 animate-spin rounded-full border-4 border-t-transparent mb-4" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+								<p style={{ color: 'var(--dashboard-muted)' }}>AI is crafting amazing ideas for you...</p>
 							</div>
 						)}
 
@@ -339,20 +436,23 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 								{ideas.map((idea, idx) => (
 									<div
 										key={idea.id}
-										className="group rounded-2xl border-2 border-purple-100 bg-linear-to-br from-white to-purple-50/30 p-6 shadow-md transition-all hover:shadow-xl dark:border-purple-900/30 dark:from-slate-800 dark:to-purple-900/10"
+										className="group rounded-2xl border-2 p-6 shadow-md transition-all hover:shadow-xl dashboard-card"
+										style={{ borderColor: 'var(--dashboard-border)' }}
 									>
 										{/* Header */}
 										<div className="mb-6 flex items-start justify-between">
 											<div className="flex-1">
 												<div className="mb-2 flex items-center gap-3">
-													<span className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-600 to-pink-600 text-lg font-bold text-white shadow-lg">
+													<span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold text-white shadow-lg" style={{
+														background: 'linear-gradient(135deg, var(--dashboard-primary), var(--dashboard-primary-hover))'
+													}}>
 														{idx + 1}
 													</span>
 													<div>
-														<h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+														<h3 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 															{idea.name}
 														</h3>
-														<p className="text-sm italic text-purple-600 dark:text-purple-400">
+														<p className="text-sm italic" style={{ color: 'var(--dashboard-primary)' }}>
 															"{idea.tagline}"
 														</p>
 													</div>
@@ -361,8 +461,8 @@ Return an array of 3 such JSON objects. Make ideas unique, feasible, and excitin
 										</div>
 
 										{/* Description */}
-										<div className="mb-6 rounded-xl bg-white/80 p-4 dark:bg-slate-900/50">
-											<p className="text-slate-700 leading-relaxed dark:text-slate-300">
+										<div className="mb-6 rounded-xl p-4 dashboard-card-muted">
+											<p className="leading-relaxed" style={{ color: 'var(--dashboard-text)' }}>
 												{idea.description}
 											</p>
 										</div>
