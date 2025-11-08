@@ -8,6 +8,7 @@ import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
 import VoiceMessage from "./components/VoiceMessage";
 import ProfileSetupForm from "./components/ProfileSetupForm";
+import Image from "next/image";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -868,16 +869,14 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 				}}>
 					<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
 					<div className="relative flex items-center gap-3">
-						<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								className="h-7 w-7 text-white"
-							>
-								<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-								<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-							</svg>
+						<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg overflow-hidden">
+							<Image
+								src="/asset/viva.png"
+								alt="Viva AI Avatar"
+								width={48}
+								height={48}
+								className="object-cover"
+							/>
 						</div>
 						<div>
 							<h2 className="text-lg font-bold text-white drop-shadow-sm">
@@ -1007,19 +1006,17 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 							<div className="absolute inset-0 animate-pulse rounded-full opacity-20 blur-md" style={{
 								background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
 							}}></div>
-							<div className="relative flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg" style={{
+							<div className="relative flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg overflow-hidden" style={{
 								background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
 								boxShadow: `0 10px 25px -10px var(--dashboard-primary)`
 							}}>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="currentColor"
-									className="h-6 w-6 text-white"
-								>
-									<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-									<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-								</svg>
+								<Image
+									src="/asset/viva.png"
+									alt="Viva AI Avatar"
+									width={48}
+									height={48}
+									className="object-cover"
+								/>
 							</div>
 						</div>
 						<div>
@@ -1086,19 +1083,17 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 								<div className="absolute inset-0 animate-pulse rounded-full opacity-30 blur-2xl" style={{
 									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
 								}}></div>
-								<div className="relative flex h-24 w-24 items-center justify-center rounded-3xl shadow-2xl animate-float" style={{
+								<div className="relative flex h-24 w-24 items-center justify-center rounded-3xl shadow-2xl animate-float overflow-hidden" style={{
 									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
 									boxShadow: `0 25px 50px -20px var(--dashboard-primary)`
 								}}>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="h-12 w-12 text-white"
-									>
-										<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-										<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-									</svg>
+									<Image
+										src="/asset/viva.png"
+										alt="Viva AI Avatar"
+										width={96}
+										height={96}
+										className="object-cover"
+									/>
 								</div>
 							</div>
 							<div className="space-y-3">
