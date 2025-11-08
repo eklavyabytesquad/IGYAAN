@@ -576,7 +576,7 @@ IMPORTANT FORMATTING RULES:
 					<div className="flex items-center gap-3">
 					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 via-yellow-400 to-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-900/50">
 						<Image 
-							src="/asset/sudarshanai/sudarshanicon.png" 
+							src="/asset/sudarshanai/sudarshanlogo.jpg" 
 							alt="Sudarshan AI"
 							width={32}
 							height={32}
