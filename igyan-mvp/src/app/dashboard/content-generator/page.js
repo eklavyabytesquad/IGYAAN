@@ -233,19 +233,19 @@ Analyze this topic, fix any errors, and create comprehensive educational content
   };
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-6 bg-linear-to-br from-green-50 via-blue-50 to-indigo-100/60 p-4 lg:p-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="flex w-full flex-1 flex-col gap-6 p-4 lg:p-8" style={{ backgroundColor: 'var(--dashboard-background)' }}>
       {/* Header */}
-      <header className="grid gap-6 rounded-3xl border border-white/60 bg-white/70 p-6 text-zinc-800 shadow-xl backdrop-blur dark:border-white/10 dark:bg-zinc-900/70 dark:text-zinc-100">
+      <header className="dashboard-card grid gap-6 rounded-3xl p-6 shadow-xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-4">
-            <span className="rounded-2xl bg-linear-to-r from-green-500 via-teal-500 to-sky-500 p-4 text-white shadow-lg">
+            <span className="rounded-2xl p-4 text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
               <Sparkles size={28} />
             </span>
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl" style={{ color: 'var(--dashboard-heading)' }}>
                 Content Studio
               </h1>
-              <p className="mt-2 max-w-xl text-sm text-zinc-600 dark:text-zinc-400 sm:text-base">
+              <p className="mt-2 max-w-xl text-sm sm:text-base" style={{ color: 'var(--dashboard-muted)' }}>
                 Generate lesson-ready presentations and polished PDFs in seconds. Pick a template, preview your content, and export instantly.
               </p>
             </div>
@@ -261,7 +261,13 @@ Analyze this topic, fix any errors, and create comprehensive educational content
           ].map((tip) => (
             <div
               key={tip}
-              className="rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-xs font-medium text-zinc-500 shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-900/60 dark:text-zinc-300 sm:text-sm"
+              className="rounded-2xl px-4 py-3 text-xs font-medium shadow-sm sm:text-sm"
+              style={{ 
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                borderColor: 'var(--dashboard-border)',
+                color: 'var(--dashboard-muted)',
+                borderWidth: '1px'
+              }}
             >
               {tip}
             </div>
@@ -270,7 +276,7 @@ Analyze this topic, fix any errors, and create comprehensive educational content
       </header>
 
       {/* Workspace */}
-      <section className="flex min-h-[calc(100vh-16rem)] flex-1 flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <section className="dashboard-card flex min-h-[calc(100vh-16rem)] flex-1 flex-col overflow-hidden rounded-3xl shadow-2xl">
         {/* Conversation */}
         <div className="flex-1 overflow-y-auto px-6 py-8">
           <div className="mx-auto flex max-w-5xl flex-col gap-4">
@@ -280,8 +286,8 @@ Analyze this topic, fix any errors, and create comprehensive educational content
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-3 rounded-3xl bg-zinc-100/80 px-5 py-3 text-sm text-zinc-600 shadow-md backdrop-blur dark:bg-zinc-800/80 dark:text-zinc-300">
-                  <Loader2 className="h-4 w-4 animate-spin text-emerald-500" />
+                <div className="flex items-center gap-3 rounded-3xl px-5 py-3 text-sm shadow-md" style={{ backgroundColor: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-muted)' }}>
+                  <Loader2 className="h-4 w-4 animate-spin" style={{ color: 'var(--dashboard-primary)' }} />
                   <span>Crafting content…</span>
                 </div>
               </div>
@@ -293,30 +299,43 @@ Analyze this topic, fix any errors, and create comprehensive educational content
 
         {/* Persistent actions when content is pending (preview / download) */}
         {pendingGeneration && (
-          <div className="border-t border-white/70 bg-white/70 p-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/70">
+          <div className="p-4" style={{ borderTop: '1px solid var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
             <div className="mx-auto w-full max-w-5xl flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <div className="text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
                   ✨ Content ready: <span className="font-semibold">{pendingGeneration.title}</span>
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">Choose Preview or Download. You can also change template style below.</div>
+                <div className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Choose Preview or Download. You can also change template style below.</div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPreviewData(pendingGeneration)}
-                  className="rounded-xl border border-indigo-400/60 bg-white/80 px-3 py-2 text-sm font-semibold text-indigo-600 shadow-sm transition hover:border-indigo-500 hover:bg-indigo-50 dark:border-indigo-500/30 dark:bg-zinc-900 dark:text-indigo-300"
+                  className="rounded-xl px-3 py-2 text-sm font-semibold shadow-sm transition"
+                  style={{ 
+                    borderColor: 'var(--dashboard-primary)',
+                    borderWidth: '1px',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-primary)'
+                  }}
                 >
                   👁️ Preview
                 </button>
                 <button
                   onClick={() => handleGenerateDocument(pendingGeneration.type, pendingGeneration.content, pendingGeneration.title)}
-                  className="rounded-xl bg-linear-to-r from-emerald-500 via-teal-500 to-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-lg transition hover:shadow-emerald-400/40"
+                  className="rounded-xl px-3 py-2 text-sm font-semibold text-white shadow-lg transition"
+                  style={{ background: 'var(--dashboard-primary)' }}
                 >
                   ⬇️ Download {pendingGeneration.type === 'ppt' ? 'PPT' : 'PDF'}
                 </button>
                 <button
                   onClick={() => setShowTemplateSelector(pendingGeneration.type)}
-                  className="rounded-lg border border-zinc-200 bg-white/90 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900/80 dark:text-zinc-300"
+                  className="rounded-lg px-3 py-2 text-sm font-medium transition"
+                  style={{ 
+                    borderColor: 'var(--dashboard-border)',
+                    borderWidth: '1px',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-text)'
+                  }}
                 >
                   🎨 Choose Template
                 </button>
@@ -327,7 +346,7 @@ Analyze this topic, fix any errors, and create comprehensive educational content
 
         {/* Template + Actions */}
         {showTemplateSelector && pendingGeneration && (
-          <div className="border-t border-white/70 bg-white/70 p-6 backdrop-blur dark:border-white/10 dark:bg-zinc-900/70">
+          <div className="p-6" style={{ borderTop: '1px solid var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
             <div className="mx-auto w-full max-w-5xl space-y-4">
               <TemplateSelector
                 templates={showTemplateSelector === 'ppt' ? pptTemplates : pdfTemplates}
@@ -339,8 +358,14 @@ Analyze this topic, fix any errors, and create comprehensive educational content
               <div className="flex flex-col gap-3 text-sm sm:flex-row">
                 <button
                   onClick={() => setPreviewData(pendingGeneration)}
-                  className="flex-1 rounded-xl border border-indigo-400/60 bg-white/80 px-4 py-3 font-semibold text-indigo-600 shadow-sm transition hover:border-indigo-500 hover:bg-indigo-50 dark:border-indigo-500/30 dark:bg-zinc-900 dark:text-indigo-300 dark:hover:border-indigo-400 dark:hover:bg-zinc-800"
+                  className="flex-1 rounded-xl px-4 py-3 font-semibold shadow-sm transition"
                   type="button"
+                  style={{ 
+                    borderColor: 'var(--dashboard-primary)',
+                    borderWidth: '1px',
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    color: 'var(--dashboard-primary)'
+                  }}
                 >
                   👁️ Preview {pendingGeneration.type === 'ppt' ? 'slides' : 'document'}
                 </button>
@@ -350,8 +375,9 @@ Analyze this topic, fix any errors, and create comprehensive educational content
                     pendingGeneration.content,
                     pendingGeneration.title
                   )}
-                  className="flex-1 rounded-xl bg-linear-to-r from-emerald-500 via-teal-500 to-sky-500 px-4 py-3 font-semibold text-white shadow-lg transition hover:shadow-emerald-400/40"
+                  className="flex-1 rounded-xl px-4 py-3 font-semibold text-white shadow-lg transition"
                   type="button"
+                  style={{ background: 'var(--dashboard-primary)' }}
                 >
                   ⬇️ Download {pendingGeneration.type === 'ppt' ? 'PPT' : 'PDF'}
                 </button>
@@ -361,9 +387,9 @@ Analyze this topic, fix any errors, and create comprehensive educational content
         )}
 
         {/* Composer */}
-        <footer className="border-t border-white/70 bg-white/80 px-6 py-5 backdrop-blur dark:border-white/10 dark:bg-zinc-900/80">
+        <footer className="px-6 py-5" style={{ borderTop: '1px solid var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-3">
-            <div className="flex items-center justify-between gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400 sm:text-sm">
+            <div className="flex items-center justify-between gap-2 text-xs font-medium sm:text-sm" style={{ color: 'var(--dashboard-muted)' }}>
               <div className="flex items-center gap-2">
                 <Download size={16} />
                 <span>Type your topic and click Generate →</span>
@@ -440,7 +466,13 @@ FORMAT YOUR RESPONSE AS JSON:
                     }
                   }}
                   disabled={!inputMessage.trim() || isLoading}
-                  className="flex items-center gap-1.5 rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-blue-700 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50"
+                  style={{
+                    borderColor: 'var(--dashboard-primary)',
+                    borderWidth: '1px',
+                    backgroundColor: 'var(--dashboard-primary-light)',
+                    color: 'var(--dashboard-primary)'
+                  }}
                   title="Generate PowerPoint Presentation"
                 >
                   📊 PPT
@@ -514,7 +546,13 @@ FORMAT YOUR RESPONSE AS JSON:
                     }
                   }}
                   disabled={!inputMessage.trim() || isLoading}
-                  className="flex items-center gap-1.5 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50"
+                  style={{
+                    borderColor: 'var(--dashboard-primary)',
+                    borderWidth: '1px',
+                    backgroundColor: 'var(--dashboard-primary-light)',
+                    color: 'var(--dashboard-primary)'
+                  }}
                   title="Generate PDF Document"
                 >
                   📄 PDF
@@ -530,14 +568,21 @@ FORMAT YOUR RESPONSE AS JSON:
                 placeholder="Type your topic (e.g., 'AI in Education' or 'Quantum Physics') then click PPT or PDF button →"
                 disabled={isLoading}
                 rows={2}
-                className="w-full flex-1 resize-none rounded-2xl border border-zinc-200/80 bg-white/90 px-4 py-3 text-sm text-zinc-800 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200/70 disabled:cursor-not-allowed disabled:opacity-70 dark:border-zinc-700 dark:bg-zinc-900/80 dark:text-zinc-100 dark:focus:border-emerald-400 dark:focus:ring-emerald-500/30"
+                className="w-full flex-1 resize-none rounded-2xl px-4 py-3 text-sm shadow-sm outline-none transition disabled:cursor-not-allowed disabled:opacity-70"
+                style={{
+                  borderColor: 'var(--dashboard-border)',
+                  borderWidth: '1px',
+                  backgroundColor: 'var(--dashboard-surface-solid)',
+                  color: 'var(--dashboard-text)'
+                }}
               />
 
               <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className="flex items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-emerald-500 via-teal-500 to-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-emerald-400/40 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-60"
                 type="button"
+                style={{ background: 'var(--dashboard-primary)' }}
               >
                 <Send size={18} />
                 <span>Send</span>
