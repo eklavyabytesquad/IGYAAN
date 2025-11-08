@@ -1,0 +1,134 @@
+{
+	"subjects": [
+		{
+			"name": "NCERT Mathematics",
+			"chapters": [
+				{
+					"name": "Chapter 1: Number Systems",
+					"topics": [
+						"Real Numbers",
+						"Rational Numbers",
+						"Irrational Numbers",
+						"Laws of Exponents",
+						"Decimal Representation"
+					]
+				},
+				{
+					"name": "Chapter 2: Polynomials",
+					"topics": [
+						"Degree of Polynomial",
+						"Zeroes of Polynomial",
+						"Remainder Theorem",
+						"Factor Theorem",
+						"Algebraic Identities"
+					]
+				},
+				{
+					"name": "Chapter 3: Coordinate Geometry",
+					"topics": [
+						"Cartesian Plane",
+						"Plotting Points",
+						"Distance Formula",
+						"Section Formula",
+						"Area of Triangle"
+					]
+				},
+				{
+					"name": "Chapter 4: Linear Equations",
+					"topics": [
+						"Two Variables",
+						"Graphical Method",
+						"Substitution Method",
+						"Elimination Method",
+						"Cross Multiplication"
+					]
+				},
+				{
+					"name": "Chapter 5: Triangles",
+					"topics": [
+						"Congruence of Triangles",
+						"Similar Triangles",
+						"Pythagoras Theorem",
+						"Areas of Triangles",
+						"Criteria for Similarity"
+					]
+				}
+			]
+		},
+		{
+			"name": "NCERT Science",
+			"chapters": [
+				{
+					"name": "Chapter 1: Matter in Our Surroundings",
+					"topics": [
+						"States of Matter",
+						"Characteristics of Particles",
+						"Change of State",
+						"Evaporation",
+						"Temperature and Pressure Effects"
+					]
+				},
+				{
+					"name": "Chapter 2: Is Matter Pure",
+					"topics": [
+						"Mixtures and Compounds",
+						"Elements and Compounds",
+						"Solutions",
+						"Colloids and Suspensions",
+						"Separation Techniques"
+					]
+				},
+				{
+					"name": "Chapter 3: Atoms and Molecules",
+					"topics": [
+						"Laws of Chemical Combination",
+						"Atomic Mass",
+						"Molecular Mass",
+						"Mole Concept",
+						"Chemical Formulae"
+					]
+				},
+				{
+					"name": "Chapter 4: Cell Structure",
+					"topics": [
+						"Plant Cell",
+						"Animal Cell",
+						"Cell Organelles",
+						"Cell Division",
+						"Prokaryotic and Eukaryotic Cells"
+					]
+				},
+				{
+					"name": "Chapter 5: Tissues",
+					"topics": [
+						"Plant Tissues",
+						"Animal Tissues",
+						"Meristematic Tissues",
+						"Permanent Tissues",
+						"Complex Tissues"
+					]
+				},
+				{
+					"name": "Chapter 6: Motion",
+					"topics": [
+						"Speed and Velocity",
+						"Uniform and Non-uniform Motion",
+						"Acceleration",
+						"Equations of Motion",
+						"Graphical Representation"
+					]
+				},
+				{
+					"name": "Chapter 7: Force and Laws of Motion",
+					"topics": [
+						"Newton's First Law",
+						"Newton's Second Law",
+						"Newton's Third Law",
+						"Conservation of Momentum",
+						"Inertia"
+					]
+				}
+			]
+		}
+	]
+}
