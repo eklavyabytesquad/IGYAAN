@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
@@ -20,6 +21,12 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 
 	// Faculty Portal Navigation Structure
 	const facultyNavSections = [
+		{
+			key: 'copilot',
+			title: "Copilot",
+			href: "/dashboard/copilot",
+			icon: <Image src="/asset/sudarshanai/sudarshanicon.png" alt="Sudarshan AI" width={20} height={20} className="object-contain nav-icon-adaptive" />,
+		},
 		{
 			key: 'timetable',
 			title: "Smart Substitution",
