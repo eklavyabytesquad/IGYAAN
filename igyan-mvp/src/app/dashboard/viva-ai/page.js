@@ -73,6 +73,14 @@ export default function IgyanAIPage() {
 	const messagesEndRef = useRef(null);
 	const synthRef = useRef(null);
 
+	const previewConversation = [
+		{ role: "ai", label: "AI", text: "Hey there! Ready for a quick viva warm-up?" },
+		{ role: "student", label: "You", text: "Yes! Can we revise photosynthesis today?" },
+		{ role: "ai", label: "AI", text: "Absolutely. What triggers the opening of stomata in leaves?" },
+		{ role: "student", label: "You", text: "They open when guard cells absorb water and become turgid." },
+		{ role: "ai", label: "AI", text: "Perfect! Want me to ask a tougher follow-up or start a quiz?" }
+	];
+
 	// Initialize Speech Recognition and Speech Synthesis
 	useEffect(() => {
 		if (typeof window !== "undefined") {
@@ -856,7 +864,7 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 				</div>
 			)}
 
-			<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6" style={{
+			<div className="flex h-[calc(100vh-4rem)] gap-6 p-4 lg:p-6 max-w-[1400px] mx-auto" style={{
 				background: 'var(--dashboard-background)'
 			}}>
 				{/* Sidebar */}
@@ -869,13 +877,20 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 				}}>
 					<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
 					<div className="relative flex items-center gap-3">
-						<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg overflow-hidden">
+						<div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg overflow-hidden">
+							<Image
+								src="/asset/vivabg.jpg"
+								alt=""
+								fill
+								className="object-cover opacity-80"
+								priority={false}
+							/>
 							<Image
 								src="/asset/viva.png"
 								alt="Viva AI Avatar"
 								width={48}
 								height={48}
-								className="object-cover"
+								className="relative z-10 object-cover"
 							/>
 						</div>
 						<div>
@@ -986,7 +1001,7 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 			{/* Main Chat Area */}
 			<div className="flex flex-1 flex-col rounded-3xl border border-purple-200/50 bg-white/80 backdrop-blur-xl shadow-2xl shadow-purple-500/10 dark:border-purple-900/30 dark:bg-zinc-900/80 overflow-hidden">
 				{/* Header with Gradient */}
-				<div className="relative flex items-center justify-between border-b backdrop-blur-md p-5" style={{
+				<div className="relative flex items-center justify-between border-b backdrop-blur-md px-5 py-1 md:px-6" style={{
 					borderColor: 'var(--dashboard-border)',
 					backgroundColor: 'var(--dashboard-surface)'
 				}}>
@@ -1011,11 +1026,17 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 								boxShadow: `0 10px 25px -10px var(--dashboard-primary)`
 							}}>
 								<Image
+									src="/asset/vivabg.jpg"
+									alt=""
+									fill
+									className="object-cover opacity-70"
+								/>
+								<Image
 									src="/asset/viva.png"
 									alt="Viva AI Avatar"
 									width={48}
 									height={48}
-									className="object-cover"
+									className="relative z-10 object-cover"
 								/>
 							</div>
 						</div>
@@ -1076,161 +1097,116 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 				</div>
 
 				{/* Messages Container */}
-				<div className="flex-1 overflow-y-auto p-6 space-y-4">
+				<div className="flex-1 overflow-y-auto p-6 pt-12 no-scrollbar">
 					{messages.length === 0 ? (
-						<div className="flex h-full flex-col items-center justify-center gap-8 text-center px-4">
-							<div className="relative">
-								<div className="absolute inset-0 animate-pulse rounded-full opacity-30 blur-2xl" style={{
-									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
-								}}></div>
-								<div className="relative flex h-24 w-24 items-center justify-center rounded-3xl shadow-2xl animate-float overflow-hidden" style={{
-									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`,
-									boxShadow: `0 25px 50px -20px var(--dashboard-primary)`
+						<div className="flex h-full flex-col items-center justify-start gap-6 text-center px-4 pt-8 pb-12">
+							{/* Large Centered Avatar */}
+							<div className="relative mb-4">
+								{/* Animated sound wave rings when listening */}
+								{isListening && (
+									<>
+										<div className="absolute inset-0 -m-12 flex items-center justify-center">
+											<div className="absolute w-48 h-48 rounded-full border-2 animate-sound-wave-1" style={{borderColor: 'color-mix(in srgb, var(--dashboard-primary) 40%, transparent)'}}></div>
+											<div className="absolute w-56 h-56 rounded-full border-2 animate-sound-wave-2" style={{borderColor: 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)'}}></div>
+											<div className="absolute w-64 h-64 rounded-full border-2 animate-sound-wave-3" style={{borderColor: 'color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'}}></div>
+										</div>
+									</>
+								)}
+								
+								{/* Glow effect when idle */}
+								{!isListening && !isProcessing && (
+									<div className="absolute inset-0 animate-pulse rounded-full opacity-20 blur-3xl" style={{
+										background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
+									}}></div>
+								)}
+								
+								{/* Main Avatar Circle - Large */}
+								<div className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden shadow-2xl ${isListening ? 'scale-110' : isSpeaking ? 'scale-105' : 'scale-100'}`} style={{
+									border: '6px solid var(--dashboard-border)',
+									backgroundColor: 'var(--dashboard-card)',
+									boxShadow: isListening 
+										? `0 25px 70px -15px var(--dashboard-primary)` 
+										: isSpeaking
+										? `0 20px 60px -10px var(--dashboard-primary)`
+										: `0 15px 50px -10px var(--dashboard-primary)`
 								}}>
+									<Image
+										src="/asset/vivabg.jpg"
+										alt=""
+										fill
+										className="object-cover opacity-70"
+										priority={false}
+									/>
 									<Image
 										src="/asset/viva.png"
 										alt="Viva AI Avatar"
-										width={96}
-										height={96}
-										className="object-cover"
+										width={160}
+										height={160}
+										className="relative z-10 object-cover w-full h-full"
+										priority
 									/>
 								</div>
 							</div>
-							<div className="space-y-3">
-								<h3 className="text-3xl font-extrabold" style={{
-									background: `linear-gradient(90deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 80%, #000), var(--dashboard-primary))`,
-									WebkitBackgroundClip: 'text',
-									WebkitTextFillColor: 'transparent',
-									backgroundClip: 'text'
+
+							{/* Title */}
+							<h2 className="text-2xl font-bold mb-1" style={{color: 'var(--dashboard-heading)'}}>
+								AI Viva conversation
+							</h2>
+							
+							{/* Selected Notes or Subtitle */}
+							{selectedNotes ? (
+								<div className="flex items-center gap-2 rounded-full px-4 py-2 mb-4" style={{
+									backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+									color: 'var(--dashboard-primary)'
 								}}>
-									Welcome to {aiName || "AI Companion"}! 🎤
-								</h3>
-								<p className="text-base max-w-md mx-auto" style={{color: 'var(--dashboard-muted)'}}>
-									Press the microphone button below to start an interactive voice conversation
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+										<path d="M3.196 12.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 12.87z" />
+										<path d="M3.196 8.87l-.825.483a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.758 0l7.25-4.25a.75.75 0 000-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 01-2.276 0L3.196 8.87z" />
+										<path d="M10.38 1.103a.75.75 0 00-.76 0l-7.25 4.25a.75.75 0 000 1.294l7.25 4.25a.75.75 0 00.76 0l7.25-4.25a.75.75 0 000-1.294l-7.25-4.25z" />
+									</svg>
+									<span className="text-sm font-medium">{selectedNotes.subject} • {selectedNotes.topic}</span>
+								</div>
+							) : (
+								<p className="text-sm mb-4" style={{color: 'var(--dashboard-muted)'}}>
+									Speak naturally, learn effortlessly ✨
 								</p>
-							</div>
+							)}
 
-							{/* Features Grid */}
-							<div className="grid gap-4 sm:grid-cols-2 max-w-3xl w-full mt-6">
-								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
-									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
-								}}>
-									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
-											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
-										}}>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 24 24"
-												fill="currentColor"
-												className="h-5 w-5 text-white"
-											>
-												<path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-												<path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-											</svg>
-										</div>
-										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
-											Voice Input
-										</h4>
-									</div>
-									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
-										Ask questions using your voice naturally
-									</p>
-								</div>
-
-								<div className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl" style={{
-									background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
-								}}>
-									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
-											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
-										}}>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 24 24"
-												fill="currentColor"
-												className="h-5 w-5 text-white"
-											>
-												<path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" />
-												<path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" />
-											</svg>
-										</div>
-										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
-											Voice Response
-										</h4>
-									</div>
-									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
-										Get answers spoken back to you in natural voice
-									</p>
-								</div>
-
-								<div 
-									className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer" 
-									style={{
-										background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
-									}}
+							{/* Quick suggestion prompts - optional */}
+							<div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mt-6">
+								{/* Simple prompt chips */}
+								<button 
 									onClick={() => {
 										setIsSidebarOpen(true);
 										setActiveTab("notes");
 									}}
-								>
-									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
-											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
-										}}>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 24 24"
-												fill="currentColor"
-												className="h-5 w-5 text-white"
-											>
-												<path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
-											</svg>
-										</div>
-										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
-											Study Notes
-										</h4>
-									</div>
-									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
-										Select topics from your curriculum for focused learning
-									</p>
-								</div>
-
-								<div 
-									className="dashboard-card group rounded-2xl p-5 text-left shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer" 
+									className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
 									style={{
-										background: `linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 8%, var(--dashboard-surface-solid)), var(--dashboard-surface-solid))`
+										backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+										color: 'var(--dashboard-primary)',
+										border: '1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'
 									}}
+								>
+									📚 Select Study Notes
+								</button>
+								<button 
 									onClick={() => {
 										setIsSidebarOpen(true);
 										setActiveTab("chats");
 									}}
+									className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+									style={{
+										backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
+										color: 'var(--dashboard-primary)',
+										border: '1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent)'
+									}}
 								>
-									<div className="flex items-center gap-3 mb-3">
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-110" style={{
-											background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 85%, #000))`
-										}}>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 24 24"
-												fill="currentColor"
-												className="h-5 w-5 text-white"
-											>
-												<path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z" clipRule="evenodd" />
-											</svg>
-										</div>
-										<h4 className="font-bold" style={{color: 'var(--dashboard-heading)'}}>
-											Chat History
-										</h4>
-									</div>
-									<p className="text-sm leading-relaxed" style={{color: 'var(--dashboard-muted)'}}>
-										Auto-saved conversations with smart titles
-									</p>
-								</div>
+									💬 View Chat History
+								</button>
 							</div>
 						</div>
 					) : (
-						<>
+						<div className="space-y-4">
 							{messages.map((message, index) => (
 								<VoiceMessage
 									key={index}
@@ -1270,7 +1246,7 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 								</div>
 							)}
 							<div ref={messagesEndRef} />
-						</>
+						</div>
 					)}
 				</div>
 

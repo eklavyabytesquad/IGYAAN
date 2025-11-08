@@ -499,6 +499,16 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
                 inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
   }
 
+  /* Utility to hide scrollbars while preserving scroll */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Background grid pattern */
   .bg-grid-white\/10 {
     background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
