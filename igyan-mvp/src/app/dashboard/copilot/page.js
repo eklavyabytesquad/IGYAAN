@@ -576,12 +576,11 @@ IMPORTANT FORMATTING RULES:
 					<div className="flex items-center gap-3">
 					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 via-yellow-400 to-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-900/50">
 						<Image 
-							src="/asset/sudarshanai/sudarshanlogo.jpg" 
+							src="/asset/sudarshanai/sudarshanicon.png" 
 							alt="Sudarshan AI"
-							width={40}
-							height={40}
-							className="rounded-full object-cover animate-spin"
-							style={{ animationDuration: '8s' }}
+							width={32}
+							height={32}
+							className="rounded-full object-contain p-1"
 						/>
 					</div>
 						<div>

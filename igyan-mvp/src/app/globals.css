@@ -335,6 +335,22 @@ body[data-dashboard-theme] .dashboard-theme a:hover {
   color: var(--dashboard-primary);
 }
 
+/* Theme-adaptive icon styles for PNG images */
+.nav-icon-adaptive {
+	filter: brightness(0) saturate(100%) invert(27%) sepia(8%) saturate(1459%) hue-rotate(176deg) brightness(95%) contrast(93%);
+}
+
+body[data-dashboard-theme="midnight"] .nav-icon-adaptive {
+	filter: brightness(0) saturate(100%) invert(93%) sepia(5%) saturate(282%) hue-rotate(177deg) brightness(93%) contrast(89%);
+}
+
+body[data-dashboard-theme="indigo"] .nav-icon-adaptive,
+body[data-dashboard-theme="emerald"] .nav-icon-adaptive,
+body[data-dashboard-theme="ocean"] .nav-icon-adaptive,
+body[data-dashboard-theme="sunset"] .nav-icon-adaptive {
+	filter: brightness(0) saturate(100%) invert(27%) sepia(8%) saturate(1459%) hue-rotate(176deg) brightness(95%) contrast(93%);
+}
+
 @layer utilities {
   @keyframes float {
     0%,
