@@ -742,7 +742,8 @@ export default function HomeworkManagement() {
                     style={{
                       border: '1px solid var(--dashboard-border)',
                       backgroundColor: 'var(--dashboard-surface-solid)',
-                      color: 'var(--dashboard-text)'
+                      color: 'var(--dashboard-text)',
+                      colorScheme: 'light'
                     }}
                   />
                 </div>
