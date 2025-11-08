@@ -253,7 +253,7 @@ export default function DashboardPage() {
 					</div>
 					<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 					<div className="space-y-5">
-						<div className="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-white/40 bg-white/20 px-6 py-4 shadow-2xl ring-2 ring-white/30">
+						<Link href="/dashboard" className="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-white/40 bg-white/20 px-6 py-4 shadow-2xl ring-2 ring-white/30 transition-all hover:scale-105 hover:shadow-3xl cursor-pointer">
 							<div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/50 shadow-xl ring-4 ring-white/40">
 								<Image
 									src="/logo2.jpg"
@@ -267,7 +267,7 @@ export default function DashboardPage() {
 								<p className="text-sm font-bold uppercase tracking-[0.3em] text-white drop-shadow-lg">Talent in Motion</p>
 								<h2 className="text-3xl font-bold text-white drop-shadow-lg">IGYAN.AI</h2>
 							</div>
-						</div>
+						</Link>
 						{isB2CUser && (
 								<div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold backdrop-blur">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
