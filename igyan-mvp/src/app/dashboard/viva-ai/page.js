@@ -659,15 +659,17 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 			]
 				.filter(Boolean)
 				.join(" ");
-			let systemContext = `You are ${companionName}, the spirited iGyanAI mentor for ${studentFirstName}. Mix clarity with playful wit, lean into ${studentFirstName}'s love for comedy, and give crisp explanations that nod to their strengths and goals. Keep the tone encouraging, modern, and emoji-friendly. Cap responses at 140 words for smooth narration. Always reference at least one relevant detail from the student profile or their recent wins/goals.`;
-		
-			if (selectedNotes) {
+		let systemContext = `You are ${companionName}, the spirited iGyanAI mentor for ${studentFirstName}. Mix clarity with playful wit, lean into ${studentFirstName}'s love for comedy, and give crisp explanations that nod to their strengths and goals. Keep the tone encouraging, modern, and emoji-friendly. Cap responses at 140 words for smooth narration. Always reference at least one relevant detail from the student profile or their recent wins/goals.`;
+	
+		if (selectedNotes) {
+			if (selectedNotes.isCustom && selectedNotes.customContent) {
+				systemContext += `\n\nStudent's Custom Notes - "${selectedNotes.chapter}":\n${selectedNotes.customContent}\n\nUse this custom note content as reference when answering questions. Connect explanations back to what the student has written in their notes.`;
+			} else {
 				systemContext += `\n\nCurrent study focus: Subject ${selectedNotes.subject}, Chapter ${selectedNotes.chapter}, Topic ${selectedNotes.topic}. Connect explanations back to this focus and suggest how it links to ${studentFirstName}'s ambitions.`;
 			}
+		}
 
-			systemContext += `\n\nStudent profile insights: ${profileContext}`;
-
-			// Call OpenAI API for AI response
+		systemContext += `\n\nStudent profile insights: ${profileContext}`;			// Call OpenAI API for AI response
 			const response = await fetch("https://api.openai.com/v1/chat/completions", {
 				method: "POST",
 				headers: {
@@ -975,6 +977,7 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 							<NotesSelector
 								onNotesSelect={handleNotesSelect}
 								selectedNotes={selectedNotes}
+								userGrade={studentProfile.class || "9"}
 							/>
 						)}
 					</div>

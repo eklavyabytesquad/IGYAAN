@@ -1,8 +1,9 @@
 {
-	"subjects": [
-		{
-			"name": "NCERT Mathematics",
-			"chapters": [
+	"gradeWiseNotes": {
+		"9": [
+			{
+				"name": "Mathematics - Grade 9",
+				"chapters": [
 				{
 					"name": "Chapter 1: Number Systems",
 					"topics": [
@@ -77,10 +78,10 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "NCERT Science",
-			"chapters": [
+			},
+			{
+				"name": "Science - Grade 9",
+				"chapters": [
 				{
 					"name": "Chapter 1: Matter in Our Surroundings",
 					"topics": [
@@ -175,7 +176,7 @@
 			]
 			},
 			{
-				"name": "NCERT Social Science",
+				"name": "Social Science - Grade 9",
 				"chapters": [
 					{
 						"name": "History Chapter 1: The French Revolution",
@@ -210,7 +211,7 @@
 				]
 			},
 			{
-				"name": "NCERT English Literature",
+				"name": "English - Grade 9",
 				"chapters": [
 					{
 						"name": "Beehive Chapter 1: The Fun They Had",
@@ -244,5 +245,533 @@
 					}
 				]
 			}
-	]
+		],
+		"10": [
+			{
+				"name": "Mathematics - Grade 10",
+				"chapters": [
+					{
+						"name": "Chapter 1: Real Numbers",
+						"topics": [
+							"Euclid's Division Algorithm",
+							"Fundamental Theorem of Arithmetic",
+							"HCF and LCM",
+							"Irrational Numbers",
+							"Decimal Expansions"
+						]
+					},
+					{
+						"name": "Chapter 2: Polynomials",
+						"topics": [
+							"Zeroes of a Polynomial",
+							"Relationship between Zeroes and Coefficients",
+							"Division Algorithm for Polynomials",
+							"Quadratic Polynomials"
+						]
+					},
+					{
+						"name": "Chapter 3: Pair of Linear Equations",
+						"topics": [
+							"Graphical Method",
+							"Algebraic Methods",
+							"Substitution Method",
+							"Elimination Method",
+							"Cross-Multiplication Method",
+							"Word Problems"
+						]
+					},
+					{
+						"name": "Chapter 4: Quadratic Equations",
+						"topics": [
+							"Standard Form",
+							"Solution by Factorization",
+							"Completing the Square",
+							"Quadratic Formula",
+							"Nature of Roots",
+							"Applications"
+						]
+					},
+					{
+						"name": "Chapter 5: Arithmetic Progressions",
+						"topics": [
+							"AP Terms",
+							"nth Term Formula",
+							"Sum of n Terms",
+							"Word Problems on AP"
+						]
+					},
+					{
+						"name": "Chapter 6: Triangles",
+						"topics": [
+							"Similar Triangles",
+							"Criteria for Similarity",
+							"Areas of Similar Triangles",
+							"Pythagoras Theorem",
+							"Converse of Pythagoras Theorem"
+						]
+					},
+					{
+						"name": "Chapter 7: Coordinate Geometry",
+						"topics": [
+							"Distance Formula",
+							"Section Formula",
+							"Midpoint Formula",
+							"Area of a Triangle",
+							"Collinearity"
+						]
+					},
+					{
+						"name": "Chapter 8: Trigonometry",
+						"topics": [
+							"Trigonometric Ratios",
+							"Trigonometric Identities",
+							"Complementary Angles",
+							"Heights and Distances",
+							"Applications of Trigonometry"
+						]
+					},
+					{
+						"name": "Chapter 9: Circles",
+						"topics": [
+							"Tangent to a Circle",
+							"Number of Tangents",
+							"Properties of Tangents",
+							"Theorems on Tangents"
+						]
+					},
+					{
+						"name": "Chapter 10: Surface Areas and Volumes",
+						"topics": [
+							"Combination of Solids",
+							"Conversion of Solids",
+							"Frustum of a Cone",
+							"Volume and Surface Area Problems"
+						]
+					}
+				]
+			},
+			{
+				"name": "Science - Grade 10",
+				"chapters": [
+					{
+						"name": "Chapter 1: Chemical Reactions",
+						"topics": [
+							"Types of Chemical Reactions",
+							"Oxidation and Reduction",
+							"Balancing Chemical Equations",
+							"Corrosion",
+							"Rancidity"
+						]
+					},
+					{
+						"name": "Chapter 2: Acids, Bases and Salts",
+						"topics": [
+							"pH Scale",
+							"Indicators",
+							"Neutralization Reactions",
+							"Common Salts",
+							"Water of Crystallization"
+						]
+					},
+					{
+						"name": "Chapter 3: Metals and Non-metals",
+						"topics": [
+							"Physical Properties",
+							"Chemical Properties",
+							"Reactivity Series",
+							"Extraction of Metals",
+							"Corrosion"
+						]
+					},
+					{
+						"name": "Chapter 4: Carbon Compounds",
+						"topics": [
+							"Covalent Bonding",
+							"Saturated and Unsaturated Compounds",
+							"Nomenclature",
+							"Functional Groups",
+							"Homologous Series"
+						]
+					},
+					{
+						"name": "Chapter 5: Life Processes",
+						"topics": [
+							"Nutrition in Plants and Animals",
+							"Respiration",
+							"Transportation",
+							"Excretion",
+							"Control and Coordination"
+						]
+					},
+					{
+						"name": "Chapter 6: Electricity",
+						"topics": [
+							"Electric Current",
+							"Ohm's Law",
+							"Resistance",
+							"Series and Parallel Circuits",
+							"Heating Effect of Current",
+							"Electric Power"
+						]
+					},
+					{
+						"name": "Chapter 7: Magnetic Effects",
+						"topics": [
+							"Magnetic Field",
+							"Magnetic Field due to Current",
+							"Electromagnetic Induction",
+							"Electric Motor",
+							"Electric Generator"
+						]
+					},
+					{
+						"name": "Chapter 8: Light Reflection",
+						"topics": [
+							"Laws of Reflection",
+							"Spherical Mirrors",
+							"Mirror Formula",
+							"Magnification",
+							"Applications"
+						]
+					},
+					{
+						"name": "Chapter 9: Light Refraction",
+						"topics": [
+							"Laws of Refraction",
+							"Refractive Index",
+							"Lens Formula",
+							"Power of Lens",
+							"Human Eye"
+						]
+					}
+				]
+			},
+			{
+				"name": "Social Science - Grade 10",
+				"chapters": [
+					{
+						"name": "History: Nationalism in Europe",
+						"topics": [
+							"Rise of Nationalism",
+							"French Revolution Impact",
+							"Unification of Germany",
+							"Unification of Italy",
+							"Age of Revolutions"
+						]
+					},
+					{
+						"name": "History: Nationalism in India",
+						"topics": [
+							"First War of Independence 1857",
+							"Civil Disobedience Movement",
+							"Non-Cooperation Movement",
+							"Quit India Movement",
+							"Role of Gandhi"
+						]
+					},
+					{
+						"name": "Geography: Resources and Development",
+						"topics": [
+							"Types of Resources",
+							"Resource Planning",
+							"Land Resources",
+							"Soil Resources",
+							"Water Resources"
+						]
+					},
+					{
+						"name": "Geography: Agriculture",
+						"topics": [
+							"Types of Farming",
+							"Major Crops",
+							"Food Crops",
+							"Non-Food Crops",
+							"Technological Changes"
+						]
+					},
+					{
+						"name": "Civics: Power Sharing",
+						"topics": [
+							"Forms of Power Sharing",
+							"Federal System",
+							"Belgium Model",
+							"Sri Lanka Model",
+							"Community Government"
+						]
+					},
+					{
+						"name": "Civics: Democracy and Diversity",
+						"topics": [
+							"Social Divisions",
+							"Politics of Social Divisions",
+							"Caste and Politics",
+							"Religion and Politics",
+							"Gender and Politics"
+						]
+					},
+					{
+						"name": "Economics: Development",
+						"topics": [
+							"Income and Other Goals",
+							"National Development",
+							"Per Capita Income",
+							"HDI - Human Development Index",
+							"Sustainability"
+						]
+					}
+				]
+			}
+		],
+		"11": [
+			{
+				"name": "Mathematics - Grade 11",
+				"chapters": [
+					{
+						"name": "Chapter 1: Sets",
+						"topics": [
+							"Types of Sets",
+							"Venn Diagrams",
+							"Operations on Sets",
+							"Complement of a Set",
+							"De Morgan's Laws"
+						]
+					},
+					{
+						"name": "Chapter 2: Relations and Functions",
+						"topics": [
+							"Cartesian Product",
+							"Types of Relations",
+							"Types of Functions",
+							"Composition of Functions",
+							"Inverse of a Function"
+						]
+					},
+					{
+						"name": "Chapter 3: Trigonometric Functions",
+						"topics": [
+							"Radian Measure",
+							"Trigonometric Functions",
+							"Signs of Trigonometric Functions",
+							"Domain and Range",
+							"Graphs of Trigonometric Functions"
+						]
+					},
+					{
+						"name": "Chapter 4: Complex Numbers",
+						"topics": [
+							"Algebra of Complex Numbers",
+							"Modulus and Conjugate",
+							"Argand Plane",
+							"Polar Representation",
+							"De Moivre's Theorem"
+						]
+					}
+				]
+			},
+			{
+				"name": "Physics - Grade 11",
+				"chapters": [
+					{
+						"name": "Chapter 1: Physical World",
+						"topics": [
+							"Scope of Physics",
+							"Physics and Technology",
+							"Fundamental Forces",
+							"Nature of Physical Laws"
+						]
+					},
+					{
+						"name": "Chapter 2: Units and Measurements",
+						"topics": [
+							"SI Units",
+							"Dimensional Analysis",
+							"Significant Figures",
+							"Errors in Measurement",
+							"Least Count"
+						]
+					},
+					{
+						"name": "Chapter 3: Motion in Straight Line",
+						"topics": [
+							"Position and Displacement",
+							"Velocity",
+							"Acceleration",
+							"Kinematic Equations",
+							"Relative Velocity"
+						]
+					}
+				]
+			},
+			{
+				"name": "Chemistry - Grade 11",
+				"chapters": [
+					{
+						"name": "Chapter 1: Basic Concepts",
+						"topics": [
+							"Dalton's Atomic Theory",
+							"Mole Concept",
+							"Stoichiometry",
+							"Empirical and Molecular Formula",
+							"Limiting Reagent"
+						]
+					},
+					{
+						"name": "Chapter 2: Atomic Structure",
+						"topics": [
+							"Thomson's Model",
+							"Rutherford's Model",
+							"Bohr's Model",
+							"Quantum Numbers",
+							"Electronic Configuration"
+						]
+					}
+				]
+			}
+		],
+		"12": [
+			{
+				"name": "Mathematics - Grade 12",
+				"chapters": [
+					{
+						"name": "Chapter 1: Relations and Functions",
+						"topics": [
+							"Types of Relations",
+							"Equivalence Relations",
+							"Inverse Trigonometric Functions",
+							"Binary Operations"
+						]
+					},
+					{
+						"name": "Chapter 2: Inverse Trigonometric Functions",
+						"topics": [
+							"Domain and Range",
+							"Principal Values",
+							"Properties",
+							"Graphs"
+						]
+					},
+					{
+						"name": "Chapter 3: Matrices",
+						"topics": [
+							"Types of Matrices",
+							"Matrix Operations",
+							"Transpose",
+							"Symmetric and Skew Symmetric",
+							"Inverse of a Matrix"
+						]
+					},
+					{
+						"name": "Chapter 4: Determinants",
+						"topics": [
+							"Properties of Determinants",
+							"Cofactors and Minors",
+							"Adjoint",
+							"Inverse using Adjoint",
+							"Cramer's Rule"
+						]
+					},
+					{
+						"name": "Chapter 5: Continuity and Differentiability",
+						"topics": [
+							"Limits and Continuity",
+							"Differentiability",
+							"Chain Rule",
+							"Derivatives of Inverse Functions",
+							"Logarithmic Differentiation"
+						]
+					},
+					{
+						"name": "Chapter 6: Applications of Derivatives",
+						"topics": [
+							"Rate of Change",
+							"Tangents and Normals",
+							"Increasing and Decreasing Functions",
+							"Maxima and Minima",
+							"Optimization Problems"
+						]
+					},
+					{
+						"name": "Chapter 7: Integrals",
+						"topics": [
+							"Integration as Antiderivative",
+							"Integration by Substitution",
+							"Integration by Parts",
+							"Integration by Partial Fractions",
+							"Definite Integrals"
+						]
+					}
+				]
+			},
+			{
+				"name": "Physics - Grade 12",
+				"chapters": [
+					{
+						"name": "Chapter 1: Electric Charges and Fields",
+						"topics": [
+							"Coulomb's Law",
+							"Electric Field",
+							"Electric Flux",
+							"Gauss's Law",
+							"Applications of Gauss's Law"
+						]
+					},
+					{
+						"name": "Chapter 2: Electrostatic Potential",
+						"topics": [
+							"Electric Potential",
+							"Potential due to Point Charge",
+							"Equipotential Surfaces",
+							"Capacitance",
+							"Combination of Capacitors"
+						]
+					},
+					{
+						"name": "Chapter 3: Current Electricity",
+						"topics": [
+							"Drift Velocity",
+							"Ohm's Law",
+							"Kirchhoff's Laws",
+							"Wheatstone Bridge",
+							"Meter Bridge"
+						]
+					}
+				]
+			},
+			{
+				"name": "Chemistry - Grade 12",
+				"chapters": [
+					{
+						"name": "Chapter 1: Solid State",
+						"topics": [
+							"Classification of Solids",
+							"Crystal Lattice",
+							"Unit Cell",
+							"Close Packing",
+							"Imperfections in Solids"
+						]
+					},
+					{
+						"name": "Chapter 2: Solutions",
+						"topics": [
+							"Types of Solutions",
+							"Concentration Terms",
+							"Raoult's Law",
+							"Colligative Properties",
+							"Osmosis and Osmotic Pressure"
+						]
+					},
+					{
+						"name": "Chapter 3: Electrochemistry",
+						"topics": [
+							"Electrochemical Cells",
+							"Nernst Equation",
+							"Conductance",
+							"Electrolysis",
+							"Batteries and Fuel Cells"
+						]
+					}
+				]
+			}
+		]
+	}
 }
