@@ -13,7 +13,7 @@ import MemoryList from "./components/MemoryList";
 import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
 import ModeSelector, { AI_MODES } from "./components/ModeSelector";
-import studentProfile from "./data/student-profile.json";
+import ProfileSetupModal from "./components/ProfileSetupModal";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -34,6 +34,9 @@ export default function AICopilotPage() {
 	const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
 	const [isListening, setIsListening] = useState(false);
 	const [recognition, setRecognition] = useState(null);
+	const [studentProfile, setStudentProfile] = useState(null);
+	const [showProfileSetup, setShowProfileSetup] = useState(false);
+	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const messagesEndRef = useRef(null);
 
 	useEffect(() => {
@@ -231,10 +234,17 @@ export default function AICopilotPage() {
 
 	// Build context from selected notes and profile
 	const buildContextPrompt = () => {
-		let context = `You are helping ${studentProfile.name}, a Class ${studentProfile.class} student from ${studentProfile.school.name}, ${studentProfile.school.location}. `;
-		context += `Their class teacher is ${studentProfile.classTeacher}. `;
-		context += `The student is interested in ${studentProfile.interests.join(", ")}. `;
-		context += `Their sleep time is ${studentProfile.sleepTime}. `;
+		if (!studentProfile) return "";
+		
+		let context = `You are ${studentProfile.aiName || "Sudarshan AI"}, helping ${studentProfile.name}`;
+		if (studentProfile.class) context += `, a Class ${studentProfile.class} student`;
+		if (studentProfile.school?.name) context += ` from ${studentProfile.school.name}`;
+		if (studentProfile.school?.location) context += `, ${studentProfile.school.location}`;
+		context += ". ";
+		
+		if (studentProfile.classTeacher) context += `Their class teacher is ${studentProfile.classTeacher}. `;
+		if (studentProfile.interests?.length > 0) context += `The student is interested in ${studentProfile.interests.join(", ")}. `;
+		if (studentProfile.sleepTime) context += `Their sleep time is ${studentProfile.sleepTime}. `;
 		
 		// Add mode-specific instructions
 		if (selectedMode) {
@@ -426,6 +436,21 @@ IMPORTANT FORMATTING RULES:
 		setSelectedNotes(notes);
 	};
 
+	// Save student profile
+	const handleSaveProfile = (profileData) => {
+		if (!user) return;
+		
+		setStudentProfile(profileData);
+		localStorage.setItem(`student_profile_${user.id}`, JSON.stringify(profileData));
+		setShowProfileSetup(false);
+		setIsEditingProfile(false);
+	};
+
+	// Get AI name
+	const getAIName = () => {
+		return studentProfile?.aiName || "Sudarshan AI";
+	};
+
 	// Toggle speech recognition
 	const toggleSpeechRecognition = () => {
 		if (!recognition) {
@@ -445,16 +470,33 @@ IMPORTANT FORMATTING RULES:
 	if (loading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
-			<div className="text-center">
-				<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-				<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading Sudarshan AI...</p>
+				<div className="text-center">
+					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading...</p>
+				</div>
 			</div>
-		</div>
-	);
-	}	if (!user) return null;
+		);
+	}
+	
+	if (!user) return null;
 
 	return (
-		<div className="flex h-[calc(100vh-4rem)] gap-4 p-4 lg:p-6">
+		<>
+			{/* Profile Setup/Edit Modal */}
+			{(showProfileSetup || isEditingProfile) && (
+				<ProfileSetupModal
+					initialData={studentProfile}
+					onSave={handleSaveProfile}
+					onClose={() => {
+						if (studentProfile) {
+							setShowProfileSetup(false);
+							setIsEditingProfile(false);
+						}
+					}}
+				/>
+			)}
+
+			<div className="flex h-[calc(100vh-4rem)] gap-4 p-4 lg:p-6">
 			{/* Sidebar */}
 			<div className="hidden lg:flex lg:w-80 flex-col gap-4">
 				{/* New Chat Button */}
@@ -559,7 +601,12 @@ IMPORTANT FORMATTING RULES:
 							/>
 						</div>
 					)}
-					{sidebarView === "profile" && <StudentProfile />}
+					{sidebarView === "profile" && (
+						<StudentProfile 
+							profile={studentProfile}
+							onEditProfile={() => setIsEditingProfile(true)}
+						/>
+					)}
 					{sidebarView === "notes" && (
 						<NotesSelector
 							onNotesSelect={handleNotesSelect}
@@ -602,10 +649,12 @@ IMPORTANT FORMATTING RULES:
 										<span className="text-xl animate-[wiggle_1s_ease-in-out_3]">✨</span>
 									</span>
 								) : (
-									"Sudarshan AI"
+									getAIName()
 								)}
 							</h2>
-							<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Powered by iGyan AI</p>
+							<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
+								{studentProfile?.name ? `Your Personal AI Tutor for ${studentProfile.name}` : 'Powered by iGyan AI'}
+							</p>
 						</div>
 					</div>
 					<div className="flex items-center gap-2">
@@ -642,9 +691,9 @@ IMPORTANT FORMATTING RULES:
 								/>
 							</div>
 							<div>
-							<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
-								Welcome to Sudarshan AI!
-							</h3>
+								<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
+									Welcome to {getAIName()}!
+								</h3>
 								<p className="mt-2 text-zinc-600 dark:text-zinc-400">
 									{selectedMode 
 										? `${AI_MODES.find(m => m.id === selectedMode)?.name} • Ready to help you learn`
@@ -867,5 +916,6 @@ IMPORTANT FORMATTING RULES:
 				</div>
 			</div>
 		</div>
+		</>
 	);
 }
