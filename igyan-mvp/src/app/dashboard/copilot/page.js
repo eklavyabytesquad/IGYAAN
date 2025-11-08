@@ -572,7 +572,7 @@ IMPORTANT FORMATTING RULES:
 			{/* Main Chat Area */}
 			<div className="flex flex-1 flex-col rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
 				{/* Header */}
-				<div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-800">
+				<div className="flex items-center justify-between border-b p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
 					<div className="flex items-center gap-3">
 					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 via-yellow-400 to-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-900/50">
 						<Image 
@@ -585,14 +585,14 @@ IMPORTANT FORMATTING RULES:
 						/>
 					</div>
 						<div>
-							<h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								{generatingTitle ? (
 									<span className="inline-flex items-center gap-2">
 										<span className="animate-pulse">Generating title</span>
 										<span className="flex gap-1">
-											<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]"></span>
-											<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]"></span>
-											<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500"></span>
+											<span className="h-1.5 w-1.5 animate-bounce rounded-full" style={{ background: 'var(--dashboard-primary)' }}></span>
+											<span className="h-1.5 w-1.5 animate-bounce rounded-full" style={{ background: 'var(--dashboard-primary)' }}></span>
+											<span className="h-1.5 w-1.5 animate-bounce rounded-full" style={{ background: 'var(--dashboard-primary)' }}></span>
 										</span>
 									</span>
 								) : currentChatId && chatHistory.find(c => c.id === currentChatId) ? (
@@ -606,7 +606,7 @@ IMPORTANT FORMATTING RULES:
 									"Sudarshan AI"
 								)}
 							</h2>
-							<p className="text-xs text-zinc-600 dark:text-zinc-400">Powered by iGyan AI</p>
+							<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Powered by iGyan AI</p>
 						</div>
 					</div>
 					<div className="flex items-center gap-2">

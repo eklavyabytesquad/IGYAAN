@@ -106,18 +106,18 @@ export default function StudentEvents() {
   });
 
   return (
-    <div className="flex h-screen w-full flex-col gap-6 overflow-hidden bg-linear-to-br from-green-50 via-emerald-50 to-teal-50 p-4 lg:p-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="flex h-screen w-full flex-col gap-6 overflow-hidden p-4 lg:p-8" style={{ backgroundColor: 'var(--dashboard-background)' }}>
       {/* Header */}
-      <header className="rounded-3xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <header className="rounded-3xl dashboard-card p-6 shadow-2xl">
         <div className="flex items-start gap-4">
-          <span className="rounded-2xl bg-linear-to-r from-green-500 via-emerald-500 to-teal-500 p-4 text-white shadow-lg">
+          <span className="rounded-2xl p-4 text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
             <Calendar size={28} />
           </span>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: 'var(--dashboard-heading)' }}>
               Upcoming Events
             </h1>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 sm:text-base">
+            <p className="mt-2 text-sm sm:text-base" style={{ color: 'var(--dashboard-muted)' }}>
               Browse and register for school events, competitions, and activities
             </p>
           </div>

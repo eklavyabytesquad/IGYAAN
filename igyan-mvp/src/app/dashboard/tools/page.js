@@ -259,29 +259,44 @@ export default function ToolsPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-indigo-900/20 dark:to-slate-900">
+		<div className="min-h-screen" style={{ backgroundColor: 'var(--dashboard-background)' }}>
 			{/* Header Section */}
-			<div className="border-b border-indigo-100 bg-white/80 backdrop-blur-xl dark:border-indigo-900/30 dark:bg-slate-900/80">
+			<div className="border-b backdrop-blur-xl" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				<div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 					<div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
 						<div className="flex items-center gap-4">
-							<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-2xl ring-4 ring-white dark:ring-slate-800">
+							<div 
+								className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-2xl ring-4"
+								style={{ 
+									background: 'var(--dashboard-primary)',
+									ringColor: 'var(--dashboard-border)'
+								}}
+							>
 								<svg className="h-9 w-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
 								</svg>
 							</div>
 							<div>
-								<h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
+								<h1 
+									className="text-4xl font-extrabold"
+									style={{ color: 'var(--dashboard-heading)' }}
+								>
 									AI Tools Suite
 								</h1>
-								<p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+								<p className="mt-2 text-lg" style={{ color: 'var(--dashboard-muted)' }}>
 									Supercharge your productivity with intelligent AI assistants
 								</p>
 							</div>
 						</div>
-						<div className="flex items-center gap-2 rounded-full border border-indigo-200 bg-linear-to-r from-indigo-100 to-purple-100 px-4 py-2 dark:border-indigo-800 dark:from-indigo-900/40 dark:to-purple-900/40">
+						<div 
+							className="flex items-center gap-2 rounded-full border px-4 py-2"
+							style={{ 
+								borderColor: 'var(--dashboard-border)',
+								backgroundColor: 'var(--dashboard-surface-solid)'
+							}}
+						>
 							<div className="flex h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
-							<span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+							<span className="text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
 								{activeToolCount} Tools Active
 							</span>
 						</div>
@@ -291,10 +306,16 @@ export default function ToolsPage() {
 
 			{/* Filters */}
 			<div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
-				<div className="rounded-3xl border border-indigo-100 bg-white/80 px-6 py-5 shadow-lg backdrop-blur-md dark:border-indigo-900/40 dark:bg-slate-900/80">
+				<div className="rounded-3xl dashboard-card px-6 py-5 shadow-lg">
 					<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 						<div className="relative w-full md:max-w-xl">
-							<svg className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<svg 
+								className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2" 
+								fill="none" 
+								viewBox="0 0 24 24" 
+								stroke="currentColor"
+								style={{ color: 'var(--dashboard-muted)' }}
+							>
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
 							</svg>
 							<input
@@ -302,18 +323,28 @@ export default function ToolsPage() {
 								value={searchTerm}
 								onChange={(event) => setSearchTerm(event.target.value)}
 								placeholder="Search tools by name or description"
-								className="w-full rounded-2xl border border-slate-200 bg-white px-12 py-3 text-sm text-slate-900 placeholder-slate-400 shadow-inner focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-800/40"
+								className="w-full rounded-2xl border px-12 py-3 text-sm shadow-inner focus:ring-2"
+								style={{
+									borderColor: 'var(--dashboard-border)',
+									backgroundColor: 'var(--dashboard-surface-solid)',
+									color: 'var(--dashboard-text)'
+								}}
 							/>
 						</div>
 						<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
 							<div className="flex items-center gap-2">
-								<label className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+								<label className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--dashboard-muted)' }}>
 									Category
 								</label>
 								<select
 									value={selectedCategory}
 									onChange={(event) => setSelectedCategory(event.target.value)}
-									className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-indigo-400 dark:focus:ring-indigo-800/40"
+									className="rounded-xl border px-4 py-2 text-sm font-medium focus:ring-2"
+									style={{
+										borderColor: 'var(--dashboard-border)',
+										backgroundColor: 'var(--dashboard-surface-solid)',
+										color: 'var(--dashboard-text)'
+									}}
 								>
 									{categories.map((category) => (
 										<option key={category} value={category}>
@@ -324,19 +355,24 @@ export default function ToolsPage() {
 							</div>
 							<button
 								onClick={() => setShowActiveOnly((prev) => !prev)}
-								className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-									showActiveOnly
-										? "border-emerald-500 bg-emerald-100 text-emerald-700 shadow-sm dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-200"
-										: "border-slate-200 bg-white text-slate-600 hover:border-emerald-400 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-emerald-400 dark:hover:text-emerald-200"
-								}`}
+								className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition"
+								style={{
+									borderColor: showActiveOnly ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
+									backgroundColor: showActiveOnly ? 'var(--dashboard-surface-solid)' : 'transparent',
+									color: showActiveOnly ? 'var(--dashboard-primary)' : 'var(--dashboard-text)'
+								}}
 							>
-								<span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+								<span className="flex h-2 w-2 rounded-full bg-green-500"></span>
 								Active Only
 							</button>
 							<button
 								onClick={handleResetFilters}
 								disabled={!filtersDirty}
-								className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition hover:border-slate-300 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-slate-100"
+								className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50"
+								style={{
+									borderColor: 'var(--dashboard-border)',
+									color: 'var(--dashboard-muted)'
+								}}
 							>
 								<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582M20 20v-5h-.581M5 9a7.005 7.005 0 0110.95-5.95M19 15a7.004 7.004 0 01-10.95 5.95" />
@@ -356,36 +392,46 @@ export default function ToolsPage() {
 							<Link
 								key={tool.id}
 								href={tool.comingSoon ? "#" : tool.href}
-								className={`group relative overflow-hidden rounded-2xl border bg-white p-6 shadow-md transition-all duration-300 dark:bg-slate-800 ${
+								className={`group relative overflow-hidden rounded-2xl dashboard-card p-6 shadow-md transition-all duration-300 ${
 									tool.comingSoon
-										? "border-slate-200 cursor-not-allowed opacity-75 dark:border-slate-700 dark:opacity-80"
-										: "border-transparent hover:-translate-y-2 hover:border-indigo-300 hover:shadow-xl dark:border-slate-700 dark:hover:border-indigo-700"
+										? "cursor-not-allowed opacity-75"
+										: "hover:-translate-y-2 hover:shadow-xl"
 								}`}
 								onClick={(event) => tool.comingSoon && event.preventDefault()}
 							>
 								<button
 									onClick={(event) => handlePinToggle(event, tool.id)}
-									className={`absolute left-4 top-4 z-20 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition ${
-										pinnedToolId === tool.id
-											? "border-amber-500 bg-amber-100 text-amber-700 shadow-sm dark:border-amber-400 dark:bg-amber-900/40 dark:text-amber-200"
-											: "border-slate-200 bg-white/90 text-slate-500 hover:border-amber-400 hover:text-amber-600 dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-amber-400 dark:hover:text-amber-200"
-									}`}
+									className="absolute left-4 top-4 z-20 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition"
+									style={{
+										borderColor: pinnedToolId === tool.id ? '#f59e0b' : 'var(--dashboard-border)',
+										backgroundColor: pinnedToolId === tool.id ? '#fef3c7' : 'var(--dashboard-surface-solid)',
+										color: pinnedToolId === tool.id ? '#b45309' : 'var(--dashboard-muted)'
+									}}
 									aria-label={pinnedToolId === tool.id ? "Unpin tool" : "Pin tool"}
 								>
-									<svg className={`h-3.5 w-3.5 ${pinnedToolId === tool.id ? "text-amber-500" : "text-slate-400"}`} viewBox="0 0 24 24" fill={pinnedToolId === tool.id ? "currentColor" : "none"} stroke="currentColor" strokeWidth={1.5}>
+									<svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={pinnedToolId === tool.id ? "currentColor" : "none"} stroke="currentColor" strokeWidth={1.5}>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.75.75 0 011.04 0l2.122 2.122a.75.75 0 01-.53 1.28h-.396l2.72 5.44a.75.75 0 01-.67 1.09h-3.25l-.001 5.872a.75.75 0 01-1.5 0l.001-5.873H7.33a.75.75 0 01-.67-1.09l2.72-5.44h-.396a.75.75 0 01-.53-1.28l2.122-2.122z" />
 									</svg>
 									<span>{pinnedToolId === tool.id ? "Pinned" : "Pin"}</span>
 								</button>
 
-								<div className={`absolute inset-0 bg-linear-to-br ${tool.bgGradient} ${tool.darkBgGradient} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}></div>
+								<div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'var(--dashboard-primary)', opacity: 0.05 }}></div>
 
 								<div className="relative z-10">
-									<div className={`mb-5 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-linear-to-br ${tool.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-105`}>
+									<div 
+										className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-xl text-white shadow-lg transition-transform duration-300 group-hover:scale-105"
+										style={{ background: 'var(--dashboard-primary)' }}
+									>
 										{tool.icon}
 									</div>
 									<div className="mb-3 flex items-center gap-2">
-										<span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+										<span 
+											className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
+											style={{ 
+												backgroundColor: 'var(--dashboard-surface-solid)',
+												color: 'var(--dashboard-muted)'
+											}}
+										>
 											{tool.category}
 										</span>
 										{tool.badge && !tool.comingSoon && (
@@ -399,19 +445,29 @@ export default function ToolsPage() {
 											</span>
 										)}
 									</div>
-									<h3 className="text-xl font-bold text-slate-900 transition duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:text-white dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400">
+									<h3 
+										className="text-xl font-bold transition duration-300"
+										style={{ color: 'var(--dashboard-heading)' }}
+									>
 										{tool.name}
 									</h3>
-									<p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+									<p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--dashboard-text)' }}>
 										{tool.description}
 									</p>
 									{tool.comingSoon ? (
-										<div className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-500/40 dark:bg-amber-900/30 dark:text-amber-200">
+										<div 
+											className="mt-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold"
+											style={{
+												borderColor: '#fbbf24',
+												backgroundColor: '#fef3c7',
+												color: '#b45309'
+											}}
+										>
 											<span className="flex h-2 w-2 rounded-full bg-amber-500"></span>
 											In Development
 										</div>
 									) : (
-										<div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 transition group-hover:translate-x-1 dark:text-indigo-400">
+										<div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold transition group-hover:translate-x-1" style={{ color: 'var(--dashboard-primary)' }}>
 											<span>Launch Tool</span>
 											<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -423,12 +479,12 @@ export default function ToolsPage() {
 						))
 					) : (
 						<div className="sm:col-span-2 lg:col-span-3">
-							<div className="flex flex-col items-center justify-center rounded-3xl border border-indigo-200 bg-linear-to-br from-white via-indigo-50 to-purple-50 px-8 py-16 text-center dark:border-indigo-800 dark:from-slate-900 dark:via-indigo-900/20 dark:to-slate-900">
-								<svg className="mb-4 h-12 w-12 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<div className="flex flex-col items-center justify-center rounded-3xl dashboard-card px-8 py-16 text-center">
+								<svg className="mb-4 h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--dashboard-primary)' }}>
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M5.07 19H18.93c1.54 0 2.52-1.67 1.74-3L13.74 4c-.77-1.33-2.7-1.33-3.47 0L3.33 16c-.78 1.33.2 3 1.74 3z" />
 								</svg>
-								<h3 className="text-lg font-semibold text-slate-900 dark:text-white">No tools match your filters</h3>
-								<p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Try adjusting your filters or clearing them to see all tools.</p>
+								<h3 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>No tools match your filters</h3>
+								<p className="mt-1 text-sm" style={{ color: 'var(--dashboard-muted)' }}>Try adjusting your filters or clearing them to see all tools.</p>
 							</div>
 						</div>
 					)}

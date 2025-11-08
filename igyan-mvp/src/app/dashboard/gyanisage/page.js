@@ -229,17 +229,20 @@ Create 4-6 phases with clear progression.`,
   const ModeIcon = currentMode.icon;
 
   return (
-    <div className="flex h-screen w-full gap-4 overflow-hidden bg-linear-to-br from-amber-50 via-orange-50 to-rose-50 p-4 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="flex h-screen w-full gap-4 overflow-hidden p-4" style={{ backgroundColor: 'var(--dashboard-background)' }}>
       {/* Sidebar - Mode Selector */}
       <aside className="hidden w-64 flex-col gap-3 lg:flex">
-        <div className="rounded-2xl border border-white/60 bg-white/80 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+        <div className="dashboard-card rounded-2xl p-4 shadow-xl">
           <div className="mb-4 flex items-center gap-3">
-            <span className="rounded-xl bg-linear-to-r from-amber-500 via-orange-500 to-rose-500 p-3 text-white shadow-lg">
+            <span 
+              className="rounded-xl p-3 text-white shadow-lg"
+              style={{ background: 'var(--dashboard-primary)' }}
+            >
               <Brain size={24} />
             </span>
             <div>
-              <h2 className="text-lg font-bold text-amber-600 dark:text-amber-400">Gyani Sage</h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">AI Counsellor</p>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--dashboard-primary)' }}>Gyani Sage</h2>
+              <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>AI Counsellor</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -249,19 +252,26 @@ Create 4-6 phases with clear progression.`,
                 <button
                   key={mode.id}
                   onClick={() => setSelectedMode(mode.id)}
-                  className={`w-full rounded-xl border p-3 text-left transition-all ${
-                    selectedMode === mode.id
-                      ? 'border-amber-400 bg-linear-to-br from-amber-50 to-orange-50 shadow-md ring-2 ring-amber-300 dark:from-amber-950 dark:to-orange-950 dark:ring-amber-700'
-                      : 'border-white/60 bg-white/70 hover:border-amber-200 hover:bg-amber-50/50 dark:border-white/10 dark:bg-zinc-900/60 dark:hover:border-amber-800'
-                  }`}
+                  className="w-full rounded-xl border p-3 text-left transition-all"
+                  style={{
+                    borderColor: selectedMode === mode.id ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
+                    backgroundColor: selectedMode === mode.id ? 'var(--dashboard-surface-solid)' : 'transparent',
+                    boxShadow: selectedMode === mode.id ? '0 0 0 2px var(--dashboard-primary-light, var(--dashboard-primary))' : 'none'
+                  }}
                 >
                   <div className="flex items-center gap-2">
-                    <Icon className={`h-5 w-5 ${selectedMode === mode.id ? 'text-amber-600' : 'text-zinc-500'}`} />
+                    <Icon 
+                      className="h-5 w-5" 
+                      style={{ color: selectedMode === mode.id ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)' }}
+                    />
                     <div className="flex-1">
-                      <div className={`text-sm font-semibold ${selectedMode === mode.id ? 'text-amber-900 dark:text-amber-200' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                      <div 
+                        className="text-sm font-semibold"
+                        style={{ color: selectedMode === mode.id ? 'var(--dashboard-heading)' : 'var(--dashboard-text)' }}
+                      >
                         {mode.name}
                       </div>
-                      <div className="text-xs text-zinc-500 dark:text-zinc-400">{mode.description}</div>
+                      <div className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>{mode.description}</div>
                     </div>
                   </div>
                 </button>
@@ -272,7 +282,7 @@ Create 4-6 phases with clear progression.`,
       </aside>
 
       {/* Main Chat Interface */}
-      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl dashboard-card shadow-2xl">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
@@ -283,34 +293,43 @@ Create 4-6 phases with clear progression.`,
               >
                 {message.isRoadmap ? (
                   // Roadmap Display
-                  <div className="w-full max-w-4xl rounded-3xl bg-linear-to-br from-white to-amber-50/30 p-6 shadow-xl ring-1 ring-amber-200/50 dark:from-zinc-800 dark:to-zinc-900 dark:ring-amber-900/30">
-                    <div className="mb-4 flex items-center gap-3 border-b border-amber-200 pb-3 dark:border-amber-900">
-                      <Target className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                      <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100">{message.content.title}</h3>
+                  <div className="w-full max-w-4xl rounded-3xl dashboard-card p-6 shadow-xl">
+                    <div className="mb-4 flex items-center gap-3 border-b pb-3" style={{ borderColor: 'var(--dashboard-border)' }}>
+                      <Target className="h-6 w-6" style={{ color: 'var(--dashboard-primary)' }} />
+                      <h3 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>{message.content.title}</h3>
                     </div>
                     
-                    <p className="mb-4 text-sm text-zinc-700 dark:text-zinc-300">{message.content.overview}</p>
-                    <div className="mb-6 inline-flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                    <p className="mb-4 text-sm" style={{ color: 'var(--dashboard-text)' }}>{message.content.overview}</p>
+                    <div 
+                      className="mb-6 inline-flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-semibold"
+                      style={{ 
+                        backgroundColor: 'var(--dashboard-surface-solid)',
+                        color: 'var(--dashboard-primary)'
+                      }}
+                    >
                       <span>⏱️ Total Duration: {message.content.duration}</span>
                     </div>
 
                     <div className="space-y-6">
                       {message.content.phases.map((phase, idx) => (
-                        <div key={idx} className="rounded-2xl border border-amber-200 bg-white/50 p-5 dark:border-amber-900 dark:bg-zinc-900/50">
+                        <div key={idx} className="rounded-2xl border dashboard-card p-5" style={{ borderColor: 'var(--dashboard-border)' }}>
                           <div className="mb-3 flex items-center gap-3">
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-white">
+                            <span 
+                              className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
+                              style={{ backgroundColor: 'var(--dashboard-primary)' }}
+                            >
                               {idx + 1}
                             </span>
                             <div className="flex-1">
-                              <h4 className="font-bold text-amber-900 dark:text-amber-100">{phase.phase}</h4>
-                              <p className="text-xs text-amber-600 dark:text-amber-400">⏱️ {phase.duration}</p>
+                              <h4 className="font-bold" style={{ color: 'var(--dashboard-heading)' }}>{phase.phase}</h4>
+                              <p className="text-xs" style={{ color: 'var(--dashboard-primary)' }}>⏱️ {phase.duration}</p>
                             </div>
                           </div>
 
                           <div className="space-y-3">
                             <div>
-                              <p className="mb-1 text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">🎯 Goals:</p>
-                              <ul className="ml-4 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                              <p className="mb-1 text-xs font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>🎯 Goals:</p>
+                              <ul className="ml-4 space-y-1 text-sm" style={{ color: 'var(--dashboard-text)' }}>
                                 {phase.goals.map((goal, gi) => (
                                   <li key={gi} className="list-disc">{goal}</li>
                                 ))}
@@ -318,8 +337,8 @@ Create 4-6 phases with clear progression.`,
                             </div>
 
                             <div>
-                              <p className="mb-1 text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">💪 Skills to Learn:</p>
-                              <ul className="ml-4 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                              <p className="mb-1 text-xs font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>💪 Skills to Learn:</p>
+                              <ul className="ml-4 space-y-1 text-sm" style={{ color: 'var(--dashboard-text)' }}>
                                 {phase.skills.map((skill, si) => (
                                   <li key={si} className="list-disc">{skill}</li>
                                 ))}
@@ -327,8 +346,8 @@ Create 4-6 phases with clear progression.`,
                             </div>
 
                             <div>
-                              <p className="mb-1 text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">📚 Resources:</p>
-                              <ul className="ml-4 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                              <p className="mb-1 text-xs font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>📚 Resources:</p>
+                              <ul className="ml-4 space-y-1 text-sm" style={{ color: 'var(--dashboard-text)' }}>
                                 {phase.resources.map((resource, ri) => (
                                   <li key={ri} className="list-disc">{resource}</li>
                                 ))}
@@ -336,8 +355,8 @@ Create 4-6 phases with clear progression.`,
                             </div>
 
                             <div>
-                              <p className="mb-1 text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">✅ Milestones:</p>
-                              <ul className="ml-4 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                              <p className="mb-1 text-xs font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>✅ Milestones:</p>
+                              <ul className="ml-4 space-y-1 text-sm" style={{ color: 'var(--dashboard-text)' }}>
                                 {phase.milestones.map((milestone, mi) => (
                                   <li key={mi} className="list-disc">{milestone}</li>
                                 ))}
@@ -349,9 +368,9 @@ Create 4-6 phases with clear progression.`,
                     </div>
 
                     {message.content.tips && message.content.tips.length > 0 && (
-                      <div className="mt-6 rounded-2xl bg-amber-100/50 p-4 dark:bg-amber-950/30">
-                        <p className="mb-2 text-sm font-bold text-amber-900 dark:text-amber-100">💡 Pro Tips:</p>
-                        <ul className="ml-4 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+                      <div className="mt-6 rounded-2xl dashboard-card p-4">
+                        <p className="mb-2 text-sm font-bold" style={{ color: 'var(--dashboard-heading)' }}>💡 Pro Tips:</p>
+                        <ul className="ml-4 space-y-1 text-sm" style={{ color: 'var(--dashboard-text)' }}>
                           {message.content.tips.map((tip, ti) => (
                             <li key={ti} className="list-disc">{tip}</li>
                           ))}
@@ -364,17 +383,24 @@ Create 4-6 phases with clear progression.`,
                   <div
                     className={`group relative max-w-[85%] rounded-3xl px-6 py-4 shadow-lg ${
                       message.role === 'user'
-                        ? 'bg-linear-to-r from-amber-500 to-orange-500 text-white'
-                        : 'bg-linear-to-br from-white to-amber-50/30 text-zinc-800 ring-1 ring-amber-200/50 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-100 dark:ring-amber-900/30'
+                        ? ''
+                        : 'dashboard-card'
                     }`}
+                    style={message.role === 'user' ? { 
+                      background: 'var(--dashboard-primary)', 
+                      color: 'white' 
+                    } : {}}
                   >
                     {message.role === 'assistant' && (
-                      <div className="mb-2 flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                      <div className="mb-2 flex items-center gap-2" style={{ color: 'var(--dashboard-primary)' }}>
                         <ModeIcon className="h-4 w-4" />
                         <span className="text-xs font-semibold uppercase tracking-wide">Gyani Sage</span>
                       </div>
                     )}
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed sm:text-base">
+                    <div 
+                      className="whitespace-pre-wrap text-sm leading-relaxed sm:text-base"
+                      style={message.role === 'assistant' ? { color: 'var(--dashboard-text)' } : {}}
+                    >
                       {message.content}
                     </div>
                   </div>
@@ -384,9 +410,11 @@ Create 4-6 phases with clear progression.`,
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-3 rounded-3xl bg-linear-to-r from-amber-100 to-orange-100 px-6 py-4 text-sm text-amber-700 shadow-lg dark:from-amber-950 dark:to-orange-950 dark:text-amber-300">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Gyani Sage is reflecting on your message...</span>
+                <div 
+                  className="flex items-center gap-3 rounded-3xl px-6 py-4 text-sm shadow-lg dashboard-card"
+                >
+                  <Loader2 className="h-5 w-5 animate-spin" style={{ color: 'var(--dashboard-primary)' }} />
+                  <span style={{ color: 'var(--dashboard-text)' }}>Gyani Sage is reflecting on your message...</span>
                 </div>
               </div>
             )}
@@ -396,7 +424,13 @@ Create 4-6 phases with clear progression.`,
         </div>
 
         {/* Input */}
-        <footer className="border-t border-white/70 bg-white/90 px-6 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/90">
+        <footer 
+          className="border-t px-6 py-3 backdrop-blur-xl"
+          style={{ 
+            borderColor: 'var(--dashboard-border)',
+            backgroundColor: 'var(--dashboard-surface-solid)'
+          }}
+        >
           <div className="mx-auto flex w-full max-w-4xl flex-col gap-2">
             {/* Mobile Mode Selector */}
             <div className="flex items-center gap-2 overflow-x-auto lg:hidden">
@@ -406,11 +440,13 @@ Create 4-6 phases with clear progression.`,
                   <button
                     key={mode.id}
                     onClick={() => setSelectedMode(mode.id)}
-                    className={`flex items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-semibold transition-all ${
-                      selectedMode === mode.id
-                        ? 'border-amber-400 bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
-                        : 'border-zinc-200 bg-white text-zinc-600 hover:border-amber-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400'
-                    }`}
+                    className="flex items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-semibold transition-all"
+                    style={{
+                      borderColor: selectedMode === mode.id ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
+                      backgroundColor: selectedMode === mode.id ? 'var(--dashboard-surface-solid)' : 'transparent',
+                      color: selectedMode === mode.id ? 'var(--dashboard-primary)' : 'var(--dashboard-text)',
+                      boxShadow: selectedMode === mode.id ? '0 0 0 1px var(--dashboard-primary)' : 'none'
+                    }}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{mode.name}</span>
@@ -419,9 +455,9 @@ Create 4-6 phases with clear progression.`,
               })}
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <div className="flex items-center gap-2 text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>
               <ModeIcon size={14} />
-              <span><strong>{currentMode.name}</strong> mode</span>
+              <span><strong style={{ color: 'var(--dashboard-text)' }}>{currentMode.name}</strong> mode</span>
             </div>
 
             <div className="flex gap-2">
@@ -432,13 +468,19 @@ Create 4-6 phases with clear progression.`,
                 placeholder="Share what's on your mind..."
                 disabled={isLoading}
                 rows={1}
-                className="w-full flex-1 resize-none rounded-xl border border-amber-200/80 bg-white/90 px-4 py-2.5 text-sm text-zinc-800 shadow-sm outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-200/70 disabled:cursor-not-allowed disabled:opacity-70 dark:border-amber-900/30 dark:bg-zinc-900/80 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/30"
+                className="w-full flex-1 resize-none rounded-xl border px-4 py-2.5 text-sm shadow-sm outline-none transition focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70"
+                style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-background)',
+                  color: 'var(--dashboard-text)'
+                }}
               />
 
               <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className="flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-amber-500 via-orange-500 to-rose-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:shadow-amber-400/40 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-60"
+                style={{ background: 'var(--dashboard-primary)' }}
                 type="button"
               >
                 <Send size={16} />

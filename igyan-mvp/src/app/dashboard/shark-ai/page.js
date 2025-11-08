@@ -852,16 +852,16 @@ After every point change line`;
                       <div
                         className={`max-w-[90%] md:max-w-[80%] rounded-xl px-4 py-3 shadow-md ${
                           message.role === 'user'
-                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 rounded-br-sm'
-                            : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-bl-sm'
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 rounded-br-sm text-white'
+                            : 'dashboard-card rounded-bl-sm'
                         }`}
                       >
                         {message.role === 'assistant' && (
-                          <div className="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                          <div className="flex items-center gap-2 mb-2 pb-2" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
                             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
                               AI
                             </div>
-                            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Shark AI</span>
+                            <span className="text-xs font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Shark AI</span>
                           </div>
                         )}
                         
@@ -879,18 +879,18 @@ After every point change line`;
                               const content = line.substring(2).trim();
                               return (
                                 <div key={i} className="mb-3 mt-1">
-                                  <h1 className="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight">
+                                  <h1 className="text-lg md:text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                                     {content}
                                   </h1>
-                                  <div className="h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-1.5"></div>
+                                  <div className="h-0.5 w-16 rounded-full mt-1.5" style={{ background: 'var(--dashboard-primary)' }}></div>
                                 </div>
                               );
                             }
                             if (line.startsWith('## ')) {
                               const content = line.substring(3).trim();
                               return (
-                                <h2 key={i} className="text-base md:text-lg font-bold mb-2 mt-3 text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-                                  <span className="w-0.5 h-4 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></span>
+                                <h2 key={i} className="text-base md:text-lg font-bold mb-2 mt-3 flex items-center gap-2" style={{ color: 'var(--dashboard-heading)' }}>
+                                  <span className="w-0.5 h-4 rounded-full" style={{ background: 'var(--dashboard-primary)' }}></span>
                                   {content}
                                 </h2>
                               );
@@ -898,7 +898,7 @@ After every point change line`;
                             if (line.startsWith('### ')) {
                               const content = line.substring(4).trim();
                               return (
-                                <h3 key={i} className="text-sm md:text-base font-semibold mb-1.5 mt-2 text-zinc-700 dark:text-zinc-300">
+                                <h3 key={i} className="text-sm md:text-base font-semibold mb-1.5 mt-2" style={{ color: 'var(--dashboard-text)' }}>
                                   {content}
                                 </h3>
                               );
@@ -911,13 +911,13 @@ After every point change line`;
                                 const parts = content.split(/\*\*(.*?)\*\*/);
                                 return (
                                   <div key={i} className="flex items-start gap-2 mb-1.5 ml-1">
-                                    <span className="text-indigo-500 dark:text-indigo-400 mt-0.5 text-base flex-shrink-0">•</span>
+                                    <span className="mt-0.5 text-base shrink-0" style={{ color: 'var(--dashboard-primary)' }}>•</span>
                                     <span className="flex-1 text-sm leading-relaxed">
                                       {parts.map((part, idx) => 
                                         idx % 2 === 1 ? (
-                                          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">{part}</strong>
+                                          <strong key={idx} className="font-bold" style={{ color: 'var(--dashboard-heading)' }}>{part}</strong>
                                         ) : (
-                                          <span key={idx} className="text-zinc-700 dark:text-zinc-300">{part}</span>
+                                          <span key={idx} style={{ color: 'var(--dashboard-text)' }}>{part}</span>
                                         )
                                       )}
                                     </span>
@@ -926,8 +926,8 @@ After every point change line`;
                               }
                               return (
                                 <div key={i} className="flex items-start gap-2 mb-1.5 ml-1">
-                                  <span className="text-indigo-500 dark:text-indigo-400 mt-0.5 text-base flex-shrink-0">•</span>
-                                  <span className="flex-1 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">{content}</span>
+                                  <span className="mt-0.5 text-base shrink-0" style={{ color: 'var(--dashboard-primary)' }}>•</span>
+                                  <span className="flex-1 text-sm leading-relaxed" style={{ color: 'var(--dashboard-text)' }}>{content}</span>
                                 </div>
                               );
                             }
@@ -938,9 +938,9 @@ After every point change line`;
                                 <p key={i} className="mb-2 text-sm leading-relaxed">
                                   {parts.map((part, idx) => 
                                     idx % 2 === 1 ? (
-                                      <strong key={idx} className="font-bold text-zinc-900 dark:text-white">{part}</strong>
+                                      <strong key={idx} className="font-bold" style={{ color: 'var(--dashboard-heading)' }}>{part}</strong>
                                     ) : (
-                                      <span key={idx} className="text-zinc-700 dark:text-zinc-300">{part}</span>
+                                      <span key={idx} style={{ color: 'var(--dashboard-text)' }}>{part}</span>
                                     )
                                   )}
                                 </p>
@@ -948,7 +948,7 @@ After every point change line`;
                             }
                             // Regular paragraph with better line height
                             if (line.trim()) {
-                              return <p key={i} className="mb-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{line}</p>;
+                              return <p key={i} className="mb-2 text-sm leading-relaxed" style={{ color: 'var(--dashboard-text)' }}>{line}</p>;
                             }
                             return <div key={i} className="h-1"></div>;
                           })}
@@ -1196,16 +1196,16 @@ After every point change line`;
 
                 {isLoading && (
                   <div className="flex justify-start animate-fade-in">
-                    <div className="bg-white dark:bg-zinc-800 rounded-2xl rounded-bl-sm px-4 py-3 shadow-md border border-zinc-200 dark:border-zinc-700 max-w-[80%] md:max-w-[70%]">
-                      <div className="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                    <div className="dashboard-card rounded-2xl rounded-bl-sm px-4 py-3 shadow-md max-w-[80%] md:max-w-[70%]">
+                      <div className="flex items-center gap-2 mb-2 pb-2" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
                         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
                           AI
                         </div>
-                        <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Shark AI</span>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Shark AI</span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={18} />
-                        <span className="text-zinc-700 dark:text-zinc-300 text-sm">Analyzing your pitch...</span>
+                        <Loader2 className="animate-spin" style={{ color: 'var(--dashboard-primary)' }} size={18} />
+                        <span className="text-sm" style={{ color: 'var(--dashboard-text)' }}>Analyzing your pitch...</span>
                       </div>
                     </div>
                   </div>

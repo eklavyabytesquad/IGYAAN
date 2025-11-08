@@ -12,66 +12,36 @@ const themeOptions = [
 	{
 		id: "indigo",
 		label: "Aurora Indigo",
-		description: "Balanced violet gradients for academics",
+		description: "Professional indigo theme, perfect for academics and daily use",
 		preview: ["#312e81", "#4f46e5", "#a5b4fc"],
 	},
 	{
 		id: "emerald",
 		label: "Verdant Emerald",
-		description: "Fresh greens ideal for attendance & wellness",
+		description: "Fresh green theme for a calming and focused environment",
 		preview: ["#065f46", "#10b981", "#bbf7d0"],
+	},
+	{
+		id: "ocean",
+		label: "Celestial Ocean",
+		description: "Balanced teal theme inspired by peaceful coastal waters",
+		preview: ["#0f766e", "#14b8a6", "#99f6e4"],
 	},
 	{
 		id: "sunset",
 		label: "Sunset Ember",
-		description: "Warm oranges perfect for parent engagement",
+		description: "Warm orange theme that brings energy and enthusiasm",
 		preview: ["#9a3412", "#f97316", "#fed7aa"],
 	},
 	{
 		id: "midnight",
 		label: "Midnight Neon",
-		description: "High-contrast blues for night sessions",
-		preview: ["#0f172a", "#38bdf8", "#cbd5f5"],
-	},
-	{
-		id: "rose",
-		label: "Rose Quartz",
-		description: "Energetic pinks for creative teams",
-		preview: ["#9d174d", "#e11d48", "#fecdd3"],
-	},
-	{
-		id: "amber",
-		label: "Golden Hour",
-		description: "Optimistic ambers for announcements",
-		preview: ["#92400e", "#f59e0b", "#fde68a"],
-	},
-	{
-		id: "violet",
-		label: "Luminous Violet",
-		description: "Vivid purples for AI & analytics",
-		preview: ["#581c87", "#8b5cf6", "#e9d5ff"],
-	},
-	{
-		id: "ocean",
-		label: "Celestial Ocean",
-		description: "Calming teals inspired by coastal horizons",
-		preview: ["#0f766e", "#14b8a6", "#99f6e4"],
-	},
-	{
-		id: "sky",
-		label: "Skyline Blue",
-		description: "Crisp blues built for analytics dashboards",
-		preview: ["#1d4ed8", "#2563eb", "#bfdbfe"],
-	},
-	{
-		id: "slate",
-		label: "Carbon Slate",
-		description: "Minimal greys for executive presentations",
-		preview: ["#0f172a", "#475569", "#cbd5f5"],
+		description: "Dark theme with high contrast, ideal for extended sessions",
+		preview: ["#0a0f1e", "#38bdf8", "#cbd5f5"],
 	},
 ];
 
-const quickThemeIds = ["indigo", "emerald", "sunset", "midnight", "ocean", "sky", "slate"];
+const quickThemeIds = ["indigo", "emerald", "ocean", "sunset", "midnight"];
 
 export default function SettingsPage() {
 	const { user, loading } = useAuth();
@@ -175,7 +145,7 @@ export default function SettingsPage() {
 
 			{/* Appearance Studio */}
 			<div className="dashboard-card mb-8 rounded-3xl border border-zinc-200 bg-white/90 p-6 shadow-sm">
-				<div className="grid gap-8 xl:grid-cols-[360px,1fr]">
+				<div className="grid gap-8 lg:grid-cols-[340px,1fr]">
 					<div className="flex flex-col gap-6">
 						<div>
 							<span className="dashboard-pill inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide">
@@ -299,7 +269,7 @@ export default function SettingsPage() {
 						</div>
 					</div>
 
-					<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 						{themeOptions.map((option) => {
 							const isActive = option.id === selectedTheme;
 							const accent = option.preview[1] ?? option.preview[0];

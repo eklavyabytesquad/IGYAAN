@@ -94,175 +94,99 @@ body {
   background: var(--overlay-scrim) !important;
 }
 
+/* ===== Streamlined Dashboard Themes (5 Themes) ===== */
+
+/* Aurora Indigo - Default professional theme */
 body[data-dashboard-theme="indigo"] {
   --dashboard-background: #f5f7ff;
   --dashboard-background-contrast: #e0e7ff;
-  --dashboard-surface: rgba(248, 250, 255, 0.9);
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
   --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #edf2ff;
-  --dashboard-border: rgba(99, 102, 241, 0.25);
-  --dashboard-text: #0f172a;
-  --dashboard-muted: #4c51bf;
-  --dashboard-heading: #1e1b4b;
+  --dashboard-surface-muted: #f0f4ff;
+  --dashboard-border: rgba(79, 70, 229, 0.2);
+  --dashboard-text: #1e293b;
+  --dashboard-muted: #64748b;
+  --dashboard-heading: #0f172a;
   --dashboard-primary: #4f46e5;
   --dashboard-primary-hover: #4338ca;
   --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(238, 242, 255, 0.9);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
+  --dashboard-navbar-bg: rgba(255, 255, 255, 0.95);
+  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.98);
 }
 
+/* Emerald Green - Fresh and calming */
 body[data-dashboard-theme="emerald"] {
-  --dashboard-background: #f2fcf7;
+  --dashboard-background: #f0fdf4;
   --dashboard-background-contrast: #d1fae5;
-  --dashboard-surface: rgba(236, 253, 245, 0.92);
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
   --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #dcfce7;
-  --dashboard-border: rgba(16, 185, 129, 0.25);
-  --dashboard-text: #064e3b;
-  --dashboard-muted: #047857;
-  --dashboard-heading: #064e3b;
+  --dashboard-surface-muted: #e6f7ed;
+  --dashboard-border: rgba(16, 185, 129, 0.2);
+  --dashboard-text: #1e293b;
+  --dashboard-muted: #64748b;
+  --dashboard-heading: #0f172a;
   --dashboard-primary: #10b981;
   --dashboard-primary-hover: #059669;
   --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(236, 253, 245, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
+  --dashboard-navbar-bg: rgba(255, 255, 255, 0.95);
+  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.98);
 }
 
-body[data-dashboard-theme="sunset"] {
-  --dashboard-background: #fff7ed;
-  --dashboard-background-contrast: #fed7aa;
-  --dashboard-surface: rgba(255, 247, 237, 0.9);
-  --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #ffedd5;
-  --dashboard-border: rgba(251, 146, 60, 0.25);
-  --dashboard-text: #7c2d12;
-  --dashboard-muted: #c2410c;
-  --dashboard-heading: #7c2d12;
-  --dashboard-primary: #f97316;
-  --dashboard-primary-hover: #ea580c;
-  --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(255, 239, 220, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
-}
-
-body[data-dashboard-theme="midnight"] {
-  --dashboard-background: #0f172a;
-  --dashboard-background-contrast: #1e293b;
-  --dashboard-surface: rgba(30, 41, 59, 0.85);
-  --dashboard-surface-solid: #1e293b;
-  --dashboard-surface-muted: #111827;
-  --dashboard-border: rgba(148, 163, 184, 0.22);
-  --dashboard-text: #e2e8f0;
-  --dashboard-muted: #94a3b8;
-  --dashboard-heading: #f8fafc;
-  --dashboard-primary: #38bdf8;
-  --dashboard-primary-hover: #0ea5e9;
-  --dashboard-primary-foreground: #0f172a;
-  --dashboard-navbar-bg: rgba(15, 23, 42, 0.88);
-  --dashboard-sidenav-bg: rgba(17, 24, 39, 0.92);
-}
-
-body[data-dashboard-theme="rose"] {
-  --dashboard-background: #fff1f2;
-  --dashboard-background-contrast: #fecdd3;
-  --dashboard-surface: rgba(255, 240, 245, 0.9);
-  --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #ffe4e6;
-  --dashboard-border: rgba(244, 114, 182, 0.25);
-  --dashboard-text: #831843;
-  --dashboard-muted: #be123c;
-  --dashboard-heading: #881337;
-  --dashboard-primary: #e11d48;
-  --dashboard-primary-hover: #be123c;
-  --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(255, 228, 235, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
-}
-
-body[data-dashboard-theme="amber"] {
-  --dashboard-background: #fffbeb;
-  --dashboard-background-contrast: #fde68a;
-  --dashboard-surface: rgba(255, 250, 235, 0.9);
-  --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #fef3c7;
-  --dashboard-border: rgba(251, 191, 36, 0.25);
-  --dashboard-text: #78350f;
-  --dashboard-muted: #b45309;
-  --dashboard-heading: #713f12;
-  --dashboard-primary: #f59e0b;
-  --dashboard-primary-hover: #d97706;
-  --dashboard-primary-foreground: #0f172a;
-  --dashboard-navbar-bg: rgba(255, 244, 214, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
-}
-
-body[data-dashboard-theme="violet"] {
-  --dashboard-background: #f8f5ff;
-  --dashboard-background-contrast: #ede9fe;
-  --dashboard-surface: rgba(248, 245, 255, 0.92);
-  --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #f3e8ff;
-  --dashboard-border: rgba(139, 92, 246, 0.25);
-  --dashboard-text: #4c1d95;
-  --dashboard-muted: #6d28d9;
-  --dashboard-heading: #4c1d95;
-  --dashboard-primary: #8b5cf6;
-  --dashboard-primary-hover: #7c3aed;
-  --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(242, 233, 255, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.92);
-}
-
+/* Ocean Teal - Balanced and professional */
 body[data-dashboard-theme="ocean"] {
   --dashboard-background: #f0fdfa;
   --dashboard-background-contrast: #ccfbf1;
-  --dashboard-surface: rgba(224, 253, 250, 0.92);
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
   --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #d1fae5;
-  --dashboard-border: rgba(13, 148, 136, 0.25);
-  --dashboard-text: #083344;
-  --dashboard-muted: #0f766e;
-  --dashboard-heading: #042f2e;
+  --dashboard-surface-muted: #e6faf8;
+  --dashboard-border: rgba(20, 184, 166, 0.2);
+  --dashboard-text: #1e293b;
+  --dashboard-muted: #64748b;
+  --dashboard-heading: #0f172a;
   --dashboard-primary: #14b8a6;
   --dashboard-primary-hover: #0d9488;
   --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(204, 251, 241, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
+  --dashboard-navbar-bg: rgba(255, 255, 255, 0.95);
+  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.98);
 }
 
-body[data-dashboard-theme="sky"] {
-  --dashboard-background: #eff6ff;
-  --dashboard-background-contrast: #bfdbfe;
-  --dashboard-surface: rgba(239, 246, 255, 0.92);
+/* Sunset Orange - Warm and energetic */
+body[data-dashboard-theme="sunset"] {
+  --dashboard-background: #fff7ed;
+  --dashboard-background-contrast: #fed7aa;
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
   --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #dbeafe;
-  --dashboard-border: rgba(37, 99, 235, 0.25);
-  --dashboard-text: #1e3a8a;
-  --dashboard-muted: #1d4ed8;
-  --dashboard-heading: #1e3a8a;
-  --dashboard-primary: #2563eb;
-  --dashboard-primary-hover: #1d4ed8;
-  --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(219, 234, 254, 0.92);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.9);
-}
-
-body[data-dashboard-theme="slate"] {
-  --dashboard-background: #f8fafc;
-  --dashboard-background-contrast: #e2e8f0;
-  --dashboard-surface: rgba(248, 250, 252, 0.92);
-  --dashboard-surface-solid: #ffffff;
-  --dashboard-surface-muted: #e2e8f0;
-  --dashboard-border: rgba(71, 85, 105, 0.22);
-  --dashboard-text: #0f172a;
-  --dashboard-muted: #475569;
+  --dashboard-surface-muted: #fff3e6;
+  --dashboard-border: rgba(249, 115, 22, 0.2);
+  --dashboard-text: #1e293b;
+  --dashboard-muted: #64748b;
   --dashboard-heading: #0f172a;
-  --dashboard-primary: #475569;
-  --dashboard-primary-hover: #334155;
+  --dashboard-primary: #f97316;
+  --dashboard-primary-hover: #ea580c;
   --dashboard-primary-foreground: #ffffff;
-  --dashboard-navbar-bg: rgba(241, 245, 249, 0.95);
-  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.95);
+  --dashboard-navbar-bg: rgba(255, 255, 255, 0.95);
+  --dashboard-sidenav-bg: rgba(255, 255, 255, 0.98);
 }
+
+/* Midnight Neon - Dark mode with high contrast */
+body[data-dashboard-theme="midnight"] {
+  --dashboard-background: #0a0f1e;
+  --dashboard-background-contrast: #1e293b;
+  --dashboard-surface: rgba(30, 41, 59, 0.95);
+  --dashboard-surface-solid: #1e293b;
+  --dashboard-surface-muted: rgba(15, 23, 42, 0.95);
+  --dashboard-border: rgba(148, 163, 184, 0.25);
+  --dashboard-text: #e2e8f0;
+  --dashboard-muted: #94a3b8;
+  --dashboard-heading: #f1f5f9;
+  --dashboard-primary: #38bdf8;
+  --dashboard-primary-hover: #0ea5e9;
+  --dashboard-primary-foreground: #0f172a;
+  --dashboard-navbar-bg: rgba(15, 23, 42, 0.95);
+  --dashboard-sidenav-bg: rgba(30, 41, 59, 0.98);
+}
+
+/* ===== Dashboard Theme Utilities ===== */
 
 .dashboard-theme {
   background-color: var(--dashboard-background);
@@ -274,21 +198,31 @@ body[data-dashboard-theme="slate"] {
   background-color: var(--dashboard-navbar-bg);
   border-color: var(--dashboard-border);
   color: var(--dashboard-text);
-  box-shadow: 0 12px 40px -24px rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-sidenav {
   background-color: var(--dashboard-sidenav-bg);
   border-color: var(--dashboard-border);
   color: var(--dashboard-text);
-  box-shadow: 12px 0 48px -32px rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 4px 0 24px -8px rgba(0, 0, 0, 0.08);
 }
 
 .dashboard-card {
   background-color: var(--dashboard-surface-solid);
   border: 1px solid var(--dashboard-border);
-  box-shadow: var(--dashboard-card-shadow);
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--dashboard-text);
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.12);
+  border-color: var(--dashboard-primary);
 }
 
 .dashboard-card-muted {
@@ -300,65 +234,101 @@ body[data-dashboard-theme="slate"] {
 .dashboard-button {
   background: var(--dashboard-primary);
   color: var(--dashboard-primary-foreground);
-  transition: background 0.3s ease, transform 0.2s ease;
+  border: none;
+  transition: all 0.2s ease;
 }
 
 .dashboard-button:hover {
   background: var(--dashboard-primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px -4px var(--dashboard-primary);
 }
 
 .dashboard-pill {
-  background: color-mix(in srgb, var(--dashboard-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--dashboard-primary) 12%, transparent);
   color: var(--dashboard-primary);
-  border-color: color-mix(in srgb, var(--dashboard-primary) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dashboard-primary) 20%, transparent);
 }
 
-body[data-dashboard-theme] .dashboard-theme .bg-white {
+/* Force theme colors on all dashboard elements */
+body[data-dashboard-theme] .dashboard-theme {
+  background-color: var(--dashboard-background) !important;
+}
+
+body[data-dashboard-theme] .dashboard-theme .bg-white,
+body[data-dashboard-theme] .dashboard-theme .bg-white\/80,
+body[data-dashboard-theme] .dashboard-theme .bg-white\/90,
+body[data-dashboard-theme] .dashboard-theme .bg-white\/95 {
   background-color: var(--dashboard-surface-solid) !important;
-  color: var(--dashboard-text);
-}
-
-body[data-dashboard-theme] .dashboard-theme .bg-white\/80 {
-  background-color: color-mix(in srgb, var(--dashboard-surface-solid) 80%, transparent) !important;
+  color: var(--dashboard-text) !important;
 }
 
 body[data-dashboard-theme] .dashboard-theme .bg-zinc-50,
+body[data-dashboard-theme] .dashboard-theme .bg-zinc-100,
+body[data-dashboard-theme] .dashboard-theme .bg-gray-50,
+body[data-dashboard-theme] .dashboard-theme .dark\:bg-zinc-900,
 body[data-dashboard-theme] .dashboard-theme .dark\:bg-zinc-900\/80 {
   background-color: var(--dashboard-surface-muted) !important;
-  color: var(--dashboard-text);
+  color: var(--dashboard-text) !important;
 }
 
 body[data-dashboard-theme] .dashboard-theme .border-zinc-200,
 body[data-dashboard-theme] .dashboard-theme .border-zinc-100,
-body[data-dashboard-theme] .dashboard-theme .dark\:border-zinc-800 {
+body[data-dashboard-theme] .dashboard-theme .border-gray-200,
+body[data-dashboard-theme] .dashboard-theme .dark\:border-zinc-800,
+body[data-dashboard-theme] .dashboard-theme .dark\:border-zinc-700 {
   border-color: var(--dashboard-border) !important;
 }
 
 body[data-dashboard-theme] .dashboard-theme .text-zinc-900,
-body[data-dashboard-theme] .dashboard-theme .dark\:text-white {
+body[data-dashboard-theme] .dashboard-theme .text-gray-900,
+body[data-dashboard-theme] .dashboard-theme .dark\:text-white,
+body[data-dashboard-theme] .dashboard-theme .dark\:text-zinc-100 {
   color: var(--dashboard-heading) !important;
 }
 
 body[data-dashboard-theme] .dashboard-theme .text-zinc-600,
 body[data-dashboard-theme] .dashboard-theme .text-zinc-500,
+body[data-dashboard-theme] .dashboard-theme .text-gray-600,
+body[data-dashboard-theme] .dashboard-theme .text-gray-500,
 body[data-dashboard-theme] .dashboard-theme .dark\:text-zinc-400,
 body[data-dashboard-theme] .dashboard-theme .dark\:text-zinc-300 {
   color: var(--dashboard-muted) !important;
 }
 
-body[data-dashboard-theme] .dashboard-theme .ring-indigo-500\/20,
-body[data-dashboard-theme] .dashboard-theme .ring-indigo-500\/30 {
-  --tw-ring-opacity: 1 !important;
-  --tw-ring-color: color-mix(in srgb, var(--dashboard-primary) 45%, transparent) !important;
+body[data-dashboard-theme] .dashboard-theme .text-indigo-600,
+body[data-dashboard-theme] .dashboard-theme .text-indigo-500,
+body[data-dashboard-theme] .dashboard-theme .text-blue-600 {
+  color: var(--dashboard-primary) !important;
 }
 
-body[data-dashboard-theme] .dashboard-theme .bg-gradient-to-br {
-  background-image: linear-gradient(135deg, color-mix(in srgb, var(--dashboard-primary) 70%, transparent), color-mix(in srgb, var(--dashboard-primary) 100%, transparent)) !important;
+body[data-dashboard-theme] .dashboard-theme .bg-indigo-50,
+body[data-dashboard-theme] .dashboard-theme .bg-indigo-100,
+body[data-dashboard-theme] .dashboard-theme .bg-blue-50 {
+  background-color: color-mix(in srgb, var(--dashboard-primary) 10%, transparent) !important;
+  color: var(--dashboard-primary) !important;
+}
+
+body[data-dashboard-theme] .dashboard-theme .bg-indigo-500,
+body[data-dashboard-theme] .dashboard-theme .bg-indigo-600,
+body[data-dashboard-theme] .dashboard-theme .bg-blue-500 {
+  background-color: var(--dashboard-primary) !important;
+  color: var(--dashboard-primary-foreground) !important;
+}
+
+body[data-dashboard-theme] .dashboard-theme .hover\:bg-indigo-600:hover,
+body[data-dashboard-theme] .dashboard-theme .hover\:bg-blue-600:hover {
+  background-color: var(--dashboard-primary-hover) !important;
+}
+
+body[data-dashboard-theme] .dashboard-theme .ring-indigo-500\/20,
+body[data-dashboard-theme] .dashboard-theme .ring-indigo-500\/30 {
+  --tw-ring-color: color-mix(in srgb, var(--dashboard-primary) 30%, transparent) !important;
 }
 
 body[data-dashboard-theme] .dashboard-theme a {
   color: inherit;
+  transition: color 0.2s ease;
 }
 
 body[data-dashboard-theme] .dashboard-theme a:hover {

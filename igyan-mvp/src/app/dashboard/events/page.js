@@ -244,7 +244,7 @@ export default function EventsManagement() {
   });
 
   return (
-    <div className="flex h-screen w-full flex-col gap-6 overflow-hidden bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 lg:p-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="flex h-screen w-full flex-col gap-6 overflow-hidden p-4 lg:p-8" style={{ backgroundColor: 'var(--dashboard-background)' }}>
       {/* Warning Banner if no school_id */}
       {!user?.school_id && (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-lg dark:border-amber-900 dark:bg-amber-950">
@@ -261,17 +261,17 @@ export default function EventsManagement() {
       )}
 
       {/* Header */}
-      <header className="rounded-3xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <header className="rounded-3xl dashboard-card p-6 shadow-2xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-4">
-            <span className="rounded-2xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500 p-4 text-white shadow-lg">
+            <span className="rounded-2xl p-4 text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
               <Calendar size={28} />
             </span>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: 'var(--dashboard-heading)' }}>
                 Event Management
               </h1>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 sm:text-base">
+              <p className="mt-2 text-sm sm:text-base" style={{ color: 'var(--dashboard-muted)' }}>
                 Create and manage school events, competitions, and activities
               </p>
             </div>
@@ -284,7 +284,8 @@ export default function EventsManagement() {
               }
               setShowModal(true);
             }}
-            className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-blue-400/40"
+            className="flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition"
+            style={{ background: 'var(--dashboard-primary)' }}
           >
             <Plus size={20} />
             <span>Create Event</span>
@@ -294,21 +295,31 @@ export default function EventsManagement() {
         {/* Search & Filter */}
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" style={{ color: 'var(--dashboard-muted)' }} />
             <input
               type="text"
               placeholder="Search events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-zinc-200 bg-white px-10 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/70 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="w-full rounded-xl border px-10 py-2.5 text-sm outline-none transition focus:ring-2"
+              style={{
+                borderColor: 'var(--dashboard-border)',
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                color: 'var(--dashboard-text)'
+              }}
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter size={20} className="text-zinc-500" />
+            <Filter size={20} style={{ color: 'var(--dashboard-muted)' }} />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              className="rounded-xl border px-4 py-2.5 text-sm outline-none transition"
+              style={{
+                borderColor: 'var(--dashboard-border)',
+                backgroundColor: 'var(--dashboard-surface-solid)',
+                color: 'var(--dashboard-text)'
+              }}
             >
               <option value="all">All Events</option>
               <option value="upcoming">Upcoming</option>
@@ -320,12 +331,12 @@ export default function EventsManagement() {
       </header>
 
       {/* Events Grid */}
-      <div className="flex-1 overflow-y-auto rounded-3xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/80">
+      <div className="flex-1 overflow-y-auto rounded-3xl dashboard-card p-6 shadow-2xl">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white shadow-lg transition hover:shadow-xl dark:border-white/10 dark:bg-zinc-900"
+              className="group relative overflow-hidden rounded-2xl dashboard-card shadow-lg transition hover:shadow-xl"
             >
               {event.banner_image && (
                 <div className="h-40 w-full overflow-hidden bg-linear-to-br from-blue-100 to-purple-100 dark:from-blue-950 dark:to-purple-950">
