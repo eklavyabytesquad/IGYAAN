@@ -254,13 +254,12 @@ export default function DashboardPage() {
 					<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 					<div className="space-y-5">
 						<div className="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-white/40 bg-white/20 px-6 py-4 shadow-2xl ring-2 ring-white/30">
-							<div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/50 bg-white shadow-xl ring-4 ring-white/40 flex items-center justify-center">
+							<div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/50 shadow-xl ring-4 ring-white/40">
 								<Image
-									src="/logo1.png"
+									src="/logo2.jpg"
 									alt="IGYAN.AI Logo"
-									width={180}
-									height={180}
-									className="object-contain"
+									fill
+									className="object-cover"
 									priority
 								/>
 							</div>
