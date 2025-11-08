@@ -7,29 +7,9 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	const { user, logout } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-	const [notifications, setNotifications] = useState(3);
+	const [notifications, setNotifications] = useState(0);
 	const dropdownRef = useRef(null);
 	const notificationsRef = useRef(null);
-	const notificationItems = [
-		{
-			id: "assignment-reminder",
-			title: "Assignments due tomorrow",
-			description: "Automation case study submission closes in 18 hours.",
-			time: "18h",
-		},
-		{
-			id: "mentor-feedback",
-			title: "Mentor feedback received",
-			description: "Priya left notes on your Sudarshan Ai brief.",
-			time: "3h",
-		},
-		{
-			id: "copilot-update",
-			title: "Sudarshan Ai insight",
-			description: "Velocity nudges suggest a 20 min focus block today.",
-			time: "Just now",
-		},
-	];
 	const router = useRouter();
 
 	// Close dropdown when clicking outside
@@ -48,13 +28,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	}, []);
 
 	const toggleNotifications = () => {
-		setIsNotificationsOpen((prev) => {
-			const next = !prev;
-			if (next) {
-				setNotifications(0);
-			}
-			return next;
-		});
+		setIsNotificationsOpen(!isNotificationsOpen);
 	};
 
 	const handleLogout = async () => {
@@ -100,7 +74,8 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
+								className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2"
+								style={{ color: 'var(--dashboard-muted)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -111,7 +86,13 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 							<input
 								type="text"
 								placeholder={isB2CUser ? "Search tools, courses..." : "Search courses, assignments..."}
-								className="w-64 rounded-xl border border-zinc-200 bg-zinc-50/50 py-2.5 pl-10 pr-4 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:w-80 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-white dark:placeholder-zinc-400 lg:w-80"
+								className="w-64 rounded-xl py-2.5 pl-10 pr-4 text-sm transition-all focus:outline-none focus:ring-2 focus:w-80 lg:w-80"
+								style={{
+									border: '1px solid var(--dashboard-border)',
+									backgroundColor: 'var(--dashboard-surface-muted)',
+									color: 'var(--dashboard-text)',
+									'--tw-ring-color': 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)'
+								}}
 							/>
 						</div>
 					</div>
@@ -179,12 +160,18 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 						</button>
 
 						{isNotificationsOpen && (
-							<div className="absolute right-0 mt-2 w-80 origin-top-right rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-800">
-								<div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-zinc-700">
-									<p className="text-sm font-semibold text-zinc-900 dark:text-white">Notifications</p>
+							<div className="absolute right-0 mt-2 w-80 origin-top-right rounded-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-200"
+								style={{
+									border: '1px solid var(--dashboard-border)',
+									backgroundColor: 'var(--dashboard-surface-solid)'
+								}}>
+								<div className="flex items-center justify-between border-b px-4 py-3"
+									style={{ borderColor: 'var(--dashboard-border)' }}>
+									<p className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Notifications</p>
 									<button
 										onClick={() => setIsNotificationsOpen(false)}
-										className="rounded-lg p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200"
+										className="rounded-lg p-1 transition-colors hover:opacity-80"
+										style={{ color: 'var(--dashboard-muted)' }}
 										aria-label="Close notifications"
 									>
 										<svg
@@ -199,22 +186,24 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 										</svg>
 									</button>
 								</div>
-								<div className="max-h-80 overflow-y-auto">
-									{notificationItems.map((item) => (
-										<div
-											key={item.id}
-											className="border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 dark:border-zinc-700"
-										>
-											<p className="font-semibold text-zinc-900 dark:text-white">{item.title}</p>
-											<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{item.description}</p>
-											<p className="mt-2 text-[11px] uppercase tracking-wide text-indigo-500 dark:text-indigo-300">{item.time}</p>
-										</div>
-									))}
-								</div>
-								<div className="border-t border-zinc-100 px-4 py-3 text-center text-xs dark:border-zinc-700">
-									<button className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-3 py-1.5 font-semibold text-zinc-700 transition-colors hover:border-indigo-400 hover:text-indigo-500 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-indigo-400 dark:hover:text-indigo-300">
-										View all updates
-									</button>
+								<div className="px-4 py-12 text-center">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="1.5"
+										className="mx-auto h-12 w-12 mb-3"
+										style={{ color: 'var(--dashboard-muted)' }}
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+										/>
+									</svg>
+									<p className="text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>No notifications yet</p>
+									<p className="mt-1 text-xs" style={{ color: 'var(--dashboard-muted)' }}>We'll notify you when something arrives</p>
 								</div>
 							</div>
 						)}
