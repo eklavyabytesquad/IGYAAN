@@ -293,135 +293,161 @@ Provide ONLY valid JSON, no additional commentary.`;
 	}
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-sky-900/20 dark:to-slate-900">
+		<div className="dashboard-theme min-h-screen">
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				<div className="mb-8 flex items-center gap-3">
 					<button
 						onClick={() => router.back()}
-						className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+						className="dashboard-card flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-105"
 					>
 						<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 						</svg>
-					</button>
-					<div>
-						<h1 className="text-3xl font-bold text-slate-900 dark:text-white">Step-by-Step Guide Builder</h1>
-						<p className="mt-1 text-slate-600 dark:text-slate-400">Create detailed, actionable roadmaps for any topic or objective.</p>
-					</div>
+				</button>
+				<div>
+					<h1 className="text-3xl font-bold" style={{ color: "var(--dashboard-heading)" }}>Learning Journey Architect</h1>
+					<p className="mt-1 text-sm sm:text-base" style={{ color: "var(--dashboard-muted)" }}>Shape immersive, theme-aligned playbooks that translate intent into confident execution.</p>
 				</div>
-
-				<div className="grid gap-8 lg:grid-cols-3">
+			</div>				<div className="grid gap-8 lg:grid-cols-3">
 					<div className="lg:col-span-1">
-						<div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-							<h2 className="mb-6 text-xl font-bold text-slate-900 dark:text-white">Guide Preferences</h2>
-							<form onSubmit={handleSubmit} className="space-y-5">
+					<div className="dashboard-card sticky top-6 rounded-2xl p-6">
+						<h2 className="mb-6 text-xl font-bold" style={{ color: "var(--dashboard-heading)" }}>Blueprint Inputs</h2>
+						<form onSubmit={handleSubmit} className="space-y-5">
+							<div>
+								<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+									Focus Area <span className="text-red-500">*</span>
+								</label>
+								<input
+									type="text"
+									name="topic"
+									value={formData.topic}
+									onChange={handleInputChange}
+									className="w-full rounded-lg border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 placeholder:opacity-60"
+									style={{ 
+										backgroundColor: "var(--dashboard-surface-solid)",
+										borderColor: "var(--dashboard-border)",
+										color: "var(--dashboard-text)",
+										"--tw-ring-color": "color-mix(in srgb, var(--dashboard-primary) 50%, transparent)"
+									}}
+									placeholder="E.g., Launch a student podcast, onboard a new teacher..."
+									required
+								/>
+							</div>
+
+							<div>
+								<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+									Desired Outcome
+								</label>
+								<textarea
+									name="goal"
+									value={formData.goal}
+									onChange={handleInputChange}
+									rows={3}
+									className="w-full rounded-lg border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 placeholder:opacity-60"
+									style={{ 
+										backgroundColor: "var(--dashboard-surface-solid)",
+										borderColor: "var(--dashboard-border)",
+										color: "var(--dashboard-text)",
+										"--tw-ring-color": "color-mix(in srgb, var(--dashboard-primary) 50%, transparent)"
+									}}
+									placeholder="What does success look like for this blueprint?"
+								/>
+							</div>
+
+							<div className="grid gap-4 sm:grid-cols-2">
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-										Topic <span className="text-red-500">*</span>
+									<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+										Audience Lens
 									</label>
-									<input
-										type="text"
-										name="topic"
-										value={formData.topic}
+									<select
+										name="audience"
+										value={formData.audience}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
-										placeholder="E.g., Learn React basics, Launch a podcast..."
-										required
-									/>
-								</div>
-
-								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-										Primary Goal
-									</label>
-									<textarea
-										name="goal"
-										value={formData.goal}
-										onChange={handleInputChange}
-										rows={3}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
-										placeholder="What outcome should this guide accomplish?"
-									/>
-								</div>
-
-								<div className="grid gap-4 sm:grid-cols-2">
-									<div>
-										<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-											Audience
-										</label>
-										<select
-											name="audience"
-											value={formData.audience}
-											onChange={handleInputChange}
-											className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
-										>
-											{audienceOptions.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</select>
-									</div>
-									<div>
-										<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-											Timeframe
-										</label>
-										<select
-											name="timeframe"
-											value={formData.timeframe}
-											onChange={handleInputChange}
-											className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
-										>
-											{timeframeOptions.map((option) => (
-												<option key={option} value={option}>
-													{option}
-												</option>
-											))}
-										</select>
-									</div>
-								</div>
-
-								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-										Detail Level
-									</label>
-									<div className="grid grid-cols-3 gap-2">
-										{detailLevelOptions.map((option) => (
-											<button
-												key={option.value}
-												type="button"
-												onClick={() => setFormData((prev) => ({ ...prev, detailLevel: option.value }))}
-												className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${
-													formData.detailLevel === option.value
-														? "border-sky-500 bg-sky-100 text-sky-700 shadow-sm dark:border-sky-400 dark:bg-sky-900/40 dark:text-sky-200"
-														: "border-slate-200 bg-white text-slate-600 hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-sky-400"
-												}`}
-											>
+										className="w-full rounded-lg border px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2"
+										style={{ 
+											backgroundColor: "var(--dashboard-surface-solid)",
+											borderColor: "var(--dashboard-border)",
+											color: "var(--dashboard-text)",
+											"--tw-ring-color": "color-mix(in srgb, var(--dashboard-primary) 50%, transparent)"
+										}}
+									>
+										{audienceOptions.map((option) => (
+											<option key={option.value} value={option.value}>
 												{option.label}
-											</button>
+											</option>
 										))}
-									</div>
-									<p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{DETAIL_LEVEL_COPY[formData.detailLevel]}</p>
+									</select>
 								</div>
-
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-										Constraints or Notes
+									<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+										Target Duration
 									</label>
-									<textarea
-										name="constraints"
-										value={formData.constraints}
+									<select
+										name="timeframe"
+										value={formData.timeframe}
 										onChange={handleInputChange}
-										rows={3}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
-										placeholder="Tools available, budget limits, prior knowledge..."
-									/>
+										className="w-full rounded-lg border px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2"
+										style={{ 
+											backgroundColor: "var(--dashboard-surface-solid)",
+											borderColor: "var(--dashboard-border)",
+											color: "var(--dashboard-text)",
+											"--tw-ring-color": "color-mix(in srgb, var(--dashboard-primary) 50%, transparent)"
+										}}
+									>
+										{timeframeOptions.map((option) => (
+											<option key={option} value={option}>
+												{option}
+											</option>
+										))}
+									</select>
 								</div>
+							</div>
 
-								<button
+							<div>
+								<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+									Depth Profile
+								</label>
+								<div className="grid grid-cols-3 gap-2">
+									{detailLevelOptions.map((option) => (
+										<button
+											key={option.value}
+											type="button"
+											onClick={() => setFormData((prev) => ({ ...prev, detailLevel: option.value }))}
+											className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
+												formData.detailLevel === option.value
+													? "dashboard-button transform scale-105"
+													: "dashboard-card hover:scale-105"
+											}`}
+										>
+											{option.label}
+										</button>
+									))}
+								</div>
+								<p className="mt-2 text-xs" style={{ color: "var(--dashboard-muted)" }}>{DETAIL_LEVEL_COPY[formData.detailLevel]}</p>
+							</div>
+
+							<div>
+								<label className="mb-2 block text-sm font-medium" style={{ color: "var(--dashboard-muted)" }}>
+									Constraints &amp; Context
+								</label>
+								<textarea
+									name="constraints"
+									value={formData.constraints}
+									onChange={handleInputChange}
+									rows={3}
+									className="w-full rounded-lg border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-2 placeholder:opacity-60"
+									style={{ 
+										backgroundColor: "var(--dashboard-surface-solid)",
+										borderColor: "var(--dashboard-border)",
+										color: "var(--dashboard-text)",
+										"--tw-ring-color": "color-mix(in srgb, var(--dashboard-primary) 50%, transparent)"
+									}}
+									placeholder="Tools on hand, dependencies, constraints to respect..."
+								/>
+							</div>								<button
 									type="submit"
 									disabled={generating || !formData.topic.trim()}
-									className="w-full rounded-lg bg-linear-to-r from-sky-600 to-indigo-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-sky-700 hover:to-indigo-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+										className="dashboard-button w-full rounded-lg px-6 py-3 font-semibold shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-50"
 								>
 									{generating ? (
 										<span className="flex items-center justify-center gap-2">
@@ -429,14 +455,14 @@ Provide ONLY valid JSON, no additional commentary.`;
 												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
 												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
 											</svg>
-											Designing...
+												Assembling...
 										</span>
 									) : (
 										<span className="flex items-center justify-center gap-2">
 											<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21h8m-4 0v-8m5.875-6.125l2.25-2.25a1.5 1.5 0 00-2.121-2.121l-2.25 2.25M4 13l-1.5 1.5" />
 											</svg>
-											Generate Guide
+												Build Blueprint
 										</span>
 									)}
 								</button>
@@ -446,46 +472,46 @@ Provide ONLY valid JSON, no additional commentary.`;
 
 					<div className="lg:col-span-2">
 						{error && (
-							<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200">
+							<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dashboard-card-muted">
 								{error}
 							</div>
 						)}
 
 						{!guide && !generating && !error && (
-							<div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-20 text-center shadow-lg dark:border-slate-700 dark:bg-slate-800">
-								<div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/30">
-									<svg className="h-10 w-10 text-sky-600 dark:text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h8m-8 6h16" />
-									</svg>
-								</div>
-								<h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">Need a roadmap?</h3>
-								<p className="text-sm text-slate-600 dark:text-slate-400">Fill in the details on the left to craft instant, step-by-step directions.</p>
+							<div className="dashboard-card flex flex-col items-center justify-center rounded-2xl px-8 py-20 text-center">
+							<div className="dashboard-pill mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+								<svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--dashboard-primary)' }}>
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h8m-8 6h16" />
+								</svg>
+							</div>
+							<h3 className="mb-2 text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Blueprint ready when you are</h3>
+							<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>Complete the inputs on the left and we will orchestrate a guided journey for you.</p>
 							</div>
 						)}
 
 						{generating && (
-							<div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-20 text-center shadow-lg dark:border-slate-700 dark:bg-slate-800">
-								<div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-sky-600 border-t-transparent"></div>
-								<p className="text-slate-600 dark:text-slate-400">AI is building your personalized guide...</p>
-						</div>
+					<div className="dashboard-card flex flex-col items-center justify-center rounded-2xl px-8 py-20 text-center">
+						<div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+						<p style={{ color: "var(--dashboard-muted)" }}>AI is composing your personalized blueprint...</p>
+					</div>
 						)}
 
-						{guide && (
-							<div className="space-y-6">
-								<div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-									<div>
-										<h2 className="text-2xl font-bold text-slate-900 dark:text-white">{guide.topic}</h2>
-										<p className="mt-1 text-slate-600 dark:text-slate-400">{guide.overview?.summary}</p>
-									</div>
+					{guide && (
+						<div className="space-y-6">
+							<div className="dashboard-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-6">
+								<div>
+									<h2 className="text-2xl font-bold" style={{ color: "var(--dashboard-heading)" }}>{guide.topic}</h2>
+									<p className="mt-1" style={{ color: "var(--dashboard-muted)" }}>{guide.overview?.summary}</p>
+								</div>
 									<div className="flex flex-wrap gap-2">
-										<div className="rounded-xl bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/40 dark:text-sky-200">
+										<div className="dashboard-pill rounded-xl px-3 py-1 text-xs font-semibold">
 											Duration: {guide.overview?.estimatedDuration}
 										</div>
-										<div className="rounded-xl bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200">
+										<div className="dashboard-pill rounded-xl px-3 py-1 text-xs font-semibold">
 											Difficulty: {guide.overview?.difficulty}
 										</div>
 										{guide.overview?.goal && (
-											<div className="rounded-xl bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+											<div className="dashboard-pill rounded-xl px-3 py-1 text-xs font-semibold">
 												Goal: {guide.overview.goal}
 											</div>
 										)}
@@ -495,30 +521,30 @@ Provide ONLY valid JSON, no additional commentary.`;
 								<div className="flex flex-wrap items-center gap-3">
 									<button
 										onClick={copyGuide}
-										className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-sky-400 dark:hover:text-sky-200"
+										className="dashboard-card inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all hover:scale-105"
 									>
 										<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
 										</svg>
-										{copied ? "Copied!" : "Copy Plan"}
+										{copied ? "Copied!" : "Copy Blueprint"}
 									</button>
 									<button
 										onClick={downloadGuide}
-										className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700 dark:border-slate-700"
+										className="dashboard-button inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold"
 									>
 										<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
 										</svg>
-										Download JSON
+										Export JSON
 									</button>
 								</div>
 
 								{(guide.prerequisites?.length || guide.materials?.length) && (
 									<div className="grid gap-4 md:grid-cols-2">
-										{guide.prerequisites?.length ? (
-											<div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-900/20">
-												<h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-amber-800 dark:text-amber-300">Prerequisites</h3>
-												<ul className="space-y-2 text-sm text-amber-700 dark:text-amber-200">
+									{guide.prerequisites?.length ? (
+										<div className="dashboard-card-muted rounded-2xl p-6">
+											<h3 className="mb-3 text-sm font-bold uppercase tracking-wide" style={{ color: "var(--dashboard-heading)" }}>Readiness Checklist</h3>
+											<ul className="space-y-2 text-sm leading-relaxed" style={{ color: "var(--dashboard-muted)" }}>
 													{guide.prerequisites.map((item, idx) => (
 														<li key={idx} className="flex gap-2">
 															<span>•</span>
@@ -529,10 +555,10 @@ Provide ONLY valid JSON, no additional commentary.`;
 											</div>
 										) : null}
 
-										{guide.materials?.length ? (
-											<div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
-												<h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">Materials & Tools</h3>
-												<ul className="space-y-2 text-sm text-emerald-700 dark:text-emerald-200">
+									{guide.materials?.length ? (
+										<div className="dashboard-card-muted rounded-2xl p-6">
+											<h3 className="mb-3 text-sm font-bold uppercase tracking-wide" style={{ color: "var(--dashboard-heading)" }}>Resources on Hand</h3>
+											<ul className="space-y-2 text-sm leading-relaxed" style={{ color: "var(--dashboard-muted)" }}>
 													{guide.materials.map((item, idx) => (
 														<li key={idx} className="flex gap-2">
 															<span>•</span>
@@ -545,36 +571,42 @@ Provide ONLY valid JSON, no additional commentary.`;
 									</div>
 								)}
 
-								<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-									<h3 className="mb-6 text-lg font-bold text-slate-900 dark:text-white">Execution Timeline</h3>
-									<div className="relative">
-										<div className="absolute left-4 top-0 h-full w-0.5 bg-sky-200 dark:bg-sky-900/40"></div>
+							<div className="dashboard-card rounded-2xl p-6">
+								<h3 className="mb-6 text-lg font-bold" style={{ color: "var(--dashboard-heading)" }}>Milestone Roadmap</h3>
+								<div className="relative">
+										<div className="absolute left-4 top-0 h-full w-0.5" style={{ backgroundColor: 'var(--dashboard-primary)', opacity: 0.3 }}></div>
 										<div className="space-y-6">
 											{guide.steps.map((step) => (
 												<div key={step.stepNumber} className="relative flex gap-6 pl-10">
-													<div className="absolute left-0 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-sky-600 text-sm font-bold text-white shadow-lg">
+													<div className="dashboard-button absolute left-0 top-1 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-lg">
 														{step.stepNumber}
 													</div>
-													<div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/40">
-														<div className="flex flex-wrap items-center justify-between gap-3">
-															<h4 className="text-lg font-semibold text-slate-900 dark:text-white">{step.title}</h4>
-															{step.estimatedTime && (
-																<span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200">{step.estimatedTime}</span>
+											<div className="dashboard-card-muted flex-1 rounded-xl p-5">
+												<div className="flex flex-wrap items-center justify-between gap-3">
+													<h4 className="text-lg font-semibold" style={{ color: "var(--dashboard-heading)" }}>{step.title}</h4>
+													{step.estimatedTime && (
+																<span className="dashboard-pill rounded-full px-3 py-1 text-xs font-semibold">{step.estimatedTime}</span>
 															)}
 														</div>
 														{step.objective && (
-															<p className="mt-2 text-sm text-slate-600 dark:text-slate-400"><span className="font-semibold text-slate-700 dark:text-slate-200">Objective:</span> {step.objective}</p>
+															<p className="theme-muted mt-3 text-sm leading-relaxed">
+																<span className="font-semibold" style={{ color: "var(--dashboard-heading)" }}>Objective:</span>{" "}
+																{step.objective}
+															</p>
 														)}
 														{step.description && (
-															<p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{step.description}</p>
+															<p className="theme-muted mt-2 text-sm leading-relaxed">{step.description}</p>
 														)}
 														{step.actions?.length && (
-															<div className="mt-4">
-																<h5 className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Key Actions</h5>
-																<ul className="mt-2 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+															<div
+																className="mt-4 rounded-lg border border-dashed p-4"
+																style={{ borderColor: "color-mix(in srgb, var(--dashboard-primary) 35%, transparent)" }}
+															>
+																<h5 className="theme-heading text-xs font-bold uppercase tracking-wide">Action Steps</h5>
+																<ul className="mt-2 space-y-2 text-sm leading-relaxed theme-muted">
 																	{step.actions.map((action, idx) => (
 																		<li key={idx} className="flex gap-2">
-																			<span>•</span>
+																			<span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>•</span>
 																			<span>{action}</span>
 																		</li>
 																	))}
@@ -582,12 +614,15 @@ Provide ONLY valid JSON, no additional commentary.`;
 															</div>
 														)}
 														{step.deliverables?.length && (
-															<div className="mt-4">
-																<h5 className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Deliverables</h5>
-																<ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+															<div
+																className="mt-4 rounded-lg border border-dashed p-4"
+																style={{ borderColor: "color-mix(in srgb, var(--dashboard-primary) 20%, transparent)" }}
+															>
+																<h5 className="theme-heading text-xs font-bold uppercase tracking-wide">Proof Points</h5>
+																<ul className="mt-2 space-y-1 text-sm leading-relaxed theme-muted">
 																	{step.deliverables.map((deliverable, idx) => (
 																		<li key={idx} className="flex gap-2">
-																			<span>✓</span>
+																			<span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>✓</span>
 																			<span>{deliverable}</span>
 																		</li>
 																	))}
@@ -595,12 +630,18 @@ Provide ONLY valid JSON, no additional commentary.`;
 															</div>
 														)}
 														{step.tips?.length && (
-															<div className="mt-4 rounded-lg bg-sky-100 p-3 text-sm text-sky-800 dark:bg-sky-900/30 dark:text-sky-200">
-																<h5 className="font-semibold">Pro Tips</h5>
-																<ul className="mt-1 space-y-1">
+															<div
+																className="mt-4 rounded-xl border p-4"
+																style={{
+																	backgroundColor: "color-mix(in srgb, var(--dashboard-primary) 8%, transparent)",
+																	borderColor: "color-mix(in srgb, var(--dashboard-primary) 38%, transparent)"
+																}}
+															>
+																<h5 className="theme-heading text-sm font-semibold">Expert Signals</h5>
+																<ul className="mt-1 space-y-1 text-sm leading-relaxed theme-muted">
 																	{step.tips.map((tip, idx) => (
 																		<li key={idx} className="flex gap-2">
-																			<span>•</span>
+																			<span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>•</span>
 																			<span>{tip}</span>
 																		</li>
 																	))}
@@ -616,13 +657,13 @@ Provide ONLY valid JSON, no additional commentary.`;
 
 								{(guide.checkpoints?.length || guide.followUp) && (
 									<div className="grid gap-4 md:grid-cols-2">
-										{guide.checkpoints?.length ? (
-											<div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-900/20">
-												<h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-indigo-800 dark:text-indigo-300">Checkpoints</h3>
-												<ul className="space-y-2 text-sm text-indigo-700 dark:text-indigo-200">
+									{guide.checkpoints?.length ? (
+										<div className="dashboard-card rounded-2xl p-6">
+											<h3 className="mb-3 text-sm font-bold uppercase tracking-wide" style={{ color: "var(--dashboard-heading)" }}>Progress Checks</h3>
+											<ul className="space-y-2 text-sm leading-relaxed" style={{ color: "var(--dashboard-muted)" }}>
 													{guide.checkpoints.map((checkpoint, idx) => (
 														<li key={idx} className="flex gap-2">
-															<span>•</span>
+															<span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>•</span>
 															<span>{checkpoint}</span>
 														</li>
 													))}
@@ -630,36 +671,36 @@ Provide ONLY valid JSON, no additional commentary.`;
 											</div>
 										) : null}
 
-										{guide.followUp && (
-											<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-												<h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">Wrap-Up & Momentum</h3>
-												<div className="space-y-4 text-sm text-slate-700 dark:text-slate-300">
-													{guide.followUp.nextActions?.length && (
-														<div>
-															<h4 className="font-semibold">Next Actions</h4>
-															<ul className="mt-2 space-y-1">
+									{guide.followUp && (
+										<div className="dashboard-card rounded-2xl p-6">
+											<h3 className="mb-3 text-sm font-bold uppercase tracking-wide" style={{ color: "var(--dashboard-heading)" }}>Momentum Builder</h3>
+											<div className="space-y-4 text-sm leading-relaxed" style={{ color: "var(--dashboard-muted)" }}>
+												{guide.followUp.nextActions?.length && (
+													<div>
+														<h4 className="text-sm font-semibold" style={{ color: "var(--dashboard-heading)" }}>Next Moves</h4>
+														<ul className="mt-2 space-y-1">
 																{guide.followUp.nextActions.map((action, idx) => (
-																	<li key={idx} className="flex gap-2"><span>→</span><span>{action}</span></li>
+																	<li key={idx} className="flex gap-2"><span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>→</span><span>{action}</span></li>
 																))}
 															</ul>
 														</div>
 													)}
-													{guide.followUp.successMetrics?.length && (
-														<div>
-															<h4 className="font-semibold">Success Metrics</h4>
-															<ul className="mt-2 space-y-1">
+												{guide.followUp.successMetrics?.length && (
+													<div>
+														<h4 className="text-sm font-semibold" style={{ color: "var(--dashboard-heading)" }}>Success Signals</h4>
+														<ul className="mt-2 space-y-1">
 																{guide.followUp.successMetrics.map((metric, idx) => (
-																	<li key={idx} className="flex gap-2"><span>★</span><span>{metric}</span></li>
+																	<li key={idx} className="flex gap-2"><span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>★</span><span>{metric}</span></li>
 																))}
 															</ul>
 														</div>
 													)}
-													{guide.followUp.pitfalls?.length && (
-														<div>
-															<h4 className="font-semibold">Pitfalls to Avoid</h4>
-															<ul className="mt-2 space-y-1">
+												{guide.followUp.pitfalls?.length && (
+													<div>
+														<h4 className="text-sm font-semibold" style={{ color: "var(--dashboard-heading)" }}>Watch Outs</h4>
+														<ul className="mt-2 space-y-1">
 																{guide.followUp.pitfalls.map((item, idx) => (
-																	<li key={idx} className="flex gap-2"><span>⚠️</span><span>{item}</span></li>
+																	<li key={idx} className="flex gap-2"><span aria-hidden="true" style={{ color: "var(--dashboard-heading)" }}>⚠️</span><span>{item}</span></li>
 																))}
 															</ul>
 														</div>
@@ -670,27 +711,28 @@ Provide ONLY valid JSON, no additional commentary.`;
 									</div>
 								)}
 
-								{guide.resources?.length && (
-									<div className="rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-lg dark:border-sky-800 dark:bg-sky-900/20">
-										<h3 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">Recommended Resources</h3>
-										<div className="grid gap-4 md:grid-cols-2">
+							{guide.resources?.length && (
+								<div className="dashboard-card rounded-2xl p-6">
+									<h3 className="mb-4 text-lg font-bold" style={{ color: "var(--dashboard-heading)" }}>Resource Kit</h3>
+									<div className="grid gap-4 md:grid-cols-2">
 											{guide.resources.map((resource, idx) => (
 												<a
 													key={idx}
 													href={resource.url}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="group flex items-start gap-3 rounded-xl border border-sky-200 bg-white p-4 transition hover:border-sky-300 hover:shadow-md dark:border-sky-800 dark:bg-slate-900 dark:hover:border-sky-600"
+													className="dashboard-card-muted group flex items-start gap-3 rounded-xl p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+													style={{ borderColor: "color-mix(in srgb, var(--dashboard-primary) 18%, transparent)" }}
 												>
-													<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky-600 text-sm font-bold text-white">
+													<div className="dashboard-pill flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold">
 														{resource.type?.[0] || "R"}
-													</div>
-													<div className="min-w-0 flex-1">
-														<p className="truncate text-sm font-semibold text-slate-900 group-hover:text-sky-600 dark:text-slate-100 dark:group-hover:text-sky-300">{resource.name}</p>
-														<p className="text-xs text-slate-500 dark:text-slate-400">{resource.type}</p>
-														<p className="mt-1 line-clamp-2 text-xs text-slate-600 dark:text-slate-400">{resource.description}</p>
-													</div>
-													<svg className="h-4 w-4 text-sky-500 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+												</div>
+												<div className="min-w-0 flex-1">
+													<p className="truncate text-sm font-semibold transition-colors" style={{ color: "var(--dashboard-heading)" }}>{resource.name}</p>
+													<p className="text-xs" style={{ color: "var(--dashboard-muted)" }}>{resource.type}</p>
+													<p className="mt-1 line-clamp-2 text-xs" style={{ color: "var(--dashboard-muted)" }}>{resource.description}</p>
+												</div>
+													<svg className="h-4 w-4 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: "var(--dashboard-primary)" }}>
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
 													</svg>
 												</a>
