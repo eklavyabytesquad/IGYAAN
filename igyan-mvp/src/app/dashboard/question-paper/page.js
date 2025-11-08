@@ -65,7 +65,39 @@ Generate a new question paper following CBSE format with proper sections, marks,
       if (!response.ok) throw new Error('Failed to generate question paper');
 
       const data = await response.json();
-      setGeneratedPaper(data.content || data.questions || '');
+      
+      // Handle both string response and array of question objects
+      if (typeof data.content === 'string') {
+        setGeneratedPaper(data.content);
+      } else if (typeof data.questions === 'string') {
+        setGeneratedPaper(data.questions);
+      } else if (Array.isArray(data.questions)) {
+        // Format the questions array into a readable string
+        const formattedPaper = data.questions.map((q, index) => {
+          let questionText = `Q${index + 1}. ${q.question}`;
+          if (q.marks) questionText += ` [${q.marks} marks]`;
+          questionText += '\n';
+          
+          if (q.options && Array.isArray(q.options)) {
+            // MCQ format
+            q.options.forEach((opt, i) => {
+              questionText += `   ${String.fromCharCode(65 + i)}) ${opt}\n`;
+            });
+          }
+          
+          if (q.suggested_answer) {
+            questionText += `\nSuggested Answer: ${q.suggested_answer}\n`;
+          }
+          
+          return questionText;
+        }).join('\n\n');
+        
+        setGeneratedPaper(formattedPaper);
+      } else if (data.content) {
+        setGeneratedPaper(String(data.content));
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Error generating question paper:', error);
       alert('Failed to generate question paper. Please try again.');
@@ -445,36 +477,55 @@ Examples:
         /* Generated Content Section */
         <div className="mx-auto max-w-7xl space-y-6">
           {/* Summary Bar */}
-          <div className="rounded-2xl border border-zinc-200 bg-linear-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 dark:border-zinc-800 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30">
+          <div className="rounded-2xl border p-4" style={{ 
+            borderColor: 'var(--dashboard-border)', 
+            background: 'var(--dashboard-surface-muted)' 
+          }}>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-3">
                 {activeTab === 'new' ? (
                   <>
-                    <div className="rounded-xl bg-white px-4 py-2 shadow-sm dark:bg-zinc-900">
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Class</p>
-                      <p className="font-semibold text-zinc-900 dark:text-white">
+                    <div className="rounded-xl px-4 py-2 shadow-sm" style={{ 
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      borderColor: 'var(--dashboard-border)'
+                    }}>
+                      <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Class</p>
+                      <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                         {cbseData.classes.find(c => c.id === selectedClass)?.name}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-white px-4 py-2 shadow-sm dark:bg-zinc-900">
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Subject</p>
-                      <p className="font-semibold text-zinc-900 dark:text-white">{selectedSubject}</p>
+                    <div className="rounded-xl px-4 py-2 shadow-sm" style={{ 
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      borderColor: 'var(--dashboard-border)'
+                    }}>
+                      <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Subject</p>
+                      <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{selectedSubject}</p>
                     </div>
-                    <div className="rounded-xl bg-white px-4 py-2 shadow-sm dark:bg-zinc-900">
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Duration</p>
-                      <p className="font-semibold text-zinc-900 dark:text-white">{examDuration}h / {totalMarks}M</p>
+                    <div className="rounded-xl px-4 py-2 shadow-sm" style={{ 
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      borderColor: 'var(--dashboard-border)'
+                    }}>
+                      <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Duration</p>
+                      <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{examDuration}h / {totalMarks}M</p>
                     </div>
                   </>
                 ) : (
-                  <div className="rounded-xl bg-white px-4 py-2 shadow-sm dark:bg-zinc-900">
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Mode</p>
-                    <p className="font-semibold text-zinc-900 dark:text-white">Old Data Based</p>
+                  <div className="rounded-xl px-4 py-2 shadow-sm" style={{ 
+                    backgroundColor: 'var(--dashboard-surface-solid)',
+                    borderColor: 'var(--dashboard-border)'
+                  }}>
+                    <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Mode</p>
+                    <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Old Data Based</p>
                   </div>
                 )}
               </div>
               <button
                 onClick={handleReset}
-                className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-white dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+                className="rounded-xl border px-4 py-2 text-sm font-medium transition hover:opacity-80"
+                style={{ 
+                  borderColor: 'var(--dashboard-border)',
+                  color: 'var(--dashboard-text)'
+                }}
               >
                 Start Over
               </button>
@@ -483,38 +534,118 @@ Examples:
 
           <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
             {/* Content Display */}
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Generated Question Paper</h3>
-                <button
-                  onClick={handleCopyContent}
-                  className="flex items-center gap-2 rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                >
-                  {isCopied ? (
-                    <>
-                      <CheckCircle size={16} className="text-green-500" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={16} />
-                      Copy
-                    </>
-                  )}
-                </button>
+            <div className="rounded-2xl border shadow-lg" style={{ 
+              borderColor: 'var(--dashboard-border)', 
+              backgroundColor: 'var(--dashboard-surface-solid)' 
+            }}>
+              <div className="border-b p-6" style={{ borderColor: 'var(--dashboard-border)' }}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
+                    Generated Question Paper
+                  </h3>
+                  <button
+                    onClick={handleCopyContent}
+                    className="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition hover:opacity-80"
+                    style={{ 
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
+                  >
+                    {isCopied ? (
+                      <>
+                        <CheckCircle size={16} className="text-green-500" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={16} />
+                        Copy
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
               
-              <div className="prose prose-zinc max-w-none dark:prose-invert">
-                <pre className="whitespace-pre-wrap rounded-xl bg-zinc-50 p-6 text-sm leading-relaxed text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100">
-{generatedPaper}
-                </pre>
+              <div className="p-8">
+                <div 
+                  className="rounded-xl p-6 text-sm leading-relaxed whitespace-pre-wrap font-sans"
+                  style={{ 
+                    backgroundColor: 'var(--dashboard-surface-muted)',
+                    color: 'var(--dashboard-text)',
+                    maxHeight: '70vh',
+                    overflowY: 'auto'
+                  }}
+                >
+                  {generatedPaper.split('\n').map((line, idx) => {
+                    // Format different types of lines
+                    if (line.startsWith('#')) {
+                      // Headers
+                      const level = line.match(/^#+/)?.[0].length || 1;
+                      const text = line.replace(/^#+\s*/, '');
+                      return (
+                        <div 
+                          key={idx} 
+                          className={`font-bold mb-3 mt-4 ${level === 1 ? 'text-2xl' : level === 2 ? 'text-xl' : 'text-lg'}`}
+                          style={{ color: 'var(--dashboard-heading)' }}
+                        >
+                          {text}
+                        </div>
+                      );
+                    } else if (line.match(/^Q\d+\./) || line.match(/^\d+\./)) {
+                      // Questions
+                      return (
+                        <div key={idx} className="mb-3 font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                          {line}
+                        </div>
+                      );
+                    } else if (line.match(/^[A-D]\)|^\([A-D]\)/)) {
+                      // Options
+                      return (
+                        <div key={idx} className="ml-6 mb-1" style={{ color: 'var(--dashboard-text)' }}>
+                          {line}
+                        </div>
+                      );
+                    } else if (line.trim().startsWith('**') && line.trim().endsWith('**')) {
+                      // Bold text
+                      const text = line.replace(/\*\*/g, '');
+                      return (
+                        <div key={idx} className="mb-2 font-bold" style={{ color: 'var(--dashboard-heading)' }}>
+                          {text}
+                        </div>
+                      );
+                    } else if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+                      // Bullet points
+                      return (
+                        <div key={idx} className="ml-4 mb-1" style={{ color: 'var(--dashboard-text)' }}>
+                          • {line.replace(/^[-•]\s*/, '')}
+                        </div>
+                      );
+                    } else if (line.trim() === '') {
+                      // Empty lines
+                      return <div key={idx} className="h-2"></div>;
+                    } else {
+                      // Regular text
+                      return (
+                        <div key={idx} className="mb-1" style={{ color: 'var(--dashboard-text)' }}>
+                          {line}
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Actions Panel */}
             <div className="space-y-4">
-              <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                <h3 className="mb-4 font-semibold text-zinc-900 dark:text-white">Actions</h3>
+              <div className="rounded-2xl border shadow-lg p-6" style={{ 
+                borderColor: 'var(--dashboard-border)', 
+                backgroundColor: 'var(--dashboard-surface-solid)' 
+              }}>
+                <h3 className="mb-4 font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
+                  Actions
+                </h3>
                 
                 <div className="space-y-3">
                   <button
@@ -537,7 +668,12 @@ Examples:
 
                   <button
                     onClick={handleCopyContent}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 px-4 py-3 font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 font-semibold transition hover:opacity-80"
+                    style={{ 
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     {isCopied ? (
                       <>
@@ -554,20 +690,26 @@ Examples:
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-900/20">
-                <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+              <div className="rounded-2xl border p-4" style={{ 
+                borderColor: 'var(--dashboard-border)', 
+                backgroundColor: 'var(--dashboard-surface-muted)' 
+              }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: 'var(--dashboard-heading)' }}>
                   📝 Professional Output
                 </p>
-                <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
+                <p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
                   Generated PDFs include headers, instructions, marking schemes, and proper formatting.
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-purple-200 bg-purple-50 p-4 dark:border-purple-900 dark:bg-purple-900/20">
-                <p className="text-sm font-semibold text-purple-900 dark:text-purple-100">
+              <div className="rounded-2xl border p-4" style={{ 
+                borderColor: 'var(--dashboard-border)', 
+                backgroundColor: 'var(--dashboard-surface-muted)' 
+              }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: 'var(--dashboard-heading)' }}>
                   ✨ CBSE Compliant
                 </p>
-                <p className="mt-2 text-xs text-purple-700 dark:text-purple-300">
+                <p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
                   All questions follow CBSE pattern and curriculum guidelines.
                 </p>
               </div>

@@ -4,13 +4,49 @@ const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 export async function POST(request) {
   try {
-    const { topic, numQuestions, questionType, subject } = await request.json();
+    const { topic, numQuestions, questionType, subject, prompt } = await request.json();
 
     if (!OPENAI_API_KEY) {
       return NextResponse.json(
         { error: 'OpenAI API key not configured' },
         { status: 500 }
       );
+    }
+
+    // Handle direct prompt for question paper generation
+    if (prompt) {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are an expert educator specializing in creating professional CBSE question papers. Generate well-formatted question papers with proper sections, instructions, and marking schemes.' 
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 3000,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        return NextResponse.json(
+          { error: error.error?.message || 'OpenAI API request failed' },
+          { status: response.status }
+        );
+      }
+
+      const data = await response.json();
+      const content = data.choices[0].message.content.trim();
+
+      return NextResponse.json({ content });
     }
 
     let systemPrompt = '';
