@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Upload, Send, FileText, Trash2, Loader2, Mic, StopCircle, Timer } from 'lucide-react';
+import { Upload, Send, FileText, Trash2, Loader2, Mic, StopCircle, Timer, Volume2, VolumeX } from 'lucide-react';
 
 export default function SharkAI() {
   const [messages, setMessages] = useState([]);
@@ -20,6 +20,8 @@ export default function SharkAI() {
   const [hasStartedPitch, setHasStartedPitch] = useState(false);
   const [pitchTranscript, setPitchTranscript] = useState('');
   const [showPitchWarning, setShowPitchWarning] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('english'); // 'english' or 'hindi'
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -28,6 +30,24 @@ export default function SharkAI() {
 
   // Using Next.js API routes as proxy to avoid CORS issues
   const API_URL = '/api/shark-ai';
+
+  // Language-specific content
+  const languageContent = {
+    english: {
+      greeting: (title) => `🦈 Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document "${title}". I'm excited to hear about your idea!\n\n📋 I've analyzed your business plan and I'm ready to evaluate your pitch. When you're ready, click the "Start Pitch" button below. You'll have 5 minutes to present your idea using voice or text.\n\n💡 I'll be evaluating:\n• Clarity and structure of your pitch\n• Understanding of your business model\n• Market opportunity and competition\n• Financial projections and ask\n• Your passion and communication skills\n\nTake a deep breath, and when you're ready, let's hear what you've got! 🎤`,
+      voiceGreeting: (title) => `Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document about ${title}. I'm excited to hear about your idea! When you're ready, click the Start Pitch button. You'll have 5 minutes to present your idea. Good luck!`,
+      startMessage: "🎬 Your 5-minute pitch timer has started! Speak clearly and confidently. You can use the microphone button to record your voice, or type your pitch. Remember to cover your business model, market opportunity, and what you're asking for. Good luck!",
+      voiceStart: "Your pitch timer has started! You have 5 minutes. Good luck!",
+      systemPrompt: "You are Shark AI, an expert investor evaluating business pitches. Respond in English ONLY. Do not use any other language.",
+    },
+    hindi: {
+      greeting: (title) => `🦈 नमस्ते उद्यमी! मैं Shark AI हूं, और मैंने अभी आपके दस्तावेज़ "${title}" की समीक्षा की है। मैं आपके विचार के बारे में सुनने के लिए उत्साहित हूं!\n\n📋 मैंने आपकी व्यवसाय योजना का विश्लेषण किया है और मैं आपकी पिच का मूल्यांकन करने के लिए तैयार हूं। जब आप तैयार हों, तो नीचे दिए गए "Start Pitch" बटन पर क्लिक करें। आपके पास अपना विचार प्रस्तुत करने के लिए 5 मिनट होंगे, आवाज या टेक्स्ट का उपयोग करके।\n\n💡 मैं इनका मूल्यांकन करूंगा:\n• आपकी पिच की स्पष्टता और संरचना\n• आपके व्यवसाय मॉडल की समझ\n• बाजार के अवसर और प्रतिस्पर्धा\n• वित्तीय अनुमान और मांग\n• आपका जुनून और संचार कौशल\n\nगहरी सांस लें, और जब आप तैयार हों, तो सुनाइए कि आपके पास क्या है! 🎤`,
+      voiceGreeting: (title) => `नमस्ते उद्यमी! मैं Shark AI हूं, और मैंने अभी ${title} के बारे में आपके दस्तावेज़ की समीक्षा की है। मैं आपके विचार के बारे में सुनने के लिए उत्साहित हूं! जब आप तैयार हों, तो Start Pitch बटन पर क्लिक करें। आपके पास अपना विचार प्रस्तुत करने के लिए 5 मिनट होंगे। शुभकामनाएं!`,
+      startMessage: "🎬 आपका 5-मिनट पिच टाइमर शुरू हो गया है! स्पष्ट रूप से और आत्मविश्वास से बोलें। आप अपनी आवाज रिकॉर्ड करने के लिए माइक्रोफोन बटन का उपयोग कर सकते हैं, या अपनी पिच टाइप कर सकते हैं। अपने व्यवसाय मॉडल, बाजार के अवसर, और आप क्या मांग रहे हैं, को कवर करना याद रखें। शुभकामनाएं!",
+      voiceStart: "आपका पिच टाइमर शुरू हो गया है! आपके पास 5 मिनट हैं। शुभकामनाएं!",
+      systemPrompt: "आप Shark AI हैं, एक विशेषज्ञ निवेशक जो व्यवसाय पिचों का मूल्यांकन कर रहे हैं। केवल हिंदी में जवाब दें। किसी अन्य भाषा का उपयोग न करें।",
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -125,7 +145,26 @@ export default function SharkAI() {
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
+      
+      // Set language based on selected language
+      if (selectedLanguage === 'hindi') {
+        utterance.lang = 'hi-IN'; // Hindi
+      } else {
+        utterance.lang = 'en-US'; // English
+      }
+      
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      
       synthRef.current.speak(utterance);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if (synthRef.current) {
+      synthRef.current.cancel();
+      setIsSpeaking(false);
     }
   };
 
@@ -218,8 +257,9 @@ export default function SharkAI() {
 
       setFileId(data.file_id);
 
-      // Personalized greeting based on PDF
-      const greeting = `🦈 Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document "${title}". I'm excited to hear about your idea!\n\n📋 I've analyzed your business plan and I'm ready to evaluate your pitch. When you're ready, click the "Start Pitch" button below. You'll have 5 minutes to present your idea using voice or text.\n\n💡 I'll be evaluating:\n• Clarity and structure of your pitch\n• Understanding of your business model\n• Market opportunity and competition\n• Financial projections and ask\n• Your passion and communication skills\n\nTake a deep breath, and when you're ready, let's hear what you've got! 🎤`;
+      // Personalized greeting based on PDF and selected language
+      const greeting = languageContent[selectedLanguage].greeting(title);
+      const voiceGreeting = languageContent[selectedLanguage].voiceGreeting(title);
 
       setMessages([
         {
@@ -229,7 +269,7 @@ export default function SharkAI() {
       ]);
 
       // Speak the greeting
-      speakText(`Hello Entrepreneur! I'm Shark AI, and I've just reviewed your document about ${title}. I'm excited to hear about your idea! When you're ready, click the Start Pitch button. You'll have 5 minutes to present your idea. Good luck!`);
+      speakText(voiceGreeting);
 
     } catch (error) {
       console.error('Error processing document:', error);
@@ -262,9 +302,7 @@ export default function SharkAI() {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
     }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
+    stopSpeaking(); // Stop any ongoing speech
   };
 
   const startPitchMode = () => {
@@ -275,14 +313,15 @@ export default function SharkAI() {
     setInputMessage('');
     setTimerRunning(true);
 
-    const startMessage = "🎬 Your 5-minute pitch timer has started! Speak clearly and confidently. You can use the microphone button to record your voice, or type your pitch. Remember to cover your business model, market opportunity, and what you're asking for. Good luck!";
+    const startMessage = languageContent[selectedLanguage].startMessage;
+    const voiceStart = languageContent[selectedLanguage].voiceStart;
     
     setMessages(prev => [...prev, {
       role: 'assistant',
       content: startMessage,
     }]);
 
-    speakText("Your pitch timer has started! You have 5 minutes. Good luck!");
+    speakText(voiceStart);
   };
 
   const stopPitchRecording = () => {
@@ -334,7 +373,8 @@ export default function SharkAI() {
     setTimerRunning(true);
 
     // Add start message
-    const startMessage = "🎬 Your 5-minute pitch timer has started! Speak clearly and confidently. Remember to cover: 1) Company Introduction (1-2 min), 2) Problem & Solution (1 min), 3) Business Model (1 min), 4) Market Opportunity (1 min), 5) The Ask (30 sec). Good luck!";
+    const startMessage = languageContent[selectedLanguage].startMessage;
+    const voiceStart = languageContent[selectedLanguage].voiceStart;
     
     setMessages(prev => [...prev, {
       role: 'assistant',
@@ -347,7 +387,7 @@ export default function SharkAI() {
       setIsListening(true);
     }
 
-    speakText("Your pitch timer has started! You have 5 minutes. Good luck!");
+    speakText(voiceStart);
   };
 
   const handleSubmitPitch = async () => {
@@ -392,7 +432,7 @@ export default function SharkAI() {
         throw new Error('Document session not found. Please re-upload your file and try again.');
       }
 
-      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. You must be critical and honest in your assessment.Your response must be sharp and in a proper structural format.
+      const evaluationPrompt = `You are Shark AI, a tough but fair investor evaluating business pitches. ${languageContent[selectedLanguage].systemPrompt} You must be critical and honest in your assessment. Your response must be sharp and in a proper structural format.
 
 BUSINESS DOCUMENT INSIGHTS (truncated to 3,000 characters):
 ${pdfContent.substring(0, 3000)}
@@ -534,7 +574,7 @@ After every point change line`;
         },
         body: JSON.stringify({
           file_id: fileId,
-          query: currentQuestion,
+          query: `${languageContent[selectedLanguage].systemPrompt}\n\nUser Question: ${currentQuestion}`,
         }),
         signal: controller.signal,
       }).catch(err => {
@@ -647,7 +687,7 @@ After every point change line`;
                     </div>
                     
                     {/* Main avatar circle */}
-                    <div className={`w-48 h-48 rounded-full bg-linear-to-br from-blue-400/30 to-purple-500/30 backdrop-blur-sm flex items-center justify-center mb-4 border-4 border-white/30 shadow-2xl relative z-10 transition-all duration-300 ${isListening ? 'scale-105 shadow-blue-500/50' : ''}`}>
+                    <div className={`w-48 h-48 rounded-full bg-linear-to-br from-blue-400/30 to-purple-500/30 backdrop-blur-sm flex items-center justify-center mb-4 border-4 border-white/30 shadow-2xl relative z-10 transition-all duration-300 ${isListening ? 'scale-105 shadow-blue-500/50' : ''} ${isSpeaking ? 'scale-105 shadow-green-500/50' : ''}`}>
                       <Image 
                         src="/asset/ai-shark/suitshark.png" 
                         alt="Shark AI"
@@ -656,11 +696,31 @@ After every point change line`;
                         className="w-40 h-40 object-contain"
                         priority
                       />
+                      {/* Speaking indicator */}
+                      {isSpeaking && (
+                        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg animate-bounce">
+                          <Volume2 className="w-3 h-3" />
+                          <span>{selectedLanguage === 'english' ? 'Speaking...' : 'बोल रहा है...'}</span>
+                        </div>
+                      )}
                     </div>
                     
                   </div>
                   
                   <h2 className="text-2xl font-bold text-white text-center mb-6 mt-4">AI Shark</h2>
+                  
+                  {/* Stop Speaking Button */}
+                  {isSpeaking && (
+                    <div className="flex justify-center mb-4 animate-fade-in">
+                      <button
+                        onClick={stopSpeaking}
+                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all shadow-lg flex items-center gap-2 hover:scale-105"
+                      >
+                        <VolumeX className="w-5 h-5 animate-pulse" />
+                        {selectedLanguage === 'english' ? 'Stop Speaking' : 'बोलना बंद करें'}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Big Microphone Button with Live Transcription */}
@@ -763,6 +823,45 @@ After every point change line`;
                       )}
                     </div>
                   )}
+                </div>
+
+                {/* Language Selection */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 mb-4">
+                  <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    Language / भाषा
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setSelectedLanguage('english')}
+                      disabled={isProcessing || isLoading || hasStartedPitch}
+                      className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        selectedLanguage === 'english'
+                          ? 'bg-white text-indigo-600 shadow-lg'
+                          : 'bg-white/20 text-white hover:bg-white/30'
+                      }`}
+                    >
+                      🇬🇧 English
+                    </button>
+                    <button
+                      onClick={() => setSelectedLanguage('hindi')}
+                      disabled={isProcessing || isLoading || hasStartedPitch}
+                      className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        selectedLanguage === 'hindi'
+                          ? 'bg-white text-indigo-600 shadow-lg'
+                          : 'bg-white/20 text-white hover:bg-white/30'
+                      }`}
+                    >
+                      🇮🇳 हिंदी
+                    </button>
+                  </div>
+                  <p className="text-xs text-white/70 mt-2">
+                    {selectedLanguage === 'english' 
+                      ? 'AI will respond in English' 
+                      : 'AI हिंदी में जवाब देगा'}
+                  </p>
                 </div>
 
                 {/* Status Info */}
