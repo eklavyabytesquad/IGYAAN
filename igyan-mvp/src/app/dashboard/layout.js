@@ -7,6 +7,7 @@ import DashboardNavbar from "../../components/dashboard/navbar";
 import DashboardSidenav from "../../components/dashboard/sidenav";
 import FacultySidenav from "../../components/dashboard/faculty-sidenav";
 import StudentSidenav from "../../components/dashboard/student-sidenav";
+import B2CStudentSidenav from "../../components/dashboard/b2c-student-sidenav";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -146,6 +147,13 @@ export default function DashboardLayout({ children }) {
 					isCollapsed={isCollapsed}
 					setIsCollapsed={setIsCollapsed}
 					schoolData={schoolData}
+				/>
+			) : user?.role === 'b2c_student' ? (
+				<B2CStudentSidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
 				/>
 			) : (
 				<DashboardSidenav
