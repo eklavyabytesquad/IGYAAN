@@ -186,8 +186,8 @@ Provide ONLY valid JSON, no additional commentary.`;
 
 	if (loading) {
 		return (
-			<div className="flex h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
+			<div className="flex h-screen items-center justify-center" style={{ background: 'var(--dashboard-background)' }}>
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
 			</div>
 		);
 	}
@@ -196,22 +196,29 @@ Provide ONLY valid JSON, no additional commentary.`;
 	const score = calculateScore();
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-violet-50 via-fuchsia-50 to-pink-50 dark:from-slate-900 dark:via-violet-900/20 dark:to-slate-900">
+		<div className="min-h-screen" style={{ background: 'var(--dashboard-background)' }}>
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				{/* Header */}
 				<div className="mb-8">
 					<div className="flex items-center gap-3 mb-4">
 						<button
 							onClick={() => router.back()}
-							className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+							className="flex h-10 w-10 items-center justify-center rounded-lg border transition-colors"
+							style={{
+								borderColor: 'var(--dashboard-border)',
+								background: 'var(--dashboard-surface-solid)',
+								color: 'var(--dashboard-text)'
+							}}
+							onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+							onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
 						>
 							<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 							</svg>
 						</button>
 						<div>
-							<h1 className="text-3xl font-bold text-slate-900 dark:text-white">Quiz Me</h1>
-							<p className="text-slate-600 dark:text-slate-400 mt-1">Test your knowledge with AI-generated quizzes</p>
+							<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Quiz Me</h1>
+							<p className="mt-1" style={{ color: 'var(--dashboard-muted)' }}>Test your knowledge with AI-generated quizzes</p>
 						</div>
 					</div>
 				</div>
@@ -219,12 +226,12 @@ Provide ONLY valid JSON, no additional commentary.`;
 				{!quiz && !generating && (
 					<div className="grid gap-8 lg:grid-cols-2">
 						{/* Setup Form */}
-						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-							<h2 className="mb-6 text-xl font-bold text-slate-900 dark:text-white">Quiz Setup</h2>
+						<div className="rounded-2xl border p-6 shadow-lg dashboard-card" style={{ borderColor: 'var(--dashboard-border)' }}>
+							<h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>Quiz Setup</h2>
 							
 							<form onSubmit={handleSubmit} className="space-y-5">
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Quiz Topic <span className="text-red-500">*</span>
 									</label>
 									<input
@@ -232,14 +239,27 @@ Provide ONLY valid JSON, no additional commentary.`;
 										name="topic"
 										value={formData.topic}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+										className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 placeholder:opacity-60"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+											e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+											e.currentTarget.style.boxShadow = 'none';
+										}}
 										placeholder="E.g., JavaScript fundamentals, World History..."
 										required
 									/>
 								</div>
 
 								<div>
-									<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+									<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 										Focus Area (Optional)
 									</label>
 									<input
@@ -247,21 +267,47 @@ Provide ONLY valid JSON, no additional commentary.`;
 										name="focusArea"
 										value={formData.focusArea}
 										onChange={handleInputChange}
-										className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+										className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2 placeholder:opacity-60"
+										style={{
+											borderColor: 'var(--dashboard-border)',
+											backgroundColor: 'var(--dashboard-surface-solid)',
+											color: 'var(--dashboard-text)'
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+											e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+											e.currentTarget.style.boxShadow = 'none';
+										}}
 										placeholder="E.g., async/await, Renaissance period..."
 									/>
 								</div>
 
 								<div className="grid gap-4 sm:grid-cols-2">
 									<div>
-										<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+										<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 											Difficulty
 										</label>
 										<select
 											name="difficulty"
 											value={formData.difficulty}
 											onChange={handleInputChange}
-											className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+											className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2"
+											style={{
+												borderColor: 'var(--dashboard-border)',
+												backgroundColor: 'var(--dashboard-surface-solid)',
+												color: 'var(--dashboard-text)'
+											}}
+											onFocus={(e) => {
+												e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+												e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+											}}
+											onBlur={(e) => {
+												e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+												e.currentTarget.style.boxShadow = 'none';
+											}}
 										>
 											<option value="easy">Easy</option>
 											<option value="medium">Medium</option>
@@ -270,14 +316,27 @@ Provide ONLY valid JSON, no additional commentary.`;
 									</div>
 
 									<div>
-										<label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+										<label className="mb-2 block text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 											Number of Questions
 										</label>
 										<select
 											name="questionCount"
 											value={formData.questionCount}
 											onChange={handleInputChange}
-											className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+											className="w-full rounded-lg border px-4 py-2.5 text-sm focus:ring-2"
+											style={{
+												borderColor: 'var(--dashboard-border)',
+												backgroundColor: 'var(--dashboard-surface-solid)',
+												color: 'var(--dashboard-text)'
+											}}
+											onFocus={(e) => {
+												e.currentTarget.style.borderColor = 'var(--dashboard-primary)';
+												e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in srgb, var(--dashboard-primary) 15%, transparent)';
+											}}
+											onBlur={(e) => {
+												e.currentTarget.style.borderColor = 'var(--dashboard-border)';
+												e.currentTarget.style.boxShadow = 'none';
+											}}
 										>
 											<option value="5">5 Questions</option>
 											<option value="7">7 Questions</option>
@@ -289,7 +348,12 @@ Provide ONLY valid JSON, no additional commentary.`;
 								<button
 									type="submit"
 									disabled={generating}
-									className="w-full rounded-lg bg-linear-to-r from-violet-600 to-fuchsia-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-violet-700 hover:to-fuchsia-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+									className="w-full rounded-lg px-6 py-3 font-semibold text-white shadow-lg transition-all hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+									style={{
+										background: 'linear-gradient(to right, var(--dashboard-primary), var(--dashboard-primary-hover))'
+									}}
+									onMouseEnter={(e) => !generating && (e.currentTarget.style.transform = 'translateY(-1px)')}
+									onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
 								>
 									{generating ? (
 										<span className="flex items-center justify-center gap-2">
@@ -313,35 +377,53 @@ Provide ONLY valid JSON, no additional commentary.`;
 
 						{/* Info Panel */}
 						<div className="space-y-6">
-							<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-								<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg">
+							<div className="rounded-2xl border p-6 shadow-lg dashboard-card" style={{ borderColor: 'var(--dashboard-border)' }}>
+								<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl text-white shadow-lg" style={{
+									background: 'linear-gradient(to bottom right, var(--dashboard-primary), var(--dashboard-primary-hover))'
+								}}>
 									<svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
 									</svg>
 								</div>
-								<h3 className="mb-2 text-lg font-bold text-slate-900 dark:text-white">How It Works</h3>
-								<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+								<h3 className="mb-2 text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>How It Works</h3>
+								<ul className="space-y-3 text-sm" style={{ color: 'var(--dashboard-text)' }}>
 									<li className="flex items-start gap-2">
-										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">1</span>
+										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{
+											background: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)',
+											color: 'var(--dashboard-primary)'
+										}}>1</span>
 										<span>Enter your quiz topic and preferences</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">2</span>
+										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{
+											background: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)',
+											color: 'var(--dashboard-primary)'
+										}}>2</span>
 										<span>AI generates custom questions for you</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">3</span>
+										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{
+											background: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)',
+											color: 'var(--dashboard-primary)'
+										}}>3</span>
 										<span>Answer each question at your own pace</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">4</span>
+										<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{
+											background: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)',
+											color: 'var(--dashboard-primary)'
+										}}>4</span>
 										<span>Get instant feedback with explanations</span>
 									</li>
 								</ul>
 							</div>
 
 							{error && (
-								<div className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200">
+								<div className="rounded-lg border p-4" style={{
+									background: 'rgba(239, 68, 68, 0.1)',
+									borderColor: 'rgba(239, 68, 68, 0.4)',
+									color: '#ef4444'
+								}}>
 									{error}
 								</div>
 							)}
@@ -350,10 +432,10 @@ Provide ONLY valid JSON, no additional commentary.`;
 				)}
 
 				{generating && (
-					<div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-20 text-center shadow-lg dark:border-slate-700 dark:bg-slate-800">
-						<div className="h-16 w-16 animate-spin rounded-full border-4 border-violet-600 border-t-transparent mb-4"></div>
-						<h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">Creating Your Quiz...</h3>
-						<p className="text-sm text-slate-600 dark:text-slate-400">AI is crafting the perfect questions for you</p>
+					<div className="flex flex-col items-center justify-center rounded-2xl border px-8 py-20 text-center shadow-lg dashboard-card" style={{ borderColor: 'var(--dashboard-border)' }}>
+						<div className="h-16 w-16 animate-spin rounded-full border-4 border-t-transparent mb-4" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+						<h3 className="mb-2 text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Creating Your Quiz...</h3>
+						<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>AI is crafting the perfect questions for you</p>
 					</div>
 				)}
 
