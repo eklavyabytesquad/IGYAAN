@@ -52,6 +52,18 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 					icon: "📄",
 				},
 				{
+					key: 'smartNotesGenerator',
+					name: "Smart Notes Generator",
+					href: "/dashboard/tools/notes-generator",
+					icon: "📝",
+				},
+				{
+					key: 'textSummarizer',
+					name: "Text Summarizer",
+					href: "/dashboard/tools/text-summarizer",
+					icon: "📋",
+				},
+				{
 					key: 'vivaMockCreator',
 					name: "Viva Mock Creator",
 					href: "/dashboard/homework",
