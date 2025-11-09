@@ -24,7 +24,7 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 		{
 			key: 'copilot',
 			title: "Copilot",
-			href: "/dashboard/copilot",
+			href: "/dashboard/copilot-faculty",
 			icon: <Image src="/asset/sudarshanai/sudarshanicon.png" alt="Sudarshan AI" width={20} height={20} className="object-contain nav-icon-adaptive" />,
 		},
 		{

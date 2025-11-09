@@ -1,0 +1,598 @@
+{
+	"grades": [
+		{
+			"grade": "Grade 1",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Numbers 1-100", "topics": ["Counting", "Number Recognition", "Comparison", "Ordering", "Place Value"]},
+						{"name": "Addition", "topics": ["Adding Single Digits", "Adding Two Digits", "Word Problems", "Addition Facts"]},
+						{"name": "Subtraction", "topics": ["Subtracting Single Digits", "Subtracting Two Digits", "Word Problems", "Subtraction Facts"]},
+						{"name": "Shapes", "topics": ["Circle", "Square", "Triangle", "Rectangle", "Pattern Recognition"]},
+						{"name": "Measurement", "topics": ["Length", "Weight", "Time (Hour)", "Comparing Sizes"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Alphabet", "topics": ["Uppercase Letters", "Lowercase Letters", "Letter Sounds", "ABC Order"]},
+						{"name": "Phonics", "topics": ["Short Vowels", "Long Vowels", "Beginning Sounds", "Ending Sounds", "Blending"]},
+						{"name": "Reading", "topics": ["Sight Words", "Simple Sentences", "Picture Reading", "Story Comprehension"]},
+						{"name": "Writing", "topics": ["Letter Formation", "Simple Words", "Copying Sentences", "Name Writing"]}
+					]
+				},
+				{
+					"name": "Environmental Studies",
+					"chapters": [
+						{"name": "My Family", "topics": ["Family Members", "Family Tree", "Roles", "Relationships"]},
+						{"name": "My School", "topics": ["Classroom", "Teachers", "Friends", "School Rules"]},
+						{"name": "Animals", "topics": ["Pets", "Wild Animals", "Birds", "Animal Sounds", "Animal Homes"]},
+						{"name": "Plants", "topics": ["Parts of Plants", "Types of Plants", "Uses of Plants", "Growing Plants"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 2",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Numbers to 1000", "topics": ["Place Value", "Expanded Form", "Comparing Numbers", "Ordering", "Skip Counting"]},
+						{"name": "Addition & Subtraction", "topics": ["Two-Digit Addition", "Three-Digit Addition", "Regrouping", "Word Problems", "Estimation"]},
+						{"name": "Multiplication", "topics": ["Multiplication Concept", "Multiplication Tables 2-5", "Arrays", "Repeated Addition"]},
+						{"name": "Geometry", "topics": ["2D Shapes", "3D Shapes", "Symmetry", "Patterns"]},
+						{"name": "Measurement", "topics": ["Length (cm, m)", "Weight (g, kg)", "Capacity (L)", "Time (Minutes)", "Money"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Grammar", "topics": ["Nouns", "Verbs", "Adjectives", "Articles (a, an, the)", "Singular-Plural"]},
+						{"name": "Reading", "topics": ["Story Reading", "Comprehension", "Main Idea", "Sequencing Events"]},
+						{"name": "Writing", "topics": ["Sentence Formation", "Paragraph Writing", "Punctuation", "Capital Letters"]},
+						{"name": "Vocabulary", "topics": ["Rhyming Words", "Opposite Words", "Describing Words", "Action Words"]}
+					]
+				},
+				{
+					"name": "Environmental Studies",
+					"chapters": [
+						{"name": "Our Body", "topics": ["Body Parts", "Sense Organs", "Cleanliness", "Good Habits"]},
+						{"name": "Food", "topics": ["Food Sources", "Healthy Food", "Meals", "Food Groups"]},
+						{"name": "Water", "topics": ["Sources of Water", "Uses of Water", "Clean Water", "Water Conservation"]},
+						{"name": "Seasons", "topics": ["Summer", "Winter", "Rainy Season", "Weather"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 3",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Numbers", "topics": ["Four-Digit Numbers", "Roman Numerals", "Odd-Even", "Prime-Composite", "Number Patterns"]},
+						{"name": "Operations", "topics": ["Addition (4-digit)", "Subtraction (4-digit)", "Multiplication Tables 6-10", "Division Concept"]},
+						{"name": "Fractions", "topics": ["Fraction Concept", "Half & Quarter", "Comparing Fractions", "Equivalent Fractions"]},
+						{"name": "Geometry", "topics": ["Lines & Angles", "Types of Angles", "Triangles", "Quadrilaterals", "Perimeter"]},
+						{"name": "Data Handling", "topics": ["Tally Marks", "Pictograph", "Bar Graph", "Data Interpretation"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Grammar", "topics": ["Pronouns", "Prepositions", "Conjunctions", "Tenses (Present/Past)", "Subject-Verb Agreement"]},
+						{"name": "Reading Comprehension", "topics": ["Story Comprehension", "Poetry", "Character Analysis", "Setting"]},
+						{"name": "Composition", "topics": ["Paragraph Writing", "Letter Writing", "Story Writing", "Describing Pictures"]},
+						{"name": "Vocabulary", "topics": ["Synonyms", "Antonyms", "Homophones", "Word Formation", "Compound Words"]}
+					]
+				},
+				{
+					"name": "Environmental Studies",
+					"chapters": [
+						{"name": "Living & Non-Living", "topics": ["Characteristics of Living", "Growth", "Reproduction", "Classification"]},
+						{"name": "Animals", "topics": ["Herbivores", "Carnivores", "Omnivores", "Life Cycles", "Animal Habitats"]},
+						{"name": "Plants", "topics": ["Photosynthesis", "Seed Germination", "Parts & Functions", "Pollination"]},
+						{"name": "Our Environment", "topics": ["Natural Resources", "Air", "Pollution", "Conservation"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Living Things", "topics": ["Plants", "Animals", "Growth", "Nutrition", "Habitat"]},
+						{"name": "Materials", "topics": ["Types of Materials", "Properties", "Uses", "Recycling"]},
+						{"name": "Energy", "topics": ["Sources of Energy", "Light", "Sound", "Heat"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 4",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Number System", "topics": ["5-Digit Numbers", "Indian & International System", "Rounding", "Estimation"]},
+						{"name": "Operations", "topics": ["Long Multiplication", "Long Division", "Word Problems", "Order of Operations"]},
+						{"name": "Fractions & Decimals", "topics": ["Like & Unlike Fractions", "Mixed Numbers", "Decimal Notation", "Decimal Operations"]},
+						{"name": "Geometry", "topics": ["Types of Lines", "Parallel & Perpendicular", "Circles", "Area & Perimeter"]},
+						{"name": "Measurement", "topics": ["Length Conversions", "Weight Conversions", "Time (24-hour)", "Temperature"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Grammar", "topics": ["Adverbs", "Degrees of Comparison", "Active-Passive Voice", "Direct-Indirect Speech", "Tenses"]},
+						{"name": "Comprehension", "topics": ["Unseen Passages", "Poetry Analysis", "Inference", "Author's Purpose"]},
+						{"name": "Writing", "topics": ["Essay Writing", "Formal Letters", "Story Continuation", "Diary Entry"]},
+						{"name": "Literature", "topics": ["Prose", "Poetry", "Character Study", "Theme Analysis"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Food & Nutrition", "topics": ["Balanced Diet", "Nutrients", "Deficiency Diseases", "Food Preservation"]},
+						{"name": "Animals", "topics": ["Adaptations", "Classification", "Life Processes", "Endangered Species"]},
+						{"name": "Plants", "topics": ["Root Systems", "Leaf Structure", "Flower Parts", "Plant Adaptations"]},
+						{"name": "Matter", "topics": ["States of Matter", "Changes in Matter", "Mixtures & Solutions"]},
+						{"name": "Force & Motion", "topics": ["Push & Pull", "Types of Motion", "Friction", "Simple Machines"]}
+					]
+				},
+				{
+					"name": "Social Studies",
+					"chapters": [
+						{"name": "Our Country India", "topics": ["Location", "States & Capitals", "Physical Features", "Climate"]},
+						{"name": "History", "topics": ["Ancient India", "Medieval India", "Important Rulers", "Monuments"]},
+						{"name": "Government", "topics": ["Democracy", "Rights & Duties", "Panchayati Raj", "Local Government"]},
+						{"name": "Resources", "topics": ["Natural Resources", "Human Resources", "Conservation", "Sustainable Development"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 5",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Number System", "topics": ["Large Numbers", "Roman Numerals", "Prime Factorization", "LCM & HCF"]},
+						{"name": "Fractions", "topics": ["Addition of Fractions", "Subtraction", "Multiplication", "Division", "Word Problems"]},
+						{"name": "Decimals", "topics": ["Decimal Addition", "Decimal Subtraction", "Decimal Multiplication", "Decimal Division"]},
+						{"name": "Percentage", "topics": ["Percentage Concept", "Converting Fractions", "Profit & Loss", "Simple Interest"]},
+						{"name": "Geometry", "topics": ["Angles", "Triangles", "Quadrilaterals", "Circles", "Symmetry", "Area & Perimeter"]},
+						{"name": "Data Handling", "topics": ["Bar Graphs", "Line Graphs", "Pie Charts", "Mean, Median, Mode"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Grammar", "topics": ["Modals", "Conditionals", "Reported Speech", "Clauses", "Phrasal Verbs"]},
+						{"name": "Reading", "topics": ["Comprehension Skills", "Critical Reading", "Poetry Appreciation", "Drama"]},
+						{"name": "Writing", "topics": ["Argumentative Essays", "Descriptive Writing", "Report Writing", "Notice Writing"]},
+						{"name": "Literature", "topics": ["Prose Analysis", "Character Development", "Plot Structure", "Literary Devices"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Living Organisms", "topics": ["Cell Structure", "Tissues", "Organs", "Organ Systems"]},
+						{"name": "Human Body", "topics": ["Digestive System", "Respiratory System", "Circulatory System", "Nervous System"]},
+						{"name": "Plants", "topics": ["Photosynthesis", "Respiration in Plants", "Transportation", "Reproduction"]},
+						{"name": "Physical Science", "topics": ["Matter & Materials", "Separation Methods", "Changes Around Us"]},
+						{"name": "Light & Sound", "topics": ["Properties of Light", "Reflection", "Sound Production", "Sound Propagation"]},
+						{"name": "Electricity", "topics": ["Electric Circuit", "Conductors & Insulators", "Switches", "Safety"]}
+					]
+				},
+				{
+					"name": "Social Studies",
+					"chapters": [
+						{"name": "Geography", "topics": ["Earth & Solar System", "Maps & Globes", "Continents & Oceans", "Climate Zones"]},
+						{"name": "History", "topics": ["Ancient Civilizations", "Mauryan Empire", "Gupta Empire", "Medieval Period"]},
+						{"name": "Civics", "topics": ["Indian Constitution", "Fundamental Rights", "Directive Principles", "Government Structure"]},
+						{"name": "Economics", "topics": ["Needs & Wants", "Production", "Exchange", "Markets"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 6",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Number System", "topics": ["Natural Numbers", "Whole Numbers", "Integers", "Number Line", "Properties"]},
+						{"name": "Fractions & Decimals", "topics": ["Operations on Fractions", "Operations on Decimals", "Conversion"]},
+						{"name": "Algebra", "topics": ["Variables", "Expressions", "Equations", "Simple Equations"]},
+						{"name": "Ratio & Proportion", "topics": ["Ratio", "Proportion", "Unitary Method", "Percentage Applications"]},
+						{"name": "Geometry", "topics": ["Basic Geometric Ideas", "Angles", "Triangles", "Constructions", "Symmetry"]},
+						{"name": "Mensuration", "topics": ["Perimeter", "Area of Rectangles", "Area of Squares", "Volume"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Food", "topics": ["Food Sources", "Components of Food", "Balanced Diet", "Deficiency Diseases"]},
+						{"name": "Materials", "topics": ["Sorting Materials", "Properties", "Separation Methods", "Changes Around Us"]},
+						{"name": "Living Organisms", "topics": ["Characteristics", "Habitat", "Adaptations", "Classification"]},
+						{"name": "Motion & Measurement", "topics": ["Types of Motion", "Measurement of Distance", "Time", "Speed"]},
+						{"name": "Light & Shadows", "topics": ["Transparent, Translucent, Opaque", "Shadows", "Pinhole Camera", "Mirrors"]},
+						{"name": "Electricity", "topics": ["Electric Cell", "Bulb", "Circuits", "Switches", "Conductors & Insulators"]}
+					]
+				},
+				{
+					"name": "Social Science",
+					"chapters": [
+						{"name": "History", "topics": ["What, Where, How & When", "Hunter-Gatherers", "First Farmers", "First Cities"]},
+						{"name": "Geography", "topics": ["Earth in Solar System", "Globe", "Maps", "Latitudes & Longitudes"]},
+						{"name": "Civics", "topics": ["Understanding Diversity", "Government", "Panchayati Raj", "Rural Administration"]},
+						{"name": "Economics", "topics": ["Economic Activities", "Markets Around Us", "Rural Livelihoods"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Reading", "topics": ["Prose", "Poetry", "Comprehension", "Vocabulary Building"]},
+						{"name": "Grammar", "topics": ["Parts of Speech", "Tenses", "Voice", "Narration"]},
+						{"name": "Writing", "topics": ["Paragraph Writing", "Letter Writing", "Story Writing", "Essay Writing"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 7",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Integers", "topics": ["Operations on Integers", "Properties", "Word Problems"]},
+						{"name": "Fractions & Decimals", "topics": ["Multiplication & Division", "Fraction-Decimal Conversion", "Word Problems"]},
+						{"name": "Algebra", "topics": ["Algebraic Expressions", "Simple Equations", "Applications"]},
+						{"name": "Ratio & Proportion", "topics": ["Ratios", "Proportions", "Unitary Method", "Percentage", "Profit-Loss", "Simple Interest"]},
+						{"name": "Geometry", "topics": ["Lines & Angles", "Triangle Properties", "Congruence", "Symmetry", "Constructions"]},
+						{"name": "Perimeter & Area", "topics": ["Squares", "Rectangles", "Triangles", "Parallelograms", "Circles"]},
+						{"name": "Data Handling", "topics": ["Mean, Median, Mode", "Bar Graphs", "Probability"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Nutrition in Plants", "topics": ["Photosynthesis", "Nutrients", "Modes of Nutrition", "Replenishment"]},
+						{"name": "Nutrition in Animals", "topics": ["Digestive System", "Digestion Process", "Types of Teeth", "Ruminants"]},
+						{"name": "Heat", "topics": ["Hot & Cold", "Temperature", "Heat Transfer", "Conductors & Insulators"]},
+						{"name": "Acids, Bases & Salts", "topics": ["Indicators", "Neutralization", "Applications"]},
+						{"name": "Weather, Climate & Adaptations", "topics": ["Weather", "Climate", "Animal Adaptations"]},
+						{"name": "Winds, Storms & Cyclones", "topics": ["Air Pressure", "Wind Formation", "Storms", "Cyclone Safety"]},
+						{"name": "Motion & Time", "topics": ["Motion Types", "Speed", "Distance-Time Graphs"]},
+						{"name": "Light", "topics": ["Reflection", "Plane Mirrors", "Spherical Mirrors", "Lenses"]}
+					]
+				},
+				{
+					"name": "Social Science",
+					"chapters": [
+						{"name": "History", "topics": ["Medieval India", "Delhi Sultanate", "Mughal Empire", "Regional Cultures"]},
+						{"name": "Geography", "topics": ["Environment", "Atmosphere", "Water", "Natural Vegetation", "Wildlife"]},
+						{"name": "Civics", "topics": ["Equality", "Constitution", "State Government", "Media & Democracy"]},
+						{"name": "Economics", "topics": ["Markets", "Advertising", "Neighbourhood Markets"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Prose", "topics": ["Fiction", "Non-fiction", "Character Analysis", "Theme"]},
+						{"name": "Poetry", "topics": ["Poem Analysis", "Literary Devices", "Rhyme Scheme"]},
+						{"name": "Grammar", "topics": ["Advanced Tenses", "Modals", "Voice Change", "Reported Speech"]},
+						{"name": "Composition", "topics": ["Essay", "Article", "Speech", "Formal Letters"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 8",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Rational Numbers", "topics": ["Properties", "Representation", "Operations", "Closure Property"]},
+						{"name": "Linear Equations", "topics": ["One Variable", "Solving Equations", "Reducing to Simpler Form", "Word Problems"]},
+						{"name": "Quadrilaterals", "topics": ["Properties", "Types", "Angle Sum Property", "Constructions"]},
+						{"name": "Data Handling", "topics": ["Organizing Data", "Frequency Distribution", "Histogram", "Pie Charts", "Probability"]},
+						{"name": "Squares & Square Roots", "topics": ["Perfect Squares", "Square Roots", "Pythagorean Triplets"]},
+						{"name": "Cubes & Cube Roots", "topics": ["Perfect Cubes", "Cube Roots", "Applications"]},
+						{"name": "Mensuration", "topics": ["Area of Trapezium", "Polygons", "Surface Area", "Volume"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Crop Production", "topics": ["Agricultural Practices", "Crop Varieties", "Irrigation", "Fertilizers", "Protection"]},
+						{"name": "Microorganisms", "topics": ["Types", "Beneficial Microorganisms", "Harmful Microorganisms", "Food Preservation"]},
+						{"name": "Metals & Non-metals", "topics": ["Properties", "Physical Properties", "Chemical Properties", "Uses"]},
+						{"name": "Coal & Petroleum", "topics": ["Formation", "Types", "Refining", "Conservation"]},
+						{"name": "Force & Pressure", "topics": ["Force Types", "Pressure", "Liquid Pressure", "Atmospheric Pressure"]},
+						{"name": "Friction", "topics": ["Types of Friction", "Factors", "Methods to Reduce", "Fluid Friction"]},
+						{"name": "Sound", "topics": ["Production", "Propagation", "Properties", "Human Ear", "Noise Pollution"]},
+						{"name": "Electricity", "topics": ["Electric Charge", "Current", "Circuit Diagrams", "Heating Effect", "Magnetic Effect"]}
+					]
+				},
+				{
+					"name": "Social Science",
+					"chapters": [
+						{"name": "History", "topics": ["Modern Period", "British Rule", "Revolt of 1857", "Colonial Economy", "Independence Movement"]},
+						{"name": "Geography", "topics": ["Resources", "Types of Resources", "Land Resources", "Water Resources", "Agriculture"]},
+						{"name": "Civics", "topics": ["Indian Constitution", "Secularism", "Parliament", "Judiciary", "Marginalization"]},
+						{"name": "Economics", "topics": ["Globalization", "Markets", "Government & Economy"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Reading Comprehension", "topics": ["Factual Passages", "Literary Passages", "Inference", "Vocabulary"]},
+						{"name": "Advanced Grammar", "topics": ["Clauses", "Phrases", "Voice", "Narration", "Prepositions"]},
+						{"name": "Writing Skills", "topics": ["Essay", "Article", "Report", "Story", "Formal Letters", "Applications"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 9",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Number Systems", "topics": ["Real Numbers", "Rational Numbers", "Irrational Numbers", "Laws of Exponents", "Decimal Representation"]},
+						{"name": "Polynomials", "topics": ["Degree of Polynomial", "Zeroes of Polynomial", "Remainder Theorem", "Factor Theorem", "Algebraic Identities"]},
+						{"name": "Coordinate Geometry", "topics": ["Cartesian Plane", "Plotting Points", "Distance Formula", "Section Formula", "Area of Triangle"]},
+						{"name": "Linear Equations", "topics": ["Two Variables", "Graphical Method", "Substitution Method", "Elimination Method", "Cross Multiplication"]},
+						{"name": "Triangles", "topics": ["Congruence of Triangles", "Similar Triangles", "Pythagoras Theorem", "Areas of Triangles", "Criteria for Similarity"]},
+						{"name": "Circles", "topics": ["Circle Terms", "Angle Properties", "Cyclic Quadrilaterals", "Tangents"]},
+						{"name": "Mensuration", "topics": ["Surface Areas", "Volumes", "Cuboids", "Cylinders", "Cones", "Spheres"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Matter in Our Surroundings", "topics": ["States of Matter", "Characteristics of Particles", "Change of State", "Evaporation", "Temperature Effects"]},
+						{"name": "Is Matter Pure", "topics": ["Mixtures", "Compounds", "Elements", "Solutions", "Colloids", "Suspensions", "Separation Techniques"]},
+						{"name": "Atoms and Molecules", "topics": ["Laws of Chemical Combination", "Atomic Mass", "Molecular Mass", "Mole Concept", "Chemical Formulae"]},
+						{"name": "Cell Structure", "topics": ["Plant Cell", "Animal Cell", "Cell Organelles", "Cell Division", "Prokaryotic vs Eukaryotic"]},
+						{"name": "Tissues", "topics": ["Plant Tissues", "Animal Tissues", "Meristematic", "Permanent", "Complex Tissues"]},
+						{"name": "Motion", "topics": ["Speed", "Velocity", "Uniform Motion", "Non-uniform Motion", "Acceleration", "Equations of Motion", "Graphs"]},
+						{"name": "Force and Laws of Motion", "topics": ["Newton's First Law", "Second Law", "Third Law", "Conservation of Momentum", "Inertia"]},
+						{"name": "Gravitation", "topics": ["Universal Law", "Free Fall", "Weight", "Thrust", "Pressure", "Buoyancy", "Archimedes Principle"]}
+					]
+				},
+				{
+					"name": "Social Science",
+					"chapters": [
+						{"name": "History", "topics": ["French Revolution", "Russian Revolution", "Nazism", "Forest Society", "Pastoralists"]},
+						{"name": "Geography", "topics": ["India Size & Location", "Physical Features", "Drainage", "Climate", "Natural Vegetation", "Wildlife"]},
+						{"name": "Political Science", "topics": ["Democracy", "Constitutional Design", "Electoral Politics", "Working of Institutions"]},
+						{"name": "Economics", "topics": ["Story of Village Palampur", "People as Resource", "Poverty", "Food Security"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Literature", "topics": ["Prose Analysis", "Poetry Analysis", "Drama", "Novel Study"]},
+						{"name": "Grammar", "topics": ["Tenses", "Modals", "Determiners", "Editing", "Omission", "Sentence Reordering"]},
+						{"name": "Writing", "topics": ["Formal Letters", "Article Writing", "Speech", "Diary Entry", "Story Writing", "Descriptive Paragraphs"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 10",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Real Numbers", "topics": ["Euclid's Division Lemma", "Fundamental Theorem of Arithmetic", "HCF & LCM", "Irrational Numbers"]},
+						{"name": "Polynomials", "topics": ["Geometric Meaning of Zeroes", "Relationship between Zeroes and Coefficients", "Division Algorithm"]},
+						{"name": "Pair of Linear Equations", "topics": ["Graphical Solution", "Algebraic Solutions", "Equations Reducible to Linear Form"]},
+						{"name": "Quadratic Equations", "topics": ["Factorization", "Completing the Square", "Quadratic Formula", "Nature of Roots"]},
+						{"name": "Arithmetic Progressions", "topics": ["AP Terms", "nth Term", "Sum of n Terms", "Applications"]},
+						{"name": "Triangles", "topics": ["Similar Triangles", "Criteria for Similarity", "Areas of Similar Triangles", "Pythagoras Theorem"]},
+						{"name": "Coordinate Geometry", "topics": ["Distance Formula", "Section Formula", "Area of Triangle", "Collinearity"]},
+						{"name": "Trigonometry", "topics": ["Trigonometric Ratios", "Complementary Angles", "Trigonometric Identities", "Heights & Distances"]},
+						{"name": "Circles", "topics": ["Tangent Properties", "Number of Tangents", "Theorems on Tangents"]},
+						{"name": "Surface Areas & Volumes", "topics": ["Combinations of Solids", "Frustum of Cone", "Conversion of Solids"]},
+						{"name": "Statistics", "topics": ["Mean", "Median", "Mode", "Cumulative Frequency", "Ogive"]},
+						{"name": "Probability", "topics": ["Classical Probability", "Experimental Probability", "Theoretical Probability"]}
+					]
+				},
+				{
+					"name": "Science",
+					"chapters": [
+						{"name": "Chemical Reactions", "topics": ["Types of Reactions", "Oxidation & Reduction", "Corrosion", "Rancidity"]},
+						{"name": "Acids, Bases & Salts", "topics": ["pH Scale", "Strong & Weak", "Neutralization", "Common Salts", "Chemicals from Salt"]},
+						{"name": "Metals & Non-metals", "topics": ["Properties", "Reactivity Series", "Extraction", "Corrosion", "Alloys"]},
+						{"name": "Carbon Compounds", "topics": ["Bonding in Carbon", "Saturated & Unsaturated", "Functional Groups", "Nomenclature", "Chemical Properties"]},
+						{"name": "Life Processes", "topics": ["Nutrition", "Respiration", "Transportation", "Excretion"]},
+						{"name": "Control & Coordination", "topics": ["Nervous System", "Chemical Coordination", "Hormones", "Plant Movements"]},
+						{"name": "Reproduction", "topics": ["Modes of Reproduction", "Sexual Reproduction in Plants", "Human Reproductive System"]},
+						{"name": "Heredity & Evolution", "topics": ["Mendel's Laws", "Genetics", "Evolution", "Speciation"]},
+						{"name": "Reflection of Light", "topics": ["Reflection", "Spherical Mirrors", "Mirror Formula", "Magnification"]},
+						{"name": "Refraction", "topics": ["Refraction Laws", "Refractive Index", "Total Internal Reflection", "Lenses", "Lens Formula"]},
+						{"name": "Electricity", "topics": ["Electric Current", "Potential Difference", "Ohm's Law", "Resistance", "Series & Parallel", "Heating Effect", "Electric Power"]},
+						{"name": "Magnetic Effects", "topics": ["Magnetic Field", "Electromagnetic Induction", "Electric Generator", "Electric Motor"]}
+					]
+				},
+				{
+					"name": "Social Science",
+					"chapters": [
+						{"name": "History", "topics": ["Rise of Nationalism in Europe", "Nationalism in India", "Making of Global World", "Age of Industrialization", "Print Culture"]},
+						{"name": "Geography", "topics": ["Resources & Development", "Forest & Wildlife", "Water Resources", "Agriculture", "Minerals & Energy", "Manufacturing Industries"]},
+						{"name": "Political Science", "topics": ["Power Sharing", "Federalism", "Democracy & Diversity", "Gender & Religion", "Popular Struggles", "Political Parties"]},
+						{"name": "Economics", "topics": ["Development", "Sectors of Economy", "Money & Credit", "Globalization", "Consumer Rights"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Reading", "topics": ["Comprehension Passages", "Note Making", "Summary Writing"]},
+						{"name": "Literature", "topics": ["First Flight - Prose", "First Flight - Poetry", "Footprints Without Feet"]},
+						{"name": "Grammar", "topics": ["Tenses", "Modals", "Determiners", "Subject-Verb Concord", "Reported Speech", "Active-Passive Voice"]},
+						{"name": "Writing", "topics": ["Formal Letters", "Informal Letters", "Article", "Speech", "Debate", "Report"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 11",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Sets", "topics": ["Set Theory", "Venn Diagrams", "Operations on Sets", "De Morgan's Laws"]},
+						{"name": "Relations & Functions", "topics": ["Cartesian Product", "Relations", "Types of Relations", "Functions", "Types of Functions"]},
+						{"name": "Trigonometric Functions", "topics": ["Angles", "Trigonometric Ratios", "Identities", "Equations"]},
+						{"name": "Complex Numbers", "topics": ["Imaginary Numbers", "Operations", "Argand Plane", "Polar Form"]},
+						{"name": "Linear Inequalities", "topics": ["Algebraic Solutions", "Graphical Solutions", "System of Inequalities"]},
+						{"name": "Permutations & Combinations", "topics": ["Fundamental Principle", "Permutations", "Combinations", "Applications"]},
+						{"name": "Binomial Theorem", "topics": ["Expansion", "General Term", "Middle Term", "Applications"]},
+						{"name": "Sequences & Series", "topics": ["AP", "GP", "Harmonic Progression", "Special Series"]},
+						{"name": "Straight Lines", "topics": ["Slope", "Different Forms", "General Equation", "Distance Formulae"]},
+						{"name": "Conic Sections", "topics": ["Circle", "Parabola", "Ellipse", "Hyperbola"]},
+						{"name": "Limits & Derivatives", "topics": ["Limits", "Differentiation", "Derivatives of Functions"]}
+					]
+				},
+				{
+					"name": "Physics",
+					"chapters": [
+						{"name": "Physical World", "topics": ["Scope of Physics", "Physics & Technology", "Fundamental Forces", "Nature of Physical Laws"]},
+						{"name": "Units & Measurements", "topics": ["SI Units", "Dimensional Analysis", "Errors", "Significant Figures"]},
+						{"name": "Motion in Straight Line", "topics": ["Position", "Velocity", "Acceleration", "Kinematic Equations", "Graphs"]},
+						{"name": "Motion in Plane", "topics": ["Vectors", "Projectile Motion", "Circular Motion", "Relative Velocity"]},
+						{"name": "Laws of Motion", "topics": ["Newton's Laws", "Momentum", "Impulse", "Friction", "Circular Motion Dynamics"]},
+						{"name": "Work, Energy & Power", "topics": ["Work", "Kinetic Energy", "Potential Energy", "Conservation", "Power", "Collisions"]},
+						{"name": "Gravitation", "topics": ["Universal Law", "Acceleration due to Gravity", "Kepler's Laws", "Satellites", "Escape Velocity"]},
+						{"name": "Thermodynamics", "topics": ["Thermal Equilibrium", "Heat Transfer", "First Law", "Specific Heat", "Thermodynamic Processes"]}
+					]
+				},
+				{
+					"name": "Chemistry",
+					"chapters": [
+						{"name": "Basic Concepts", "topics": ["Importance of Chemistry", "Atoms & Molecules", "Atomic & Molecular Masses", "Mole Concept", "Stoichiometry"]},
+						{"name": "Structure of Atom", "topics": ["Subatomic Particles", "Atomic Models", "Quantum Numbers", "Electronic Configuration"]},
+						{"name": "Classification of Elements", "topics": ["Periodic Table", "Periodic Properties", "Trends in Periodic Table"]},
+						{"name": "Chemical Bonding", "topics": ["Ionic Bonding", "Covalent Bonding", "Lewis Structure", "VSEPR Theory", "Hybridization"]},
+						{"name": "States of Matter", "topics": ["Gaseous State", "Liquid State", "Gas Laws", "Kinetic Theory", "Liquefaction"]},
+						{"name": "Thermodynamics", "topics": ["System & Surroundings", "Internal Energy", "Enthalpy", "First Law", "Hess's Law"]},
+						{"name": "Equilibrium", "topics": ["Physical Equilibrium", "Chemical Equilibrium", "Law of Mass Action", "Le Chatelier's Principle"]},
+						{"name": "Redox Reactions", "topics": ["Oxidation Number", "Balancing Redox Reactions", "Electrochemical Cells"]}
+					]
+				},
+				{
+					"name": "Biology",
+					"chapters": [
+						{"name": "Living World", "topics": ["Diversity", "Classification", "Taxonomic Categories", "Nomenclature"]},
+						{"name": "Biological Classification", "topics": ["Five Kingdom Classification", "Virus", "Bacteria", "Protista", "Fungi"]},
+						{"name": "Plant Kingdom", "topics": ["Algae", "Bryophytes", "Pteridophytes", "Gymnosperms", "Angiosperms"]},
+						{"name": "Animal Kingdom", "topics": ["Basis of Classification", "Phyla", "Vertebrates", "Invertebrates"]},
+						{"name": "Cell", "topics": ["Cell Theory", "Prokaryotic Cell", "Eukaryotic Cell", "Cell Organelles", "Cell Division"]},
+						{"name": "Biomolecules", "topics": ["Carbohydrates", "Proteins", "Lipids", "Nucleic Acids", "Enzymes"]},
+						{"name": "Structural Organization", "topics": ["Tissues", "Anatomy of Flowering Plants", "Morphology"]},
+						{"name": "Plant Physiology", "topics": ["Transport", "Mineral Nutrition", "Photosynthesis", "Respiration", "Plant Growth"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Reading", "topics": ["Comprehension", "Note Making", "Summarizing"]},
+						{"name": "Writing", "topics": ["Notice", "Advertisement", "Article", "Speech", "Report", "Letter Writing"]},
+						{"name": "Grammar", "topics": ["Tenses", "Modals", "Clauses", "Transformation of Sentences", "Integrated Grammar"]},
+						{"name": "Literature", "topics": ["Hornbill - Prose", "Hornbill - Poetry", "Snapshots"]}
+					]
+				}
+			]
+		},
+		{
+			"grade": "Grade 12",
+			"subjects": [
+				{
+					"name": "Mathematics",
+					"chapters": [
+						{"name": "Relations & Functions", "topics": ["Types of Relations", "Types of Functions", "Composition", "Invertible Functions", "Binary Operations"]},
+						{"name": "Inverse Trigonometric Functions", "topics": ["Properties", "Domain & Range", "Graphs", "Elementary Properties"]},
+						{"name": "Matrices", "topics": ["Types", "Operations", "Transpose", "Symmetric & Skew Symmetric", "Elementary Operations", "Inverse"]},
+						{"name": "Determinants", "topics": ["Properties", "Cofactors", "Adjoint", "Inverse of Matrix", "Applications"]},
+						{"name": "Continuity & Differentiability", "topics": ["Continuity", "Differentiability", "Derivatives of Composite Functions", "Mean Value Theorem"]},
+						{"name": "Applications of Derivatives", "topics": ["Rate of Change", "Increasing-Decreasing", "Maxima-Minima", "Approximations"]},
+						{"name": "Integrals", "topics": ["Integration Methods", "Definite Integrals", "Fundamental Theorem", "Evaluation"]},
+						{"name": "Applications of Integrals", "topics": ["Area under Curves", "Area between Curves"]},
+						{"name": "Differential Equations", "topics": ["Order & Degree", "Formation", "Solutions", "Linear Differential Equations"]},
+						{"name": "Vector Algebra", "topics": ["Vectors", "Addition", "Multiplication", "Scalar Product", "Vector Product"]},
+						{"name": "Three Dimensional Geometry", "topics": ["Direction Cosines", "Line", "Plane", "Angle between Lines & Planes"]},
+						{"name": "Linear Programming", "topics": ["Formulation", "Graphical Method", "Optimization"]},
+						{"name": "Probability", "topics": ["Conditional Probability", "Multiplication Theorem", "Independent Events", "Bayes' Theorem", "Random Variables"]}
+					]
+				},
+				{
+					"name": "Physics",
+					"chapters": [
+						{"name": "Electric Charges & Fields", "topics": ["Electric Charge", "Coulomb's Law", "Electric Field", "Electric Flux", "Gauss's Law"]},
+						{"name": "Electrostatic Potential", "topics": ["Potential", "Potential Difference", "Relation with Field", "Equipotential Surfaces", "Capacitance"]},
+						{"name": "Current Electricity", "topics": ["Electric Current", "Ohm's Law", "Resistance", "Cells", "Kirchhoff's Laws", "Wheatstone Bridge"]},
+						{"name": "Magnetic Effects", "topics": ["Magnetic Field", "Biot-Savart Law", "Ampere's Law", "Force on Current", "Torque"]},
+						{"name": "Magnetism & Matter", "topics": ["Bar Magnet", "Magnetic Properties", "Permanent Magnets", "Electromagnets"]},
+						{"name": "Electromagnetic Induction", "topics": ["Faraday's Law", "Lenz's Law", "Motional EMF", "Self & Mutual Inductance", "AC Generator"]},
+						{"name": "Alternating Current", "topics": ["AC Voltage", "AC Current", "LCR Circuits", "Power in AC", "Transformers"]},
+						{"name": "Electromagnetic Waves", "topics": ["Displacement Current", "EM Waves", "EM Spectrum", "Properties"]},
+						{"name": "Ray Optics", "topics": ["Reflection", "Refraction", "Total Internal Reflection", "Lenses", "Optical Instruments"]},
+						{"name": "Wave Optics", "topics": ["Huygen's Principle", "Interference", "Diffraction", "Polarization"]},
+						{"name": "Dual Nature", "topics": ["Photoelectric Effect", "Matter Waves", "Davisson-Germer Experiment"]},
+						{"name": "Atoms & Nuclei", "topics": ["Atomic Models", "Bohr Model", "Nuclear Structure", "Radioactivity", "Nuclear Reactions"]},
+						{"name": "Semiconductor Electronics", "topics": ["Semiconductors", "Diodes", "Transistors", "Logic Gates", "Digital Circuits"]}
+					]
+				},
+				{
+					"name": "Chemistry",
+					"chapters": [
+						{"name": "Solid State", "topics": ["Classification", "Crystal Lattice", "Close Packing", "Imperfections", "Electrical Properties"]},
+						{"name": "Solutions", "topics": ["Concentration Terms", "Solubility", "Vapor Pressure", "Colligative Properties", "Abnormal Molar Mass"]},
+						{"name": "Electrochemistry", "topics": ["Electrochemical Cells", "Conductance", "Kohlrausch's Law", "Nernst Equation", "Batteries", "Corrosion"]},
+						{"name": "Chemical Kinetics", "topics": ["Rate of Reaction", "Factors Affecting Rate", "Rate Law", "Order of Reaction", "Arrhenius Equation"]},
+						{"name": "Surface Chemistry", "topics": ["Adsorption", "Catalysis", "Colloids", "Emulsions"]},
+						{"name": "p-Block Elements", "topics": ["Group 15 Elements", "Group 16 Elements", "Group 17 Elements", "Group 18 Elements"]},
+						{"name": "d & f Block Elements", "topics": ["Transition Metals", "Properties", "Lanthanoids", "Actinoids", "Coordination Compounds"]},
+						{"name": "Coordination Compounds", "topics": ["Nomenclature", "Isomerism", "Bonding", "Crystal Field Theory"]},
+						{"name": "Haloalkanes & Haloarenes", "topics": ["Nomenclature", "Preparation", "Properties", "Uses"]},
+						{"name": "Alcohols, Phenols & Ethers", "topics": ["Classification", "Nomenclature", "Preparation", "Properties"]},
+						{"name": "Aldehydes, Ketones", "topics": ["Nomenclature", "Preparation", "Properties", "Chemical Reactions"]},
+						{"name": "Carboxylic Acids", "topics": ["Nomenclature", "Preparation", "Properties", "Derivatives"]},
+						{"name": "Amines", "topics": ["Classification", "Nomenclature", "Preparation", "Properties", "Diazonium Salts"]},
+						{"name": "Biomolecules", "topics": ["Carbohydrates", "Proteins", "Nucleic Acids", "Vitamins", "Hormones"]},
+						{"name": "Polymers", "topics": ["Classification", "Types of Polymerization", "Synthetic Polymers", "Natural Polymers"]},
+						{"name": "Chemistry in Everyday Life", "topics": ["Drugs", "Chemicals in Food", "Cleansing Agents"]}
+					]
+				},
+				{
+					"name": "Biology",
+					"chapters": [
+						{"name": "Reproduction", "topics": ["Asexual Reproduction", "Sexual Reproduction in Plants", "Human Reproduction", "Reproductive Health"]},
+						{"name": "Genetics", "topics": ["Mendel's Laws", "Chromosomal Theory", "Sex Determination", "Linkage & Crossing Over", "Genetic Disorders"]},
+						{"name": "Molecular Basis", "topics": ["DNA Structure", "DNA Replication", "Transcription", "Translation", "Gene Expression"]},
+						{"name": "Evolution", "topics": ["Origin of Life", "Evolution Theories", "Natural Selection", "Speciation", "Human Evolution"]},
+						{"name": "Human Health", "topics": ["Common Diseases", "Immunity", "AIDS", "Cancer", "Drug Abuse"]},
+						{"name": "Biotechnology", "topics": ["Genetic Engineering", "Recombinant DNA Technology", "PCR", "Gene Cloning"]},
+						{"name": "Biotechnology Applications", "topics": ["Medical Applications", "Agriculture", "Transgenic Animals", "Ethical Issues"]},
+						{"name": "Organisms & Populations", "topics": ["Population Ecology", "Population Interactions", "Adaptations"]},
+						{"name": "Ecosystem", "topics": ["Components", "Energy Flow", "Food Chains", "Ecological Pyramids", "Nutrient Cycling"]},
+						{"name": "Biodiversity", "topics": ["Biodiversity Levels", "Importance", "Loss of Biodiversity", "Conservation"]},
+						{"name": "Environmental Issues", "topics": ["Pollution", "Greenhouse Effect", "Ozone Depletion", "Waste Management"]}
+					]
+				},
+				{
+					"name": "English",
+					"chapters": [
+						{"name": "Reading", "topics": ["Comprehension", "Note Making", "Summarizing"]},
+						{"name": "Writing", "topics": ["Notice", "Advertisement", "Article", "Letter", "Report", "Proposal"]},
+						{"name": "Literature", "topics": ["Flamingo - Prose", "Flamingo - Poetry", "Vistas"]},
+						{"name": "Grammar", "topics": ["Reported Speech", "Active-Passive Voice", "Modals", "Clauses", "Integrated Grammar"]}
+					]
+				}
+			]
+		}
+	]
+}
