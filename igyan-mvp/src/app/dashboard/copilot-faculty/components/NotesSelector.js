@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import notesData from "../data/notes.json";
+import extraNotes from "../data/notes_extra.json";
 
 export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 	const [selectedGrade, setSelectedGrade] = useState(null);
@@ -21,8 +22,30 @@ export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 		);
 	};
 
+	// Merge base notes with extra notes by grade name
+	const mergedNotes = useMemo(() => {
+		const baseByGrade = new Map((notesData.grades || []).map(g => [g.grade, g]));
+		for (const eg of (extraNotes.grades || [])) {
+			if (baseByGrade.has(eg.grade)) {
+				const existing = baseByGrade.get(eg.grade);
+				const existingSubjects = existing.subjects || [];
+				const extraSubjects = eg.subjects || [];
+				// Avoid duplicate subject names when merging
+				const existingNames = new Set(existingSubjects.map(s => s.name));
+				const mergedSubjects = [
+					...existingSubjects,
+					...extraSubjects.filter(s => !existingNames.has(s.name))
+				];
+				baseByGrade.set(eg.grade, { ...existing, subjects: mergedSubjects });
+			} else {
+				baseByGrade.set(eg.grade, eg);
+			}
+		}
+		return { grades: Array.from(baseByGrade.values()) };
+	}, []);
+
 	const currentGradeData = selectedGrade 
-		? notesData.grades.find(g => g.grade === selectedGrade)
+		? mergedNotes.grades.find(g => g.grade === selectedGrade)
 		: null;
 
 	return (
@@ -63,7 +86,7 @@ export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 						className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 					>
 						<option value="">Choose a grade...</option>
-						{notesData.grades.map((grade) => (
+						{mergedNotes.grades.map((grade) => (
 							<option key={grade.grade} value={grade.grade}>
 								{grade.grade}
 							</option>

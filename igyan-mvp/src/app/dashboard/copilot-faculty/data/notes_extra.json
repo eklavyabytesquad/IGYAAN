@@ -1,0 +1,200 @@
+{
+  "grades": [
+    {
+      "grade": "Grade 1",
+      "subjects": [
+        {
+          "name": "Computer Literacy",
+          "chapters": [
+            {"name": "Using a Computer", "topics": ["What is a Computer?", "Parts of a Computer", "Turning On/Off", "Using a Mouse", "Using a Keyboard"]},
+            {"name": "Basic Skills", "topics": ["Opening Programs", "Drawing in Paint", "Typing Simple Words", "Saving Work"]}
+          ]
+        },
+        {
+          "name": "Hindi",
+          "chapters": [
+            {"name": "वर्णमाला", "topics": ["स्वर", "व्यंजन", "मात्राएँ"]},
+            {"name": "शब्द और वाक्य", "topics": ["सरल शब्द", "चित्र कथा", "सरल वाक्य"]}
+          ]
+        },
+        {
+          "name": "Art",
+          "chapters": [
+            {"name": "Drawing Basics", "topics": ["Lines", "Shapes", "Coloring", "Patterns"]},
+            {"name": "Craft", "topics": ["Paper Folding", "Cut & Paste", "Simple Collage"]}
+          ]
+        },
+        {
+          "name": "Physical Education",
+          "chapters": [
+            {"name": "Fitness Fun", "topics": ["Warm Up", "Stretching", "Basic Games", "Team Play"]},
+            {"name": "Yoga", "topics": ["Breathing", "Simple Asanas", "Balance"]}
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "Grade 2",
+      "subjects": [
+        {
+          "name": "Computer Literacy",
+          "chapters": [
+            {"name": "Typing & Drawing", "topics": ["Typing Sentences", "Using Paint Tools", "Saving/Opening Files"]},
+            {"name": "Safety", "topics": ["Classroom Safety", "Basic Digital Manners"]}
+          ]
+        },
+        {"name": "Hindi", "chapters": [
+          {"name": "व्याकरण", "topics": ["संज्ञा", "लिंग", "वचन"]},
+          {"name": "पाठ", "topics": ["कहानी-पाठ", "कविता-पाठ", "बोध प्रश्न"]}
+        ]},
+        {"name": "Art", "chapters": [
+          {"name": "Color & Form", "topics": ["Warm & Cool Colors", "Patterns", "Textures"]}
+        ]},
+        {"name": "Physical Education", "chapters": [
+          {"name": "Games", "topics": ["Running", "Jumping", "Throw & Catch", "Coordination"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 3",
+      "subjects": [
+        {"name": "Computer Literacy", "chapters": [
+          {"name": "Files & Folders", "topics": ["Creating Folders", "Renaming", "Moving Files"]},
+          {"name": "Introduction to Internet", "topics": ["What is Internet?", "Safe Browsing", "Using a Browser"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "व्याकरण", "topics": ["सर्वनाम", "विशेषण", "क्रिया"]},
+          {"name": "लेखन", "topics": ["अनुच्छेद लेखन", "चित्र-वर्णन"]}
+        ]},
+        {"name": "Art", "chapters": [
+          {"name": "Drawing & Craft", "topics": ["Landscape", "Still Life", "Clay Modeling"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 4",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Word Processing", "topics": ["Typing", "Formatting Text", "Lists", "Saving as PDF"]},
+          {"name": "Presentations", "topics": ["Slides", "Themes", "Adding Images", "Basic Animations"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "व्याकरण", "topics": ["काल", "वाक्य प्रकार", "अलंकार परिचय"]}
+        ]},
+        {"name": "Physical Education", "chapters": [
+          {"name": "Skills", "topics": ["Agility", "Balance", "Team Games", "Fair Play"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 5",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Spreadsheets", "topics": ["Cells & Ranges", "Formulas", "Simple Charts"]},
+          {"name": "Internet Basics", "topics": ["Web Browsing", "Email Basics", "Online Safety"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "अपठित गद्यांश", "topics": ["बोध", "शब्दार्थ", "प्रश्नोत्तर"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 6",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Introduction to Programming", "topics": ["Algorithms", "Flowcharts", "Scratch Basics"]},
+          {"name": "HTML Basics", "topics": ["Tags", "Headings & Paragraphs", "Links", "Images"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "व्याकरण", "topics": ["समास", "अनेक शब्दों के लिए एक शब्द", "मुहावरे"]}
+        ]},
+        {"name": "Sanskrit", "chapters": [
+          {"name": "शब्दरूप", "topics": ["पुल्लिंग", "स्त्रीलिंग", "नपुंसकलिंग"]},
+          {"name": "धातुरूप", "topics": ["लट् लकार", "लङ् लकार"]}
+        ]}
+      ]}
+    ,
+    {
+      "grade": "Grade 7",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Python Basics (Conceptual)", "topics": ["What is a Program?", "Variables", "Input/Output", "Decisions"]},
+          {"name": "Web Basics", "topics": ["HTML Lists", "Tables", "Forms"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "पाठ्य-पुस्तक", "topics": ["कहानी विश्लेषण", "कविता अलंकार"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 8",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Python Essentials", "topics": ["Data Types", "Operators", "If-Else", "Loops", "Lists"]},
+          {"name": "App Lab (Visual)", "topics": ["Event-Driven Apps", "UI Elements", "Design Basics"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "व्याकरण", "topics": ["रूपांतर (वाच्य/वचन)", "विराम चिह्न", "पुनर्लेखन"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 9",
+      "subjects": [
+        {"name": "Information Technology", "chapters": [
+          {"name": "Digital Documentation", "topics": ["Formatting", "Styles", "Tables", "Mail Merge"]},
+          {"name": "Spreadsheets", "topics": ["Formulas", "Functions", "Charts", "Data Validation"]},
+          {"name": "Digital Security", "topics": ["Strong Passwords", "Phishing", "Backups", "Cyber Ethics"]}
+        ]},
+        {"name": "Computer Science", "chapters": [
+          {"name": "Python Programming", "topics": ["Input/Output", "Conditions", "Loops", "Functions"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "लेखन", "topics": ["पत्र लेखन", "अनुच्छेद", "विज्ञापन"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 10",
+      "subjects": [
+        {"name": "Information Technology", "chapters": [
+          {"name": "Database Concepts", "topics": ["Tables", "Keys", "Queries", "Forms", "Reports"]},
+          {"name": "Web Design", "topics": ["HTML", "CSS", "Layout", "Accessibility"]}
+        ]},
+        {"name": "Computer Science", "chapters": [
+          {"name": "Python Projects", "topics": ["Lists & Tuples", "Dictionaries", "File Handling", "Simple Projects"]}
+        ]},
+        {"name": "Hindi", "chapters": [
+          {"name": "अपठित", "topics": ["गद्यांश", "कविताांश", "व्याख्या"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 11",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "Python Advanced", "topics": ["Functions", "Recursion (intro)", "OOP Basics", "Error Handling"]},
+          {"name": "Data Management", "topics": ["CSV", "JSON", "Relational DB Concepts", "SQL Basics"]}
+        ]},
+        {"name": "Information Practices", "chapters": [
+          {"name": "Data Handling in Python", "topics": ["NumPy", "Pandas DataFrames", "Reading/Writing Files"]},
+          {"name": "Visualization", "topics": ["Matplotlib", "Line/Bar/Pie Charts", "Styling"]}
+        ]}
+      ]
+    },
+    {
+      "grade": "Grade 12",
+      "subjects": [
+        {"name": "Computer Science", "chapters": [
+          {"name": "OOP & Data Structures", "topics": ["Classes & Objects", "Stacks", "Queues", "Linked Lists (intro)"]},
+          {"name": "Database & Networking", "topics": ["SQL Joins", "Transactions", "Basic Networking", "HTTP"]},
+          {"name": "Project", "topics": ["Project Planning", "Modules", "Documentation", "Presentation"]}
+        ]},
+        {"name": "Information Practices", "chapters": [
+          {"name": "Advanced Pandas", "topics": ["GroupBy", "Merge/Join", "Time Series (intro)"]},
+          {"name": "Dashboards", "topics": ["Plotly/Seaborn (concepts)", "Storytelling with Data"]}
+        ]}
+      ]
+    }
+  ]
+}
