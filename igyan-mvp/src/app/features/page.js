@@ -51,7 +51,7 @@ export default function FeaturesPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-20">
       <header className="max-w-3xl">
-        <Logo variant="card" className="mb-6" />
+        <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
           The AI-native platform that orchestrates your entire campus.
         </h1>

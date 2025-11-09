@@ -45,7 +45,7 @@ export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-20">
       <div className="max-w-3xl">
-        <Logo variant="card" className="mb-6" />
+        <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
           Building the intelligent backbone for next-generation schools.
         </h1>

@@ -4,9 +4,9 @@ export default function ContactPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-20">
       <header className="max-w-2xl">
-        <Logo variant="card" className="mb-6" />
+        <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-          Let’s design your AI-first learning ecosystem.
+          Let's design your AI-first learning ecosystem.
         </h1>
         <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
           Share a few details and our strategy team will connect within 24 hours

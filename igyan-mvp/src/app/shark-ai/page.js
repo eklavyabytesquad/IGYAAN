@@ -46,7 +46,7 @@ export default function SharkAiPage() {
 				<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.25),transparent_60%)]" />
 				<div className="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 py-20 lg:flex-row lg:items-center lg:justify-between lg:py-24">
 					<div className="max-w-xl space-y-6">
-						<Logo variant="header" />
+						<Logo variant="header" className="scale-255 transform-gpu origin-left" />
 						<p className="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-cyan-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200">
 							Shark AI intelligence desk
 						</p>
