@@ -77,11 +77,21 @@ const offeringMatrix = [
   {
     feature: "Institutional Innovation & Virtual Incubation Hub",
     institutionalSuite: { status: "yes" },
+    professionalSuite: { status: "no", note: "Personal Innovation Space" },
+  },
+  {
+    feature: "Personal Innovation & Virtual Incubation Hub",
+    institutionalSuite: { status: "no" },
     professionalSuite: { status: "yes", note: "Personal Innovation Space" },
   },
   {
-    feature: "AI Faculty Assistant / Sudarshan AI",
+    feature: "AI Faculty Assistant",
     institutionalSuite: { status: "yes", note: "Institution-Branded Tutor" },
+    professionalSuite: { status: "no", note: "Your Personal Co-Pilot" },
+  },
+  {
+    feature: "Sudarshan AI",
+    institutionalSuite: { status: "no", note: "Institution-Branded Tutor" },
     professionalSuite: { status: "yes", note: "Your Personal Co-Pilot" },
   },
   {
@@ -90,8 +100,18 @@ const offeringMatrix = [
     professionalSuite: { status: "no" },
   },
   {
-    feature: "AI Viva Intelligence / VivaVerse",
+    feature: "Creator Suite",
+    institutionalSuite: { status: "no"},
+    professionalSuite: { status: "yes", note: "Multiple AI Tools" },
+  },
+  {
+    feature: "AI Viva Intelligence",
     institutionalSuite: { status: "yes", note: "Voice-Based Evaluation" },
+    professionalSuite: { status: "no", note: "AI Conversations" },
+  },
+  {
+    feature: "AI VivaVerse",
+    institutionalSuite: { status: "no", note: "Voice-Based Evaluation" },
     professionalSuite: { status: "yes", note: "AI Conversations" },
   },
   {
@@ -100,14 +120,24 @@ const offeringMatrix = [
     professionalSuite: { status: "yes", note: "Global Events Hub" },
   },
   {
-    feature: "Buddy AI Counsellor / Gyani Sage",
-    institutionalSuite: { status: "yes", note: "Student Growth Roadmap" },
+    feature: "Buddy AI",
+    institutionalSuite: { status: "yes", note: "Your 24/7 Institutional Mentor" },
+    professionalSuite: { status: "no", note: "Life Direction Sessions" },
+  },
+  {
+    feature: "Gyani Sage",
+    institutionalSuite: { status: "no", note: "Student Growth Roadmap" },
     professionalSuite: { status: "yes", note: "Life Direction Sessions" },
   },
   {
     feature: "AI Timetable & Smart Substitution Scheduler",
     institutionalSuite: { status: "yes" },
-    professionalSuite: { status: "yes", note: "Smart Study Scheduler" },
+    professionalSuite: { status: "no", note: "Smart Study Scheduler" },
+  },
+  {
+    feature: "Teachers Tool Kit",
+    institutionalSuite: { status: "yes", note: "AI Lesson Planner, Content Generator & Multiple Tools"  },
+    professionalSuite: { status: "no", note: "Smart Study Scheduler" },
   },
   {
     feature: "AI Assessment & Evaluation Suite",
