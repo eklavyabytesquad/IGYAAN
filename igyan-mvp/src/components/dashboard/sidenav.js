@@ -631,7 +631,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 							<span
 								className="text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white"
 							>
-								{schoolData?.school_name || "iGyanAI"}
+								{schoolData?.school_name || "IGYAN.AI"}
 							</span>
 						)}
 					</Link>

@@ -30,7 +30,7 @@ export default function Navbar() {
 					className="flex items-center gap-3 text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-indigo-500 dark:text-zinc-100 dark:hover:text-indigo-400"
 				>
 					<Logo variant="nav" />
-					<span className="leading-tight">iGyanAI</span>
+					<span className="leading-tight">IGYAN.AI</span>
 				</Link>
 				<div className="hidden items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-300 lg:flex">
 					{links.map(({ href, label }) => {
