@@ -36,7 +36,10 @@ export default function Navbar() {
 						height={48} 
 						className="scale-150 transform-gpu"
 					/>
-					<span className="leading-tight">IGYAN.AI</span>
+					<div className="flex flex-col">
+						<span className="leading-tight text-base">IGYAN.AI</span>
+						<span className="text-[10px] font-medium text-sky-500 tracking-wider">TALENT IN MOTION</span>
+					</div>
 				</Link>
 				<div className="hidden items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-300 lg:flex">
 					{links.map(({ href, label }) => {
