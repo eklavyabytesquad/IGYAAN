@@ -37,7 +37,7 @@ export default function Navbar() {
 						className="scale-150 transform-gpu"
 					/>
 					<div className="flex flex-col">
-						<span className="leading-tight text-base">IGYAN.AI</span>
+						<span className="leading-tight text-base">I GYAN.AI</span>
 						<span className="text-[10px] font-medium text-sky-500 tracking-wider">TALENT IN MOTION</span>
 					</div>
 				</Link>
