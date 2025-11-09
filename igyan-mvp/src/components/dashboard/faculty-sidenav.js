@@ -98,7 +98,7 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				{
 					key: 'quizMe',
 					name: "Teaching Test",
-					href: "/dashboard/tools/quiz-me",
+					href: "/dashboard/tools/teacher-prep",
 					icon: "❓",
 				},
 				{

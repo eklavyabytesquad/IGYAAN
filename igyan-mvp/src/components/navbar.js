@@ -9,7 +9,7 @@ const links = [
 	{ href: "/features", label: "Features" },
 	{ href: "/about", label: "About Us" },
 	{ href: "/contact", label: "Contact" },
-	{ href: "/shark-ai", label: "Shark AI" },
+	{ href: "/shark-ai", label: "AI Shark" },
 ];
 
 export default function Navbar() {
