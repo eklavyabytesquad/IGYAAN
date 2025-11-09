@@ -160,18 +160,20 @@ Generate a new question paper following CBSE format with proper sections, marks,
   };
 
   return (
-    <div className="min-h-full space-y-8 p-6 lg:p-10">
+    <div className="min-h-full space-y-8 p-6 lg:p-10 dashboard-theme">
       {/* Header */}
       <header className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-2xl bg-linear-to-br from-blue-500 via-indigo-500 to-purple-600 p-3 text-white shadow-xl">
+          <div className="rounded-2xl p-3 text-white shadow-xl" style={{
+            background: 'linear-gradient(135deg, var(--dashboard-primary) 0%, color-mix(in srgb, var(--dashboard-primary) 80%, #8b5cf6) 100%)'
+          }}>
             <FileQuestion size={32} />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-zinc-900 dark:text-white">
+            <h1 className="text-4xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
               AI Question Paper Generator
             </h1>
-            <p className="mt-1 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-1 max-w-3xl text-sm" style={{ color: 'var(--dashboard-muted)' }}>
               Create professional CBSE question papers with AI. Generate from scratch or use old question papers as reference.
             </p>
           </div>
@@ -179,17 +181,34 @@ Generate a new question paper following CBSE format with proper sections, marks,
 
         {/* Tab Switcher */}
         {!generatedPaper && (
-          <div className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white/80 p-2 dark:border-zinc-800 dark:bg-zinc-900/80">
+          <div className="flex items-center gap-3 rounded-2xl border p-2" style={{
+            borderColor: 'var(--dashboard-border)',
+            backgroundColor: 'var(--dashboard-surface)'
+          }}>
             <button
               onClick={() => {
                 setActiveTab('new');
                 setGeneratedPaper('');
               }}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition ${
-                activeTab === 'new'
-                  ? 'bg-linear-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                  : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                activeTab === 'new' ? 'text-white shadow-lg' : ''
               }`}
+              style={activeTab === 'new' ? {
+                background: 'linear-gradient(135deg, var(--dashboard-primary) 0%, color-mix(in srgb, var(--dashboard-primary) 85%, #6366f1) 100%)'
+              } : {
+                color: 'var(--dashboard-muted)',
+                backgroundColor: 'transparent'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'new') {
+                  e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-muted)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'new') {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
             >
               <Wand2 size={18} />
               Generate New Paper
@@ -200,10 +219,24 @@ Generate a new question paper following CBSE format with proper sections, marks,
                 setGeneratedPaper('');
               }}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition ${
-                activeTab === 'old-data'
-                  ? 'bg-linear-to-r from-purple-500 to-pink-600 text-white shadow-lg'
-                  : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                activeTab === 'old-data' ? 'text-white shadow-lg' : ''
               }`}
+              style={activeTab === 'old-data' ? {
+                background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)'
+              } : {
+                color: 'var(--dashboard-muted)',
+                backgroundColor: 'transparent'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'old-data') {
+                  e.currentTarget.style.backgroundColor = 'var(--dashboard-surface-muted)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'old-data') {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
             >
               <History size={18} />
               Use Old Question Papers
@@ -221,9 +254,12 @@ Generate a new question paper following CBSE format with proper sections, marks,
               {/* Configuration Grid */}
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {/* Class Selection */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-xs text-white">1</span>
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full text-xs text-white" style={{ backgroundColor: 'var(--dashboard-primary)' }}>1</span>
                     Select Class
                   </label>
                   <select
@@ -233,7 +269,13 @@ Generate a new question paper following CBSE format with proper sections, marks,
                       setSelectedSubject('');
                       setSelectedTopic('');
                     }}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)',
+                      focusRingColor: 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)'
+                    }}
                   >
                     <option value="">Choose class...</option>
                     {cbseData.classes.map((cls) => (
@@ -245,8 +287,11 @@ Generate a new question paper following CBSE format with proper sections, marks,
                 </div>
 
                 {/* Subject Selection */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-500 text-xs text-white">2</span>
                     Select Subject
                   </label>
@@ -257,7 +302,12 @@ Generate a new question paper following CBSE format with proper sections, marks,
                       setSelectedTopic('');
                     }}
                     disabled={!selectedClass}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     <option value="">Choose subject...</option>
                     {subjects.map((subject) => (
@@ -269,8 +319,11 @@ Generate a new question paper following CBSE format with proper sections, marks,
                 </div>
 
                 {/* Topic Selection */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500 text-xs text-white">3</span>
                     Select Topic
                   </label>
@@ -278,7 +331,12 @@ Generate a new question paper following CBSE format with proper sections, marks,
                     value={selectedTopic}
                     onChange={(e) => setSelectedTopic(e.target.value)}
                     disabled={!selectedSubject}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   >
                     <option value="">Choose topic...</option>
                     {topics.map((topic) => (
@@ -290,8 +348,11 @@ Generate a new question paper following CBSE format with proper sections, marks,
                 </div>
 
                 {/* Exam Duration */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 block text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 block text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     Exam Duration (hours)
                   </label>
                   <input
@@ -300,13 +361,21 @@ Generate a new question paper following CBSE format with proper sections, marks,
                     onChange={(e) => setExamDuration(e.target.value)}
                     min="1"
                     max="5"
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
                 </div>
 
                 {/* Total Marks */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 block text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 block text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     Total Marks
                   </label>
                   <input
@@ -315,7 +384,12 @@ Generate a new question paper following CBSE format with proper sections, marks,
                     onChange={(e) => setTotalMarks(e.target.value)}
                     min="10"
                     max="200"
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
                 </div>
               </div>
@@ -326,7 +400,10 @@ Generate a new question paper following CBSE format with proper sections, marks,
                   <button
                     onClick={handleStartGeneration}
                     disabled={isGenerating}
-                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex items-center gap-3 rounded-2xl px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--dashboard-primary) 0%, color-mix(in srgb, var(--dashboard-primary) 80%, #8b5cf6) 50%, #a855f7 100%)'
+                    }}
                   >
                     {isGenerating ? (
                       <>
@@ -350,13 +427,19 @@ Generate a new question paper following CBSE format with proper sections, marks,
             <div className="space-y-6">
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Old Content Input */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 flex items-center justify-between text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 flex items-center justify-between text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     <span className="flex items-center gap-2">
                       <Upload className="text-purple-500" size={18} />
                       Old Question Paper Content
                     </span>
-                    <label className="cursor-pointer rounded-lg bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700 transition hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300">
+                    <label className="cursor-pointer rounded-lg px-3 py-1 text-xs font-medium transition" style={{
+                      backgroundColor: 'color-mix(in srgb, #a855f7 15%, transparent)',
+                      color: '#a855f7'
+                    }}>
                       <input
                         type="file"
                         accept=".txt,.doc,.docx"
@@ -376,16 +459,24 @@ Q1. What is photosynthesis?
 Q2. Explain the water cycle.
 Q3. Define Newton's first law of motion.
 ..."
-                    className="h-80 w-full resize-none rounded-xl border border-zinc-300 bg-white p-4 text-sm text-zinc-900 placeholder-zinc-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="h-80 w-full resize-none rounded-xl border p-4 text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
-                  <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                  <p className="mt-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                     {oldContent.length} characters • {oldContent.split('\n').filter(l => l.trim()).length} lines
                   </p>
                 </div>
 
                 {/* Custom Prompt */}
-                <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
+                <div className="rounded-3xl border shadow-lg p-6" style={{
+                  borderColor: 'var(--dashboard-border)',
+                  backgroundColor: 'var(--dashboard-surface-solid)'
+                }}>
+                  <label className="mb-3 flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
                     <Wand2 className="text-indigo-500" size={18} />
                     Your Instructions
                   </label>
@@ -401,9 +492,14 @@ Examples:
 • 'Create 3-hour exam paper with 100 marks'
 • 'Include diagram-based questions'
 ..."
-                    className="h-80 w-full resize-none rounded-xl border border-zinc-300 bg-white p-4 text-sm text-zinc-900 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                    className="h-80 w-full resize-none rounded-xl border p-4 text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: 'var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-muted)',
+                      color: 'var(--dashboard-text)'
+                    }}
                   />
-                  <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+                  <p className="mt-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                     Be specific about requirements, difficulty level, and format
                   </p>
                 </div>
@@ -415,7 +511,10 @@ Examples:
                   <button
                     onClick={handleStartGeneration}
                     disabled={isGenerating}
-                    className="flex items-center gap-3 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-rose-600 px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex items-center gap-3 rounded-2xl px-10 py-4 text-lg font-bold text-white shadow-xl transition hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{
+                      background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f43f5e 100%)'
+                    }}
                   >
                     {isGenerating ? (
                       <>
@@ -436,38 +535,47 @@ Examples:
 
           {/* Info Cards */}
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900 dark:bg-blue-900/20">
+            <div className="rounded-2xl border p-5" style={{
+              borderColor: 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)',
+              backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)'
+            }}>
               <div className="mb-2 flex items-center gap-2">
-                <div className="rounded-lg bg-blue-500 p-2 text-white">
+                <div className="rounded-lg p-2 text-white" style={{ backgroundColor: 'var(--dashboard-primary)' }}>
                   <Sparkles size={16} />
                 </div>
-                <p className="font-semibold text-blue-900 dark:text-blue-100">AI-Powered</p>
+                <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>AI-Powered</p>
               </div>
-              <p className="text-xs text-blue-700 dark:text-blue-300">
+              <p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
                 Advanced AI generates CBSE-compliant question papers with proper marking schemes
               </p>
             </div>
 
-            <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-900 dark:bg-indigo-900/20">
+            <div className="rounded-2xl border p-5" style={{
+              borderColor: 'color-mix(in srgb, #6366f1 30%, transparent)',
+              backgroundColor: 'color-mix(in srgb, #6366f1 8%, transparent)'
+            }}>
               <div className="mb-2 flex items-center gap-2">
                 <div className="rounded-lg bg-indigo-500 p-2 text-white">
                   <FileQuestion size={16} />
                 </div>
-                <p className="font-semibold text-indigo-900 dark:text-indigo-100">Professional Format</p>
+                <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Professional Format</p>
               </div>
-              <p className="text-xs text-indigo-700 dark:text-indigo-300">
+              <p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
                 Download PDF with proper headers, instructions, and marking schemes
               </p>
             </div>
 
-            <div className="rounded-2xl border border-purple-200 bg-purple-50 p-5 dark:border-purple-900 dark:bg-purple-900/20">
+            <div className="rounded-2xl border p-5" style={{
+              borderColor: 'color-mix(in srgb, #a855f7 30%, transparent)',
+              backgroundColor: 'color-mix(in srgb, #a855f7 8%, transparent)'
+            }}>
               <div className="mb-2 flex items-center gap-2">
                 <div className="rounded-lg bg-purple-500 p-2 text-white">
                   <History size={16} />
                 </div>
-                <p className="font-semibold text-purple-900 dark:text-purple-100">Learn from Past</p>
+                <p className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Learn from Past</p>
               </div>
-              <p className="text-xs text-purple-700 dark:text-purple-300">
+              <p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
                 Use old question papers as templates to maintain consistency
               </p>
             </div>
