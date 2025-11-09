@@ -275,7 +275,7 @@ export default function B2CStudentSidenav({ isOpen, setIsOpen, isCollapsed, setI
 						/>
 						{!isCollapsed && (
 							<span className="text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white">
-								iGyanAI
+								IGYAN.AI
 							</span>
 						)}
 					</Link>
