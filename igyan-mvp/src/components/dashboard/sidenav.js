@@ -18,7 +18,7 @@ import { supabase } from "../../app/utils/supabase";
 const ROLE_BASED_NAV_CONFIG = {
 	// Common items (available to all roles)
 	dashboard: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	tools: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
@@ -36,13 +36,13 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
 	sharkAi: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'b2c_student', 'b2c_mentor'],
 	},
 	performance: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	settings: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	
 	// Institutional only items (not for B2C users)
@@ -51,6 +51,12 @@ const ROLE_BASED_NAV_CONFIG = {
 	},
 	reports: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	reportCards: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'parent'],
+	},
+	bulkUpload: {
+		allowedRoles: ['super_admin', 'co_admin'],
 	},
 	assignments: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
@@ -69,7 +75,7 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
 	},
 	attendance: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'parent'],
 	},
 	userAccess: {
 		allowedRoles: ['super_admin'],
@@ -85,16 +91,38 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
 	},
 	eventsPublic: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	homeworkManagement: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
 	},
 	homeworkStudent: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent'],
 	},
 	homeworkReports: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent'],
+	},
+	
+	// Counselor specific items
+	counselorSafetyAlerts: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	counselorSessions: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	counselorAnalytics: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	
+	// Parent specific items
+	parentAttendance: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
+	},
+	parentReportCards: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
+	},
+	parentCommunication: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
 	},
 	
 	// B2C specific items
@@ -524,6 +552,51 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 
 		{
+			key: 'reportCards',
+			name: "Report Cards",
+			href: "/dashboard/report-cards",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.reportCards.allowedRoles,
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+					/>
+				</svg>
+			),
+		},
+		{
+			key: 'bulkUpload',
+			name: "Bulk Upload",
+			href: "/dashboard/bulk-upload",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.bulkUpload.allowedRoles,
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+					/>
+				</svg>
+			),
+		},
+
+		{
 			key: 'userAccess',
 			name: "User Access",
 			href: "/dashboard/user-access",
@@ -807,13 +880,15 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									Institutional Development
 								</p>
 							</div>
-							{navItems.filter(item => ['incubationHub', 'performance', 'reports', 'questionPaper', 'assignments'].includes(item.key)).map((item) => {
+							{navItems.filter(item => ['incubationHub', 'performance', 'reports', 'questionPaper', 'assignments', 'reportCards', 'bulkUpload'].includes(item.key)).map((item) => {
 								if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 								const isActive = pathname === item.href;
 								const displayName = item.key === 'performance' ? 'Performance & Analytics' :
 									item.key === 'reports' ? 'Smart Report Builder' :
 									item.key === 'questionPaper' ? 'Teachers Toolkit' :
-									item.key === 'assignments' ? 'AI Play Zone' : item.name;
+									item.key === 'assignments' ? 'AI Play Zone' :
+									item.key === 'reportCards' ? 'Report Cards Generator' :
+									item.key === 'bulkUpload' ? 'Bulk Data Import' : item.name;
 								return (
 									<Link
 										key={item.key}
