@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -43,6 +43,9 @@ const ROLE_BASED_NAV_CONFIG = {
 	},
 	settings: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'parent', 'b2c_student', 'b2c_mentor'],
+	},
+	liveClassroom: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
 	
 	// Institutional only items (not for B2C users)
@@ -329,8 +332,20 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				<Image src="/asset/ai-shark/sharkicon.png" alt="AI Shark" width={20} height={20} className="object-contain nav-icon-adaptive" />
 			),
 		},
-		{
-			key: 'contentGenerator',
+	{
+		key: 'liveClassroom',
+		name: "i-Meet",
+		href: "/dashboard/live-classroom",
+		allowedRoles: ROLE_BASED_NAV_CONFIG.liveClassroom.allowedRoles,
+		icon: (
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+				<path d="M23 7l-7 5 7 5V7z"></path>
+				<rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+			</svg>
+		),
+	},
+	{
+		key: 'contentGenerator',
 			name: "Pitch Deck Generator",
 			href: "/dashboard/content-generator",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.contentGenerator.allowedRoles,
@@ -777,6 +792,41 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						);
 					})}
 
+					{/* i-Meet - Video Conferencing */}
+					{navItems.filter(item => item.key === 'liveClassroom').map((item) => {
+						if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
+						const isActive = pathname === item.href;
+						return (
+							<Link
+								key={item.key}
+								href={item.href}
+								onClick={() => setIsOpen(false)}
+								className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+									isActive
+										? "bg-linear-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm ring-1 ring-indigo-500/20 dark:from-indigo-500/20 dark:to-purple-500/20 dark:text-indigo-400"
+										: "text-zinc-700 hover:bg-zinc-100/80 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
+								} ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
+								title={isCollapsed ? item.name : ""}
+							>
+								<div className={`${isCollapsed ? "lg:mx-auto" : ""} ${isActive ? "scale-110" : ""} transition-transform`}>
+									{item.icon}
+								</div>
+								<span className={`transition-all duration-300 ${isCollapsed ? "lg:hidden" : ""}`}>
+									{item.name}
+								</span>
+								{isActive && !isCollapsed && (
+									<div className="ml-auto h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400"></div>
+								)}
+								{isCollapsed && (
+									<div className="invisible absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-zinc-900 px-3 py-2 text-xs font-medium text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900 lg:block hidden">
+										{item.name}
+										<div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-zinc-900 dark:border-r-zinc-100"></div>
+									</div>
+								)}
+							</Link>
+						);
+					})}
+
 					{/* I-GYAN AI Suite */}
 					{user?.role === 'super_admin' && (
 						<>
@@ -785,7 +835,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									I-GYAN AI Suite
 								</p>
 							</div>
-							{navItems.filter(item => ['copilot', 'gyanisage', 'vivaAi', 'sharkAi', 'contentGenerator', 'tools'].includes(item.key)).map((item) => {
+							{navItems.filter(item => ['copilot', 'gyanisage', 'vivaAi', 'sharkAi', 'contentGenerator', 'tools', 'liveClassroom'].includes(item.key)).map((item) => {
 								if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 								const isActive = pathname === item.href;
 								const displayName = item.key === 'copilot' ? 'Customise Co-Pilot' :
