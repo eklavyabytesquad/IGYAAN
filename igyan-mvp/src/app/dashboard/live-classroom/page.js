@@ -22,14 +22,14 @@ export default function LiveClassroom() {
 
 	// Auto-join if room ID is in URL
 	useEffect(() => {
-		if (!authLoading && user) {
+		if (!authLoading && user && !inMeeting) {
 			const roomFromUrl = searchParams.get('join');
-			if (roomFromUrl && !inMeeting) {
+			if (roomFromUrl) {
 				setCurrentRoomId(roomFromUrl);
 				setInMeeting(true);
 			}
 		}
-	}, [authLoading, user, searchParams, inMeeting]);
+	}, [authLoading, user, searchParams]);
 
 	if (authLoading) {
 		return (
