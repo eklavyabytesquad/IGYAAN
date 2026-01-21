@@ -8,6 +8,8 @@ import DashboardSidenav from "../../components/dashboard/sidenav";
 import FacultySidenav from "../../components/dashboard/faculty-sidenav";
 import StudentSidenav from "../../components/dashboard/student-sidenav";
 import B2CStudentSidenav from "../../components/dashboard/b2c-student-sidenav";
+import CounselorSidenav from "../../components/dashboard/counselor-sidenav";
+import ParentSidenav from "../../components/dashboard/parent-sidenav";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -22,7 +24,7 @@ export default function DashboardLayout({ children }) {
 	useEffect(() => {
 		if (!user) return;
 		
-		const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty'];
+		const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty', 'counselor', 'parent'];
 		const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
 		const ALL_VALID_ROLES = [...INSTITUTIONAL_ROLES, ...LAUNCH_PAD_ROLES];
 		
@@ -142,6 +144,22 @@ export default function DashboardLayout({ children }) {
 				/>
 			) : user?.role === 'student' ? (
 				<StudentSidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
+					schoolData={schoolData}
+				/>
+			) : user?.role === 'counselor' ? (
+				<CounselorSidenav
+					isOpen={isSidenavOpen}
+					setIsOpen={setIsSidenavOpen}
+					isCollapsed={isCollapsed}
+					setIsCollapsed={setIsCollapsed}
+					schoolData={schoolData}
+				/>
+			) : user?.role === 'parent' ? (
+				<ParentSidenav
 					isOpen={isSidenavOpen}
 					setIsOpen={setIsSidenavOpen}
 					isCollapsed={isCollapsed}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -18,7 +18,7 @@ import { supabase } from "../../app/utils/supabase";
 const ROLE_BASED_NAV_CONFIG = {
 	// Common items (available to all roles)
 	dashboard: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	tools: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
@@ -36,12 +36,15 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
 	sharkAi: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'b2c_student', 'b2c_mentor'],
 	},
 	performance: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	settings: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'counselor', 'parent', 'b2c_student', 'b2c_mentor'],
+	},
+	liveClassroom: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
 	},
 	
@@ -51,6 +54,12 @@ const ROLE_BASED_NAV_CONFIG = {
 	},
 	reports: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
+	reportCards: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'parent'],
+	},
+	bulkUpload: {
+		allowedRoles: ['super_admin', 'co_admin'],
 	},
 	assignments: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
@@ -69,7 +78,7 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
 	},
 	attendance: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'parent'],
 	},
 	userAccess: {
 		allowedRoles: ['super_admin'],
@@ -85,16 +94,38 @@ const ROLE_BASED_NAV_CONFIG = {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
 	},
 	eventsPublic: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent', 'b2c_student', 'b2c_mentor'],
 	},
 	homeworkManagement: {
 		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
 	},
 	homeworkStudent: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent'],
 	},
 	homeworkReports: {
-		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student'],
+		allowedRoles: ['super_admin', 'co_admin', 'faculty', 'student', 'parent'],
+	},
+	
+	// Counselor specific items
+	counselorSafetyAlerts: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	counselorSessions: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	counselorAnalytics: {
+		allowedRoles: ['super_admin', 'co_admin', 'counselor'],
+	},
+	
+	// Parent specific items
+	parentAttendance: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
+	},
+	parentReportCards: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
+	},
+	parentCommunication: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
 	},
 	
 	// B2C specific items
@@ -301,8 +332,20 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 				<Image src="/asset/ai-shark/sharkicon.png" alt="AI Shark" width={20} height={20} className="object-contain nav-icon-adaptive" />
 			),
 		},
-		{
-			key: 'contentGenerator',
+	{
+		key: 'liveClassroom',
+		name: "i-Meet",
+		href: "/dashboard/live-classroom",
+		allowedRoles: ROLE_BASED_NAV_CONFIG.liveClassroom.allowedRoles,
+		icon: (
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+				<path d="M23 7l-7 5 7 5V7z"></path>
+				<rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+			</svg>
+		),
+	},
+	{
+		key: 'contentGenerator',
 			name: "Pitch Deck Generator",
 			href: "/dashboard/content-generator",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.contentGenerator.allowedRoles,
@@ -524,6 +567,51 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 
 		{
+			key: 'reportCards',
+			name: "Report Cards",
+			href: "/dashboard/report-cards",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.reportCards.allowedRoles,
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+					/>
+				</svg>
+			),
+		},
+		{
+			key: 'bulkUpload',
+			name: "Bulk Upload",
+			href: "/dashboard/bulk-upload",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.bulkUpload.allowedRoles,
+			icon: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					className="h-5 w-5"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+					/>
+				</svg>
+			),
+		},
+
+		{
 			key: 'userAccess',
 			name: "User Access",
 			href: "/dashboard/user-access",
@@ -704,6 +792,41 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						);
 					})}
 
+					{/* i-Meet - Video Conferencing */}
+					{navItems.filter(item => item.key === 'liveClassroom').map((item) => {
+						if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
+						const isActive = pathname === item.href;
+						return (
+							<Link
+								key={item.key}
+								href={item.href}
+								onClick={() => setIsOpen(false)}
+								className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+									isActive
+										? "bg-linear-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm ring-1 ring-indigo-500/20 dark:from-indigo-500/20 dark:to-purple-500/20 dark:text-indigo-400"
+										: "text-zinc-700 hover:bg-zinc-100/80 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
+								} ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
+								title={isCollapsed ? item.name : ""}
+							>
+								<div className={`${isCollapsed ? "lg:mx-auto" : ""} ${isActive ? "scale-110" : ""} transition-transform`}>
+									{item.icon}
+								</div>
+								<span className={`transition-all duration-300 ${isCollapsed ? "lg:hidden" : ""}`}>
+									{item.name}
+								</span>
+								{isActive && !isCollapsed && (
+									<div className="ml-auto h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400"></div>
+								)}
+								{isCollapsed && (
+									<div className="invisible absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-zinc-900 px-3 py-2 text-xs font-medium text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900 lg:block hidden">
+										{item.name}
+										<div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-zinc-900 dark:border-r-zinc-100"></div>
+									</div>
+								)}
+							</Link>
+						);
+					})}
+
 					{/* I-GYAN AI Suite */}
 					{user?.role === 'super_admin' && (
 						<>
@@ -712,7 +835,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									I-GYAN AI Suite
 								</p>
 							</div>
-							{navItems.filter(item => ['copilot', 'gyanisage', 'vivaAi', 'sharkAi', 'contentGenerator', 'tools'].includes(item.key)).map((item) => {
+							{navItems.filter(item => ['copilot', 'gyanisage', 'vivaAi', 'sharkAi', 'contentGenerator', 'tools', 'liveClassroom'].includes(item.key)).map((item) => {
 								if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 								const isActive = pathname === item.href;
 								const displayName = item.key === 'copilot' ? 'Customise Co-Pilot' :
@@ -807,13 +930,15 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									Institutional Development
 								</p>
 							</div>
-							{navItems.filter(item => ['incubationHub', 'performance', 'reports', 'questionPaper', 'assignments'].includes(item.key)).map((item) => {
+							{navItems.filter(item => ['incubationHub', 'performance', 'reports', 'questionPaper', 'assignments', 'reportCards', 'bulkUpload'].includes(item.key)).map((item) => {
 								if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 								const isActive = pathname === item.href;
 								const displayName = item.key === 'performance' ? 'Performance & Analytics' :
 									item.key === 'reports' ? 'Smart Report Builder' :
 									item.key === 'questionPaper' ? 'Teachers Toolkit' :
-									item.key === 'assignments' ? 'AI Play Zone' : item.name;
+									item.key === 'assignments' ? 'AI Play Zone' :
+									item.key === 'reportCards' ? 'Report Cards Generator' :
+									item.key === 'bulkUpload' ? 'Bulk Data Import' : item.name;
 								return (
 									<Link
 										key={item.key}
