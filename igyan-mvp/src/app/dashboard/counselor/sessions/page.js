@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/app/utils/auth_context";
 import { createClient } from "@/app/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function CounselorSessionsPage() {
+function CounselorSessionsContent() {
 	const { user } = useAuth();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -665,5 +665,19 @@ export default function CounselorSessionsPage() {
 				</div>
 			)}
 		</div>
+	);
+}
+export default function CounselorSessionsPage() {
+	return (
+		<Suspense fallback={
+			<div className="flex min-h-screen items-center justify-center">
+				<div className="text-center">
+					<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-sky-500 border-r-transparent"></div>
+					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">Loading sessions...</p>
+				</div>
+			</div>
+		}>
+			<CounselorSessionsContent />
+		</Suspense>
 	);
 }
