@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 export default function SafetyAlertsPage() {
 	const { user } = useAuth();
 	const router = useRouter();
-	const supabase = createClient();
 
 	const [loading, setLoading] = useState(true);
 	const [alerts, setAlerts] = useState([]);
@@ -37,6 +36,7 @@ export default function SafetyAlertsPage() {
 		try {
 			setLoading(true);
 			// TODO: Replace with actual database query
+			// const supabase = createClient();
 			// const { data, error } = await supabase
 			// 	.from("safety_alerts")
 			// 	.select(`
@@ -166,6 +166,7 @@ export default function SafetyAlertsPage() {
 	const handleUpdateStatus = async (alertId, newStatus) => {
 		try {
 			// TODO: Update alert status in database
+			// const supabase = createClient();
 			// const { error } = await supabase
 			// 	.from("safety_alerts")
 			// 	.update({ status: newStatus, updated_at: new Date().toISOString() })
