@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../utils/auth_context";
+import { supabase } from "../../utils/supabase";
 
 export default function AttendancePage() {
 	const { user, loading } = useAuth();
@@ -19,6 +20,7 @@ export default function AttendancePage() {
 	const [showStats, setShowStats] = useState(false);
 	const [absenteeAlerts, setAbsenteeAlerts] = useState([]);
 	const [view, setView] = useState("mark"); // 'mark' or 'history'
+	const [isLoading, setIsLoading] = useState(false);
 
 	const subjects = [
 		{ id: "mathematics", name: "Mathematics", icon: "🔢" },
@@ -40,51 +42,224 @@ export default function AttendancePage() {
 		}
 	}, [user, loading, router]);
 
-	// Load students from localStorage
+	// Load students from Supabase - only from same school
 	useEffect(() => {
 		if (user && user.role === "faculty") {
-			const storedStudents = localStorage.getItem(
-				`students_${user.school_id || user.id}`
-			);
-			if (storedStudents) {
-				setStudents(JSON.parse(storedStudents));
-			}
-
-			const storedAttendance = localStorage.getItem(
-				`attendance_${user.school_id || user.id}`
-			);
-			if (storedAttendance) {
-				setAttendance(JSON.parse(storedAttendance));
-			}
+			fetchStudents();
+			fetchAttendance();
 		}
 	}, [user]);
+
+	// Fetch students from Supabase filtered by school_id
+	const fetchStudents = async () => {
+		try {
+			setIsLoading(true);
+			let query = supabase
+				.from("users")
+				.select(`
+					*,
+					student_profiles (*)
+				`)
+				.eq("role", "student");
+
+			// Filter by school_id - only show students from same school
+			if (user.school_id) {
+				query = query.eq("school_id", user.school_id);
+			}
+
+			query = query.order("created_at", { ascending: false });
+
+			const { data, error } = await query;
+
+			if (error) throw error;
+
+			// Map to attendance-compatible format
+			const mappedStudents = data.map((student) => {
+				const profile = Array.isArray(student.student_profiles)
+					? student.student_profiles[0]
+					: student.student_profiles;
+
+				return {
+					id: student.id,
+					profileId: profile?.id || null,
+					regNo: student.email.split("@")[0],
+					name: student.full_name,
+					email: student.email,
+					class: profile?.class || "",
+					section: profile?.section || "",
+				};
+			});
+
+			setStudents(mappedStudents);
+		} catch (error) {
+			console.error("Error fetching students:", error);
+			alert("Failed to load students: " + error.message);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	// Fetch attendance records from Supabase
+	const fetchAttendance = async () => {
+		try {
+			// First, get attendance records
+			let query = supabase
+				.from("student_attendance")
+				.select("*");
+
+			// Filter by school_id
+			if (user.school_id) {
+				query = query.eq("school_id", user.school_id);
+			}
+
+			query = query.order("attendance_date", { ascending: false });
+
+			const { data: attendanceData, error: attendanceError } = await query;
+
+			if (attendanceError) throw attendanceError;
+
+			// Get all unique student_profile_ids
+			const profileIds = [...new Set(attendanceData.map(a => a.student_profile_id).filter(Boolean))];
+
+			// Fetch student profiles separately
+			const { data: profiles, error: profileError } = await supabase
+				.from("student_profiles")
+				.select("id, user_id, class, section")
+				.in("id", profileIds);
+
+			if (profileError) throw profileError;
+
+			// Fetch marked_by users separately
+			const markedByIds = [...new Set(attendanceData.map(a => a.marked_by).filter(Boolean))];
+			const { data: users, error: usersError } = await supabase
+				.from("users")
+				.select("id, full_name, email")
+				.in("id", markedByIds);
+
+			if (usersError) throw usersError;
+
+			// Create lookup maps
+			const profileMap = {};
+			profiles.forEach(p => {
+				profileMap[p.id] = p;
+			});
+
+			const userMap = {};
+			users.forEach(u => {
+				userMap[u.id] = u;
+			});
+
+			// Group attendance by date, class, section, subject
+			const groupedAttendance = {};
+			
+			attendanceData.forEach((record) => {
+				const profile = profileMap[record.student_profile_id];
+				if (!profile) return; // Skip if profile not found
+				
+				const subject = record.subject || 'general';
+				const key = `${record.attendance_date}_${profile.class}_${profile.section}_${subject}`;
+				
+				if (!groupedAttendance[key]) {
+					const markedByUser = userMap[record.marked_by];
+					groupedAttendance[key] = {
+						id: record.id,
+						date: record.attendance_date,
+						class: profile.class,
+						section: profile.section,
+						subject: subject,
+						records: {},
+						timestamp: record.created_at,
+						markedBy: markedByUser?.full_name || markedByUser?.email || 'Unknown',
+					};
+				}
+				
+				groupedAttendance[key].records[profile.user_id] = record.status;
+			});
+
+			setAttendance(Object.values(groupedAttendance));
+		} catch (error) {
+			console.error("Error fetching attendance:", error);
+			alert("Failed to load attendance: " + error.message);
+		}
+	};
 
 	// Initialize attendance data when class/section/subject changes
 	useEffect(() => {
 		if (selectedClass && selectedSection && selectedSubject) {
+			loadAttendanceForDate();
+		}
+	}, [selectedClass, selectedSection, selectedSubject, selectedDate, students]);
+
+	// Load attendance for selected date
+	const loadAttendanceForDate = async () => {
+		try {
 			const filteredStudents = students.filter(
 				(s) => s.class === selectedClass && s.section === selectedSection
 			);
 
-			const existingAttendance = attendance.find(
-				(a) =>
-					a.date === selectedDate &&
-					a.class === selectedClass &&
-					a.section === selectedSection &&
-					a.subject === selectedSubject
-			);
+			// Get attendance records for this date
+			const { data: attendanceRecords, error: attendanceError } = await supabase
+				.from("student_attendance")
+				.select("*")
+				.eq("attendance_date", selectedDate)
+				.eq("school_id", user.school_id);
 
-			if (existingAttendance) {
-				setAttendanceData(existingAttendance.records);
+			if (attendanceError) throw attendanceError;
+
+			// Get profile IDs from attendance records
+			const profileIds = attendanceRecords.map(r => r.student_profile_id).filter(Boolean);
+
+			if (profileIds.length > 0) {
+				// Fetch profiles to map student_profile_id to user_id
+				const { data: profiles, error: profileError } = await supabase
+					.from("student_profiles")
+					.select("id, user_id, class, section")
+					.in("id", profileIds);
+
+				if (profileError) throw profileError;
+
+				// Create map of profile_id to user_id
+				const profileMap = {};
+				profiles.forEach(p => {
+					profileMap[p.id] = p;
+				});
+
+				// Filter for selected class/section and map to user_id: status
+				const attendanceMap = {};
+				attendanceRecords.forEach((record) => {
+					const profile = profileMap[record.student_profile_id];
+					if (profile?.class === selectedClass && profile?.section === selectedSection) {
+						attendanceMap[profile.user_id] = record.status;
+					}
+				});
+
+				// Initialize with existing or default to present
+				const initialData = {};
+				filteredStudents.forEach((student) => {
+					initialData[student.id] = attendanceMap[student.id] || "present";
+				});
+				setAttendanceData(initialData);
 			} else {
+				// No records found, initialize with all present
 				const initialData = {};
 				filteredStudents.forEach((student) => {
 					initialData[student.id] = "present";
 				});
 				setAttendanceData(initialData);
 			}
+		} catch (error) {
+			console.error("Error loading attendance:", error);
+			// Initialize with all present on error
+			const filteredStudents = students.filter(
+				(s) => s.class === selectedClass && s.section === selectedSection
+			);
+			const initialData = {};
+			filteredStudents.forEach((student) => {
+				initialData[student.id] = "present";
+			});
+			setAttendanceData(initialData);
 		}
-	}, [selectedClass, selectedSection, selectedSubject, selectedDate, students]);
+	};
 
 	// Check for absentee alerts
 	useEffect(() => {
@@ -133,47 +308,64 @@ export default function AttendancePage() {
 			selectedSubject
 	);
 
-	// Save attendance
-	const handleSaveAttendance = () => {
+	// Save attendance to Supabase
+	const handleSaveAttendance = async () => {
 		if (!selectedClass || !selectedSection || !selectedSubject) {
 			alert("Please select class, section, and subject");
 			return;
 		}
 
-		const newRecord = {
-			id: Date.now(),
-			date: selectedDate,
-			class: selectedClass,
-			section: selectedSection,
-			subject: selectedSubject,
-			records: attendanceData,
-			timestamp: new Date().toISOString(),
-			markedBy: user.full_name || user.email,
-		};
+		try {
+			setIsLoading(true);
 
-		const existingIndex = attendance.findIndex(
-			(a) =>
-				a.date === selectedDate &&
-				a.class === selectedClass &&
-				a.section === selectedSection &&
-				a.subject === selectedSubject
-		);
+			// Get all students for this class/section
+			const studentsToMark = students.filter(
+				(s) => s.class === selectedClass && s.section === selectedSection
+			);
 
-		let updatedAttendance;
-		if (existingIndex >= 0) {
-			updatedAttendance = [...attendance];
-			updatedAttendance[existingIndex] = newRecord;
-		} else {
-			updatedAttendance = [...attendance, newRecord];
+			// Delete existing attendance for this date/class/section
+			await supabase
+				.from("student_attendance")
+				.delete()
+				.eq("attendance_date", selectedDate)
+				.eq("school_id", user.school_id)
+				.in(
+					"student_profile_id",
+					studentsToMark.map((s) => s.profileId).filter(Boolean)
+				);
+
+			// Prepare new attendance records
+			const attendanceRecords = studentsToMark
+				.filter((student) => student.profileId) // Only students with profiles
+				.map((student) => ({
+					student_profile_id: student.profileId,
+					school_id: user.school_id,
+					attendance_date: selectedDate,
+					status: attendanceData[student.id] || "present",
+					subject: selectedSubject,
+					remarks: null,
+					marked_by: user.id,
+				}));
+
+			// Insert new attendance records
+			const { error } = await supabase
+				.from("student_attendance")
+				.insert(attendanceRecords);
+
+			if (error) throw error;
+
+			alert("Attendance saved successfully!");
+			setShowStats(true);
+			setTimeout(() => setShowStats(false), 3000);
+			
+			// Refresh attendance list
+			await fetchAttendance();
+		} catch (error) {
+			console.error("Error saving attendance:", error);
+			alert("Failed to save attendance: " + error.message);
+		} finally {
+			setIsLoading(false);
 		}
-
-		localStorage.setItem(
-			`attendance_${user.school_id || user.id}`,
-			JSON.stringify(updatedAttendance)
-		);
-		setAttendance(updatedAttendance);
-		setShowStats(true);
-		setTimeout(() => setShowStats(false), 3000);
 	};
 
 	// Toggle attendance status
@@ -237,7 +429,7 @@ export default function AttendancePage() {
 
 	const attendanceHistory = getAttendanceHistory();
 
-	if (loading) {
+	if (loading || isLoading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-center">
