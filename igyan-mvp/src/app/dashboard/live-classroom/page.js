@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAuth } from '@/app/utils/auth_context';
@@ -8,7 +8,7 @@ import { useAuth } from '@/app/utils/auth_context';
 const WS_URL = 'wss://igyan-meets.onrender.com/ws';
 const API_KEY = 'zQgLY2TzzmgKA0Ge98sTWYaWkxfz3b1ltV_rcUqHSDw';
 
-export default function LiveClassroom() {
+function LiveClassroomContent() {
 	const { user, authLoading } = useAuth();
 	const searchParams = useSearchParams();
 	const [showCreateModal, setShowCreateModal] = useState(false);
@@ -174,6 +174,21 @@ export default function LiveClassroom() {
 				</div>
 			)}
 		</div>
+	);
+}
+
+export default function LiveClassroom() {
+	return (
+		<Suspense fallback={
+			<div className="flex items-center justify-center min-h-screen">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
+					<p className="text-gray-600">Loading classroom...</p>
+				</div>
+			</div>
+		}>
+			<LiveClassroomContent />
+		</Suspense>
 	);
 }
 
