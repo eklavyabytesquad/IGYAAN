@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -45,7 +45,7 @@ const courseDataMap = {
 	},
 };
 
-export default function CourseViewerPage() {
+function CourseViewerContent() {
 	const params = useParams();
 	const searchParams = useSearchParams();
 	const router = useRouter();
@@ -595,5 +595,20 @@ export default function CourseViewerPage() {
 				</button>
 			)}
 		</div>
+	);
+}
+
+export default function CourseViewerPage() {
+	return (
+		<Suspense fallback={
+			<div className="flex items-center justify-center min-h-screen">
+				<div className="text-center">
+					<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-500 border-r-transparent"></div>
+					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">Loading course...</p>
+				</div>
+			</div>
+		}>
+			<CourseViewerContent />
+		</Suspense>
 	);
 }
