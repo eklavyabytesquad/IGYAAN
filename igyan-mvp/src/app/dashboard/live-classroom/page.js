@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAuth } from '@/app/utils/auth_context';
 
+const API_BASE_URL = 'https://igyan-meets.onrender.com';
 const WS_URL = 'wss://igyan-meets.onrender.com/ws';
 const API_KEY = 'zQgLY2TzzmgKA0Ge98sTWYaWkxfz3b1ltV_rcUqHSDw';
 
@@ -17,6 +18,8 @@ function LiveClassroomContent() {
 	const [joinRoomId, setJoinRoomId] = useState('');
 	const [inMeeting, setInMeeting] = useState(false);
 	const [currentRoomId, setCurrentRoomId] = useState(null);
+	const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+	const [roomError, setRoomError] = useState(null);
 
 	const allowedRoles = ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'];
 
@@ -29,7 +32,7 @@ function LiveClassroomContent() {
 				setInMeeting(true);
 			}
 		}
-	}, [authLoading, user, searchParams]);
+	}, [authLoading, user, searchParams, inMeeting]);
 
 	if (authLoading) {
 		return (
@@ -50,28 +53,94 @@ function LiveClassroomContent() {
 		);
 	}
 
-	const handleCreateMeeting = () => {
+	const handleCreateMeeting = async () => {
 		if (roomName.trim()) {
-			const roomId = roomName.trim().toLowerCase().replace(/\s+/g, '-');
-			setCurrentRoomId(roomId);
-			setInMeeting(true);
-			setShowCreateModal(false);
+			setIsCreatingRoom(true);
+			setRoomError(null);
+			
+			try {
+				const roomId = roomName.trim().toLowerCase().replace(/\s+/g, '-');
+				
+				// Create room via API
+				const response = await fetch(`${API_BASE_URL}/api/rooms`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-API-Key': API_KEY
+					},
+					body: JSON.stringify({
+						room_code: roomId,
+						name: roomName.trim(),
+						created_by: user?.id || 'guest',
+						max_participants: 50
+					})
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json().catch(() => ({}));
+					throw new Error(errorData.detail || 'Failed to create room');
+				}
+
+				const roomData = await response.json();
+				console.log('✅ Room created:', roomData);
+				
+				setCurrentRoomId(roomId);
+				setInMeeting(true);
+				setShowCreateModal(false);
+			} catch (error) {
+				console.error('❌ Failed to create room:', error);
+				setRoomError(error.message || 'Failed to create meeting. Please try again.');
+			} finally {
+				setIsCreatingRoom(false);
+			}
 		}
 	};
 
-	const handleJoinMeeting = () => {
+	const handleJoinMeeting = async () => {
 		if (joinRoomId.trim()) {
-			setCurrentRoomId(joinRoomId.trim());
-			setInMeeting(true);
-			setShowJoinModal(false);
+			setIsCreatingRoom(true);
+			setRoomError(null);
+			
+			try {
+				const roomId = joinRoomId.trim().toLowerCase();
+				
+				// Verify room exists via API
+				const response = await fetch(`${API_BASE_URL}/api/rooms/${roomId}`, {
+					headers: {
+						'X-API-Key': API_KEY
+					}
+				});
+
+				if (!response.ok) {
+					if (response.status === 404) {
+						throw new Error('Room not found. Please check the room code.');
+					}
+					throw new Error('Failed to verify room');
+				}
+
+				const roomData = await response.json();
+				console.log('✅ Room verified:', roomData);
+				
+				setCurrentRoomId(roomId);
+				setInMeeting(true);
+				setShowJoinModal(false);
+			} catch (error) {
+				console.error('❌ Failed to join room:', error);
+				setRoomError(error.message || 'Failed to join meeting. Please check the room code.');
+			} finally {
+				setIsCreatingRoom(false);
+			}
 		}
 	};
 
-	const handleLeaveMeeting = () => {
+	const handleLeaveMeeting = async () => {
+		// Optionally delete room if user created it
+		// For now, just leave the meeting
 		setInMeeting(false);
 		setCurrentRoomId(null);
 		setRoomName('');
 		setJoinRoomId('');
+		setRoomError(null);
 	};
 
 	if (inMeeting && currentRoomId) {
@@ -118,24 +187,35 @@ function LiveClassroomContent() {
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 					<div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
 						<h3 className="text-2xl font-bold mb-4">Create New Meeting</h3>
+						{roomError && (
+							<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+								{roomError}
+							</div>
+						)}
 						<input
 							type="text"
 							value={roomName}
 							onChange={(e) => setRoomName(e.target.value)}
 							placeholder="Enter meeting name..."
 							className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
-							onKeyPress={(e) => e.key === 'Enter' && handleCreateMeeting()}
+							onKeyPress={(e) => e.key === 'Enter' && !isCreatingRoom && handleCreateMeeting()}
+							disabled={isCreatingRoom}
 						/>
 						<div className="flex gap-3">
 							<button
 								onClick={handleCreateMeeting}
-								className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg"
+								disabled={isCreatingRoom}
+								className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								Create
+								{isCreatingRoom ? 'Creating...' : 'Create'}
 							</button>
 							<button
-								onClick={() => setShowCreateModal(false)}
-								className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg"
+								onClick={() => {
+									setShowCreateModal(false);
+									setRoomError(null);
+								}}
+								disabled={isCreatingRoom}
+								className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg disabled:opacity-50"
 							>
 								Cancel
 							</button>
@@ -148,24 +228,35 @@ function LiveClassroomContent() {
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 					<div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
 						<h3 className="text-2xl font-bold mb-4">Join Meeting</h3>
+						{roomError && (
+							<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+								{roomError}
+							</div>
+						)}
 						<input
 							type="text"
 							value={joinRoomId}
 							onChange={(e) => setJoinRoomId(e.target.value)}
 							placeholder="Enter meeting code..."
 							className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-							onKeyPress={(e) => e.key === 'Enter' && handleJoinMeeting()}
+							onKeyPress={(e) => e.key === 'Enter' && !isCreatingRoom && handleJoinMeeting()}
+							disabled={isCreatingRoom}
 						/>
 						<div className="flex gap-3">
 							<button
 								onClick={handleJoinMeeting}
-								className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+								disabled={isCreatingRoom}
+								className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								Join
+								{isCreatingRoom ? 'Joining...' : 'Join'}
 							</button>
 							<button
-								onClick={() => setShowJoinModal(false)}
-								className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg"
+								onClick={() => {
+									setShowJoinModal(false);
+									setRoomError(null);
+								}}
+								disabled={isCreatingRoom}
+								className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg disabled:opacity-50"
 							>
 								Cancel
 							</button>
@@ -336,7 +427,7 @@ function VideoConference({ roomId, onLeave, user }) {
 		console.log('🔗 Connecting to:', `${WS_URL}?room=${roomId}`);
 		
 		try {
-			const ws = new WebSocket(`${WS_URL}?room=${roomId}&userId=${userId}&name=${encodeURIComponent(displayName)}`);
+			const ws = new WebSocket(`${WS_URL}?room=${roomId}&userId=${userId}&name=${encodeURIComponent(displayName)}&apiKey=${API_KEY}`);
 			wsRef.current = ws;
 
 			ws.onopen = () => {
@@ -346,8 +437,7 @@ function VideoConference({ roomId, onLeave, user }) {
 					type: 'join',
 					roomId,
 					userId,
-					displayName,
-					apiKey: API_KEY
+					displayName
 				}));
 			};
 
