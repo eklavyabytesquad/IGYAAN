@@ -89,11 +89,12 @@ export default function DashboardPage() {
 	const firstName = user.full_name?.split(" ")[0] || "Learner";
 	const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
 	const isB2CUser = LAUNCH_PAD_ROLES.includes(user.role);
+	const isMentor = user.role === 'b2c_mentor';
 
 	// Different labels for B2C users vs institutional users
 	const statCards = [
 		{
-			label: isB2CUser ? "Active Ideas" : "Active Courses",
+			label: isMentor ? "Active Builders" : isB2CUser ? "Active Ideas" : "Active Courses",
 			value: "8",
 			trend: "+2 this week",
 			accent: "from-indigo-500/15 via-indigo-500/5 to-transparent",
@@ -105,7 +106,7 @@ export default function DashboardPage() {
 			iconBg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300",
 		},
 		{
-			label: isB2CUser ? "Launch Tasks Completed" : "Completed Tasks",
+			label: isMentor ? "Reviews Completed" : isB2CUser ? "Launch Tasks Completed" : "Completed Tasks",
 			value: "23",
 			trend: "Great momentum",
 			accent: "from-sky-500/15 via-sky-500/5 to-transparent",
@@ -117,7 +118,7 @@ export default function DashboardPage() {
 			iconBg: "bg-sky-500/10 text-sky-600 dark:text-sky-300",
 		},
 		{
-			label: isB2CUser ? "Pitch Readiness Score" : "Avg Performance",
+			label: isMentor ? "Decision Accuracy" : isB2CUser ? "Pitch Readiness Score" : "Avg Performance",
 			value: "92%",
 			trend: "Stable progression",
 			accent: "from-purple-500/15 via-purple-500/5 to-transparent",
@@ -129,7 +130,7 @@ export default function DashboardPage() {
 			iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-300",
 		},
 		{
-			label: isB2CUser ? "Focused Build Time" : "Learning Time",
+			label: isMentor ? "Mentor Time Invested" : isB2CUser ? "Focused Build Time" : "Learning Time",
 			value: "42h",
 			trend: "+6h vs last week",
 			accent: "from-emerald-500/15 via-emerald-500/5 to-transparent",
@@ -144,10 +145,10 @@ export default function DashboardPage() {
 
 	const quickActions = [
 		{
-			title: isB2CUser ? "Idea Portals" : "Explore Courses",
-			description: isB2CUser ? "Government & private ideas you can build on" : "Discover curated learning paths tailored to you",
+			title: isMentor ? "Builder Queue" : isB2CUser ? "Idea Portals" : "Explore Courses",
+			description: isMentor ? "Review pending student ideas and submissions" : isB2CUser ? "Government & private ideas you can build on" : "Discover curated learning paths tailored to you",
 			href: "/features",
-			buttonText: isB2CUser ? "Explore Ideas" : "Open",
+			buttonText: isMentor ? "Open Queue" : isB2CUser ? "Explore Ideas" : "Open",
 			iconBg: "bg-white/70 text-indigo-600 dark:bg-white/10 dark:text-indigo-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -156,10 +157,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isB2CUser ? "Sudarshan AI (Student Mode)" : "Open iGyanAI",
-			description: isB2CUser ? "Your AI guide for thinking, building & pitching" : "Chat with your AI mentor for voice-first guidance",
+			title: isMentor ? "Sudarshan AI (Mentor Mode)" : isB2CUser ? "Sudarshan AI (Student Mode)" : "Open iGyanAI",
+			description: isMentor ? "AI co-pilot for mentoring, reviewing & guiding" : isB2CUser ? "Your AI guide for thinking, building & pitching" : "Chat with your AI mentor for voice-first guidance",
 			href: isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai",
-			buttonText: isB2CUser ? "Enter Command Mode" : "Open",
+			buttonText: isMentor ? "Open Mentor Console" : isB2CUser ? "Enter Command Mode" : "Open",
 			iconBg: "bg-white/70 text-pink-600 dark:bg-white/10 dark:text-pink-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -168,10 +169,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isB2CUser ? "Startup Lab (Student Access)" : "Career Hub",
-			description: isB2CUser ? "Incubators, grants & startup support paths" : "Match your strengths with future pathways",
-			href: isB2CUser ? "/dashboard/incubation-hub" : "/features",
-			buttonText: isB2CUser ? "Explore Support" : "Open",
+			title: isMentor ? "Validation Desk" : isB2CUser ? "Startup Lab (Student Access)" : "Career Hub",
+			description: isMentor ? "Approve, reject, or flag ideas for improvement" : isB2CUser ? "Incubators, grants & startup support paths" : "Match your strengths with future pathways",
+			href: isMentor ? "/dashboard/incubation-hub" : isB2CUser ? "/dashboard/incubation-hub" : "/features",
+			buttonText: isMentor ? "Open Desk" : isB2CUser ? "Explore Support" : "Open",
 			iconBg: "bg-white/70 text-purple-600 dark:bg-white/10 dark:text-purple-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -180,10 +181,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isB2CUser ? "Launch Help Desk" : "Need Support?",
-			description: isB2CUser ? "Get help when you're stuck" : "Reach the iGyaan team for quick assistance",
+			title: isMentor ? "Mentor Support Desk" : isB2CUser ? "Launch Help Desk" : "Need Support?",
+			description: isMentor ? "Escalate issues or request admin support" : isB2CUser ? "Get help when you're stuck" : "Reach the iGyaan team for quick assistance",
 			href: "/contact",
-			buttonText: isB2CUser ? "Ask for Help" : "Open",
+			buttonText: isMentor ? "Get Support" : isB2CUser ? "Ask for Help" : "Open",
 			iconBg: "bg-white/70 text-emerald-600 dark:bg-white/10 dark:text-emerald-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -193,7 +194,23 @@ export default function DashboardPage() {
 		},
 	];
 
-	const focusAreas = isB2CUser ? [
+	const focusAreas = isMentor ? [
+		{
+			title: "Idea Clarity Review",
+			detail: "Check if the problem statement is well-defined",
+			tags: ["10 min", "Review"],
+		},
+		{
+			title: "Pitch Narrative Feedback",
+			detail: "Is the story compelling enough?",
+			tags: ["Feedback", "Pitch"],
+		},
+		{
+			title: "Rapid Pitch Review",
+			detail: "Quick yes/no decision on prototype viability",
+			tags: ["Decision", "5 min"],
+		},
+	] : isB2CUser ? [
 		{
 			title: "Clarity Sprint",
 			detail: "Define the core problem your idea solves",
@@ -227,7 +244,20 @@ export default function DashboardPage() {
 		},
 	];
 
-	const aiHighlights = isB2CUser ? [
+	const aiHighlights = isMentor ? [
+		{
+			title: "AI Summary Note",
+			detail: "3 ideas reviewed today. One flagged for re-submission.",
+		},
+		{
+			title: "Builder Momentum Signal",
+			detail: "Rohan's consistency improved this week. Consider fast-tracking his review.",
+		},
+		{
+			title: "Your Guidance Impact",
+			detail: "Your feedback last week led to 4 revised submissions. Great mentoring!",
+		},
+	] : isB2CUser ? [
 		{
 			title: "AI Feedback Summary",
 			detail: "Your idea clarity improved! Next: work on the pitch opening.",
@@ -255,7 +285,23 @@ export default function DashboardPage() {
 		},
 	];
 
-	const upcomingSessions = isB2CUser ? [
+	const upcomingSessions = isMentor ? [
+		{
+			time: "Today · 7:30 PM",
+			title: "Idea Review Session",
+			description: "Review 3 pending idea submissions",
+		},
+		{
+			time: "Tomorrow · 5:00 PM",
+			title: "Pitch Validation Call",
+			description: "Provide feedback on Rohan's pitch deck",
+		},
+		{
+			time: "Friday · 4:00 PM",
+			title: "Prototype Feedback Session",
+			description: "Review and approve prototype demos",
+		},
+	] : isB2CUser ? [
 		{
 			time: "Today · 7:30 PM",
 			title: "Idea Review with Sudarshan AI",
@@ -324,17 +370,21 @@ export default function DashboardPage() {
 										<path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
 										<path d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
 									</svg>
-									IGYANAI · Student Launch Pad
+									{isMentor ? "IGYANAI · Mentor Control Panel" : "IGYANAI · Student Launch Pad"}
 								</div>
 							)}
 							<h1 className="text-3xl font-semibold sm:text-4xl">
-								{isB2CUser 
+								{isMentor 
+									? `Welcome back, ${firstName}. Here's what needs your guidance today.`
+									: isB2CUser 
 									? `Hey ${firstName}, ready to move one step closer to your launch?`
 									: `Hey ${firstName}, ready for another brilliant session?`
 								}
 							</h1>
 							<p className="max-w-xl text-sm text-white/80 sm:text-base">
-								{isB2CUser 
+								{isMentor 
+									? "Review ideas, guide builders, and track mentoring impact. Your queue is ready."
+									: isB2CUser 
 									? "Build your idea, sharpen your pitch, and track your progress. We saved your momentum so you can pick up right where you left off."
 									: "Track your goals, jump back into conversations, and keep that NTSE dream in sight. We saved your momentum so you can pick up right where you left off."
 								}
@@ -344,10 +394,10 @@ export default function DashboardPage() {
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
 									</svg>
-									{isB2CUser ? "Enter Sudarshan AI" : "Jump into Viva AI"}
+									{isMentor ? "Review Builders" : isB2CUser ? "Enter Sudarshan AI" : "Jump into Viva AI"}
 								</Link>
 								<Link href="/features" className="flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/20">
-									{isB2CUser ? "Plan My Launch Week" : "Plan my week"}
+									{isMentor ? "Open Mentor Insights" : isB2CUser ? "Plan My Launch Week" : "Plan my week"}
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
 										<path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5h15m-15 0A1.5 1.5 0 003 6v12a1.5 1.5 0 001.5 1.5h15A1.5 1.5 0 0021 18V6a1.5 1.5 0 00-1.5-1.5m-15 0V3.75m0 .75V3.75m0 0A.75.75 0 014.5 3h1.5a.75.75 0 01.75.75V4.5m11.25 0V3.75a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75V4.5m-3 5.25h-6" />
 									</svg>
@@ -356,13 +406,13 @@ export default function DashboardPage() {
 						</div>
 						<div className="grid gap-4 sm:w-52">
 							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
-								<p className="text-xs uppercase tracking-wide text-white/70">{isB2CUser ? "Next Launch Check-in" : "Next check-in"}</p>
-								<p className="mt-1 text-lg font-semibold">{isB2CUser ? "Idea clarity · 9 PM" : "Physics practice · 9 PM"}</p>
-								<p className="mt-2 text-white/70">{isB2CUser ? "Idea clarity / pitch improvement session" : "Akshat has 3 saved prompts from yesterday's session."}</p>
+								<p className="text-xs uppercase tracking-wide text-white/70">{isMentor ? "Next Review Slot" : isB2CUser ? "Next Launch Check-in" : "Next check-in"}</p>
+								<p className="mt-1 text-lg font-semibold">{isMentor ? "Idea Queue · 7 PM" : isB2CUser ? "Idea clarity · 9 PM" : "Physics practice · 9 PM"}</p>
+								<p className="mt-2 text-white/70">{isMentor ? "3 ideas awaiting your review and feedback" : isB2CUser ? "Idea clarity / pitch improvement session" : "Akshat has 3 saved prompts from yesterday's session."}</p>
 							</div>
 							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
-								<p className="text-xs uppercase tracking-wide text-white/70">{isB2CUser ? "Launch Mindset" : "Focus mantra"}</p>
-								<p className="mt-2 text-white/80">{isB2CUser ? "One idea. One improvement. One step forward." : "Turn curiosity into progress 1 playful question at a time."}</p>
+								<p className="text-xs uppercase tracking-wide text-white/70">{isMentor ? "Mentor Mindset" : isB2CUser ? "Launch Mindset" : "Focus mantra"}</p>
+								<p className="mt-2 text-white/80">{isMentor ? "Guide with clarity. Decide with confidence. Empower the builder." : isB2CUser ? "One idea. One improvement. One step forward." : "Turn curiosity into progress 1 playful question at a time."}</p>
 							</div>
 						</div>
 					</div>
@@ -393,8 +443,8 @@ export default function DashboardPage() {
 						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<div>
-									<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isB2CUser ? "Student Launch Console" : "Quick launchpad"}</h2>
-									<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>{isB2CUser ? "Tools to explore, build, and validate your idea" : "Jump back into tools that keep your streak alive"}</p>
+									<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Mentor Command Tools" : isB2CUser ? "Student Launch Console" : "Quick launchpad"}</h2>
+									<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "Tools to review, guide, and support builders" : isB2CUser ? "Tools to explore, build, and validate your idea" : "Jump back into tools that keep your streak alive"}</p>
 								</div>
 								<span className="dashboard-pill rounded-full border px-3 py-1 text-xs">Recommended</span>
 							</div>
@@ -426,8 +476,8 @@ export default function DashboardPage() {
 
 						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isB2CUser ? "Today's Launch Task" : "Today's focus board"}</h2>
-								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isB2CUser ? "One task that moves your idea forward today" : `Curated for ${firstName}`}</span>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Today's Review List" : isB2CUser ? "Today's Launch Task" : "Today's focus board"}</h2>
+								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "Quick reviews you can action now" : isB2CUser ? "One task that moves your idea forward today" : `Curated for ${firstName}`}</span>
 							</div>
 							<ul className="space-y-4">
 								{focusAreas.map((item) => (
@@ -452,8 +502,8 @@ export default function DashboardPage() {
 
 						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isB2CUser ? "Student Launch Insights" : "iGyanAI highlights"}</h2>
-								<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="text-xs font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>View chat log</Link>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Mentor Intelligence Feed" : isB2CUser ? "Student Launch Insights" : "iGyanAI highlights"}</h2>
+								<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="text-xs font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>{isMentor ? "View mentor log" : "View chat log"}</Link>
 							</div>
 							<ul className="space-y-4">
 								{aiHighlights.map((highlight) => (
@@ -485,7 +535,7 @@ export default function DashboardPage() {
 											<p className="text-sm" style={{color: 'var(--dashboard-muted)'}}>{user.email}</p>
 										</div>
 										<span className="dashboard-pill rounded-full border px-3 py-1 text-xs font-semibold">
-											{isB2CUser ? 'Student Builder' : 'Pro learner mode'}
+											{isMentor ? 'Mentor / Advisor' : isB2CUser ? 'Student Builder' : 'Pro learner mode'}
 										</span>
 									</div>
 									<div className="mt-4 grid gap-3">
@@ -521,7 +571,7 @@ export default function DashboardPage() {
 										<Link href="/features" className="flex-1 rounded-xl border px-4 py-2 text-center text-sm font-semibold transition" style={{
 											borderColor: 'var(--dashboard-border)',
 											color: 'var(--dashboard-text)'
-										}}>{isB2CUser ? "My Launch Profile" : "Edit profile"}</Link>
+										}}>{isMentor ? "Mentor Profile" : isB2CUser ? "My Launch Profile" : "Edit profile"}</Link>
 										<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="dashboard-button flex-1 rounded-xl px-4 py-2 text-center text-sm font-semibold transition hover:shadow-lg">Resume AI chat</Link>
 									</div>
 								</div>
@@ -530,8 +580,8 @@ export default function DashboardPage() {
 
 						<section className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
-								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isB2CUser ? "Student Launch Timeline" : "Upcoming timeline"}</h2>
-								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isB2CUser ? "Your upcoming build & review sessions" : "Stay prepped"}</span>
+								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Review & Advisory Schedule" : isB2CUser ? "Student Launch Timeline" : "Upcoming timeline"}</h2>
+								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "Your upcoming review & mentoring sessions" : isB2CUser ? "Your upcoming build & review sessions" : "Stay prepped"}</span>
 							</div>
 							<ul className="space-y-4">
 								{upcomingSessions.map((sessionItem) => (
@@ -548,14 +598,14 @@ export default function DashboardPage() {
 						</section>
 
 						<section className="dashboard-pill rounded-3xl border p-6">
-							<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isB2CUser ? "Launch Progress Tracker" : "Goal tracker"}</h2>
-							<p className="mt-2 text-xs" style={{color: 'var(--dashboard-muted)'}}>{isB2CUser ? "You're 65% through this week's launch milestones. Celebrate small wins and track your progress." : "You're 65% through this week's mission list. Celebrate small wins and log reflections with iGyanAI."}</p>
+							<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Mentor Impact Tracker" : isB2CUser ? "Launch Progress Tracker" : "Goal tracker"}</h2>
+							<p className="mt-2 text-xs" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "You've reviewed 65% of this week's submissions. Keep the momentum going!" : isB2CUser ? "You're 65% through this week's launch milestones. Celebrate small wins and track your progress." : "You're 65% through this week's mission list. Celebrate small wins and log reflections with iGyanAI."}</p>
 							<div className="mt-4 h-2 w-full overflow-hidden rounded-full" style={{backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)'}}>
 								<div className="h-full w-[65%] rounded-full" style={{backgroundColor: 'var(--dashboard-primary)'}}></div>
 							</div>
 							<div className="mt-4 flex items-center justify-between text-xs" style={{color: 'var(--dashboard-muted)'}}>
-								<span>{isB2CUser ? "3 milestones remaining" : "3 objectives remaining"}</span>
-								<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>{isB2CUser ? "Update Launch Progress" : "Log progress"}</Link>
+								<span>{isMentor ? "5 pending reviews" : isB2CUser ? "3 milestones remaining" : "3 objectives remaining"}</span>
+								<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>{isMentor ? "Update Review Status" : isB2CUser ? "Update Launch Progress" : "Log progress"}</Link>
 							</div>
 						</section>
 					</div>
