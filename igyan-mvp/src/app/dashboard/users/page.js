@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../utils/auth_context";
 import { supabase } from "../../utils/supabase";
+import FacultyProfileModal from "./FacultyProfileModal";
 
 // SHA-256 hashing function (same as auth_context)
 async function hashPassword(password) {
@@ -24,6 +25,8 @@ export default function UserManagementPage() {
 	const [users, setUsers] = useState([]);
 	const [loadingUsers, setLoadingUsers] = useState(true);
 	const [showAddModal, setShowAddModal] = useState(false);
+	const [showEditFacultyModal, setShowEditFacultyModal] = useState(false);
+	const [selectedFaculty, setSelectedFaculty] = useState(null);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
@@ -35,6 +38,22 @@ export default function UserManagementPage() {
 		phone: "",
 		role: "faculty",
 		image_base64: "",
+		// Faculty profile fields
+		age: "",
+		gender: "",
+		post: "",
+		department: "",
+		is_class_teacher: false,
+		class: "",
+		section: "",
+		subjects: "",
+		qualifications: "",
+		experience_years: "",
+		joining_date: "",
+		employment_type: "",
+		school_name: "",
+		school_location: "",
+		school_board: "",
 	});
 
 	useEffect(() => {
@@ -87,8 +106,11 @@ export default function UserManagementPage() {
 	}, [user]);
 
 	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		const { name, value, type, checked } = e.target;
+		setFormData((prev) => ({ 
+			...prev, 
+			[name]: type === "checkbox" ? checked : value 
+		}));
 		setError("");
 	};
 
@@ -146,10 +168,19 @@ export default function UserManagementPage() {
 				return;
 			}
 
+			// Additional validation for faculty role
+			if (formData.role === "faculty") {
+				if (!formData.post || !formData.joining_date) {
+					setError("Post and Joining Date are required for faculty users");
+					setSaving(false);
+					return;
+				}
+			}
+
 			// Get the school_id
 			const { data: schoolData } = await supabase
 				.from("schools")
-				.select("id")
+				.select("id, school_name, location, board")
 				.eq("created_by", user.id)
 				.single();
 
@@ -186,6 +217,50 @@ export default function UserManagementPage() {
 				throw insertError;
 			}
 
+			// If faculty role, insert faculty profile
+			if (formData.role === "faculty") {
+				const subjectsArray = formData.subjects
+					? formData.subjects.split(",").map(s => s.trim()).filter(s => s)
+					: null;
+				
+				const qualificationsArray = formData.qualifications
+					? formData.qualifications.split(",").map(q => q.trim()).filter(q => q)
+					: null;
+
+				const { error: facultyError } = await supabase
+					.from("faculty_profiles")
+					.insert([
+						{
+							user_id: newUser.id,
+							name: formData.full_name,
+							age: formData.age ? parseInt(formData.age) : null,
+							gender: formData.gender || null,
+							post: formData.post,
+							department: formData.department || null,
+							is_class_teacher: formData.is_class_teacher,
+							class: formData.is_class_teacher ? formData.class : null,
+							section: formData.is_class_teacher ? formData.section : null,
+							subjects: subjectsArray,
+							qualifications: qualificationsArray,
+							experience_years: formData.experience_years ? parseInt(formData.experience_years) : null,
+							joining_date: formData.joining_date,
+							employment_type: formData.employment_type || null,
+							phone: formData.phone || null,
+							email: formData.email,
+							school_name: formData.school_name || schoolData.school_name,
+							school_location: formData.school_location || schoolData.location,
+							school_board: formData.school_board || schoolData.board,
+						},
+					]);
+
+				if (facultyError) {
+					console.error("Error creating faculty profile:", facultyError);
+					// Rollback user creation
+					await supabase.from("users").delete().eq("id", newUser.id);
+					throw new Error("Failed to create faculty profile");
+				}
+			}
+
 			// Add new user to the list
 			setUsers((prev) => [newUser, ...prev]);
 
@@ -197,6 +272,21 @@ export default function UserManagementPage() {
 				phone: "",
 				role: "faculty",
 				image_base64: "",
+				age: "",
+				gender: "",
+				post: "",
+				department: "",
+				is_class_teacher: false,
+				class: "",
+				section: "",
+				subjects: "",
+				qualifications: "",
+				experience_years: "",
+				joining_date: "",
+				employment_type: "",
+				school_name: "",
+				school_location: "",
+				school_board: "",
 			});
 			setShowAddModal(false);
 			setSuccess("User created successfully!");
@@ -228,6 +318,18 @@ export default function UserManagementPage() {
 			console.error("Error deleting user:", err);
 			setError("Failed to delete user");
 		}
+	};
+
+	const handleEditFaculty = (usr) => {
+		setSelectedFaculty(usr);
+		setShowEditFacultyModal(true);
+	};
+
+	const handleFacultyProfileSave = () => {
+		setSuccess("Faculty profile updated successfully!");
+		setShowEditFacultyModal(false);
+		setSelectedFaculty(null);
+		setTimeout(() => setSuccess(""), 3000);
 	};
 
 	if (loading || loadingUsers) {
@@ -417,13 +519,36 @@ export default function UserManagementPage() {
 											</p>
 										</td>
 										<td className="px-6 py-4">
-											<button
-												onClick={() => handleDelete(usr.id)}
-												disabled={usr.id === user.id}
-												className="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-red-900/20"
-												title={usr.id === user.id ? "Cannot delete yourself" : "Delete user"}
-											>
-												<svg
+											<div className="flex items-center gap-2">
+												{usr.role === "faculty" && (
+													<button
+														onClick={() => handleEditFaculty(usr)}
+														className="rounded-lg p-2 text-indigo-500 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+														title="Edit faculty profile"
+													>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="1.5"
+															className="h-5 w-5"
+														>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+															/>
+														</svg>
+													</button>
+												)}
+												<button
+													onClick={() => handleDelete(usr.id)}
+													disabled={usr.id === user.id}
+													className="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-red-900/20"
+													title={usr.id === user.id ? "Cannot delete yourself" : "Delete user"}
+												>
+													<svg
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 24 24"
 													fill="none"
@@ -438,6 +563,7 @@ export default function UserManagementPage() {
 													/>
 												</svg>
 											</button>
+											</div>
 										</td>
 									</tr>
 								))
@@ -450,8 +576,8 @@ export default function UserManagementPage() {
 			{/* Add User Modal */}
 			{showAddModal && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim p-4 backdrop-blur-sm">
-					<div className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-						<div className="mb-6 flex items-center justify-between">
+					<div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+						<div className="mb-6 flex items-center justify-between sticky top-0 bg-white dark:bg-zinc-900 pb-4 border-b border-zinc-200 dark:border-zinc-800">
 							<h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
 								Add New User
 							</h2>
@@ -466,6 +592,21 @@ export default function UserManagementPage() {
 										phone: "",
 										role: "faculty",
 										image_base64: "",
+										age: "",
+										gender: "",
+										post: "",
+										department: "",
+										is_class_teacher: false,
+										class: "",
+										section: "",
+										subjects: "",
+										qualifications: "",
+										experience_years: "",
+										joining_date: "",
+										employment_type: "",
+										school_name: "",
+										school_location: "",
+										school_board: "",
 									});
 								}}
 								className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -634,6 +775,266 @@ export default function UserManagementPage() {
 								</select>
 							</div>
 
+							{/* Faculty-specific fields */}
+							{formData.role === "faculty" && (
+								<>
+									<div className="border-t border-zinc-200 dark:border-zinc-700 pt-4 mt-2">
+										<h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
+											Faculty Profile Details
+										</h3>
+									</div>
+
+									{/* Age and Gender */}
+									<div className="grid grid-cols-2 gap-4">
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Age
+											</label>
+											<input
+												type="number"
+												name="age"
+												value={formData.age}
+												onChange={handleChange}
+												placeholder="Enter age"
+												min="18"
+												max="100"
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Gender
+											</label>
+											<select
+												name="gender"
+												value={formData.gender}
+												onChange={handleChange}
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											>
+												<option value="">Select gender</option>
+												<option value="Male">Male</option>
+												<option value="Female">Female</option>
+												<option value="Other">Other</option>
+											</select>
+										</div>
+									</div>
+
+									{/* Post and Department */}
+									<div className="grid grid-cols-2 gap-4">
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Post <span className="text-red-500">*</span>
+											</label>
+											<select
+												name="post"
+												value={formData.post}
+												onChange={handleChange}
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+												required={formData.role === "faculty"}
+											>
+												<option value="">Select post</option>
+												<option value="TGT">TGT (Trained Graduate Teacher)</option>
+												<option value="PGT">PGT (Post Graduate Teacher)</option>
+												<option value="Professor">Professor</option>
+												<option value="Assistant Professor">Assistant Professor</option>
+												<option value="Principal">Principal</option>
+												<option value="Vice Principal">Vice Principal</option>
+												<option value="Lecturer">Lecturer</option>
+											</select>
+										</div>
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Department
+											</label>
+											<input
+												type="text"
+												name="department"
+												value={formData.department}
+												onChange={handleChange}
+												placeholder="e.g., Science, Mathematics"
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											/>
+										</div>
+									</div>
+
+									{/* Class Teacher */}
+									<div className="flex items-center gap-3">
+										<input
+											type="checkbox"
+											name="is_class_teacher"
+											id="is_class_teacher"
+											checked={formData.is_class_teacher}
+											onChange={handleChange}
+											className="h-4 w-4 rounded border-zinc-300 text-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+										/>
+										<label htmlFor="is_class_teacher" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+											Is Class Teacher
+										</label>
+									</div>
+
+									{/* Class and Section (only if class teacher) */}
+									{formData.is_class_teacher && (
+										<div className="grid grid-cols-2 gap-4">
+											<div>
+												<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+													Class <span className="text-red-500">*</span>
+												</label>
+												<input
+													type="text"
+													name="class"
+													value={formData.class}
+													onChange={handleChange}
+													placeholder="e.g., 10th, XII"
+													className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+													required={formData.is_class_teacher}
+												/>
+											</div>
+											<div>
+												<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+													Section <span className="text-red-500">*</span>
+												</label>
+												<input
+													type="text"
+													name="section"
+													value={formData.section}
+													onChange={handleChange}
+													placeholder="e.g., A, B"
+													className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+													required={formData.is_class_teacher}
+												/>
+											</div>
+										</div>
+									)}
+
+									{/* Subjects */}
+									<div>
+										<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+											Subjects
+										</label>
+										<input
+											type="text"
+											name="subjects"
+											value={formData.subjects}
+											onChange={handleChange}
+											placeholder="e.g., Mathematics, Physics (comma-separated)"
+											className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										/>
+										<p className="mt-1 text-xs text-zinc-500">Separate multiple subjects with commas</p>
+									</div>
+
+									{/* Qualifications */}
+									<div>
+										<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+											Qualifications
+										</label>
+										<input
+											type="text"
+											name="qualifications"
+											value={formData.qualifications}
+											onChange={handleChange}
+											placeholder="e.g., M.Sc., B.Ed., Ph.D. (comma-separated)"
+											className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										/>
+										<p className="mt-1 text-xs text-zinc-500">Separate multiple qualifications with commas</p>
+									</div>
+
+									{/* Experience and Joining Date */}
+									<div className="grid grid-cols-2 gap-4">
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Experience (years)
+											</label>
+											<input
+												type="number"
+												name="experience_years"
+												value={formData.experience_years}
+												onChange={handleChange}
+												placeholder="Years of experience"
+												min="0"
+												max="50"
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												Joining Date <span className="text-red-500">*</span>
+											</label>
+											<input
+												type="date"
+												name="joining_date"
+												value={formData.joining_date}
+												onChange={handleChange}
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+												required={formData.role === "faculty"}
+											/>
+										</div>
+									</div>
+
+									{/* Employment Type */}
+									<div>
+										<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+											Employment Type
+										</label>
+										<select
+											name="employment_type"
+											value={formData.employment_type}
+											onChange={handleChange}
+											className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										>
+											<option value="">Select employment type</option>
+											<option value="Permanent">Permanent</option>
+											<option value="Contract">Contract</option>
+											<option value="Guest">Guest</option>
+											<option value="Part-time">Part-time</option>
+										</select>
+									</div>
+
+									{/* School Details */}
+									<div>
+										<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+											School Name
+										</label>
+										<input
+											type="text"
+											name="school_name"
+											value={formData.school_name}
+											onChange={handleChange}
+											placeholder="Leave blank to use default school"
+											className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+										/>
+									</div>
+
+									<div className="grid grid-cols-2 gap-4">
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												School Location
+											</label>
+											<input
+												type="text"
+												name="school_location"
+												value={formData.school_location}
+												onChange={handleChange}
+												placeholder="Leave blank to use default"
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+												School Board
+											</label>
+											<input
+												type="text"
+												name="school_board"
+												value={formData.school_board}
+												onChange={handleChange}
+												placeholder="e.g., CBSE, ICSE"
+												className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+											/>
+										</div>
+									</div>
+								</>
+							)}
+
 							{/* Action Buttons */}
 							<div className="flex gap-3 pt-4">
 								<button
@@ -655,6 +1056,21 @@ export default function UserManagementPage() {
 											phone: "",
 											role: "faculty",
 											image_base64: "",
+											age: "",
+											gender: "",
+											post: "",
+											department: "",
+											is_class_teacher: false,
+											class: "",
+											section: "",
+											subjects: "",
+											qualifications: "",
+											experience_years: "",
+											joining_date: "",
+											employment_type: "",
+											school_name: "",
+											school_location: "",
+											school_board: "",
 										});
 									}}
 									className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
@@ -665,6 +1081,22 @@ export default function UserManagementPage() {
 						</form>
 					</div>
 				</div>
+			)}
+
+			{/* Faculty Profile Edit Modal */}
+			{showEditFacultyModal && selectedFaculty && (
+				<FacultyProfileModal
+					isOpen={showEditFacultyModal}
+					onClose={() => {
+						setShowEditFacultyModal(false);
+						setSelectedFaculty(null);
+					}}
+					userId={selectedFaculty.id}
+					userName={selectedFaculty.full_name}
+					userEmail={selectedFaculty.email}
+					userPhone={selectedFaculty.phone}
+					onSave={handleFacultyProfileSave}
+				/>
 			)}
 		</div>
 	);

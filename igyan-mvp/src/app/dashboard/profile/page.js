@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../utils/auth_context";
 import { supabase } from "../../utils/supabase";
 import Link from "next/link";
+import FacultyProfileDisplay from "./FacultyProfileDisplay";
+import StudentProfileDisplay from "./StudentProfileDisplay";
 
 export default function ProfilePage() {
 	const { user, loading, checkSession } = useAuth();
@@ -187,6 +189,59 @@ export default function ProfilePage() {
 				</div>
 			)}
 
+			{/* Account Info */}
+			<div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
+					Account Information
+				</h3>
+				<div className="space-y-3">
+					<div className="flex items-center justify-between text-sm">
+						<span className="text-zinc-600 dark:text-zinc-400">User ID</span>
+						<span className="font-mono text-xs text-zinc-900 dark:text-white">
+							{user.id}
+						</span>
+					</div>
+					<div className="flex items-center justify-between text-sm">
+						<span className="text-zinc-600 dark:text-zinc-400">
+							Member Since
+						</span>
+						<span className="font-medium text-zinc-900 dark:text-white">
+							{new Date(user.created_at).toLocaleDateString("en-US", {
+								month: "long",
+								day: "numeric",
+								year: "numeric",
+							})}
+						</span>
+					</div>
+					<div className="flex items-center justify-between text-sm">
+						<span className="text-zinc-600 dark:text-zinc-400">
+							Last Updated
+						</span>
+						<span className="font-medium text-zinc-900 dark:text-white">
+							{new Date(user.updated_at).toLocaleDateString("en-US", {
+								month: "long",
+								day: "numeric",
+								year: "numeric",
+							})}
+						</span>
+					</div>
+				</div>
+			</div>
+
+			{/* Faculty Profile Section */}
+			{user.role === "faculty" && (
+				<div className="mb-6">
+					<FacultyProfileDisplay userId={user.id} />
+				</div>
+			)}
+
+			{/* Student Profile Section */}
+			{user.role === "student" && (
+				<div className="mb-6">
+					<StudentProfileDisplay userId={user.id} />
+				</div>
+			)}
+
 			{/* Profile Form */}
 			<div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
 				<form onSubmit={handleSubmit} className="space-y-6">
@@ -314,18 +369,14 @@ export default function ProfilePage() {
 							htmlFor="email"
 							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2"
 						>
-							Email Address <span className="text-red-500">*</span>
+							Email Address
 						</label>
-						<input
-							id="email"
-							name="email"
-							type="email"
-							value={formData.email}
-							onChange={handleChange}
-							placeholder="your@email.com"
-							className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-							required
-						/>
+						<div className="rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+							{formData.email}
+						</div>
+						<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+							Email cannot be changed. Contact admin to update.
+						</p>
 					</div>
 
 					{/* Phone */}
@@ -377,45 +428,6 @@ export default function ProfilePage() {
 						</Link>
 					</div>
 				</form>
-			</div>
-
-			{/* Account Info */}
-			<div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-				<h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-					Account Information
-				</h3>
-				<div className="space-y-3">
-					<div className="flex items-center justify-between text-sm">
-						<span className="text-zinc-600 dark:text-zinc-400">User ID</span>
-						<span className="font-mono text-xs text-zinc-900 dark:text-white">
-							{user.id}
-						</span>
-					</div>
-					<div className="flex items-center justify-between text-sm">
-						<span className="text-zinc-600 dark:text-zinc-400">
-							Member Since
-						</span>
-						<span className="font-medium text-zinc-900 dark:text-white">
-							{new Date(user.created_at).toLocaleDateString("en-US", {
-								month: "long",
-								day: "numeric",
-								year: "numeric",
-							})}
-						</span>
-					</div>
-					<div className="flex items-center justify-between text-sm">
-						<span className="text-zinc-600 dark:text-zinc-400">
-							Last Updated
-						</span>
-						<span className="font-medium text-zinc-900 dark:text-white">
-							{new Date(user.updated_at).toLocaleDateString("en-US", {
-								month: "long",
-								day: "numeric",
-								year: "numeric",
-							})}
-						</span>
-					</div>
-				</div>
 			</div>
 		</div>
 	);
