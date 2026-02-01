@@ -132,6 +132,21 @@ export default function SchoolOnboarding({ userId, onComplete }) {
 				throw schoolError;
 			}
 
+			console.log("School created with ID:", schoolData.id);
+
+			// Update user's school_id
+			const { error: userUpdateError } = await supabase
+				.from("users")
+				.update({ school_id: schoolData.id })
+				.eq("id", userId);
+
+			if (userUpdateError) {
+				console.error("Error updating user school_id:", userUpdateError);
+				throw new Error("School created but failed to link to user. Please contact support.");
+			}
+
+			console.log("User updated with school_id:", schoolData.id);
+
 			setLoading(false);
 			onComplete(); // Notify parent component that onboarding is complete
 		} catch (err) {

@@ -47,16 +47,20 @@ export default function SchoolProfilePage() {
 			if (!user?.id) return;
 
 			try {
-				let query = supabase.from("schools").select("*");
-				
-				// If faculty, fetch by school_id; otherwise fetch by created_by
-				if (user.role === 'faculty' && user.school_id) {
-					query = query.eq("id", user.school_id);
-				} else {
-					query = query.eq("created_by", user.id);
+				// Check if user has school_id (all institutional users should have one)
+				if (!user.school_id) {
+					console.warn("User does not have school_id:", user.id);
+					return;
 				}
-				
-				const { data, error: fetchError } = await query.maybeSingle();
+
+				console.log("Fetching school data for school_id:", user.school_id);
+
+				// Fetch school by user's school_id
+				const { data, error: fetchError } = await supabase
+					.from("schools")
+					.select("*")
+					.eq("id", user.school_id)
+					.maybeSingle();
 
 				if (fetchError && fetchError.code !== "PGRST116") {
 					console.error("Error fetching school:", fetchError);

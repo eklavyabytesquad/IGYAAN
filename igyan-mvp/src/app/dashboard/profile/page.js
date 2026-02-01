@@ -15,6 +15,8 @@ export default function ProfilePage() {
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
 	const [uploadingImage, setUploadingImage] = useState(false);
+	const [schoolData, setSchoolData] = useState(null);
+	const [loadingSchool, setLoadingSchool] = useState(false);
 	const [formData, setFormData] = useState({
 		full_name: "",
 		email: "",
@@ -36,6 +38,32 @@ export default function ProfilePage() {
 				phone: user.phone || "",
 				image_base64: user.image_base64 || "",
 			});
+
+			// Fetch school data if user has school_id
+			const fetchSchoolData = async () => {
+				if (!user.school_id) return;
+
+				try {
+					setLoadingSchool(true);
+					const { data, error } = await supabase
+						.from("schools")
+						.select("school_name, school_type, affiliation_board, city, state, contact_email, contact_phone")
+						.eq("id", user.school_id)
+						.single();
+
+					if (error) {
+						console.error("Error fetching school data:", error);
+					} else {
+						setSchoolData(data);
+					}
+				} catch (err) {
+					console.error("Error in fetchSchoolData:", err);
+				} finally {
+					setLoadingSchool(false);
+				}
+			};
+
+			fetchSchoolData();
 		}
 	}, [user]);
 
@@ -227,7 +255,88 @@ export default function ProfilePage() {
 					</div>
 				</div>
 			</div>
-
+			{/* School Information Section */}
+			{user.school_id && schoolData && (
+				<div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+					<div className="flex items-center gap-3 mb-4">
+						<div className="rounded-full bg-indigo-100 p-2 dark:bg-indigo-900/30">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								className="h-5 w-5 text-indigo-600 dark:text-indigo-400"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
+								/>
+							</svg>
+						</div>
+						<h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+							School Information
+						</h3>
+					</div>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<span className="text-xs text-zinc-600 dark:text-zinc-400">School Name</span>
+							<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+								{schoolData.school_name}
+							</p>
+						</div>
+						{schoolData.school_type && (
+							<div>
+								<span className="text-xs text-zinc-600 dark:text-zinc-400">School Type</span>
+								<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+									{schoolData.school_type}
+								</p>
+							</div>
+						)}
+						{schoolData.affiliation_board && (
+							<div>
+								<span className="text-xs text-zinc-600 dark:text-zinc-400">Board</span>
+								<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+									{schoolData.affiliation_board}
+								</p>
+							</div>
+						)}
+						{(schoolData.city || schoolData.state) && (
+							<div>
+								<span className="text-xs text-zinc-600 dark:text-zinc-400">Location</span>
+								<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+									{schoolData.city}{schoolData.city && schoolData.state ? ', ' : ''}{schoolData.state}
+								</p>
+							</div>
+						)}
+						{schoolData.contact_email && (
+							<div>
+								<span className="text-xs text-zinc-600 dark:text-zinc-400">School Email</span>
+								<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+									{schoolData.contact_email}
+								</p>
+							</div>
+						)}
+						{schoolData.contact_phone && (
+							<div>
+								<span className="text-xs text-zinc-600 dark:text-zinc-400">School Phone</span>
+								<p className="mt-1 font-medium text-zinc-900 dark:text-white">
+									{schoolData.contact_phone}
+								</p>
+							</div>
+						)}
+					</div>
+					<div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+						<Link
+							href="/dashboard/school-profile"
+							className="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+						>
+							View Full School Profile →
+						</Link>
+					</div>
+				</div>
+			)}
 			{/* Faculty Profile Section */}
 			{user.role === "faculty" && (
 				<div className="mb-6">

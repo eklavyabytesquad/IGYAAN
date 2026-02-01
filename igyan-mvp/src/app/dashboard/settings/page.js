@@ -73,16 +73,21 @@ export default function SettingsPage() {
 			if (!user?.id) return;
 
 			try {
-				let query = supabase.from("schools").select("id, school_name");
-				
-				// If faculty, fetch by school_id; otherwise fetch by created_by
-				if (user.role === 'faculty' && user.school_id) {
-					query = query.eq("id", user.school_id);
-				} else {
-					query = query.eq("created_by", user.id);
+				// Check if user has school_id
+				if (!user.school_id) {
+					console.warn("User does not have school_id:", user.id);
+					setLoadingSchool(false);
+					return;
 				}
-				
-				const { data, error } = await query.maybeSingle();
+
+				console.log("Fetching school data for school_id:", user.school_id);
+
+				// Fetch school by user's school_id
+				const { data, error } = await supabase
+					.from("schools")
+					.select("id, school_name")
+					.eq("id", user.school_id)
+					.maybeSingle();
 
 				if (error) {
 					console.error("Error fetching school:", error);

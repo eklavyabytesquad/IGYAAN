@@ -58,9 +58,21 @@ export default function DashboardPage() {
 		}
 	}, [user]);
 
-	const handleOnboardingComplete = () => {
+	const handleOnboardingComplete = async () => {
+		// Refresh user data to get the updated school_id
+		const { data: sessionData } = await supabase
+			.from("sessions")
+			.select("*, users(*)")
+			.eq("session_token", localStorage.getItem("session_token"))
+			.eq("is_active", true)
+			.single();
+
+		if (sessionData?.users) {
+			console.log("User data refreshed with school_id:", sessionData.users.school_id);
+		}
+
 		setHasSchool(true);
-		// Trigger a re-render of the layout to fetch school data
+		// Trigger a re-render to fetch school data with updated user
 		window.location.reload();
 	};
 

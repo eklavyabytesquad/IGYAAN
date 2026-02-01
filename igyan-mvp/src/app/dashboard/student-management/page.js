@@ -18,6 +18,7 @@ export default function StudentManagementPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
 	const [students, setStudents] = useState([]);
+	const [schoolName, setSchoolName] = useState("");
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
@@ -71,12 +72,40 @@ export default function StudentManagementPage() {
 		}
 	}, [user, loading, router]);
 
-	// Load students from Supabase
+	// Load students and school info from Supabase
 	useEffect(() => {
 		if (user && ALLOWED_ROLES.includes(user.role)) {
+			fetchSchoolInfo();
 			fetchStudents();
 		}
 	}, [user]);
+
+	// Fetch school information
+	const fetchSchoolInfo = async () => {
+		try {
+			if (!user.school_id) {
+				console.warn("No school_id found for user:", user.id);
+				return;
+			}
+
+			const { data, error } = await supabase
+				.from("schools")
+				.select("school_name")
+				.eq("id", user.school_id)
+				.single();
+
+			if (error) {
+				console.error("Error fetching school info:", error);
+				return;
+			}
+
+			if (data) {
+				setSchoolName(data.school_name);
+			}
+		} catch (error) {
+			console.error("Error in fetchSchoolInfo:", error);
+		}
+	};
 
 	// Fetch students from Supabase
 	const fetchStudents = async () => {
@@ -185,9 +214,15 @@ export default function StudentManagementPage() {
 		if (isValid) {
 			try {
 				setIsLoading(true);
+				
+				// Debug: Check user.school_id
+				if (!user.school_id) {
+					throw new Error("School ID not found. Please ensure you are logged in with a valid school account.");
+				}
+				
 				const passwordHash = await hashPassword(formData.password);
 
-				// Step 1: Create user
+				// Step 1: Create user with school_id
 				const { data: userData, error: userError } = await supabase
 					.from("users")
 					.insert([
@@ -204,9 +239,14 @@ export default function StudentManagementPage() {
 					.select()
 					.single();
 
-				if (userError) throw userError;
+				if (userError) {
+					console.error("User creation error:", userError);
+					throw userError;
+				}
 
-				// Step 2: Create student profile with all fields
+				console.log("User created successfully with school_id:", userData.school_id);
+
+				// Step 2: Create student profile with school_id
 				const { error: profileError } = await supabase
 					.from("student_profiles")
 					.insert([
@@ -221,9 +261,7 @@ export default function StudentManagementPage() {
 							sleep_time: formData.sleepTime.trim() || null,
 							study_schedule_weekday: formData.studyScheduleWeekday.trim() || null,
 							study_schedule_weekend: formData.studyScheduleWeekend.trim() || null,
-							school_name: null,
-							school_location: null,
-							school_board: formData.schoolBoard.trim() || null,
+							school_id: user.school_id,
 							learning_style: formData.learningStyle.trim() || null,
 							interests: formData.interests ? formData.interests.split(',').map(i => i.trim()).filter(i => i) : null,
 							strengths: formData.strengths ? formData.strengths.split(',').map(s => s.trim()).filter(s => s) : null,
@@ -234,8 +272,14 @@ export default function StudentManagementPage() {
 						},
 					]);
 
-				if (profileError) throw profileError;
+				if (profileError) {
+					console.error("Profile creation error:", profileError);
+					// Rollback user creation
+					await supabase.from("users").delete().eq("id", userData.id);
+					throw profileError;
+				}
 
+				console.log("Student profile created successfully");
 				alert("Student added successfully!");
 				setShowAddModal(false);
 				setFormData({
@@ -278,9 +322,14 @@ export default function StudentManagementPage() {
 		if (isValid) {
 			try {
 				setIsLoading(true);
+				
+				if (!user.school_id) {
+					throw new Error("School ID not found. Please ensure you are logged in with a valid school account.");
+				}
+				
 				const passwordHash = await hashPassword(formData.password);
 
-				// Step 1: Create user
+				// Step 1: Create user with school_id
 				const { data: userData, error: userError } = await supabase
 					.from("users")
 					.insert([
@@ -299,7 +348,7 @@ export default function StudentManagementPage() {
 
 				if (userError) throw userError;
 
-				// Step 2: Create student profile with all fields
+				// Step 2: Create student profile with school_id
 				const { error: profileError } = await supabase
 					.from("student_profiles")
 					.insert([
@@ -313,10 +362,8 @@ export default function StudentManagementPage() {
 							class_teacher: formData.classTeacher.trim() || null,
 							sleep_time: formData.sleepTime.trim() || null,
 							study_schedule_weekday: formData.studyScheduleWeekday.trim() || null,
-							study_schedule_weekend: formData.studyScheduleWeekday.trim() || null,
-							school_name: null,
-							school_location: null,
-							school_board: formData.schoolBoard.trim() || null,
+							study_schedule_weekend: formData.studyScheduleWeekend.trim() || null,
+							school_id: user.school_id,
 							learning_style: formData.learningStyle.trim() || null,
 							interests: formData.interests ? formData.interests.split(',').map(i => i.trim()).filter(i => i) : null,
 							strengths: formData.strengths ? formData.strengths.split(',').map(s => s.trim()).filter(s => s) : null,
@@ -327,7 +374,11 @@ export default function StudentManagementPage() {
 						},
 					]);
 
-				if (profileError) throw profileError;
+				if (profileError) {
+					// Rollback user creation
+					await supabase.from("users").delete().eq("id", userData.id);
+					throw profileError;
+				}
 
 				alert("Student added successfully! Add another.");
 				// Clear form but keep modal open
@@ -371,6 +422,13 @@ export default function StudentManagementPage() {
 
 		try {
 			setIsLoading(true);
+
+			// Get school details first
+			const { data: schoolData } = await supabase
+				.from("schools")
+				.select("id, school_name, location, board")
+				.eq("id", user.school_id)
+				.single();
 
 			// Validate and prepare students for insertion
 			for (let index = 0; index < uploadedStudents.length; index++) {
@@ -433,11 +491,18 @@ export default function StudentManagementPage() {
 						name: student.name.trim(),
 						class: student.class.trim(),
 						section: student.section.trim(),
+						age: student.age || null,
+						house: student.house || null,
+						classTeacher: student.classTeacher || null,
 					},
 				});
 			}
 
 			if (validStudents.length > 0) {
+				if (!user.school_id) {
+					throw new Error("School ID not found. Please ensure you are logged in with a valid school account.");
+				}
+				
 				// Step 1: Bulk insert users
 				const usersToInsert = validStudents.map((s) => s.user);
 				const { data: insertedUsers, error: usersError } = await supabase
@@ -447,17 +512,16 @@ export default function StudentManagementPage() {
 
 				if (usersError) throw usersError;
 
-				// Step 2: Bulk insert student profiles
+				// Step 2: Bulk insert student profiles with school_id
 				const profilesToInsert = insertedUsers.map((user, index) => ({
 					user_id: user.id,
 					name: validStudents[index].profile.name,
 					class: validStudents[index].profile.class,
 					section: validStudents[index].profile.section,
-					age: validStudents[index].profile.age || null,
-					house: validStudents[index].profile.house || null,
-					class_teacher: validStudents[index].profile.classTeacher || null,
-					school_name: null,
-					school_location: null,
+					age: validStudents[index].profile.age,
+					house: validStudents[index].profile.house,
+					class_teacher: validStudents[index].profile.classTeacher,
+					school_id: user.school_id,
 				}));
 
 				const { error: profilesError } = await supabase
@@ -522,17 +586,24 @@ export default function StudentManagementPage() {
 
 		try {
 			setIsLoading(true);
+			
+			if (!user.school_id) {
+				throw new Error("School ID not found. Please ensure you are logged in with a valid school account.");
+			}
 
-			// Update user details
+			// Update user details - ensure school_id is maintained
 			const userUpdate = {
 				full_name: formData.name.trim(),
 				email: formData.email.toLowerCase().trim(),
+				school_id: user.school_id, // Ensure school_id is maintained
+				updated_at: new Date().toISOString(),
 			};
 
 			// Only update password if provided
 			if (formData.password.trim()) {
 				if (formData.password.length < 6) {
 					alert("Password must be at least 6 characters");
+					setIsLoading(false);
 					return;
 				}
 				userUpdate.password_hash = await hashPassword(formData.password);
@@ -543,9 +614,12 @@ export default function StudentManagementPage() {
 				.update(userUpdate)
 				.eq("id", editingStudent.id);
 
-			if (userError) throw userError;
+			if (userError) {
+				console.error("User update error:", userError);
+				throw userError;
+			}
 
-			// Update student profile
+			// Update student profile with school_id
 			const { error: profileError } = await supabase
 				.from("student_profiles")
 				.update({
@@ -558,7 +632,7 @@ export default function StudentManagementPage() {
 					sleep_time: formData.sleepTime.trim() || null,
 					study_schedule_weekday: formData.studyScheduleWeekday.trim() || null,
 					study_schedule_weekend: formData.studyScheduleWeekend.trim() || null,
-					school_board: formData.schoolBoard.trim() || null,
+					school_id: user.school_id,
 					learning_style: formData.learningStyle.trim() || null,
 					interests: formData.interests ? formData.interests.split(',').map(i => i.trim()).filter(i => i) : null,
 					strengths: formData.strengths ? formData.strengths.split(',').map(s => s.trim()).filter(s => s) : null,
@@ -570,8 +644,12 @@ export default function StudentManagementPage() {
 				})
 				.eq("user_id", editingStudent.id);
 
-			if (profileError) throw profileError;
+			if (profileError) {
+				console.error("Profile update error:", profileError);
+				throw profileError;
+			}
 
+			console.log("Student updated successfully with school_id:", user.school_id);
 			alert("Student updated successfully!");
 			setShowEditModal(false);
 			setEditingStudent(null);
@@ -743,6 +821,7 @@ export default function StudentManagementPage() {
 			<PageHeader
 				onAddStudent={() => setShowAddModal(true)}
 				onBulkUpload={() => setShowBulkUploadModal(true)}
+				schoolName={schoolName}
 			/>
 
 			<StatsCards

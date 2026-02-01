@@ -1,4 +1,4 @@
-export default function PageHeader({ onAddStudent, onBulkUpload }) {
+export default function PageHeader({ onAddStudent, onBulkUpload, schoolName }) {
 	return (
 		<div className="mb-8 flex items-center justify-between">
 			<div>
@@ -6,7 +6,7 @@ export default function PageHeader({ onAddStudent, onBulkUpload }) {
 					Student Management
 				</h1>
 				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
-					Manage your students, add new records, and export data
+					{schoolName ? `${schoolName} - ` : ""}Manage your students, add new records, and export data
 				</p>
 			</div>
 			<div className="flex gap-3">

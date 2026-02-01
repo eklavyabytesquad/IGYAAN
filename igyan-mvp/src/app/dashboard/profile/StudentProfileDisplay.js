@@ -5,6 +5,7 @@ import { supabase } from "../../utils/supabase";
 
 export default function StudentProfileDisplay({ userId }) {
 	const [profile, setProfile] = useState(null);
+	const [school, setSchool] = useState(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -25,6 +26,19 @@ export default function StudentProfileDisplay({ userId }) {
 			}
 
 			setProfile(data);
+			
+			// Fetch school details if school_id exists
+			if (data?.school_id) {
+				const { data: schoolData, error: schoolError } = await supabase
+					.from("schools")
+					.select("school_name, location, board")
+					.eq("id", data.school_id)
+					.maybeSingle();
+				
+				if (!schoolError) {
+					setSchool(schoolData);
+				}
+			}
 		} catch (err) {
 			console.error("Error:", err);
 		} finally {
@@ -182,37 +196,37 @@ export default function StudentProfileDisplay({ userId }) {
 				</div>
 
 				{/* School Information */}
-				{(profile.school_name || profile.school_location || profile.school_board) && (
+				{school && (
 					<div>
 						<h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
 							School Information
 						</h3>
 						<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-							{profile.school_name && (
+							{school.school_name && (
 								<div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
 									<p className="text-xs text-zinc-600 dark:text-zinc-400">
 										School Name
 									</p>
 									<p className="mt-1 font-medium text-zinc-900 dark:text-white">
-										{profile.school_name}
+										{school.school_name}
 									</p>
 								</div>
 							)}
-							{profile.school_location && (
+							{school.location && (
 								<div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
 									<p className="text-xs text-zinc-600 dark:text-zinc-400">
 										Location
 									</p>
 									<p className="mt-1 font-medium text-zinc-900 dark:text-white">
-										{profile.school_location}
+										{school.location}
 									</p>
 								</div>
 							)}
-							{profile.school_board && (
+							{school.board && (
 								<div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
 									<p className="text-xs text-zinc-600 dark:text-zinc-400">Board</p>
 									<p className="mt-1 font-medium text-zinc-900 dark:text-white">
-										{profile.school_board}
+										{school.board}
 									</p>
 								</div>
 							)}

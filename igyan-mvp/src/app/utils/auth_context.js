@@ -117,6 +117,7 @@ export function AuthProvider({ children }) {
 				.update({ last_activity_at: new Date().toISOString() })
 				.eq("id", sessionData.id);
 
+			console.log("User session loaded - User ID:", sessionData.users?.id, "School ID:", sessionData.users?.school_id, "Role:", sessionData.users?.role);
 			setUser(sessionData.users);
 			setSession(sessionData);
 		} catch (error) {
@@ -225,6 +226,7 @@ export function AuthProvider({ children }) {
 			// Store session token in localStorage
 			localStorage.setItem("session_token", sessionToken);
 
+			console.log("Login successful - User ID:", userData.id, "School ID:", userData.school_id, "Role:", userData.role);
 			setUser(userData);
 			setSession(sessionData);
 
