@@ -11,7 +11,7 @@ export default function TemplateSelector({ templates, selectedTemplate, onSelect
         </span>
         <div>
           <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-            Choose a {type === 'ppt' ? 'presentation' : 'PDF'} style
+            Choose a {type === 'ppt' ? 'presentation' : type === 'shark-ppt' ? 'pitch deck' : 'PDF'} style
           </p>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Instantly update the look and feel before downloading
@@ -22,10 +22,12 @@ export default function TemplateSelector({ templates, selectedTemplate, onSelect
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {templates.map((template) => {
           const isActive = selectedTemplate?.id === template.id;
-          const primaryColor = type === 'ppt'
+          // PPT and Shark-PPT use hex colors, PDF uses RGB arrays
+          const usesHex = type === 'ppt' || type === 'shark-ppt';
+          const primaryColor = usesHex
             ? `#${template.colors.primary}`
             : `rgb(${template.colors.primary.join(',')})`;
-          const secondaryColor = type === 'ppt'
+          const secondaryColor = usesHex
             ? `#${template.colors.secondary}`
             : `rgb(${template.colors.secondary.join(',')})`;
 
@@ -49,7 +51,7 @@ export default function TemplateSelector({ templates, selectedTemplate, onSelect
                 {template.name}
               </p>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                {type === 'ppt' ? 'Slide deck' : 'Document'} palette
+                {type === 'ppt' ? 'Slide deck' : type === 'shark-ppt' ? 'Pitch deck' : 'Document'} palette
               </p>
 
               {isActive && (

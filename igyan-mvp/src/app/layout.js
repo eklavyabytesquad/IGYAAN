@@ -50,9 +50,7 @@ export default function RootLayout({ children }) {
 						if (!root) return;
 						root.classList.add('dark');
 						root.dataset.theme = 'dark';
-						if (document.body) {
-							document.body.style.colorScheme = 'dark';
-						}
+						root.style.colorScheme = 'dark';
 						try {
 							window.localStorage.setItem('igyan-theme', 'dark');
 						} catch (error) {
