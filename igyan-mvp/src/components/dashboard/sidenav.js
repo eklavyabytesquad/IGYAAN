@@ -334,7 +334,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 	{
 		key: 'liveClassroom',
-		name: "i-Meet",
+		name: "Omni Sight",
 		href: "/dashboard/live-classroom",
 		allowedRoles: ROLE_BASED_NAV_CONFIG.liveClassroom.allowedRoles,
 		icon: (
@@ -792,7 +792,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						);
 					})}
 
-					{/* i-Meet - Video Conferencing */}
+					{/* Omni Sight - Video Conferencing */}
 					{navItems.filter(item => item.key === 'liveClassroom').map((item) => {
 						if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 						const isActive = pathname === item.href;

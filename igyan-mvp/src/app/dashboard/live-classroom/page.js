@@ -57,9 +57,9 @@ function LiveClassroomContent() {
 			<div className="flex flex-col h-screen bg-black">
 				<div className="bg-gray-900 px-4 py-3 flex items-center justify-between border-b border-gray-700 flex-shrink-0">
 					<div className="flex items-center gap-3">
-						<Image src="/asset/imeets.png" alt="i-Meet" width={40} height={40} className="object-contain" />
+						<Image src="/asset/imeets.png" alt="Omni Sight" width={40} height={40} className="object-contain" />
 						<div>
-							<h2 className="text-lg font-semibold text-white">i-Meet - Room: {currentRoomId}</h2>
+							<h2 className="text-lg font-semibold text-white">Omni Sight - Room: {currentRoomId}</h2>
 							<p className="text-xs text-gray-400">Powered by igyan-meets</p>
 						</div>
 					</div>
@@ -91,9 +91,9 @@ function LiveClassroomContent() {
 			<div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 sm:px-6 py-4 shadow-lg flex-shrink-0">
 				<div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
 					<div className="flex items-center gap-3">
-						<Image src="/asset/imeets.png" alt="i-Meet" width={48} height={48} className="object-contain" />
+						<Image src="/asset/imeets.png" alt="Omni Sight" width={48} height={48} className="object-contain" />
 						<div>
-							<h1 className="text-xl sm:text-2xl font-bold text-white">i-Meet Video Conferencing</h1>
+							<h1 className="text-xl sm:text-2xl font-bold text-white">Omni Sight Video Conferencing</h1>
 							<p className="text-purple-100 text-xs sm:text-sm">Powered by igyan-meets • Secure • Fast • Reliable</p>
 						</div>
 					</div>
@@ -112,7 +112,7 @@ function LiveClassroomContent() {
 						src={`${API_BASE_URL}/demo`}
 						className="w-full h-full border-0 bg-white"
 						allow="camera; microphone; display-capture; fullscreen"
-						title="i-Meet Video Conferencing"
+						title="Omni Sight Video Conferencing"
 					/>
 				) : (
 					<NativeInterface 
@@ -291,7 +291,7 @@ export default function LiveClassroom() {
 			<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-blue-100">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600 mx-auto mb-4"></div>
-					<p className="text-gray-700 font-medium text-lg">Loading i-Meet...</p>
+					<p className="text-gray-700 font-medium text-lg">Loading Omni Sight...</p>
 				</div>
 			</div>
 		}>
