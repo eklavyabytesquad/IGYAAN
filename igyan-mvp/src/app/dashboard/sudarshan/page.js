@@ -13,7 +13,7 @@ import MemoryList from "./components/MemoryList";
 import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
 import ModeSelector, { AI_MODES } from "./components/ModeSelector";
-import studentProfile from "./data/student-profile.json";
+import { supabase } from "../../utils/supabase";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -34,6 +34,13 @@ export default function AICopilotPage() {
 	const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
 	const [isListening, setIsListening] = useState(false);
 	const [recognition, setRecognition] = useState(null);
+	const [userProfile, setUserProfile] = useState(null);
+	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+	const [profileForm, setProfileForm] = useState({
+		interests: '',
+		classTeacher: '',
+		sleepTime: '',
+	});
 	const messagesEndRef = useRef(null);
 
 	useEffect(() => {
@@ -41,6 +48,58 @@ export default function AICopilotPage() {
 			router.push("/login");
 		}
 	}, [user, loading, router]);
+
+	// Fetch user profile and school data
+	useEffect(() => {
+		if (user) {
+			fetchUserProfile();
+		}
+	}, [user]);
+
+	const fetchUserProfile = async () => {
+		if (!user) return;
+
+		try {
+			// Get profile data from localStorage first
+			const savedProfile = localStorage.getItem(`user_profile_${user.id}`);
+			if (savedProfile) {
+				setUserProfile(JSON.parse(savedProfile));
+				return;
+			}
+
+			// Build profile from user data
+			const profile = {
+				name: user.full_name || user.email.split('@')[0],
+				class: user.student_profile?.class || user.faculty_profile?.subjects || '',
+				school: {
+					name: '',
+					location: '',
+				},
+				interests: [],
+				classTeacher: '',
+				sleepTime: '',
+			};
+
+			// Fetch school data if school_id exists
+			if (user.school_id) {
+				const { data: schoolData } = await supabase
+					.from('schools')
+					.select('school_name, city, state')
+					.eq('id', user.school_id)
+					.single();
+
+				if (schoolData) {
+					profile.school.name = schoolData.school_name;
+					profile.school.location = `${schoolData.city}, ${schoolData.state}`;
+				}
+			}
+
+			setUserProfile(profile);
+			localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profile));
+		} catch (error) {
+			console.error('Error fetching profile:', error);
+		}
+	};
 
 	// Load data from localStorage
 	useEffect(() => {
@@ -231,10 +290,36 @@ export default function AICopilotPage() {
 
 	// Build context from selected notes and profile
 	const buildContextPrompt = () => {
-		let context = `You are Sudarshan AI, helping ${studentProfile.name}, a Class ${studentProfile.class} student from ${studentProfile.school.name}, ${studentProfile.school.location}. `;
-		context += `Their class teacher is ${studentProfile.classTeacher}. `;
-		context += `The student is interested in ${studentProfile.interests.join(", ")}. `;
-		context += `Their sleep time is ${studentProfile.sleepTime}. `;
+		if (!userProfile) {
+			return `You are Sudarshan AI, a helpful educational assistant. `;
+		}
+
+		let context = `You are Sudarshan AI, helping ${userProfile.name}`;
+		
+		if (userProfile.class) {
+			context += `, a Class ${userProfile.class} student`;
+		}
+		
+		if (userProfile.school?.name) {
+			context += ` from ${userProfile.school.name}`;
+			if (userProfile.school?.location) {
+				context += `, ${userProfile.school.location}`;
+			}
+		}
+		
+		context += `. `;
+		
+		if (userProfile.classTeacher) {
+			context += `Their class teacher is ${userProfile.classTeacher}. `;
+		}
+		
+		if (userProfile.interests && userProfile.interests.length > 0) {
+			context += `The student is interested in ${userProfile.interests.join(", ")}. `;
+		}
+		
+		if (userProfile.sleepTime) {
+			context += `Their sleep time is ${userProfile.sleepTime}. `;
+		}
 		
 		// Add mode-specific instructions
 		if (selectedMode) {
@@ -426,6 +511,32 @@ IMPORTANT FORMATTING RULES:
 		setSelectedNotes(notes);
 	};
 
+	const handleProfileEdit = () => {
+		if (userProfile) {
+			setProfileForm({
+				interests: userProfile.interests?.join(', ') || '',
+				classTeacher: userProfile.classTeacher || '',
+				sleepTime: userProfile.sleepTime || '',
+			});
+		}
+		setIsProfileModalOpen(true);
+	};
+
+	const handleProfileSave = () => {
+		if (!user || !userProfile) return;
+
+		const updatedProfile = {
+			...userProfile,
+			interests: profileForm.interests.split(',').map(i => i.trim()).filter(i => i),
+			classTeacher: profileForm.classTeacher,
+			sleepTime: profileForm.sleepTime,
+		};
+
+		setUserProfile(updatedProfile);
+		localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(updatedProfile));
+		setIsProfileModalOpen(false);
+	};
+
 	// Toggle speech recognition
 	const toggleSpeechRecognition = () => {
 		if (!recognition) {
@@ -561,7 +672,12 @@ IMPORTANT FORMATTING RULES:
 							/>
 						</div>
 					)}
-					{sidebarView === "profile" && <StudentProfile />}
+					{sidebarView === "profile" && (
+						<StudentProfile 
+							profile={userProfile} 
+							onEditProfile={handleProfileEdit}
+						/>
+					)}
 					{sidebarView === "notes" && (
 						<NotesSelector
 							onNotesSelect={handleNotesSelect}
@@ -868,6 +984,82 @@ IMPORTANT FORMATTING RULES:
 					</div>
 				</div>
 			</div>
+
+			{/* Profile Setup Modal */}
+			{isProfileModalOpen && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+					<div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+						<div className="mb-4 flex items-center justify-between">
+							<h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+								Edit Profile Details
+							</h3>
+							<button
+								onClick={() => setIsProfileModalOpen(false)}
+								className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+									<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+								</svg>
+							</button>
+						</div>
+
+						<div className="space-y-4">
+							<div>
+								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+									Interests (comma-separated)
+								</label>
+								<input
+									type="text"
+									value={profileForm.interests}
+									onChange={(e) => setProfileForm({ ...profileForm, interests: e.target.value })}
+									placeholder="AI, Science, Technology, etc."
+									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+								/>
+							</div>
+
+							<div>
+								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+									Class Teacher
+								</label>
+								<input
+									type="text"
+									value={profileForm.classTeacher}
+									onChange={(e) => setProfileForm({ ...profileForm, classTeacher: e.target.value })}
+									placeholder="Teacher's name"
+									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+								/>
+							</div>
+
+							<div>
+								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+									Sleep Time
+								</label>
+								<input
+									type="time"
+									value={profileForm.sleepTime}
+									onChange={(e) => setProfileForm({ ...profileForm, sleepTime: e.target.value })}
+									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+								/>
+							</div>
+
+							<div className="flex gap-3 pt-4">
+								<button
+									onClick={() => setIsProfileModalOpen(false)}
+									className="flex-1 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+								>
+									Cancel
+								</button>
+								<button
+									onClick={handleProfileSave}
+									className="flex-1 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+								>
+									Save Profile
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

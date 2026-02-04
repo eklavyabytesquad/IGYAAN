@@ -12,26 +12,14 @@ export default function AttendancePage() {
 	const [attendance, setAttendance] = useState([]);
 	const [selectedClass, setSelectedClass] = useState("");
 	const [selectedSection, setSelectedSection] = useState("");
-	const [selectedSubject, setSelectedSubject] = useState("");
 	const [selectedDate, setSelectedDate] = useState(
 		new Date().toISOString().split("T")[0]
 	);
-	const [attendanceData, setAttendanceData] = useState({});
+	const [attendanceData, setAttendanceData] = useState({}); // Format: { studentId: 'present'|'absent' }
 	const [showStats, setShowStats] = useState(false);
 	const [absenteeAlerts, setAbsenteeAlerts] = useState([]);
 	const [view, setView] = useState("mark"); // 'mark' or 'history'
 	const [isLoading, setIsLoading] = useState(false);
-
-	const subjects = [
-		{ id: "mathematics", name: "Mathematics", icon: "🔢" },
-		{ id: "science", name: "Science", icon: "🔬" },
-		{ id: "social-studies", name: "Social Studies", icon: "🌍" },
-		{ id: "english", name: "English", icon: "📚" },
-		{ id: "hindi", name: "Hindi", icon: "🇮🇳" },
-		{ id: "computer-science", name: "Computer Science", icon: "💻" },
-		{ id: "physical-education", name: "Physical Education", icon: "⚽" },
-		{ id: "art", name: "Art & Craft", icon: "🎨" },
-	];
 
 	// Redirect if not authenticated or not faculty
 	useEffect(() => {
@@ -183,12 +171,12 @@ export default function AttendancePage() {
 		}
 	};
 
-	// Initialize attendance data when class/section/subject changes
+	// Initialize attendance data when class/section changes
 	useEffect(() => {
-		if (selectedClass && selectedSection && selectedSubject) {
+		if (selectedClass && selectedSection) {
 			loadAttendanceForDate();
 		}
-	}, [selectedClass, selectedSection, selectedSubject, selectedDate, students]);
+	}, [selectedClass, selectedSection, selectedDate, students]);
 
 	// Load attendance for selected date
 	const loadAttendanceForDate = async () => {
@@ -209,6 +197,8 @@ export default function AttendancePage() {
 			// Get profile IDs from attendance records
 			const profileIds = attendanceRecords.map(r => r.student_profile_id).filter(Boolean);
 
+			const initialData = {};
+
 			if (profileIds.length > 0) {
 				// Fetch profiles to map student_profile_id to user_id
 				const { data: profiles, error: profileError } = await supabase
@@ -224,29 +214,23 @@ export default function AttendancePage() {
 					profileMap[p.id] = p;
 				});
 
-				// Filter for selected class/section and map to user_id: status
-				const attendanceMap = {};
+				// Build attendance map: { userId: status }
 				attendanceRecords.forEach((record) => {
 					const profile = profileMap[record.student_profile_id];
 					if (profile?.class === selectedClass && profile?.section === selectedSection) {
-						attendanceMap[profile.user_id] = record.status;
+						initialData[profile.user_id] = record.status;
 					}
 				});
-
-				// Initialize with existing or default to present
-				const initialData = {};
-				filteredStudents.forEach((student) => {
-					initialData[student.id] = attendanceMap[student.id] || "present";
-				});
-				setAttendanceData(initialData);
-			} else {
-				// No records found, initialize with all present
-				const initialData = {};
-				filteredStudents.forEach((student) => {
-					initialData[student.id] = "present";
-				});
-				setAttendanceData(initialData);
 			}
+
+			// Initialize all students (default to present)
+			filteredStudents.forEach((student) => {
+				if (!initialData[student.id]) {
+					initialData[student.id] = "present";
+				}
+			});
+
+			setAttendanceData(initialData);
 		} catch (error) {
 			console.error("Error loading attendance:", error);
 			// Initialize with all present on error
@@ -304,14 +288,13 @@ export default function AttendancePage() {
 	const filteredStudents = students.filter(
 		(s) =>
 			s.class === selectedClass &&
-			s.section === selectedSection &&
-			selectedSubject
+			s.section === selectedSection
 	);
 
 	// Save attendance to Supabase
 	const handleSaveAttendance = async () => {
-		if (!selectedClass || !selectedSection || !selectedSubject) {
-			alert("Please select class, section, and subject");
+		if (!selectedClass || !selectedSection) {
+			alert("Please select class and section");
 			return;
 		}
 
@@ -335,17 +318,19 @@ export default function AttendancePage() {
 				);
 
 			// Prepare new attendance records
-			const attendanceRecords = studentsToMark
-				.filter((student) => student.profileId) // Only students with profiles
-				.map((student) => ({
-					student_profile_id: student.profileId,
-					school_id: user.school_id,
-					attendance_date: selectedDate,
-					status: attendanceData[student.id] || "present",
-					subject: selectedSubject,
-					remarks: null,
-					marked_by: user.id,
-				}));
+			const attendanceRecords = [];
+			studentsToMark
+				.filter((student) => student.profileId)
+				.forEach((student) => {
+					attendanceRecords.push({
+						student_profile_id: student.profileId,
+						school_id: user.school_id,
+						attendance_date: selectedDate,
+						status: attendanceData[student.id] || "present",
+						remarks: null,
+						marked_by: user.id,
+					});
+				});
 
 			// Insert new attendance records
 			const { error } = await supabase
@@ -374,12 +359,7 @@ export default function AttendancePage() {
 			const current = prev[studentId] || "present";
 			return {
 				...prev,
-				[studentId]:
-					current === "present"
-						? "absent"
-						: current === "absent"
-						? "late"
-						: "present",
+				[studentId]: current === "present" ? "absent" : "present",
 			};
 		});
 	};
@@ -397,20 +377,18 @@ export default function AttendancePage() {
 
 	// Calculate statistics
 	const calculateStats = () => {
-		if (!selectedClass || !selectedSection || !selectedSubject) return null;
+		if (!selectedClass || !selectedSection) return null;
 
-		const present = Object.values(attendanceData).filter(
-			(status) => status === "present"
-		).length;
-		const absent = Object.values(attendanceData).filter(
-			(status) => status === "absent"
-		).length;
-		const late = Object.values(attendanceData).filter(
-			(status) => status === "late"
-		).length;
-		const total = filteredStudents.length;
+		let present = 0;
+		let absent = 0;
 
-		return { present, absent, late, total };
+		filteredStudents.forEach((student) => {
+			const status = attendanceData[student.id] || "present";
+			if (status === "present") present++;
+			if (status === "absent") absent++;
+		});
+
+		return { present, absent, total: filteredStudents.length, students: filteredStudents.length };
 	};
 
 	const stats = calculateStats();
@@ -421,8 +399,7 @@ export default function AttendancePage() {
 			.filter(
 				(a) =>
 					(!selectedClass || a.class === selectedClass) &&
-					(!selectedSection || a.section === selectedSection) &&
-					(!selectedSubject || a.subject === selectedSubject)
+					(!selectedSection || a.section === selectedSection)
 			)
 			.sort((a, b) => new Date(b.date) - new Date(a.date));
 	};
@@ -567,7 +544,7 @@ export default function AttendancePage() {
 						<h3 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">
 							Select Class Details
 						</h3>
-						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-4 sm:grid-cols-3">
 							<div>
 								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
 									Date
@@ -590,7 +567,6 @@ export default function AttendancePage() {
 									onChange={(e) => {
 										setSelectedClass(e.target.value);
 										setSelectedSection("");
-										setSelectedSubject("");
 									}}
 									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 								>
@@ -609,10 +585,7 @@ export default function AttendancePage() {
 								</label>
 								<select
 									value={selectedSection}
-									onChange={(e) => {
-										setSelectedSection(e.target.value);
-										setSelectedSubject("");
-									}}
+									onChange={(e) => setSelectedSection(e.target.value)}
 									disabled={!selectedClass}
 									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 								>
@@ -624,31 +597,12 @@ export default function AttendancePage() {
 									))}
 								</select>
 							</div>
-
-							<div>
-								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-									Subject
-								</label>
-								<select
-									value={selectedSubject}
-									onChange={(e) => setSelectedSubject(e.target.value)}
-									disabled={!selectedSection}
-									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-								>
-									<option value="">Select Subject</option>
-									{subjects.map((subject) => (
-										<option key={subject.id} value={subject.id}>
-											{subject.icon} {subject.name}
-										</option>
-									))}
-								</select>
-							</div>
 						</div>
 					</div>
 
 					{/* Statistics */}
 					{stats && filteredStudents.length > 0 && (
-						<div className="mb-6 grid gap-4 sm:grid-cols-4">
+						<div className="mb-6 grid gap-4 sm:grid-cols-3">
 							<div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
 								<div className="flex items-center gap-3">
 									<div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900/30">
@@ -669,7 +623,7 @@ export default function AttendancePage() {
 									</div>
 									<div>
 										<p className="text-2xl font-bold text-zinc-900 dark:text-white">
-											{stats.total}
+											{stats.students}
 										</p>
 										<p className="text-sm text-zinc-600 dark:text-zinc-400">
 											Total Students
@@ -743,39 +697,6 @@ export default function AttendancePage() {
 									</div>
 								</div>
 							</div>
-
-							<div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-								<div className="flex items-center gap-3">
-									<div className="rounded-lg bg-yellow-100 p-3 dark:bg-yellow-900/30">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="1.5"
-											className="h-6 w-6 text-yellow-600 dark:text-yellow-400"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-											/>
-										</svg>
-									</div>
-									<div>
-										<p className="text-2xl font-bold text-zinc-900 dark:text-white">
-											{stats.late}
-										</p>
-										<p className="text-sm text-zinc-600 dark:text-zinc-400">
-											Late (
-											{stats.total > 0
-												? ((stats.late / stats.total) * 100).toFixed(0)
-												: 0}
-											%)
-										</p>
-									</div>
-								</div>
-							</div>
 						</div>
 					)}
 
@@ -815,7 +736,6 @@ export default function AttendancePage() {
 										</h3>
 										<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
 											Class {selectedClass}-{selectedSection} •{" "}
-											{subjects.find((s) => s.id === selectedSubject)?.name} •{" "}
 											{new Date(selectedDate).toLocaleDateString("en-US", {
 												weekday: "long",
 												year: "numeric",
@@ -902,14 +822,11 @@ export default function AttendancePage() {
 																className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
 																	status === "present"
 																		? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-																		: status === "absent"
-																		? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-																		: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+																		: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
 																}`}
 															>
 																{status === "present" && "✓"}
 																{status === "absent" && "✕"}
-																{status === "late" && "⏰"}
 																{status.charAt(0).toUpperCase() + status.slice(1)}
 															</span>
 														</div>
@@ -999,24 +916,6 @@ export default function AttendancePage() {
 									))}
 								</select>
 							</div>
-
-							<div>
-								<label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-									Subject
-								</label>
-								<select
-									value={selectedSubject}
-									onChange={(e) => setSelectedSubject(e.target.value)}
-									className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-								>
-									<option value="">All Subjects</option>
-									{subjects.map((subject) => (
-										<option key={subject.id} value={subject.id}>
-											{subject.icon} {subject.name}
-										</option>
-									))}
-								</select>
-							</div>
 						</div>
 					</div>
 
@@ -1059,8 +958,6 @@ export default function AttendancePage() {
 									total: Object.keys(record.records).length,
 								};
 
-								const subject = subjects.find((s) => s.id === record.subject);
-
 								return (
 									<div
 										key={record.id}
@@ -1069,10 +966,10 @@ export default function AttendancePage() {
 										<div className="flex items-start justify-between">
 											<div className="flex-1">
 												<div className="flex items-center gap-3">
-													<div className="text-3xl">{subject?.icon}</div>
+													<div className="text-3xl">📅</div>
 													<div>
 														<h4 className="text-lg font-semibold text-zinc-900 dark:text-white">
-															{subject?.name}
+															Attendance Record
 														</h4>
 														<p className="text-sm text-zinc-600 dark:text-zinc-400">
 															Class {record.class}-{record.section} •{" "}

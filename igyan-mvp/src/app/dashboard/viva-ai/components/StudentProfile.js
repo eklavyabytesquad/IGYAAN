@@ -7,6 +7,12 @@ export default function StudentProfile({ aiName, onAiNameChange, studentProfile,
 	const [tempName, setTempName] = useState(aiName || "");
 	const [showEditProfile, setShowEditProfile] = useState(false);
 
+	const handleEditProfile = () => {
+		if (onProfileUpdate) {
+			onProfileUpdate();
+		}
+	};
+
 	const handleSaveName = () => {
 		if (tempName.trim()) {
 			onAiNameChange(tempName.trim());
@@ -47,6 +53,12 @@ export default function StudentProfile({ aiName, onAiNameChange, studentProfile,
 				<p className="text-sm text-zinc-600 dark:text-zinc-400">
 					{studentProfile.class ? `Class ${studentProfile.class} Student` : 'Student'}
 				</p>
+				<button
+					onClick={handleEditProfile}
+					className="mt-2 rounded-lg bg-purple-500 px-4 py-2 text-xs font-medium text-white hover:bg-purple-600 transition-colors"
+				>
+					✏️ Edit Profile
+				</button>
 			</div>
 
 			{/* AI Companion Name Section */}
