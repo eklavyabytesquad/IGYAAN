@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../utils/auth_context";
+import { supabase } from "../../utils/supabase";
 import VoiceChatHistory from "./components/VoiceChatHistory";
 import StudentProfile from "./components/StudentProfile";
 import NotesSelector from "./components/NotesSelector";
@@ -330,30 +331,19 @@ export default function IgyanAIPage() {
 
 	const handleProfileSave = async (profileData) => {
 		try {
-			const response = await fetch('/api/student-profile', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					userId: user.id,
-					profile: profileData,
-				}),
-			});
-
-			if (response.ok) {
-				// Update state
-				setStudentProfile(profileData);
-				setShowProfileSetup(false);
-			} else {
-				const error = await response.json();
-				console.error("Error saving profile:", error);
-				alert("Failed to save profile. Please try again.");
-			}
+			// Update state
+			setStudentProfile(profileData);
+			// Save to localStorage
+			localStorage.setItem(`user_viva_profile_${user.id}`, JSON.stringify(profileData));
+			setShowProfileSetup(false);
 		} catch (error) {
 			console.error("Error saving profile:", error);
 			alert("Failed to save profile. Please try again.");
 		}
+	};
+
+	const handleProfileClose = () => {
+		setShowProfileSetup(false);
 	};
 
 	const startListening = () => {
@@ -855,6 +845,15 @@ Keep it positive, specific, and under 200 words. Use emojis to make it engaging.
 							<p className="text-white/80 text-sm mt-1">
 								Tell us about yourself to personalize your learning experience
 							</p>
+							<button
+								onClick={handleProfileClose}
+								className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+								title="Close"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
+									<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+								</svg>
+							</button>
 						</div>
 						<ProfileSetupForm 
 							onSave={handleProfileSave} 
