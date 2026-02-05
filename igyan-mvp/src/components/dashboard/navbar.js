@@ -3,16 +3,99 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../app/utils/auth_context";
 import { useRouter } from "next/navigation";
+import { supabase } from "../../app/utils/supabase";
+import Link from "next/link";
+
 export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	const { user, logout } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 	const [notifications, setNotifications] = useState(0);
+	const [sessionRequests, setSessionRequests] = useState([]);
 	const dropdownRef = useRef(null);
 	const notificationsRef = useRef(null);
 	const router = useRouter();
 
 	// Close dropdown when clicking outside
+	// Fetch session requests for B2C users (mentors and students)
+	useEffect(() => {
+		if (user?.role === 'b2c_mentor' || user?.role === 'b2c_student') {
+			fetchSessionRequests();
+			
+			// Set up real-time subscription for session requests
+			const filterField = user.role === 'b2c_mentor' ? 'mentor_user_id' : 'student_user_id';
+			const channel = supabase
+				.channel('session_requests_channel')
+				.on('postgres_changes', 
+					{ 
+						event: '*', 
+						schema: 'public', 
+						table: 'session_requests',
+						filter: `${filterField}=eq.${user.id}`
+					}, 
+					() => {
+						fetchSessionRequests();
+					}
+				)
+				.subscribe();
+
+			return () => {
+				supabase.removeChannel(channel);
+			};
+		}
+	}, [user]);
+
+	async function fetchSessionRequests() {
+		if (!user?.id) return;
+
+		try {
+			let query = supabase.from("session_requests");
+			
+			if (user.role === 'b2c_mentor') {
+				// Mentors see pending requests
+				const { data, error } = await query
+					.select(`
+						*,
+						student:student_user_id (
+							id,
+							full_name,
+							email,
+							image_base64
+						)
+					`)
+					.eq("mentor_user_id", user.id)
+					.eq("status", "pending")
+					.order("created_at", { ascending: false });
+
+				if (error) throw error;
+				setSessionRequests(data || []);
+				setNotifications(data?.length || 0);
+			} else if (user.role === 'b2c_student') {
+				// Students see accepted/rejected requests (updates from mentors)
+				const { data, error } = await query
+					.select(`
+						*,
+						mentor:mentor_user_id (
+							id,
+							full_name,
+							email,
+							image_base64
+						)
+					`)
+					.eq("student_user_id", user.id)
+					.in("status", ["accepted", "rejected"])
+					.is("student_viewed", null)
+					.order("updated_at", { ascending: false });
+
+				if (error) throw error;
+				setSessionRequests(data || []);
+				setNotifications(data?.length || 0);
+			}
+		} catch (error) {
+			console.error("Error fetching session requests:", error);
+		}
+	}
+
 	useEffect(() => {
 		function handleClickOutside(event) {
 			const target = event.target;
@@ -165,46 +248,126 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 									border: '1px solid var(--dashboard-border)',
 									backgroundColor: 'var(--dashboard-surface-solid)'
 								}}>
-								<div className="flex items-center justify-between border-b px-4 py-3"
+								<div className="border-b px-4 py-3"
 									style={{ borderColor: 'var(--dashboard-border)' }}>
 									<p className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Notifications</p>
-									<button
-										onClick={() => setIsNotificationsOpen(false)}
-										className="rounded-lg p-1 transition-colors hover:opacity-80"
-										style={{ color: 'var(--dashboard-muted)' }}
-										aria-label="Close notifications"
-									>
+								</div>
+								
+								{/* Notification Content */}
+								{sessionRequests.length === 0 ? (
+									<div className="px-4 py-12 text-center">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 24 24"
 											fill="none"
 											stroke="currentColor"
 											strokeWidth="1.5"
-											className="h-4 w-4"
+											className="mx-auto h-12 w-12 mb-3"
+											style={{ color: 'var(--dashboard-muted)' }}
 										>
-											<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+											/>
 										</svg>
-									</button>
-								</div>
-								<div className="px-4 py-12 text-center">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										className="mx-auto h-12 w-12 mb-3"
-										style={{ color: 'var(--dashboard-muted)' }}
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-										/>
-									</svg>
-									<p className="text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>No notifications yet</p>
-									<p className="mt-1 text-xs" style={{ color: 'var(--dashboard-muted)' }}>We'll notify you when something arrives</p>
-								</div>
+										<p className="text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>No notifications yet</p>
+										<p className="mt-1 text-xs" style={{ color: 'var(--dashboard-muted)' }}>We'll notify you when something arrives</p>
+									</div>
+								) : (
+									<div className="max-h-96 overflow-y-auto">
+										{sessionRequests.map((request) => {
+											const otherUser = user?.role === 'b2c_mentor' ? request.student : request.mentor;
+											const statusColors = {
+												pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+												accepted: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+												rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+											};
+											const statusLabel = request.status === 'pending' ? 'New Request' : 
+												request.status === 'accepted' ? 'Request Accepted' : 'Request Rejected';
+											
+											return (
+												<Link 
+													key={request.id}
+													href="/dashboard/messages?openRequests=true"
+													onClick={async () => {
+														setIsNotificationsOpen(false);
+														if (user?.role === 'b2c_student') {
+															await supabase
+																.from('session_requests')
+																.update({ student_viewed: true })
+																.eq('id', request.id);
+														}
+													}}
+													className="block border-b px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+													style={{ borderColor: 'var(--dashboard-border)' }}
+												>
+													<div className="flex items-start gap-3">
+														<div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center overflow-hidden">
+															{otherUser?.image_base64 ? (
+																<img 
+																	src={otherUser.image_base64} 
+																	alt={otherUser.full_name}
+																	className="h-full w-full object-cover"
+																/>
+															) : (
+																<span className="text-white font-semibold text-sm">
+																	{otherUser?.full_name?.charAt(0) || 'U'}
+																</span>
+															)}
+														</div>
+														
+														<div className="flex-1 min-w-0">
+															<div className="flex items-center gap-2">
+																<p className="text-sm font-semibold truncate" style={{ color: 'var(--dashboard-heading)' }}>
+																	{otherUser?.full_name}
+																</p>
+																<span className={`flex-shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[request.status]}`}>
+																	{statusLabel}
+																</span>
+															</div>
+															<p className="text-sm mt-0.5 truncate" style={{ color: 'var(--dashboard-text)' }}>
+																{request.request_title}
+															</p>
+															<div className="flex items-center gap-2 mt-1">
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	viewBox="0 0 24 24"
+																	fill="none"
+																	stroke="currentColor"
+																	strokeWidth="1.5"
+																	className="h-3.5 w-3.5"
+																	style={{ color: 'var(--dashboard-muted)' }}
+																>
+																	<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+																</svg>
+																<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
+																	{new Date(request.requested_start_time || request.updated_at).toLocaleString('en-US', {
+																		month: 'short',
+																		day: 'numeric',
+																		hour: 'numeric',
+																		minute: '2-digit',
+																		hour12: true
+																	})}
+																</p>
+															</div>
+														</div>
+													</div>
+												</Link>
+											);
+										})}
+										
+										{/* View All Button */}
+										<Link
+											href="/dashboard/messages?openRequests=true"
+											onClick={() => setIsNotificationsOpen(false)}
+											className="block px-4 py-3 text-center text-sm font-medium transition-colors hover:opacity-80"
+											style={{ color: 'var(--dashboard-primary)' }}
+										>
+											{user?.role === 'b2c_mentor' ? 'View All Requests' : 'View My Requests'} →
+										</Link>
+									</div>
+								)}
 							</div>
 						)}
 					</div>

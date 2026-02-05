@@ -403,7 +403,8 @@ export default function SettingsPage() {
 					</div>
 				</Link>
 
-				{/* School Profile Card */}
+				{/* School Profile Card - Only show for institutional users */}
+				{user?.role !== 'b2c_student' && user?.role !== 'b2c_mentor' && (
 				<Link
 					href="/dashboard/school-profile"
 					className="group dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
@@ -483,6 +484,70 @@ export default function SettingsPage() {
 						</svg>
 					</div>
 				</Link>
+				)}
+
+				{/* B2C Profile Card - Only show for B2C users */}
+				{(user?.role === 'b2c_student' || user?.role === 'b2c_mentor') && (
+				<Link
+					href="/dashboard/about"
+					className="group dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+				>
+					<div className="flex items-start gap-4">
+						<div
+							className="rounded-xl p-4 shadow-sm"
+							style={{
+								background: "color-mix(in srgb, var(--dashboard-primary) 16%, transparent)",
+								color: "var(--dashboard-primary)",
+							}}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								className="h-8 w-8"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+								/>
+							</svg>
+						</div>
+						<div className="flex-1">
+							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+								Professional Profile
+							</h2>
+							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+								Manage your professional profile, interests, experience, and achievements
+							</p>
+							<div className="mt-4">
+								<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+									Public Profile Link
+								</p>
+								<p className="mt-1 text-xs text-indigo-600 dark:text-indigo-400">
+									{typeof window !== 'undefined' ? window.location.origin : ''}/about/{user.id}
+								</p>
+							</div>
+						</div>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="1.5"
+							className="h-6 w-6 text-zinc-400 transition-transform group-hover:translate-x-1"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M8.25 4.5l7.5 7.5-7.5 7.5"
+							/>
+						</svg>
+					</div>
+				</Link>
+				)}
 
 				{/* Security Card */}
 				<div className="dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
