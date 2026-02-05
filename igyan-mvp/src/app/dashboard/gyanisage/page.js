@@ -100,7 +100,7 @@ Be inspiring, practical, and holistic. Help students become well-rounded individ
     setMessages([
       {
         role: 'assistant',
-        content: `🙏 Namaste! I'm **${shortName}**, your AI counsellor and growth companion.\n\n**${currentMode.name}** mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
+        content: `🙏🏻 Namaste! I'm ${shortName}, your AI counsellor and growth companion.\n\n${currentMode.name}mode activated.\n\n${currentMode.description}\n\nHow can I guide you today? Share what's on your mind, and I'll provide thoughtful, personalized guidance to help you grow. 🌟`,
       },
     ]);
     setConversationHistory([]);

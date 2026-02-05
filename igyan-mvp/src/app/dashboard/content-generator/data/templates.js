@@ -98,6 +98,106 @@ export const pptTemplates = [
   },
 ];
 
+// Shark PPT Templates (Investor Pitch Deck focused)
+export const sharkPptTemplates = [
+  {
+    id: 'shark-tank',
+    name: 'Shark Tank',
+    colors: {
+      primary: '1E3A5F',
+      secondary: '3D5A80',
+      text: '333333',
+      background: 'FFFFFF',
+      accent: 'FF6B35',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+  {
+    id: 'investor-pro',
+    name: 'Investor Pro',
+    colors: {
+      primary: '2C3E50',
+      secondary: '7F8C8D',
+      text: '2C3E50',
+      background: 'FFFFFF',
+      accent: '27AE60',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+  {
+    id: 'pitch-bold',
+    name: 'Pitch Bold',
+    colors: {
+      primary: '6366F1',
+      secondary: '818CF8',
+      text: '1F2937',
+      background: 'FFFFFF',
+      accent: 'F59E0B',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+  {
+    id: 'startup-dark',
+    name: 'Startup Dark',
+    colors: {
+      primary: '111827',
+      secondary: '374151',
+      text: 'F9FAFB',
+      background: '1F2937',
+      accent: '10B981',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+  {
+    id: 'venture-red',
+    name: 'Venture Red',
+    colors: {
+      primary: 'DC2626',
+      secondary: 'EF4444',
+      text: '1F2937',
+      background: 'FFFFFF',
+      accent: '1F2937',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+  {
+    id: 'unicorn',
+    name: 'Unicorn',
+    colors: {
+      primary: '7C3AED',
+      secondary: 'A78BFA',
+      text: '1F2937',
+      background: 'FFFFFF',
+      accent: 'EC4899',
+    },
+    fontSizes: {
+      title: 48,
+      heading: 36,
+      body: 20,
+    },
+  },
+];
+
 // PDF Templates
 export const pdfTemplates = [
   {
