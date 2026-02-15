@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/app/utils/auth_context";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/app/utils/supabase";
@@ -9,10 +9,23 @@ import SessionRequestModal from "./SessionRequestModal";
 import SessionRequestsPanel from "./SessionRequestsPanel";
 import StudentRequestsPanel from "./StudentRequestsPanel";
 
-export default function DashboardMessagesPage() {
+// Component that handles search params
+function SearchParamsHandler({ setShowRequestsPanel, userRole }) {
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const openRequests = searchParams.get('openRequests');
+		if (openRequests === 'true' && userRole === 'b2c_mentor') {
+			setShowRequestsPanel(true);
+		}
+	}, [searchParams, userRole, setShowRequestsPanel]);
+
+	return null;
+}
+
+function DashboardMessagesContent() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
-	const searchParams = useSearchParams();
 	const [users, setUsers] = useState([]);
 	const [loadingUsers, setLoadingUsers] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -25,14 +38,6 @@ export default function DashboardMessagesPage() {
 			router.push("/login");
 		}
 	}, [user, loading, router]);
-
-	// Check if we should open requests panel from URL parameter
-	useEffect(() => {
-		const openRequests = searchParams.get('openRequests');
-		if (openRequests === 'true' && user?.role === 'b2c_mentor') {
-			setShowRequestsPanel(true);
-		}
-	}, [searchParams, user]);
 
 	useEffect(() => {
 		if (!loading && user) {
@@ -165,6 +170,12 @@ export default function DashboardMessagesPage() {
 
 	return (
 		<div className="p-6 lg:p-8">
+			<Suspense fallback={null}>
+				<SearchParamsHandler 
+					setShowRequestsPanel={setShowRequestsPanel} 
+					userRole={user?.role} 
+				/>
+			</Suspense>
 			{/* Header */}
 			<div className="mb-8 flex items-center justify-between">
 				<div>
@@ -326,6 +337,24 @@ export default function DashboardMessagesPage() {
 				/>
 			)}
 		</div>
+	);
+}
+
+// Wrapper component with Suspense
+export default function DashboardMessagesPage() {
+	return (
+		<Suspense fallback={
+			<div className="flex min-h-screen items-center justify-center">
+				<div className="text-center">
+					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">
+						Loading...
+					</p>
+				</div>
+			</div>
+		}>
+			<DashboardMessagesContent />
+		</Suspense>
 	);
 }
 
