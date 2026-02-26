@@ -47,9 +47,40 @@ export default function SchoolProfilePage() {
 			if (!user?.id) return;
 
 			try {
-				// Check if user has school_id (all institutional users should have one)
+				// Check if user has school_id
 				if (!user.school_id) {
-					console.warn("User does not have school_id:", user.id);
+					// No school linked yet — check if they previously created one (fallback)
+					const { data: createdSchool } = await supabase
+						.from("schools")
+						.select("*")
+						.eq("created_by", user.id)
+						.maybeSingle();
+
+					if (createdSchool) {
+						setSchoolExists(true);
+						setFormData({
+							school_name: createdSchool.school_name || "",
+							school_type: createdSchool.school_type || "",
+							affiliation_board: createdSchool.affiliation_board || "",
+							address_line1: createdSchool.address_line1 || "",
+							address_line2: createdSchool.address_line2 || "",
+							city: createdSchool.city || "",
+							state: createdSchool.state || "",
+							pincode: createdSchool.pincode || "",
+							country: createdSchool.country || "India",
+							contact_email: createdSchool.contact_email || "",
+							contact_phone: createdSchool.contact_phone || "",
+							principal_name: createdSchool.principal_name || "",
+							principal_email: createdSchool.principal_email || "",
+							principal_phone: createdSchool.principal_phone || "",
+							udise_code: createdSchool.udise_code || "",
+							logo_url: createdSchool.logo_url || "",
+							registration_certificate_url: createdSchool.registration_certificate_url || "",
+							affiliation_certificate_url: createdSchool.affiliation_certificate_url || "",
+							principal_id_proof_url: createdSchool.principal_id_proof_url || "",
+						});
+					}
+					// If no school found at all, form stays empty for new creation
 					return;
 				}
 
@@ -205,8 +236,8 @@ export default function SchoolProfilePage() {
 					throw updateError;
 				}
 			} else {
-				// Create new school (shouldn't happen normally, but handle it)
-				const { error: insertError } = await supabase
+				// Create new school and link to user
+				const { data: newSchool, error: insertError } = await supabase
 					.from("schools")
 					.insert([
 						{
@@ -233,10 +264,20 @@ export default function SchoolProfilePage() {
 							created_by: user.id,
 							updated_by: user.id,
 						},
-					]);
+					])
+					.select()
+					.single();
 
 				if (insertError) {
 					throw insertError;
+				}
+
+				// Link school_id to the user's record
+				if (newSchool?.id) {
+					await supabase
+						.from("users")
+						.update({ school_id: newSchool.id, updated_at: new Date().toISOString() })
+						.eq("id", user.id);
 				}
 
 				setSchoolExists(true);

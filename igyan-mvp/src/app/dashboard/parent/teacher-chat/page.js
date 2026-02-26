@@ -146,30 +146,51 @@ export default function TeacherChatPage() {
   };
 
   // ─── FETCH CLASS TEACHER via class_students → faculty_assignments ───
+  // ALL queries are filtered by school_id so teachers from other schools never appear
   const fetchClassTeacher = async () => {
     setLoading(true);
+    setClassTeacher(null);
     try {
-      // Step 1: Find the child's active class enrollment
-      const { data: enrollment, error: enrollErr } = await supabase
+      // Determine the school_id — use the child's school or the parent's school
+      const schoolId = selectedChild?.school_id || user?.school_id;
+      if (!schoolId) {
+        console.error("No school_id found for child or parent");
+        setLoading(false);
+        return;
+      }
+
+      // Step 1: Find the child's active class enrollment IN THIS SCHOOL
+      const { data: enrollments, error: enrollErr } = await supabase
         .from("class_students")
         .select(`
           id,
           class_id,
           session_id,
+          school_id,
           classes (
             id,
             class_name,
-            section
+            section,
+            school_id
           )
         `)
         .eq("student_id", selectedChild.id)
         .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+        .order("created_at", { ascending: false });
 
-      if (enrollErr || !enrollment) {
-        console.error("No active enrollment found for student:", enrollErr);
+      if (enrollErr || !enrollments || enrollments.length === 0) {
+        console.warn("No active enrollment found for student");
+        setLoading(false);
+        return;
+      }
+
+      // Filter enrollments to match the parent/child's school
+      const enrollment = enrollments.find(
+        (e) => e.school_id === schoolId || e.classes?.school_id === schoolId
+      ) || null;
+
+      if (!enrollment) {
+        console.warn("No enrollment found in this school for student");
         setLoading(false);
         return;
       }
@@ -179,12 +200,13 @@ export default function TeacherChatPage() {
       const className = `${enrollment.classes?.class_name || ""} - ${enrollment.classes?.section || ""}`;
 
       // Step 2: Find the class teacher from faculty_assignments
-      // where assignment_type = 'class_teacher' for the same class
-      const { data: teacherAssignment, error: teacherErr } = await supabase
+      // MUST match school_id + class_id + assignment_type = 'class_teacher'
+      const { data: teacherAssignment } = await supabase
         .from("faculty_assignments")
         .select(`
           id,
           faculty_id,
+          school_id,
           teacher:faculty_id (
             id,
             full_name,
@@ -194,12 +216,13 @@ export default function TeacherChatPage() {
           )
         `)
         .eq("class_id", classId)
+        .eq("school_id", schoolId)
         .eq("assignment_type", "class_teacher")
         .eq("is_active", true)
         .limit(1)
         .maybeSingle();
 
-      if (teacherAssignment?.teacher) {
+      if (teacherAssignment?.teacher && teacherAssignment.teacher.school_id === schoolId) {
         const t = teacherAssignment.teacher;
         const teacher = {
           id: t.id,
@@ -214,12 +237,13 @@ export default function TeacherChatPage() {
         return;
       }
 
-      // Fallback: Also match session_id
+      // Fallback: Also match session_id + school_id
       const { data: fallback } = await supabase
         .from("faculty_assignments")
         .select(`
           id,
           faculty_id,
+          school_id,
           teacher:faculty_id (
             id,
             full_name,
@@ -230,12 +254,13 @@ export default function TeacherChatPage() {
         `)
         .eq("class_id", classId)
         .eq("session_id", sessionId)
+        .eq("school_id", schoolId)
         .eq("assignment_type", "class_teacher")
         .eq("is_active", true)
         .limit(1)
         .maybeSingle();
 
-      if (fallback?.teacher) {
+      if (fallback?.teacher && fallback.teacher.school_id === schoolId) {
         const t = fallback.teacher;
         const teacher = {
           id: t.id,
@@ -250,39 +275,12 @@ export default function TeacherChatPage() {
         return;
       }
 
-      // Second fallback: check faculty_profiles for is_class_teacher
-      const { data: profileData } = await supabase
-        .from("faculty_profiles")
-        .select("user_id, name, email, phone, class, section")
-        .eq("is_class_teacher", true)
-        .eq("class", enrollment.classes?.class_name)
-        .eq("section", enrollment.classes?.section)
-        .limit(1)
-        .maybeSingle();
-
-      if (profileData) {
-        const { data: userData } = await supabase
-          .from("users")
-          .select("id, full_name, email, phone")
-          .eq("id", profileData.user_id)
-          .single();
-
-        if (userData) {
-          const teacher = {
-            id: userData.id,
-            name: userData.full_name || profileData.name,
-            email: userData.email || profileData.email || "",
-            phone: userData.phone || profileData.phone || "",
-            className,
-          };
-          setClassTeacher(teacher);
-          await findOrCreateConversation(teacher.id, classId);
-        }
-      }
-
-      console.warn("No class teacher found for class:", classId);
+      // No class teacher found for this school
+      console.warn("No class teacher assigned for class:", classId, "in school:", schoolId);
+      setClassTeacher(null);
     } catch (err) {
       console.error("Error fetching class teacher:", err);
+      setClassTeacher(null);
     } finally {
       setLoading(false);
     }
@@ -627,7 +625,30 @@ export default function TeacherChatPage() {
       {/* Teacher Info Card */}
       <TeacherInfoCard classTeacher={classTeacher} onRequestCallback={requestCallback} />
 
-      {/* Tab Navigation */}
+      {/* If no teacher assigned, show message and block all tabs */}
+      {!classTeacher && !loading && (
+        <div className="rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-10 text-center space-y-4">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
+            <span className="text-4xl">👨‍🏫</span>
+          </div>
+          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+            No Class Teacher Assigned Yet
+          </h3>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
+            A class teacher has not been assigned to {selectedChild?.name || "your child"}&apos;s class in your school yet.
+            Please contact your school administration to assign a class teacher.
+          </p>
+          <div className="inline-flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-4 py-2 text-sm text-amber-700 dark:text-amber-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+              <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+            </svg>
+            Chat, call, complaint, and homework features will be available once a teacher is assigned.
+          </div>
+        </div>
+      )}
+
+      {/* Tab Navigation — only show when teacher is assigned */}
+      {classTeacher && (<>
       <div className="flex gap-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 p-1">
         {tabs.map((tab) => (
           <button
@@ -918,6 +939,7 @@ export default function TeacherChatPage() {
           </div>
         </div>
       )}
+      </>)}
     </div>
   );
 }
