@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "@/components/logo";
 import { useAuth } from "../../utils/auth_context";
@@ -11,33 +11,39 @@ export default function InstitutionalSuiteRegister() {
 	const [error, setError] = useState("");
 	const [imageBase64, setImageBase64] = useState("");
 	const [uploadingImage, setUploadingImage] = useState(false);
-	const [selectedRole, setSelectedRole] = useState("student");
 
-	const INSTITUTIONAL_ROLES = [
-		{ value: "super_admin", label: "Super Admin", description: "Full system access" },
-		{ value: "co_admin", label: "Co-Admin", description: "Administrative access" },
-		{ value: "student", label: "Student", description: "Student access" },
-		{ value: "faculty", label: "Faculty", description: "Teaching staff access" },
-	];
+	// OTP state
+	const [phone, setPhone] = useState("");
+	const [otpSent, setOtpSent] = useState(false);
+	const [otpVerified, setOtpVerified] = useState(false);
+	const [otpCode, setOtpCode] = useState("");
+	const [otpLoading, setOtpLoading] = useState(false);
+	const [otpError, setOtpError] = useState("");
+	const [otpSuccess, setOtpSuccess] = useState("");
+	const [resendTimer, setResendTimer] = useState(0);
 
+	// Countdown timer for resend
+	useEffect(() => {
+		if (resendTimer <= 0) return;
+		const interval = setInterval(() => setResendTimer((t) => t - 1), 1000);
+		return () => clearInterval(interval);
+	}, [resendTimer]);
+
+	// ─── Image upload ───
 	const handleImageUpload = (e) => {
 		const file = e.target.files[0];
 		if (!file) return;
-
 		if (file.size > 5 * 1024 * 1024) {
 			setError("Image size should be less than 5MB");
 			return;
 		}
-
 		const validTypes = ["image/jpeg", "image/jpg", "image/png"];
 		if (!validTypes.includes(file.type)) {
 			setError("Please upload a valid image (JPEG, PNG)");
 			return;
 		}
-
 		setUploadingImage(true);
 		setError("");
-
 		const reader = new FileReader();
 		reader.onloadend = () => {
 			setImageBase64(reader.result);
@@ -50,23 +56,114 @@ export default function InstitutionalSuiteRegister() {
 		reader.readAsDataURL(file);
 	};
 
-	const removeImage = () => {
-		setImageBase64("");
+	const removeImage = () => setImageBase64("");
+
+	// ─── Clean phone → 10 digits ───
+	const cleanPhone = (p) => {
+		const digits = p.replace(/\D/g, "");
+		if (digits.startsWith("91") && digits.length === 12) return digits.slice(2);
+		if (digits.length === 10) return digits;
+		return digits;
 	};
 
+	// ─── Send OTP ───
+	const sendOTP = async () => {
+		setOtpError("");
+		setOtpSuccess("");
+
+		const cleaned = cleanPhone(phone);
+		if (cleaned.length !== 10) {
+			setOtpError("Please enter a valid 10-digit mobile number");
+			return;
+		}
+
+		setOtpLoading(true);
+		try {
+			const res = await fetch("/api/otp/send", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ phone: cleaned, reason: "registration" }),
+			});
+			const data = await res.json();
+
+			if (!res.ok) {
+				setOtpError(data.error || "Failed to send OTP");
+				return;
+			}
+
+			setOtpSent(true);
+			setOtpSuccess("OTP sent to your WhatsApp! Check your messages.");
+			setResendTimer(60);
+		} catch (err) {
+			setOtpError("Network error. Please try again.");
+		} finally {
+			setOtpLoading(false);
+		}
+	};
+
+	// ─── Verify OTP ───
+	const verifyOTP = async () => {
+		setOtpError("");
+		setOtpSuccess("");
+
+		if (!otpCode || otpCode.trim().length !== 6) {
+			setOtpError("Please enter the 6-digit OTP");
+			return;
+		}
+
+		setOtpLoading(true);
+		try {
+			const res = await fetch("/api/otp/verify", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					phone: cleanPhone(phone),
+					otp: otpCode.trim(),
+					reason: "registration",
+				}),
+			});
+			const data = await res.json();
+
+			if (!res.ok) {
+				setOtpError(data.error || "Verification failed");
+				return;
+			}
+
+			setOtpVerified(true);
+			setOtpSuccess("✅ Phone number verified!");
+		} catch (err) {
+			setOtpError("Network error. Please try again.");
+		} finally {
+			setOtpLoading(false);
+		}
+	};
+
+	// ─── Submit registration ───
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		setError("");
 
+		if (!otpVerified) {
+			setError("Please verify your mobile number first");
+			setLoading(false);
+			return;
+		}
+
+		if (!imageBase64) {
+			setError("Please upload your profile picture");
+			setLoading(false);
+			return;
+		}
+
 		const formData = new FormData(e.target);
 		const fullName = `${formData.get("firstName")} ${formData.get("lastName")}`;
 		const email = formData.get("email");
 		const password = formData.get("password");
-		const phone = formData.get("phone");
+		const confirmPassword = formData.get("confirmPassword");
 
-		if (!imageBase64) {
-			setError("Please upload your profile picture");
+		if (password !== confirmPassword) {
+			setError("Passwords do not match");
 			setLoading(false);
 			return;
 		}
@@ -75,9 +172,9 @@ export default function InstitutionalSuiteRegister() {
 			email,
 			password,
 			fullName,
-			phone || null,
+			cleanPhone(phone),
 			imageBase64,
-			selectedRole
+			"super_admin"
 		);
 
 		if (!result.success) {
@@ -96,16 +193,19 @@ export default function InstitutionalSuiteRegister() {
 				<div className="mb-6 flex justify-center">
 					<Logo variant="card" />
 				</div>
-				<div className="mb-4">
+				<div className="mb-4 flex items-center gap-3">
 					<span className="inline-block rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
 						Institutional Suite
 					</span>
+					<span className="inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+						School Super Admin
+					</span>
 				</div>
 				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-					Create institutional account
+					Register your school
 				</h1>
 				<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-					Set up access for your institution and join your educational community.
+					Create your Super Admin account to set up and manage your institution on iGyanAI.
 				</p>
 
 				{error && (
@@ -115,35 +215,7 @@ export default function InstitutionalSuiteRegister() {
 				)}
 
 				<form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-					{/* Role Selection */}
-					<div>
-						<label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
-							Select your role <span className="text-red-500">*</span>
-						</label>
-						<div className="grid grid-cols-2 gap-3">
-							{INSTITUTIONAL_ROLES.map((role) => (
-								<button
-									key={role.value}
-									type="button"
-									onClick={() => setSelectedRole(role.value)}
-									className={`rounded-lg border-2 p-3 text-left transition-all ${
-										selectedRole === role.value
-											? "border-sky-500 bg-sky-50 dark:border-sky-500 dark:bg-sky-900/20"
-											: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-slate-900"
-									}`}
-								>
-									<div className="font-semibold text-sm text-zinc-900 dark:text-white">
-										{role.label}
-									</div>
-									<div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-										{role.description}
-									</div>
-								</button>
-							))}
-						</div>
-					</div>
-
-					{/* Profile Picture Upload */}
+					{/* ─── Profile Picture ─── */}
 					<div>
 						<label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
 							Profile Picture <span className="text-red-500">*</span>
@@ -161,19 +233,8 @@ export default function InstitutionalSuiteRegister() {
 										onClick={removeImage}
 										className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1.5 text-white shadow-lg hover:bg-red-600"
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2"
-											className="h-4 w-4"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M6 18L18 6M6 6l12 12"
-											/>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 										</svg>
 									</button>
 								</div>
@@ -187,67 +248,30 @@ export default function InstitutionalSuiteRegister() {
 										disabled={uploadingImage}
 									/>
 									{uploadingImage ? (
-										<svg
-											className="h-8 w-8 animate-spin text-sky-500"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-										>
-											<circle
-												className="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												strokeWidth="4"
-											></circle>
-											<path
-												className="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-											></path>
+										<svg className="h-8 w-8 animate-spin text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
 										</svg>
 									) : (
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="1.5"
-											className="h-8 w-8 text-zinc-400"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
-											/>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
-											/>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-8 w-8 text-zinc-400">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+											<path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
 										</svg>
 									)}
 								</label>
 							)}
 							<div className="flex-1">
-								<p className="text-sm text-zinc-600 dark:text-zinc-400">
-									Upload your profile picture
-								</p>
-								<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-									JPEG or PNG, max 5MB
-								</p>
+								<p className="text-sm text-zinc-600 dark:text-zinc-400">Upload your profile picture</p>
+								<p className="mt-1 text-xs text-zinc-500">JPEG or PNG, max 5MB</p>
 							</div>
 						</div>
 					</div>
 
+					{/* ─── Name ─── */}
 					<div className="grid gap-5 sm:grid-cols-2">
 						<div>
-							<label
-								htmlFor="firstName"
-								className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-							>
-								First name
+							<label htmlFor="firstName" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+								First name <span className="text-red-500">*</span>
 							</label>
 							<input
 								id="firstName"
@@ -259,11 +283,8 @@ export default function InstitutionalSuiteRegister() {
 							/>
 						</div>
 						<div>
-							<label
-								htmlFor="lastName"
-								className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-							>
-								Last name
+							<label htmlFor="lastName" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+								Last name <span className="text-red-500">*</span>
 							</label>
 							<input
 								id="lastName"
@@ -275,12 +296,11 @@ export default function InstitutionalSuiteRegister() {
 							/>
 						</div>
 					</div>
+
+					{/* ─── Email ─── */}
 					<div>
-						<label
-							htmlFor="email"
-							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-						>
-							Work email
+						<label htmlFor="email" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+							Work email <span className="text-red-500">*</span>
 						</label>
 						<input
 							id="email"
@@ -291,27 +311,102 @@ export default function InstitutionalSuiteRegister() {
 							required
 						/>
 					</div>
+
+					{/* ─── Mobile Number + OTP ─── */}
 					<div>
-						<label
-							htmlFor="phone"
-							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-						>
-							Phone number (optional)
+						<label htmlFor="phone" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+							Mobile number <span className="text-red-500">*</span>
 						</label>
-						<input
-							id="phone"
-							name="phone"
-							type="tel"
-							placeholder="+91 98765 43210"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-						/>
+						<div className="mt-2 flex gap-2">
+							<div className="flex items-center rounded-lg border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-500 dark:border-zinc-700 dark:bg-slate-800 dark:text-zinc-400">
+								+91
+							</div>
+							<input
+								id="phone"
+								type="tel"
+								placeholder="98765 43210"
+								value={phone}
+								onChange={(e) => {
+									setPhone(e.target.value);
+									if (otpVerified) {
+										setOtpVerified(false);
+										setOtpSent(false);
+										setOtpCode("");
+									}
+								}}
+								disabled={otpVerified}
+								className={`flex-1 rounded-lg border px-4 py-3 text-sm transition-colors focus:outline-none ${
+									otpVerified
+										? "border-green-300 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-300"
+										: "border-zinc-300 bg-white text-zinc-900 focus:border-sky-500 dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
+								}`}
+								required
+							/>
+							{!otpVerified && (
+								<button
+									type="button"
+									onClick={sendOTP}
+									disabled={otpLoading || resendTimer > 0}
+									className="whitespace-nowrap rounded-lg bg-sky-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
+								>
+									{otpLoading
+										? "Sending..."
+										: resendTimer > 0
+										? `Resend (${resendTimer}s)`
+										: otpSent
+										? "Resend OTP"
+										: "Send OTP"}
+								</button>
+							)}
+							{otpVerified && (
+								<div className="flex items-center gap-1 rounded-lg bg-green-100 px-3 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+										<path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+									</svg>
+									Verified
+								</div>
+							)}
+						</div>
+
+						{/* OTP Input */}
+						{otpSent && !otpVerified && (
+							<div className="mt-3 space-y-2">
+								<div className="flex gap-2">
+									<input
+										type="text"
+										placeholder="Enter 6-digit OTP"
+										value={otpCode}
+										onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+										maxLength={6}
+										className="flex-1 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-center tracking-[0.5em] font-mono text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
+									/>
+									<button
+										type="button"
+										onClick={verifyOTP}
+										disabled={otpLoading || otpCode.length !== 6}
+										className="whitespace-nowrap rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
+									>
+										{otpLoading ? "Verifying..." : "Verify"}
+									</button>
+								</div>
+								<p className="text-xs text-zinc-500 dark:text-zinc-400">
+									OTP sent to your WhatsApp on +91 {cleanPhone(phone)}
+								</p>
+							</div>
+						)}
+
+						{otpError && (
+							<p className="mt-2 text-sm text-red-600 dark:text-red-400">{otpError}</p>
+						)}
+						{otpSuccess && !otpError && (
+							<p className="mt-2 text-sm text-green-600 dark:text-green-400">{otpSuccess}</p>
+						)}
 					</div>
+
+					{/* ─── Password ─── */}
 					<div>
-						<label
-							htmlFor="password"
-							className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-						>
-							Password
+						<label htmlFor="password" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+							Password <span className="text-red-500">*</span>
 						</label>
 						<input
 							id="password"
@@ -322,18 +417,54 @@ export default function InstitutionalSuiteRegister() {
 							required
 							minLength={8}
 						/>
-						<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-							Minimum 8 characters
-						</p>
+						<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Minimum 8 characters</p>
 					</div>
+					<div>
+						<label htmlFor="confirmPassword" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+							Confirm password <span className="text-red-500">*</span>
+						</label>
+						<input
+							id="confirmPassword"
+							name="confirmPassword"
+							type="password"
+							placeholder="••••••••"
+							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
+							required
+							minLength={8}
+						/>
+					</div>
+
+					{/* ─── Info ─── */}
+					<div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 dark:border-sky-900/50 dark:bg-sky-900/10">
+						<div className="flex items-start gap-2">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="mt-0.5 h-5 w-5 flex-shrink-0 text-sky-500">
+								<path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+							</svg>
+							<div>
+								<p className="text-sm font-medium text-sky-800 dark:text-sky-300">
+									You are registering as a School Super Admin
+								</p>
+								<p className="mt-1 text-xs text-sky-600 dark:text-sky-400">
+									After registration, you can onboard your school and add faculty, students, parents, and co-admins from the dashboard.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					{/* ─── Submit ─── */}
 					<button
 						type="submit"
-						disabled={loading}
-						className="w-full rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-transform hover:-translate-y-0.5 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
+						disabled={loading || !otpVerified}
+						className={`w-full rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${
+							otpVerified
+								? "bg-sky-500 shadow-sky-500/30 hover:bg-sky-400"
+								: "bg-zinc-400 shadow-none cursor-not-allowed"
+						}`}
 					>
-						{loading ? "Creating account..." : "Create institutional account"}
+						{loading ? "Creating account..." : "Create School Admin Account"}
 					</button>
 				</form>
+
 				<p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
 					Already have access?{" "}
 					<Link
