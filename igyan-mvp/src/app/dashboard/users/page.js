@@ -19,6 +19,31 @@ async function hashPassword(password) {
 	return hashHex;
 }
 
+// Send WhatsApp onboarding notification
+async function sendOnboardingWhatsApp({ phone, schoolName, fullName, email, password }) {
+	if (!phone) return; // skip if no phone number
+	try {
+		const receiver = phone.replace(/[^0-9]/g, "");
+		const formattedReceiver = receiver.startsWith("91") ? receiver : "91" + receiver;
+		await fetch("https://adminapis.backendprod.com/lms_campaign/api/whatsapp/template/0k3sr52fte/process", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				receiver: formattedReceiver,
+				values: {
+					"1": schoolName || "Your School",
+					"2": fullName || "User",
+					"3": email || "",
+					"4": `password : "${password}"`,
+				},
+			}),
+		});
+		console.log("WhatsApp onboarding sent to", formattedReceiver);
+	} catch (err) {
+		console.error("Failed to send WhatsApp onboarding:", err);
+	}
+}
+
 export default function UserManagementPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
@@ -239,6 +264,15 @@ export default function UserManagementPage() {
 					throw new Error("Failed to create faculty profile");
 				}
 			}
+
+			// Send WhatsApp onboarding notification
+			await sendOnboardingWhatsApp({
+				phone: formData.phone,
+				schoolName: schoolData?.school_name || "",
+				fullName: formData.full_name.trim(),
+				email: formData.email.trim().toLowerCase(),
+				password: formData.password,
+			});
 
 			// Add new user to the list
 			setUsers((prev) => [newUser, ...prev]);

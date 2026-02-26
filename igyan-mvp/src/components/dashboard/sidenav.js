@@ -87,6 +87,9 @@ const ROLE_BASED_NAV_CONFIG = {
 	schoolManagement: {
 		allowedRoles: ['super_admin', 'co_admin'],
 	},
+	timetable: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
 	eventsManagement: {
 		allowedRoles: ['super_admin', 'co_admin'],
 	},
@@ -506,6 +509,17 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			),
 		},
 		{
+			key: 'timetable',
+			name: "Timetable",
+			href: "/dashboard/timetable",
+			allowedRoles: ROLE_BASED_NAV_CONFIG.timetable.allowedRoles,
+			icon: (
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+				</svg>
+			),
+		},
+		{
 			key: 'attendance',
 			name: "Attendance",
 			href: "/dashboard/attendance",
@@ -889,11 +903,12 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									Academic Operations
 								</p>
 							</div>
-							{navItems.filter(item => ['courses', 'studentManagement', 'schoolManagement', 'attendance', 'facultySubstitution'].includes(item.key)).map((item) => {
+							{navItems.filter(item => ['courses', 'studentManagement', 'schoolManagement', 'timetable', 'attendance', 'facultySubstitution'].includes(item.key)).map((item) => {
 								if (!hasAccess(item.key, item.allowedRoles, item.superAdminOnly)) return null;
 								const isActive = pathname === item.href;
 								const displayName = item.key === 'courses' ? 'Courses & Curriculum' :
 									item.key === 'schoolManagement' ? 'School Management' :
+									item.key === 'timetable' ? 'Timetable' :
 									item.key === 'facultySubstitution' ? 'Smart Substitution' : item.name;
 								return (
 									<Link

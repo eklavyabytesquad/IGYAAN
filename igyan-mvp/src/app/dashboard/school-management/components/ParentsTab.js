@@ -70,6 +70,37 @@ export default function ParentsTab({ schoolId, students, userId, onRefresh }) {
 		return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 	};
 
+	const sendOnboardingWhatsApp = async ({ phone, schoolName, fullName, email, password }) => {
+		if (!phone) return;
+		try {
+			const receiver = phone.replace(/[^0-9]/g, "");
+			const formattedReceiver = receiver.startsWith("91") ? receiver : "91" + receiver;
+			await fetch("https://adminapis.backendprod.com/lms_campaign/api/whatsapp/template/0k3sr52fte/process", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					receiver: formattedReceiver,
+					values: {
+						"1": schoolName || "Your School",
+						"2": fullName || "User",
+						"3": email || "",
+						"4": `password : "${password}"`,
+					},
+				}),
+			});
+			console.log("WhatsApp onboarding sent to", formattedReceiver);
+		} catch (err) {
+			console.error("Failed to send WhatsApp onboarding:", err);
+		}
+	};
+
+	const getSchoolName = async () => {
+		try {
+			const { data } = await supabase.from("schools").select("school_name").eq("id", schoolId).single();
+			return data?.school_name || "";
+		} catch { return ""; }
+	};
+
 	const handleAddParent = async (e) => {
 		e.preventDefault();
 		setSaving(true);
@@ -86,6 +117,17 @@ export default function ParentsTab({ schoolId, students, userId, onRefresh }) {
 				role: "parent",
 			}]);
 			if (err) throw err;
+
+			// Send WhatsApp onboarding notification
+			const schoolName = await getSchoolName();
+			await sendOnboardingWhatsApp({
+				phone: parentForm.phone,
+				schoolName,
+				fullName: parentForm.full_name.trim(),
+				email: parentForm.email.trim().toLowerCase(),
+				password: parentForm.password,
+			});
+
 			setSuccess(`Parent "${parentForm.full_name}" created successfully!`);
 			setParentForm({ full_name: "", email: "", phone: "", password: "" });
 			setShowAddParent(false);

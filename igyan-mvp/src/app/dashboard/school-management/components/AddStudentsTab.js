@@ -77,6 +77,37 @@ const hashBuffer = await crypto.subtle.digest("SHA-256", data);
 return Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
+const sendOnboardingWhatsApp = async ({ phone, schoolName, fullName, email, password }) => {
+if (!phone) return;
+try {
+const receiver = phone.replace(/[^0-9]/g, "");
+const formattedReceiver = receiver.startsWith("91") ? receiver : "91" + receiver;
+await fetch("https://adminapis.backendprod.com/lms_campaign/api/whatsapp/template/0k3sr52fte/process", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+receiver: formattedReceiver,
+values: {
+"1": schoolName || "Your School",
+"2": fullName || "User",
+"3": email || "",
+"4": `password : "${password}"`,
+},
+}),
+});
+console.log("WhatsApp onboarding sent to", formattedReceiver);
+} catch (err) {
+console.error("Failed to send WhatsApp onboarding:", err);
+}
+};
+
+const getSchoolName = async () => {
+try {
+const { data } = await supabase.from("schools").select("school_name").eq("id", schoolId).single();
+return data?.school_name || "";
+} catch { return ""; }
+};
+
 const handleAddStudent = async (e) => {
 e.preventDefault();
 setSaving(true); setError(""); setSuccess("");
@@ -109,6 +140,10 @@ growth_areas: toArray(form.growth_areas), academic_goals: toArray(form.academic_
 favorite_subjects: toArray(form.favorite_subjects),
 }]);
 
+// Send WhatsApp onboarding
+const schoolName = await getSchoolName();
+await sendOnboardingWhatsApp({ phone: form.phone, schoolName, fullName: form.full_name.trim(), email: form.email.trim().toLowerCase(), password: form.password });
+
 setSuccess("Student \"" + form.full_name + "\" created and enrolled!");
 resetForm(); setShowModal(false); fetchAllStudents(); if (onRefresh) onRefresh();
 } catch (err) { setError(err.message); }
@@ -121,6 +156,7 @@ if (!bulkClassId) { setError("Please select a class for bulk upload"); return; }
 if (!session) { setError("No active session found"); return; }
 setBulkSaving(true); setError(""); setBulkResults(null);
 
+const bulkSchoolName = await getSchoolName();
 const lines = bulkCsv.trim().split("\n").filter((l) => l.trim());
 const startIdx = lines[0]?.toLowerCase().includes("name") || lines[0]?.toLowerCase().includes("email") ? 1 : 0;
 let successCount = 0, failCount = 0;
@@ -148,6 +184,8 @@ await supabase.from("student_profiles").insert([{
 user_id: newUser.id, name: full_name.trim(), school_id: schoolId,
 class: selectedClass?.class_name || null, section: selectedClass?.section || null,
 }]);
+// Send WhatsApp onboarding for each bulk student
+await sendOnboardingWhatsApp({ phone: phone || null, schoolName: bulkSchoolName, fullName: full_name.trim(), email: email.trim().toLowerCase(), password });
 successCount++;
 } catch (err) { failCount++; errors.push("Row " + (i+1) + " (" + email + "): " + err.message); }
 }
