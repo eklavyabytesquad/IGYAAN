@@ -1,531 +1,344 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../utils/auth_context";
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import { supabase } from "../../utils/supabase";
+import { ALLOWED_ROLES, GRADING_SYSTEMS } from "./constants";
+import { calcGrade } from "./helpers";
+import ExamModal from "./components/ExamModal";
+import ExamManager from "./components/ExamManager";
+import MarksEntry from "./components/MarksEntry";
+import BulkUpload from "./components/BulkUpload";
+import PDFGenerator from "./components/PDFGenerator";
 
 export default function ReportCardsPage() {
-	const { user, loading } = useAuth();
-	const router = useRouter();
-	const [step, setStep] = useState(1); // 1: Upload, 2: Preview, 3: Generate
-	const [file, setFile] = useState(null);
-	const [marksData, setMarksData] = useState([]);
-	const [selectedClass, setSelectedClass] = useState('');
-	const [selectedSection, setSelectedSection] = useState('');
-	const [examType, setExamType] = useState('midterm'); // midterm | final | quarterly
-	const [academicYear, setAcademicYear] = useState('2024-25');
-	const [generating, setGenerating] = useState(false);
-	const [generatedCards, setGeneratedCards] = useState([]);
-	const [attendanceData, setAttendanceData] = useState({});
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-	// Check authorization
-	if (!loading && (!user || !['super_admin', 'co_admin', 'faculty'].includes(user.role))) {
-		router.push('/dashboard');
-		return null;
-	}
+  /* ── shared state ── */
+  const [classes, setClasses] = useState([]);
+  const [activeSession, setActiveSession] = useState(null);
+  const [schoolInfo, setSchoolInfo] = useState(null);
+  const [tab, setTab] = useState("enter");
 
-	const handleFileUpload = (e) => {
-		const selectedFile = e.target.files[0];
-		if (!selectedFile) return;
+  const [exams, setExams] = useState([]);
+  const [selectedExamId, setSelectedExamId] = useState("");
+  const [showExamModal, setShowExamModal] = useState(false);
+  const [examForm, setExamForm] = useState({ exam_name: "", exam_type: "Quarterly", academic_year: "2025-26", grading_system: "cbse" });
 
-		setFile(selectedFile);
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [students, setStudents] = useState([]);
+  const [subjects, setSubjects] = useState([{ name: "Mathematics", max_marks: 100 }]);
+  const [marksMap, setMarksMap] = useState({});
+  const [saving, setSaving] = useState(false);
 
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			try {
-				const workbook = XLSX.read(event.target.result, { type: 'binary' });
-				const sheetName = workbook.SheetNames[0];
-				const sheet = workbook.Sheets[sheetName];
-				const data = XLSX.utils.sheet_to_json(sheet);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-				if (data.length === 0) {
-					alert('The Excel file is empty');
-					return;
-				}
+  /* ── guards ── */
+  useEffect(() => {
+    if (!loading && !user) router.push("/login");
+    else if (!loading && user && !ALLOWED_ROLES.includes(user.role)) router.push("/dashboard");
+  }, [user, loading, router]);
 
-				setMarksData(data);
-				setStep(2);
-			} catch (error) {
-				console.error('Error reading Excel:', error);
-				alert('Failed to read Excel file');
-			}
-		};
-		reader.readAsBinaryString(selectedFile);
-	};
+  useEffect(() => {
+    if (user && ALLOWED_ROLES.includes(user.role) && user.school_id) fetchInitialData();
+  }, [user]);
 
-	const fetchAttendance = async (studentId) => {
-		// TODO: Implement actual attendance fetch from database
-		// For now, return mock data
-		return {
-			totalDays: 180,
-			present: Math.floor(Math.random() * 30) + 150,
-			absent: Math.floor(Math.random() * 20),
-			percentage: Math.floor(Math.random() * 15) + 85,
-		};
-	};
+  /* ── data fetching ── */
+  const fetchInitialData = async () => {
+    try {
+      setIsLoading(true);
+      const { data: sessions } = await supabase
+        .from("academic_sessions").select("*")
+        .eq("school_id", user.school_id).eq("is_active", true).limit(1);
+      const session = sessions?.[0] || null;
+      setActiveSession(session);
 
-	const generatePDF = async (studentData, attendance) => {
-		const doc = new jsPDF();
-		const pageWidth = doc.internal.pageSize.getWidth();
-		const pageHeight = doc.internal.pageSize.getHeight();
+      const { data: school } = await supabase
+        .from("schools")
+        .select("school_name, city, state, affiliation_board, logo_url, contact_phone, contact_email")
+        .eq("id", user.school_id).single();
+      setSchoolInfo(school);
 
-		// Header
-		doc.setFillColor(79, 70, 229); // Indigo
-		doc.rect(0, 0, pageWidth, 30, 'F');
-		
-		doc.setTextColor(255, 255, 255);
-		doc.setFontSize(20);
-		doc.setFont('helvetica', 'bold');
-		doc.text('ACADEMIC REPORT CARD', pageWidth / 2, 12, { align: 'center' });
-		doc.setFontSize(10);
-		doc.text(`Academic Year: ${academicYear} | ${examType.toUpperCase()}`, pageWidth / 2, 20, { align: 'center' });
+      if (session) {
+        if (user.role === "faculty") {
+          const { data: fa } = await supabase
+            .from("faculty_assignments")
+            .select("class_id, classes(id, class_name, section)")
+            .eq("faculty_id", user.id).eq("session_id", session.id).eq("is_active", true);
+          const unique = [];
+          const seen = new Set();
+          (fa || []).forEach((a) => {
+            if (a.classes && !seen.has(a.classes.id)) { seen.add(a.classes.id); unique.push(a.classes); }
+          });
+          setClasses(unique);
+        } else {
+          const { data: allC } = await supabase
+            .from("classes").select("*")
+            .eq("school_id", user.school_id).eq("session_id", session.id)
+            .eq("is_active", true).order("class_name");
+          setClasses(allC || []);
+        }
+      }
+      await fetchExams();
+    } catch (err) { console.error(err); }
+    finally { setIsLoading(false); }
+  };
 
-		// Student Info Box
-		doc.setFillColor(243, 244, 246);
-		doc.rect(10, 35, pageWidth - 20, 35, 'F');
-		
-		doc.setTextColor(0, 0, 0);
-		doc.setFontSize(11);
-		doc.setFont('helvetica', 'bold');
-		doc.text('Student Information', 15, 42);
-		
-		doc.setFont('helvetica', 'normal');
-		doc.setFontSize(10);
-		doc.text(`Name: ${studentData.studentName || 'N/A'}`, 15, 50);
-		doc.text(`Roll No: ${studentData.rollNumber || 'N/A'}`, 15, 56);
-		doc.text(`Class: ${studentData.class || selectedClass} ${studentData.section || selectedSection}`, 15, 62);
-		doc.text(`Attendance: ${attendance.present}/${attendance.totalDays} (${attendance.percentage}%)`, pageWidth / 2, 50);
-		doc.text(`Status: ${attendance.percentage >= 75 ? 'Eligible' : 'Shortage'}`, pageWidth / 2, 56);
+  const fetchExams = async () => {
+    const { data } = await supabase.from("report_card_exams").select("*")
+      .eq("school_id", user.school_id).order("created_at", { ascending: false });
+    setExams(data || []);
+  };
 
-		// Marks Table
-		const subjects = Object.keys(studentData).filter(key => 
-			!['studentName', 'rollNumber', 'class', 'section', 'totalMarks', 'percentage', 'grade', 'rank'].includes(key)
-		);
+  const fetchStudents = useCallback(async (classId) => {
+    if (!classId || !activeSession) return;
+    const { data } = await supabase
+      .from("class_students")
+      .select("student_id, users!class_students_student_id_fkey(id, full_name, email)")
+      .eq("class_id", classId).eq("session_id", activeSession.id).eq("is_active", true);
+    const list = (data || [])
+      .filter((d) => d.users)
+      .map((d) => ({ id: d.users.id, full_name: d.users.full_name, email: d.users.email }))
+      .sort((a, b) => a.full_name.localeCompare(b.full_name));
+    setStudents(list);
+  }, [activeSession]);
 
-		const tableData = subjects.map(subject => {
-			const marks = studentData[subject] || 0;
-			const total = 100;
-			const percentage = ((marks / total) * 100).toFixed(1);
-			let grade = 'F';
-			if (percentage >= 90) grade = 'A+';
-			else if (percentage >= 80) grade = 'A';
-			else if (percentage >= 70) grade = 'B';
-			else if (percentage >= 60) grade = 'C';
-			else if (percentage >= 50) grade = 'D';
-			
-			return [subject, marks, total, percentage + '%', grade];
-		});
+  useEffect(() => {
+    if (selectedClassId) {
+      fetchStudents(selectedClassId);
+      if (selectedExamId) fetchSavedMarks(selectedExamId, selectedClassId);
+    } else { setStudents([]); }
+  }, [selectedClassId, fetchStudents]);
 
-		doc.autoTable({
-			startY: 75,
-			head: [['Subject', 'Marks Obtained', 'Total Marks', 'Percentage', 'Grade']],
-			body: tableData,
-			theme: 'striped',
-			headStyles: {
-				fillColor: [79, 70, 229],
-				textColor: [255, 255, 255],
-				fontStyle: 'bold',
-			},
-			styles: {
-				fontSize: 10,
-				cellPadding: 5,
-			},
-		});
+  const fetchSavedMarks = async (examId, classId) => {
+    const { data } = await supabase.from("report_card_marks").select("*")
+      .eq("exam_id", examId).eq("class_id", classId);
+    if (data && data.length > 0) {
+      const map = {};
+      const subSet = new Map();
+      data.forEach((m) => {
+        map[`${m.student_id}-${m.subject_name}`] = m.obtained_marks;
+        if (!subSet.has(m.subject_name)) subSet.set(m.subject_name, m.max_marks);
+      });
+      setMarksMap(map);
+      const subs = [];
+      subSet.forEach((max, name) => subs.push({ name, max_marks: max }));
+      if (subs.length > 0) setSubjects(subs);
+    } else { setMarksMap({}); }
+  };
 
-		// Summary Box
-		const finalY = doc.lastAutoTable.finalY + 10;
-		doc.setFillColor(243, 244, 246);
-		doc.rect(10, finalY, pageWidth - 20, 30, 'F');
+  useEffect(() => {
+    if (selectedExamId && selectedClassId) fetchSavedMarks(selectedExamId, selectedClassId);
+  }, [selectedExamId]);
 
-		doc.setFont('helvetica', 'bold');
-		doc.setFontSize(11);
-		doc.text('Overall Performance', 15, finalY + 7);
+  /* ── exam handlers ── */
+  const handleCreateExam = async () => {
+    if (!examForm.exam_name.trim()) { setError("Enter exam name"); return; }
+    const { error: err } = await supabase.from("report_card_exams").insert({
+      school_id: user.school_id, exam_name: examForm.exam_name.trim(),
+      exam_type: examForm.exam_type, academic_year: examForm.academic_year,
+      grading_system: examForm.grading_system, created_by: user.id,
+    });
+    if (err) { setError(err.message); }
+    else {
+      setSuccess("Exam created!");
+      setShowExamModal(false);
+      setExamForm({ exam_name: "", exam_type: "Quarterly", academic_year: "2025-26", grading_system: "cbse" });
+      await fetchExams();
+    }
+  };
 
-		doc.setFont('helvetica', 'normal');
-		doc.setFontSize(10);
-		const totalMarks = studentData.totalMarks || tableData.reduce((sum, row) => sum + parseFloat(row[1]), 0);
-		const maxMarks = subjects.length * 100;
-		const overallPercentage = ((totalMarks / maxMarks) * 100).toFixed(2);
-		let overallGrade = 'F';
-		if (overallPercentage >= 90) overallGrade = 'A+';
-		else if (overallPercentage >= 80) overallGrade = 'A';
-		else if (overallPercentage >= 70) overallGrade = 'B';
-		else if (overallPercentage >= 60) overallGrade = 'C';
-		else if (overallPercentage >= 50) overallGrade = 'D';
+  const handleDeleteExam = async (id) => {
+    if (!confirm("Delete this exam and ALL its marks data?")) return;
+    await supabase.from("report_card_marks").delete().eq("exam_id", id);
+    await supabase.from("report_card_exams").delete().eq("id", id);
+    setSuccess("Exam deleted");
+    if (selectedExamId === id) setSelectedExamId("");
+    await fetchExams();
+  };
 
-		doc.text(`Total Marks: ${totalMarks}/${maxMarks}`, 15, finalY + 15);
-		doc.text(`Percentage: ${overallPercentage}%`, pageWidth / 2, finalY + 15);
-		doc.text(`Grade: ${overallGrade}`, 15, finalY + 22);
-		doc.text(`Rank: ${studentData.rank || 'N/A'}`, pageWidth / 2, finalY + 22);
+  /* ── subject helpers ── */
+  const addSubject = () => setSubjects([...subjects, { name: "", max_marks: 100 }]);
+  const removeSubject = (i) => setSubjects(subjects.filter((_, idx) => idx !== i));
+  const updateSubject = (i, field, value) => {
+    const copy = [...subjects];
+    copy[i] = { ...copy[i], [field]: field === "max_marks" ? parseInt(value) || 0 : value };
+    setSubjects(copy);
+  };
 
-		// Footer
-		doc.setFontSize(8);
-		doc.setTextColor(100);
-		doc.text('Generated by I-GYAN School OS', pageWidth / 2, pageHeight - 10, { align: 'center' });
-		doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
+  const updateMark = (studentId, subjectName, value) => {
+    setMarksMap((prev) => ({ ...prev, [`${studentId}-${subjectName}`]: value === "" ? "" : parseFloat(value) || 0 }));
+  };
 
-		return doc;
-	};
+  /* ── save marks (manual entry) ── */
+  const handleSaveMarks = async () => {
+    if (!selectedExamId) { setError("Please select an exam first"); return; }
+    if (!selectedClassId) { setError("Please select a class"); return; }
+    if (subjects.some((s) => !s.name.trim())) { setError("All subject names are required"); return; }
+    setSaving(true); setError("");
+    try {
+      await supabase.from("report_card_marks").delete().eq("exam_id", selectedExamId).eq("class_id", selectedClassId);
+      const rows = [];
+      for (const st of students) {
+        for (const sub of subjects) {
+          const key = `${st.id}-${sub.name}`;
+          const obtained = marksMap[key] !== undefined && marksMap[key] !== "" ? parseFloat(marksMap[key]) : null;
+          if (obtained === null) continue;
+          const pct = sub.max_marks > 0 ? (obtained / sub.max_marks) * 100 : 0;
+          const exam = exams.find((e) => e.id === selectedExamId);
+          const gradeInfo = calcGrade(pct, exam?.grading_system || "cbse");
+          rows.push({
+            exam_id: selectedExamId, school_id: user.school_id, class_id: selectedClassId,
+            student_id: st.id, student_name: st.full_name, subject_name: sub.name,
+            max_marks: sub.max_marks, obtained_marks: obtained,
+            percentage: parseFloat(pct.toFixed(2)), grade: gradeInfo.grade, grade_point: gradeInfo.gp,
+          });
+        }
+      }
+      if (rows.length === 0) { setError("No marks entered"); setSaving(false); return; }
+      const { error: insErr } = await supabase.from("report_card_marks").insert(rows);
+      if (insErr) throw insErr;
+      setSuccess(`Saved marks for ${students.length} students across ${subjects.length} subjects!`);
+      await fetchSavedMarks(selectedExamId, selectedClassId);
+    } catch (err) { setError(err.message); }
+    finally { setSaving(false); }
+  };
 
-	const handleGenerateAll = async () => {
-		setGenerating(true);
-		try {
-			const cards = [];
+  /* ── render helpers ── */
+  const selectedExam = exams.find((e) => e.id === selectedExamId);
+  const tabCls = (base, active) =>
+    `${base} ${active ? "bg-indigo-600 text-white" : "bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"}`;
 
-			for (const student of marksData) {
-				const attendance = await fetchAttendance(student.rollNumber);
-				const pdf = await generatePDF(student, attendance);
-				
-				cards.push({
-					studentName: student.studentName || 'Student',
-					rollNumber: student.rollNumber,
-					pdf: pdf,
-					blob: pdf.output('blob'),
-				});
-			}
+  if (loading || isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
+          <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading report cards...</p>
+        </div>
+      </div>
+    );
+  }
 
-			setGeneratedCards(cards);
-			setStep(3);
-		} catch (error) {
-			console.error('Error generating report cards:', error);
-			alert('Failed to generate report cards');
-		} finally {
-			setGenerating(false);
-		}
-	};
+  if (!user || !ALLOWED_ROLES.includes(user.role)) return null;
 
-	const downloadIndividual = (card) => {
-		card.pdf.save(`Report_Card_${card.rollNumber}_${card.studentName}.pdf`);
-	};
+  return (
+    <div className="min-h-screen p-4 lg:p-6">
+      <div className="mx-auto max-w-7xl">
 
-	const downloadAllAsZip = async () => {
-		const zip = new JSZip();
+        {/* Header */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Report Card Generator</h1>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Create exams, enter marks, generate professional PDF report cards</p>
+          </div>
+          <button onClick={() => setShowExamModal(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            New Exam
+          </button>
+        </div>
 
-		generatedCards.forEach((card, index) => {
-			const fileName = `${card.rollNumber}_${card.studentName.replace(/\s+/g, '_')}.pdf`;
-			zip.file(fileName, card.blob);
-		});
+        {/* Alerts */}
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
+            {error}
+            <button onClick={() => setError("")} className="float-right font-bold">&times;</button>
+          </div>
+        )}
+        {success && (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
+            {success}
+            <button onClick={() => setSuccess("")} className="float-right font-bold">&times;</button>
+          </div>
+        )}
 
-		const content = await zip.generateAsync({ type: 'blob' });
-		saveAs(content, `Report_Cards_${selectedClass}_${selectedSection}_${examType}.zip`);
-	};
+        {/* Exam selector */}
+        <div className="mb-6 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+          <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Select Exam</label>
+          {exams.length === 0 ? (
+            <p className="text-sm text-zinc-500">No exams created yet. Click &quot;New Exam&quot; to get started.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {exams.map((e) => (
+                <button key={e.id} onClick={() => setSelectedExamId(e.id)}
+                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
+                    selectedExamId === e.id
+                      ? "border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 ring-2 ring-indigo-200 dark:ring-indigo-800"
+                      : "border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                  }`}>
+                  <span className="font-semibold">{e.exam_name}</span>
+                  <span className="ml-2 text-xs opacity-60">{e.exam_type} - {e.academic_year}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-	const downloadTemplate = () => {
-		const sampleData = [
-			{
-				studentName: 'Sample Student',
-				rollNumber: '001',
-				class: '10',
-				section: 'A',
-				Mathematics: 85,
-				Science: 90,
-				English: 78,
-				'Social Studies': 88,
-				Hindi: 82,
-			}
-		];
+        {/* Tabs + content */}
+        {selectedExamId && (
+          <>
+            <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+              {[
+                { key: "enter", label: "Enter Marks" },
+                { key: "bulk", label: "Bulk CSV Upload" },
+                { key: "generated", label: "Generate PDFs" },
+                { key: "exams", label: "Manage Exams" },
+              ].map((t) => (
+                <button key={t.key} onClick={() => setTab(t.key)}
+                  className={tabCls("rounded-lg border px-4 py-2 text-sm font-medium whitespace-nowrap transition-all", tab === t.key)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
 
-		const worksheet = XLSX.utils.json_to_sheet(sampleData);
-		const workbook = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(workbook, worksheet, 'Marks');
-		XLSX.writeFile(workbook, 'report_card_template.xlsx');
-	};
+            {tab === "enter" && (
+              <MarksEntry
+                classes={classes} selectedClassId={selectedClassId} setSelectedClassId={setSelectedClassId}
+                students={students} subjects={subjects} addSubject={addSubject}
+                removeSubject={removeSubject} updateSubject={updateSubject}
+                marksMap={marksMap} updateMark={updateMark} onSave={handleSaveMarks}
+                saving={saving} selectedExam={selectedExam} calcGrade={calcGrade}
+              />
+            )}
 
-	if (loading) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="text-center">
-					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading...</p>
-				</div>
-			</div>
-		);
-	}
+            {tab === "bulk" && (
+              <BulkUpload
+                classes={classes} subjects={subjects} setSubjects={setSubjects}
+                selectedExamId={selectedExamId} exams={exams} user={user}
+                activeSession={activeSession} setError={setError} setSuccess={setSuccess}
+              />
+            )}
 
-	return (
-		<div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6">
-			<div className="mx-auto max-w-6xl">
-				{/* Header */}
-				<div className="mb-6">
-					<h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
-						Smart Report Card Generator
-					</h1>
-					<p className="mt-2 text-zinc-600 dark:text-zinc-400">
-						Upload marks Excel file to generate PDF report cards with auto attendance integration
-					</p>
-				</div>
+            {tab === "generated" && (
+              <PDFGenerator
+                classes={classes} selectedExamId={selectedExamId} exams={exams}
+                schoolInfo={schoolInfo} setError={setError} setSuccess={setSuccess}
+              />
+            )}
 
-				{/* Progress Steps */}
-				<div className="mb-8 flex items-center justify-between">
-					{[
-						{ step: 1, label: 'Upload Marks' },
-						{ step: 2, label: 'Preview & Configure' },
-						{ step: 3, label: 'Generate PDFs' },
-					].map((s, i) => (
-						<div key={s.step} className="flex flex-1 items-center">
-							<div className="flex items-center">
-								<div className={`flex h-10 w-10 items-center justify-center rounded-full ${
-									step >= s.step 
-										? 'bg-indigo-600 text-white' 
-										: 'bg-zinc-200 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
-								}`}>
-									{step > s.step ? (
-										<svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-										</svg>
-									) : (
-										<span className="text-sm font-semibold">{s.step}</span>
-									)}
-								</div>
-								<span className={`ml-2 text-sm font-medium ${
-									step >= s.step 
-										? 'text-zinc-900 dark:text-white' 
-										: 'text-zinc-500'
-								}`}>
-									{s.label}
-								</span>
-							</div>
-							{i < 2 && (
-								<div className={`flex-1 h-1 mx-4 ${
-									step > s.step 
-										? 'bg-indigo-600' 
-										: 'bg-zinc-200 dark:bg-zinc-800'
-								}`} />
-							)}
-						</div>
-					))}
-				</div>
+            {tab === "exams" && (
+              <ExamManager
+                exams={exams} selectedExamId={selectedExamId}
+                setSelectedExamId={setSelectedExamId} onDelete={handleDeleteExam}
+              />
+            )}
+          </>
+        )}
+      </div>
 
-				{/* Step 1: Upload */}
-				{step === 1 && (
-					<div className="rounded-lg bg-white dark:bg-zinc-900 p-6 shadow-sm">
-						<h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-4">
-							Step 1: Upload Marks Data
-						</h2>
-
-						{/* Configuration */}
-						<div className="grid grid-cols-2 gap-4 mb-6">
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Class
-								</label>
-								<input
-									type="text"
-									value={selectedClass}
-									onChange={(e) => setSelectedClass(e.target.value)}
-									placeholder="e.g., 10"
-									className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2"
-								/>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Section
-								</label>
-								<input
-									type="text"
-									value={selectedSection}
-									onChange={(e) => setSelectedSection(e.target.value)}
-									placeholder="e.g., A"
-									className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2"
-								/>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Exam Type
-								</label>
-								<select
-									value={examType}
-									onChange={(e) => setExamType(e.target.value)}
-									className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2"
-								>
-									<option value="midterm">Mid Term</option>
-									<option value="final">Final Exam</option>
-									<option value="quarterly">Quarterly</option>
-									<option value="halfyearly">Half Yearly</option>
-								</select>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Academic Year
-								</label>
-								<input
-									type="text"
-									value={academicYear}
-									onChange={(e) => setAcademicYear(e.target.value)}
-									className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2"
-								/>
-							</div>
-						</div>
-
-						{/* Download Template */}
-						<div className="mb-6">
-							<button
-								onClick={downloadTemplate}
-								className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline text-sm"
-							>
-								<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-								</svg>
-								Download Excel Template
-							</button>
-						</div>
-
-						{/* File Upload */}
-						<div className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg p-8 text-center">
-							<input
-								type="file"
-								accept=".xlsx,.xls"
-								onChange={handleFileUpload}
-								className="hidden"
-								id="marks-upload"
-							/>
-							<label htmlFor="marks-upload" className="cursor-pointer">
-								<div className="mx-auto h-12 w-12 text-zinc-400">
-									<svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-									</svg>
-								</div>
-								<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-									Click to upload marks Excel file
-								</p>
-								<p className="mt-1 text-xs text-zinc-500">
-									Excel format: studentName, rollNumber, subject columns
-								</p>
-							</label>
-						</div>
-					</div>
-				)}
-
-				{/* Step 2: Preview */}
-				{step === 2 && (
-					<div className="rounded-lg bg-white dark:bg-zinc-900 p-6 shadow-sm">
-						<h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-4">
-							Step 2: Preview Data
-						</h2>
-
-						<div className="mb-4 rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4">
-							<p className="text-sm text-blue-900 dark:text-blue-100">
-								✓ {marksData.length} students found | Attendance will be auto-fetched for each student
-							</p>
-						</div>
-
-						{/* Data Preview */}
-						<div className="overflow-x-auto max-h-96 overflow-y-auto">
-							<table className="w-full text-sm">
-								<thead className="bg-zinc-100 dark:bg-zinc-800 sticky top-0">
-									<tr>
-										{marksData[0] && Object.keys(marksData[0]).map(key => (
-											<th key={key} className="px-4 py-2 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300">
-												{key}
-											</th>
-										))}
-									</tr>
-								</thead>
-								<tbody>
-									{marksData.map((row, i) => (
-										<tr key={i} className="border-b border-zinc-200 dark:border-zinc-800">
-											{Object.values(row).map((value, j) => (
-												<td key={j} className="px-4 py-2 text-zinc-600 dark:text-zinc-400">
-													{value}
-												</td>
-											))}
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-
-						<div className="mt-6 flex justify-between">
-							<button
-								onClick={() => setStep(1)}
-								className="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-							>
-								Back
-							</button>
-							<button
-								onClick={handleGenerateAll}
-								disabled={generating}
-								className="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
-							>
-								{generating ? 'Generating...' : `Generate ${marksData.length} Report Cards`}
-							</button>
-						</div>
-					</div>
-				)}
-
-				{/* Step 3: Generated */}
-				{step === 3 && (
-					<div className="rounded-lg bg-white dark:bg-zinc-900 p-6 shadow-sm">
-						<h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-4">
-							Step 3: Generated Report Cards
-						</h2>
-
-						<div className="mb-6 flex items-center justify-between">
-							<div className="rounded-lg bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 p-4 flex-1 mr-4">
-								<p className="text-sm text-green-900 dark:text-green-100">
-									✓ Successfully generated {generatedCards.length} report cards
-								</p>
-							</div>
-							<button
-								onClick={downloadAllAsZip}
-								className="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-2"
-							>
-								<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-								</svg>
-								Download All as ZIP
-							</button>
-						</div>
-
-						{/* Cards List */}
-						<div className="space-y-2">
-							{generatedCards.map((card, i) => (
-								<div key={i} className="flex items-center justify-between p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800">
-									<div className="flex items-center gap-3">
-										<div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900 flex items-center justify-center">
-											<svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-											</svg>
-										</div>
-										<div>
-											<p className="text-sm font-medium text-zinc-900 dark:text-white">
-												{card.studentName}
-											</p>
-											<p className="text-xs text-zinc-500">
-												Roll No: {card.rollNumber}
-											</p>
-										</div>
-									</div>
-									<button
-										onClick={() => downloadIndividual(card)}
-										className="px-4 py-2 rounded-lg text-sm bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-									>
-										Download PDF
-									</button>
-								</div>
-							))}
-						</div>
-
-						<div className="mt-6 flex justify-center">
-							<button
-								onClick={() => {
-									setStep(1);
-									setMarksData([]);
-									setGeneratedCards([]);
-								}}
-								className="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
-							>
-								Generate More Report Cards
-							</button>
-						</div>
-					</div>
-				)}
-			</div>
-		</div>
-	);
+      {showExamModal && (
+        <ExamModal
+          examForm={examForm} setExamForm={setExamForm}
+          onSubmit={handleCreateExam} onClose={() => setShowExamModal(false)}
+        />
+      )}
+    </div>
+  );
 }
