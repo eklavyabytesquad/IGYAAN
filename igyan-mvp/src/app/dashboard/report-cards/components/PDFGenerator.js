@@ -1,168 +1,235 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../../utils/supabase";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { GRADING_SYSTEMS, REPORT_TEMPLATES, TEMPLATE_STYLES } from "../constants";
 import { calcGrade } from "../helpers";
+
+/* ── Build a single student PDF, return the jsPDF doc ── */
+function buildStudentPDF(student, exam, clsObj, schoolInfo, style) {
+  const doc = new jsPDF();
+  const pw = doc.internal.pageSize.getWidth();
+
+  /* HEADER BAND */
+  doc.setFillColor(...style.headerBg);
+  doc.rect(0, 0, pw, 36, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text(schoolInfo?.school_name || "School Report Card", pw / 2, 14, { align: "center" });
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text([schoolInfo?.city, schoolInfo?.state].filter(Boolean).join(", ") || "", pw / 2, 21, { align: "center" });
+  doc.text(`${exam?.exam_name || "Exam"} | ${exam?.exam_type || ""} | ${exam?.academic_year || ""}`, pw / 2, 28, { align: "center" });
+  doc.setFontSize(8);
+  doc.text(`Board: ${schoolInfo?.affiliation_board || "N/A"}`, pw / 2, 34, { align: "center" });
+
+  /* STUDENT INFO BOX */
+  doc.setFillColor(...style.infoBg);
+  doc.roundedRect(10, 42, pw - 20, 22, 3, 3, "F");
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text("Student:", 15, 51);
+  doc.setFont("helvetica", "normal");
+  doc.text(student.name, 40, 51);
+  doc.setFont("helvetica", "bold");
+  doc.text("Class:", pw / 2 + 10, 51);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${clsObj?.class_name || ""} - ${clsObj?.section || ""}`, pw / 2 + 30, 51);
+  doc.setFont("helvetica", "bold");
+  doc.text("Grading:", 15, 59);
+  doc.setFont("helvetica", "normal");
+  doc.text(GRADING_SYSTEMS[exam?.grading_system || "cbse"]?.name || "CBSE", 42, 59);
+
+  /* MARKS TABLE */
+  const tableBody = student.subjects.map((s) => [
+    s.subject_name, s.max_marks, s.obtained_marks,
+    s.percentage.toFixed(1) + "%", s.grade, s.grade_point,
+  ]);
+
+  autoTable(doc, {
+    startY: 70,
+    head: [["Subject", "Max Marks", "Obtained", "Percentage", "Grade", "GP"]],
+    body: tableBody,
+    theme: style.tableTheme,
+    headStyles: { fillColor: style.headerBg, textColor: 255, fontStyle: "bold", fontSize: 10, halign: "center" },
+    bodyStyles: { fontSize: 10, halign: "center" },
+    alternateRowStyles: { fillColor: style.altRowBg },
+    columnStyles: { 0: { halign: "left" } },
+    margin: { left: 10, right: 10 },
+  });
+
+  /* OVERALL PERFORMANCE */
+  const finalY = (doc.lastAutoTable?.finalY ?? doc.previousAutoTable?.finalY ?? 80) + 8;
+  const totalObtained = student.subjects.reduce((s, m) => s + m.obtained_marks, 0);
+  const totalMax = student.subjects.reduce((s, m) => s + m.max_marks, 0);
+  const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
+  const overallGrade = calcGrade(overallPct, exam?.grading_system || "cbse");
+  const avgGP = student.subjects.length > 0
+    ? (student.subjects.reduce((s, m) => s + m.grade_point, 0) / student.subjects.length).toFixed(2) : "0";
+
+  doc.setFillColor(...style.infoBg);
+  doc.roundedRect(10, finalY, pw - 20, 30, 3, 3, "F");
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...style.accentColor);
+  doc.text("OVERALL PERFORMANCE", pw / 2, finalY + 8, { align: "center" });
+  doc.setFontSize(10);
+  doc.setTextColor(30, 30, 30);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Total: ${totalObtained} / ${totalMax}`, 15, finalY + 17);
+  doc.text(`Percentage: ${overallPct.toFixed(2)}%`, pw / 2 - 20, finalY + 17);
+  doc.text(`Grade: ${overallGrade.grade}`, pw - 50, finalY + 17);
+  doc.text(`CGPA: ${avgGP}`, 15, finalY + 25);
+  doc.text(`Result: ${overallGrade.gp > 0 ? "PASS" : "FAIL"}`, pw / 2 - 20, finalY + 25);
+
+  /* GRADING SCALE TABLE */
+  const gY = finalY + 38;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(80, 80, 80);
+  doc.text("Grading Scale:", 10, gY);
+  const gs = GRADING_SYSTEMS[exam?.grading_system || "cbse"].grades;
+  autoTable(doc, {
+    startY: gY + 3,
+    head: [["Range", "Grade", "GP"]],
+    body: gs.map((g) => [`${g.min}% - ${g.max}%`, g.grade, g.gp]),
+    theme: "plain",
+    headStyles: { fillColor: [230, 230, 240], textColor: [60, 60, 60], fontStyle: "bold", fontSize: 7, halign: "center" },
+    bodyStyles: { fontSize: 7, halign: "center", cellPadding: 1.5 },
+    margin: { left: 10, right: 10 },
+    tableWidth: pw - 20,
+  });
+
+  /* SIGNATURES */
+  const sigY = (doc.lastAutoTable?.finalY ?? doc.previousAutoTable?.finalY ?? 160) + 15;
+  doc.setDrawColor(180);
+  doc.setLineWidth(0.3);
+  doc.line(15, sigY, 70, sigY);
+  doc.line(pw / 2 - 27, sigY, pw / 2 + 27, sigY);
+  doc.line(pw - 70, sigY, pw - 15, sigY);
+  doc.setFontSize(8);
+  doc.setTextColor(100);
+  doc.text("Class Teacher", 30, sigY + 5);
+  doc.text("Parent / Guardian", pw / 2 - 13, sigY + 5);
+  doc.text("Principal", pw - 50, sigY + 5);
+
+  /* FOOTER */
+  const ph = doc.internal.pageSize.getHeight();
+  doc.setFontSize(7);
+  doc.setTextColor(150);
+  doc.text("Generated by I-GYAN School OS", pw / 2, ph - 8, { align: "center" });
+  doc.text(`Date: ${new Date().toLocaleDateString("en-IN")}`, pw / 2, ph - 4, { align: "center" });
+
+  return doc;
+}
 
 export default function PDFGenerator({ classes, selectedExamId, exams, schoolInfo, setError, setSuccess }) {
   const [genClassId, setGenClassId] = useState("");
   const [generating, setGenerating] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState("classic");
 
+  /* preview state */
+  const [previewStudents, setPreviewStudents] = useState([]);
+  const [previewIdx, setPreviewIdx] = useState(0);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewMeta, setPreviewMeta] = useState(null);
+
   const selectedExam = exams.find((e) => e.id === selectedExamId);
 
-  const handleGeneratePDFs = async () => {
+  /* Cleanup blob URL on unmount */
+  useEffect(() => {
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
+  }, [previewUrl]);
+
+  /* ── Fetch marks & build student list ── */
+  const fetchMarksData = async () => {
+    const { data: marks } = await supabase.from("report_card_marks").select("*")
+      .eq("exam_id", selectedExamId).eq("class_id", genClassId);
+    if (!marks || marks.length === 0) return null;
+    const studentMap = {};
+    marks.forEach((m) => {
+      const key = m.student_id || m.student_name;
+      if (!studentMap[key]) studentMap[key] = { name: m.student_name, subjects: [] };
+      studentMap[key].subjects.push(m);
+    });
+    return Object.values(studentMap);
+  };
+
+  /* ── Build preview blob for one student ── */
+  const buildPreviewForStudent = (students, idx, exam, clsObj, style) => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const doc = buildStudentPDF(students[idx], exam, clsObj, schoolInfo, style);
+    const blob = doc.output("blob");
+    const url = URL.createObjectURL(blob);
+    setPreviewUrl(url);
+    setPreviewIdx(idx);
+  };
+
+  /* ── Preview button handler ── */
+  const handlePreview = async () => {
     if (!selectedExamId) { setError("Select an exam"); return; }
-    if (!genClassId) { setError("Select a class to generate"); return; }
+    if (!genClassId) { setError("Select a class to preview"); return; }
     setGenerating(true); setError("");
     try {
-      const { data: marks } = await supabase.from("report_card_marks").select("*")
-        .eq("exam_id", selectedExamId).eq("class_id", genClassId);
-      if (!marks || marks.length === 0) {
-        setError("No marks found for this exam + class. Enter/upload marks first.");
-        setGenerating(false); return;
-      }
-
+      const students = await fetchMarksData();
+      if (!students) { setError("No marks found for this exam + class."); setGenerating(false); return; }
       const exam = exams.find((e) => e.id === selectedExamId);
       const clsObj = classes.find((c) => c.id === genClassId);
       const style = TEMPLATE_STYLES[selectedTemplate] || TEMPLATE_STYLES.classic;
+      setPreviewStudents(students);
+      setPreviewMeta({ exam, clsObj, style });
+      buildPreviewForStudent(students, 0, exam, clsObj, style);
+      setShowPreview(true);
+    } catch (err) { setError("Error: " + err.message); }
+    finally { setGenerating(false); }
+  };
 
-      /* Group by student — works for both manual (student_id) and CSV (student_name) */
-      const studentMap = {};
-      marks.forEach((m) => {
-        const key = m.student_id || m.student_name;
-        if (!studentMap[key]) studentMap[key] = { name: m.student_name, subjects: [] };
-        studentMap[key].subjects.push(m);
-      });
+  /* ── Navigate preview ── */
+  const goToStudent = (idx) => {
+    if (!previewMeta || idx < 0 || idx >= previewStudents.length) return;
+    buildPreviewForStudent(previewStudents, idx, previewMeta.exam, previewMeta.clsObj, previewMeta.style);
+  };
 
-      const studentKeys = Object.keys(studentMap);
-      for (let idx = 0; idx < studentKeys.length; idx++) {
-        const student = studentMap[studentKeys[idx]];
-        const doc = new jsPDF();
-        const pw = doc.internal.pageSize.getWidth();
+  /* ── Download single from preview ── */
+  const downloadCurrent = () => {
+    if (!previewMeta) return;
+    const student = previewStudents[previewIdx];
+    const doc = buildStudentPDF(student, previewMeta.exam, previewMeta.clsObj, schoolInfo, previewMeta.style);
+    doc.save(`Report_Card_${student.name.replace(/\s+/g, "_")}_${previewMeta.clsObj?.class_name || ""}_${previewMeta.clsObj?.section || ""}.pdf`);
+  };
 
-        /* ── HEADER BAND ── */
-        doc.setFillColor(...style.headerBg);
-        doc.rect(0, 0, pw, 36, "F");
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(18);
-        doc.setFont("helvetica", "bold");
-        doc.text(schoolInfo?.school_name || "School Report Card", pw / 2, 14, { align: "center" });
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.text([schoolInfo?.city, schoolInfo?.state].filter(Boolean).join(", ") || "", pw / 2, 21, { align: "center" });
-        doc.text(`${exam?.exam_name || "Exam"} | ${exam?.exam_type || ""} | ${exam?.academic_year || ""}`, pw / 2, 28, { align: "center" });
-        doc.setFontSize(8);
-        doc.text(`Board: ${schoolInfo?.affiliation_board || "N/A"}`, pw / 2, 34, { align: "center" });
-
-        /* ── STUDENT INFO BOX ── */
-        doc.setFillColor(...style.infoBg);
-        doc.roundedRect(10, 42, pw - 20, 22, 3, 3, "F");
-        doc.setTextColor(30, 30, 30);
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.text("Student:", 15, 51);
-        doc.setFont("helvetica", "normal");
-        doc.text(student.name, 40, 51);
-        doc.setFont("helvetica", "bold");
-        doc.text("Class:", pw / 2 + 10, 51);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${clsObj?.class_name || ""} - ${clsObj?.section || ""}`, pw / 2 + 30, 51);
-        doc.setFont("helvetica", "bold");
-        doc.text("Grading:", 15, 59);
-        doc.setFont("helvetica", "normal");
-        doc.text(GRADING_SYSTEMS[exam?.grading_system || "cbse"]?.name || "CBSE", 42, 59);
-
-        /* ── MARKS TABLE ── */
-        const tableBody = student.subjects.map((s) => [
-          s.subject_name, s.max_marks, s.obtained_marks,
-          s.percentage.toFixed(1) + "%", s.grade, s.grade_point,
-        ]);
-
-        doc.autoTable({
-          startY: 70,
-          head: [["Subject", "Max Marks", "Obtained", "Percentage", "Grade", "GP"]],
-          body: tableBody,
-          theme: style.tableTheme,
-          headStyles: { fillColor: style.headerBg, textColor: 255, fontStyle: "bold", fontSize: 10, halign: "center" },
-          bodyStyles: { fontSize: 10, halign: "center" },
-          alternateRowStyles: { fillColor: style.altRowBg },
-          columnStyles: { 0: { halign: "left" } },
-          margin: { left: 10, right: 10 },
-        });
-
-        /* ── OVERALL PERFORMANCE ── */
-        const finalY = doc.lastAutoTable.finalY + 8;
-        const totalObtained = student.subjects.reduce((s, m) => s + m.obtained_marks, 0);
-        const totalMax = student.subjects.reduce((s, m) => s + m.max_marks, 0);
-        const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-        const overallGrade = calcGrade(overallPct, exam?.grading_system || "cbse");
-        const avgGP = student.subjects.length > 0
-          ? (student.subjects.reduce((s, m) => s + m.grade_point, 0) / student.subjects.length).toFixed(2) : "0";
-
-        doc.setFillColor(...style.infoBg);
-        doc.roundedRect(10, finalY, pw - 20, 30, 3, 3, "F");
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(...style.accentColor);
-        doc.text("OVERALL PERFORMANCE", pw / 2, finalY + 8, { align: "center" });
-        doc.setFontSize(10);
-        doc.setTextColor(30, 30, 30);
-        doc.setFont("helvetica", "normal");
-        doc.text(`Total: ${totalObtained} / ${totalMax}`, 15, finalY + 17);
-        doc.text(`Percentage: ${overallPct.toFixed(2)}%`, pw / 2 - 20, finalY + 17);
-        doc.text(`Grade: ${overallGrade.grade}`, pw - 50, finalY + 17);
-        doc.text(`CGPA: ${avgGP}`, 15, finalY + 25);
-        doc.text(`Result: ${overallGrade.gp > 0 ? "PASS" : "FAIL"}`, pw / 2 - 20, finalY + 25);
-
-        /* ── GRADING SCALE TABLE ── */
-        const gY = finalY + 38;
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(80, 80, 80);
-        doc.text("Grading Scale:", 10, gY);
-        const gs = GRADING_SYSTEMS[exam?.grading_system || "cbse"].grades;
-        doc.autoTable({
-          startY: gY + 3,
-          head: [["Range", "Grade", "GP"]],
-          body: gs.map((g) => [`${g.min}% - ${g.max}%`, g.grade, g.gp]),
-          theme: "plain",
-          headStyles: { fillColor: [230, 230, 240], textColor: [60, 60, 60], fontStyle: "bold", fontSize: 7, halign: "center" },
-          bodyStyles: { fontSize: 7, halign: "center", cellPadding: 1.5 },
-          margin: { left: 10, right: 10 },
-          tableWidth: pw - 20,
-        });
-
-        /* ── SIGNATURES ── */
-        const sigY = doc.lastAutoTable.finalY + 15;
-        doc.setDrawColor(180);
-        doc.setLineWidth(0.3);
-        doc.line(15, sigY, 70, sigY);
-        doc.line(pw / 2 - 27, sigY, pw / 2 + 27, sigY);
-        doc.line(pw - 70, sigY, pw - 15, sigY);
-        doc.setFontSize(8);
-        doc.setTextColor(100);
-        doc.text("Class Teacher", 30, sigY + 5);
-        doc.text("Parent / Guardian", pw / 2 - 13, sigY + 5);
-        doc.text("Principal", pw - 50, sigY + 5);
-
-        /* ── FOOTER ── */
-        const ph = doc.internal.pageSize.getHeight();
-        doc.setFontSize(7);
-        doc.setTextColor(150);
-        doc.text("Generated by I-GYAN School OS", pw / 2, ph - 8, { align: "center" });
-        doc.text(`Date: ${new Date().toLocaleDateString("en-IN")}`, pw / 2, ph - 4, { align: "center" });
-
+  /* ── Download all ── */
+  const handleDownloadAll = async () => {
+    if (!selectedExamId) { setError("Select an exam"); return; }
+    if (!genClassId) { setError("Select a class"); return; }
+    setGenerating(true); setError("");
+    try {
+      const students = await fetchMarksData();
+      if (!students) { setError("No marks found."); setGenerating(false); return; }
+      const exam = exams.find((e) => e.id === selectedExamId);
+      const clsObj = classes.find((c) => c.id === genClassId);
+      const style = TEMPLATE_STYLES[selectedTemplate] || TEMPLATE_STYLES.classic;
+      for (const student of students) {
+        const doc = buildStudentPDF(student, exam, clsObj, schoolInfo, style);
         doc.save(`Report_Card_${student.name.replace(/\s+/g, "_")}_${clsObj?.class_name || ""}_${clsObj?.section || ""}.pdf`);
       }
-      setSuccess(`Generated ${studentKeys.length} report card PDFs!`);
-    } catch (err) {
-      console.error(err);
-      setError("Error generating PDFs: " + err.message);
-    } finally { setGenerating(false); }
+      setSuccess(`Downloaded ${students.length} report card PDFs!`);
+    } catch (err) { setError("Error: " + err.message); }
+    finally { setGenerating(false); }
+  };
+
+  /* ── Close preview ── */
+  const closePreview = () => {
+    setShowPreview(false);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setPreviewStudents([]);
+    setPreviewMeta(null);
   };
 
   return (
@@ -199,7 +266,6 @@ export default function PDFGenerator({ classes, selectedExamId, exams, schoolInf
                   ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 ring-2 ring-indigo-200 dark:ring-indigo-800"
                   : "border-zinc-200 bg-zinc-50 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
               }`}>
-              {/* Color swatch */}
               <div className="mb-2 h-3 w-full rounded-full" style={{ backgroundColor: tmpl.color }} />
               <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tmpl.name}</p>
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight mt-0.5">{tmpl.desc}</p>
@@ -211,20 +277,31 @@ export default function PDFGenerator({ classes, selectedExamId, exams, schoolInf
         </div>
       </div>
 
-      {/* Generate button */}
-      <button onClick={handleGeneratePDFs} disabled={generating || !genClassId}
-        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
-        {generating ? (
-          <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> Generating PDFs...</>
-        ) : (
-          <>
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Generate &amp; Download All PDFs
-          </>
-        )}
-      </button>
+      {/* Action buttons */}
+      <div className="flex flex-wrap gap-3">
+        <button onClick={handlePreview} disabled={generating || !genClassId}
+          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 transition-colors">
+          {generating ? (
+            <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> Loading...</>
+          ) : (
+            <>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Preview Report Cards
+            </>
+          )}
+        </button>
+
+        <button onClick={handleDownloadAll} disabled={generating || !genClassId}
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download All PDFs
+        </button>
+      </div>
 
       {/* Grading scale reference */}
       <div className="mt-6">
@@ -250,6 +327,78 @@ export default function PDFGenerator({ classes, selectedExamId, exams, schoolInf
           </table>
         </div>
       </div>
+
+      {/* ── PREVIEW MODAL ── */}
+      {showPreview && previewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="flex h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 overflow-hidden">
+
+            {/* Modal header */}
+            <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 px-5 py-3">
+              <div className="flex items-center gap-3">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-white">Preview Report Card</h3>
+                <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
+                  {previewIdx + 1} of {previewStudents.length}
+                </span>
+              </div>
+              <button onClick={closePreview} className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Student nav bar */}
+            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 px-5 py-2 bg-zinc-50 dark:bg-zinc-800/50">
+              <button onClick={() => goToStudent(previewIdx - 1)} disabled={previewIdx === 0}
+                className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed dark:text-zinc-300 dark:hover:bg-zinc-700 transition-colors">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Previous
+              </button>
+
+              <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px]">
+                {previewStudents[previewIdx]?.name}
+              </p>
+
+              <button onClick={() => goToStudent(previewIdx + 1)} disabled={previewIdx >= previewStudents.length - 1}
+                className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed dark:text-zinc-300 dark:hover:bg-zinc-700 transition-colors">
+                Next
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            {/* PDF iframe */}
+            <div className="flex-1 bg-zinc-200 dark:bg-zinc-950">
+              <iframe src={previewUrl} className="h-full w-full" title="Report Card Preview" />
+            </div>
+
+            {/* Modal footer */}
+            <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-700 px-5 py-3">
+              <div className="flex gap-2">
+                <button onClick={downloadCurrent}
+                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download This
+                </button>
+                <button onClick={() => { closePreview(); handleDownloadAll(); }}
+                  className="inline-flex items-center gap-2 rounded-lg bg-zinc-700 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-600 dark:hover:bg-zinc-500 transition-colors">
+                  Download All ({previewStudents.length})
+                </button>
+              </div>
+              <button onClick={closePreview}
+                className="rounded-lg border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-colors">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
