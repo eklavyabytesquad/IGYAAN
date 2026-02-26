@@ -145,17 +145,34 @@ export default function DailySnapshot({
 				.from("timetable_entries").select("*")
 				.eq("template_id", activeTemplate.id).eq("day_id", matchDay.id);
 
-			if (masterEntries && masterEntries.length > 0) {
-				const rows = masterEntries.map((e) => ({
-					daily_record_id: rec.id,
-					slot_id: e.slot_id,
-					class_id: e.class_id,
-					original_subject_id: e.subject_id,
-					original_faculty_id: e.faculty_id,
-					actual_subject_id: e.subject_id,
-					actual_faculty_id: e.faculty_id,
-					status: "as_planned",
-				}));
+			// Build a lookup: class_id + slot_id → master entry
+			const masterMap = {};
+			(masterEntries || []).forEach((e) => {
+				masterMap[`${e.class_id}_${e.slot_id}`] = e;
+			});
+
+			// Get all period slots only
+			const periodSlotList = savedSlots.filter((s) => s.slot_type === "period");
+
+			// Create entries for ALL classes × ALL period slots
+			const rows = [];
+			classes.forEach((cls) => {
+				periodSlotList.forEach((slot) => {
+					const master = masterMap[`${cls.id}_${slot.id}`];
+					rows.push({
+						daily_record_id: rec.id,
+						slot_id: slot.id,
+						class_id: cls.id,
+						original_subject_id: master?.subject_id || null,
+						original_faculty_id: master?.faculty_id || null,
+						actual_subject_id: master?.subject_id || null,
+						actual_faculty_id: master?.faculty_id || null,
+						status: "as_planned",
+					});
+				});
+			});
+
+			if (rows.length > 0) {
 				const { error: iErr } = await supabase.from("timetable_daily_entries").insert(rows);
 				if (iErr) throw iErr;
 			}
@@ -265,12 +282,87 @@ export default function DailySnapshot({
 			setDailyRecord(null);
 			setDailyEntries([]);
 			setDailyClassId("");
-			setSuccess("Snapshot deleted!");
-			setTimeout(() => setSuccess(""), 2000);
+			setSuccess("Snapshot deleted! You can now generate a fresh one.");
+			setTimeout(() => setSuccess(""), 3000);
 		} catch (err) {
 			setError("Failed to delete: " + err.message);
 			setTimeout(() => setError(""), 3000);
 		}
+	};
+
+	// ─── Sync from Master Timetable ───
+	// Re-creates all daily entries from current master timetable_entries
+	// This fixes the issue when slot IDs changed (structure re-saved) or entries were added after snapshot
+	const syncFromMaster = async () => {
+		if (!dailyRecord || !activeTemplate) return;
+		if (!confirm("This will re-sync all daily entries from the master timetable. Any substitutions or changes will be reset. Continue?")) return;
+		setDailyLoading(true); setError("");
+		try {
+			// 1) Delete all existing daily entries for this record
+			await supabase.from("timetable_daily_entries").delete().eq("daily_record_id", dailyRecord.id);
+
+			// 2) Get the day_id from the record
+			const dayId = dailyRecord.day_id;
+
+			// 3) Get current master entries for this day
+			const { data: masterEntries } = await supabase
+				.from("timetable_entries").select("*")
+				.eq("template_id", activeTemplate.id).eq("day_id", dayId);
+
+			// 4) Build master lookup
+			const masterMap = {};
+			(masterEntries || []).forEach((e) => {
+				masterMap[`${e.class_id}_${e.slot_id}`] = e;
+			});
+
+			// 5) Get current period slots (use savedSlots which have current IDs)
+			const periodSlotList = savedSlots.filter((s) => s.slot_type === "period");
+
+			// 6) Create entries for ALL classes × ALL period slots
+			const rows = [];
+			classes.forEach((cls) => {
+				periodSlotList.forEach((slot) => {
+					const master = masterMap[`${cls.id}_${slot.id}`];
+					rows.push({
+						daily_record_id: dailyRecord.id,
+						slot_id: slot.id,
+						class_id: cls.id,
+						original_subject_id: master?.subject_id || null,
+						original_faculty_id: master?.faculty_id || null,
+						actual_subject_id: master?.subject_id || null,
+						actual_faculty_id: master?.faculty_id || null,
+						status: "as_planned",
+					});
+				});
+			});
+
+			if (rows.length > 0) {
+				const { error: iErr } = await supabase.from("timetable_daily_entries").insert(rows);
+				if (iErr) throw iErr;
+			}
+
+			// 7) Update record status back to draft and reset day_id to current
+			await supabase.from("timetable_daily_records")
+				.update({ status: "draft", updated_at: new Date().toISOString() })
+				.eq("id", dailyRecord.id);
+			setDailyRecord((p) => ({ ...p, status: "draft" }));
+
+			// 8) Refresh entries for currently selected class
+			if (dailyClassId) {
+				const { data: freshEntries } = await supabase
+					.from("timetable_daily_entries").select("*")
+					.eq("daily_record_id", dailyRecord.id)
+					.eq("class_id", dailyClassId);
+				setDailyEntries(freshEntries || []);
+			}
+
+			setSuccess("Synced from master timetable! All entries updated with current assignments.");
+			setTimeout(() => setSuccess(""), 3000);
+		} catch (err) {
+			setError("Sync failed: " + (err.message || "Unknown error"));
+			setTimeout(() => setError(""), 3000);
+		}
+		setDailyLoading(false);
 	};
 
 	// ─── Derived data ───
@@ -368,12 +460,14 @@ export default function DailySnapshot({
 									<span className={`h-2 w-2 rounded-full ${STATUS_CONFIG[dailyRecord.status]?.dot || "bg-zinc-400"}`} />
 									{dailyRecord.status === "completed" ? "✅ Completed" : dailyRecord.status === "published" ? "📢 Published" : "📝 Draft"}
 								</span>
-								{dailyRecord.status === "draft" && (
-									<button onClick={deleteSnapshot}
-										className="rounded-lg bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400">
-										🗑️ Delete
-									</button>
-								)}
+								<button onClick={syncFromMaster}
+									className="rounded-lg bg-indigo-50 px-2 py-1 text-[10px] font-bold text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-400">
+									🔄 Sync from Master
+								</button>
+								<button onClick={deleteSnapshot}
+									className="rounded-lg bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400">
+									🗑️ Delete
+								</button>
 							</div>
 						)}
 					</div>
@@ -472,6 +566,25 @@ export default function DailySnapshot({
 
 							{/* ─── PERIOD CARDS ─── */}
 							<div className="p-4 space-y-3">
+								{/* Sync banner when entries are missing */}
+								{periodSlots.length > 0 && Object.keys(entryMap).length === 0 && !dailyLoading && (
+									<div className="rounded-xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 px-5 py-4 dark:from-amber-950/20 dark:to-orange-950/20 dark:border-amber-800">
+										<div className="flex items-center justify-between gap-4 flex-wrap">
+											<div>
+												<h4 className="text-sm font-bold text-amber-800 dark:text-amber-300">⚠️ Entries Out of Sync</h4>
+												<p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+													No daily entries found for this class. This happens when the timetable structure was re-saved after the snapshot was created, or assignments were added later.
+												</p>
+											</div>
+											<button
+												onClick={syncFromMaster}
+												className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-amber-500/25 hover:bg-amber-600 transition-all"
+											>
+												🔄 Sync from Master Timetable
+											</button>
+										</div>
+									</div>
+								)}
 								{savedSlots.map((slot) => {
 									const isPeriod = slot.slot_type === "period";
 
@@ -491,13 +604,18 @@ export default function DailySnapshot({
 									const entry = entryMap[slot.id];
 									if (!entry) {
 										return (
-											<div key={slot.id} className="rounded-xl border border-dashed border-zinc-200 px-4 py-4 text-center dark:border-zinc-700">
-												<div className="flex items-center gap-2 justify-center">
-													<span className="text-sm">{SLOT_ICONS[slot.slot_type]}</span>
-													<span className="text-xs font-semibold text-zinc-500">{slot.label}</span>
-													<span className="text-[10px] text-zinc-400">({fmt12(slot.start_time?.slice(0, 5))} – {fmt12(slot.end_time?.slice(0, 5))})</span>
+											<div key={slot.id} className="rounded-xl border border-dashed border-amber-200 bg-amber-50/30 px-4 py-4 dark:border-amber-900/50 dark:bg-amber-950/10">
+												<div className="flex items-center gap-2 justify-between">
+													<div className="flex items-center gap-2">
+														<span className="text-sm">{SLOT_ICONS[slot.slot_type]}</span>
+														<span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">{slot.label}</span>
+														<span className="text-[10px] text-zinc-400">({fmt12(slot.start_time?.slice(0, 5))} – {fmt12(slot.end_time?.slice(0, 5))})</span>
+													</div>
+													<span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">⚠️ Not synced</span>
 												</div>
-												<p className="text-[10px] text-zinc-400 mt-1">No assignment found for this slot</p>
+												<p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1.5">
+													Slot IDs changed or snapshot was created before assignments. Click <strong>&quot;🔄 Sync from Master&quot;</strong> above to fix.
+												</p>
 											</div>
 										);
 									}
@@ -572,17 +690,22 @@ export default function DailySnapshot({
 														<p className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-1.5">
 															{st === "substituted" ? "🔄 Substitute" : st === "cancelled" ? "❌ Cancelled" : st === "free_period" ? "⬜ Free" : "✅ Current"}
 														</p>
-														{st === "as_planned" && actFac && (
-															<div className="flex items-center gap-2">
-																{actSubj && (
-																	<span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${sc?.bg || ""} ${sc?.text || ""} ${sc?.border || ""}`}>
-																		{actSubj.subject_name}
-																	</span>
-																)}
+													{st === "as_planned" && (actSubj || actFac) && (
+														<div className="flex items-center gap-2 flex-wrap">
+															{actSubj && (
+																<span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${sc?.bg || ""} ${sc?.text || ""} ${sc?.border || ""}`}>
+																	{actSubj.subject_name}
+																</span>
+															)}
+															{actFac && (
 																<span className="text-xs text-green-600 dark:text-green-400">
 																	👨‍🏫 {actFac.full_name}
 																</span>
-															</div>
+															)}
+														</div>
+													)}
+													{st === "as_planned" && !actSubj && !actFac && (
+														<span className="text-[10px] text-zinc-400 italic">Not assigned yet</span>
 														)}
 														{st === "substituted" && (
 															<div className="space-y-2">

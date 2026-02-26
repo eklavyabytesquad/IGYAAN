@@ -409,12 +409,18 @@ export default function TimetablePage() {
 						{[
 							{ key: "structure", icon: "🏗️", label: "Structure", desc: "Build Day" },
 							{ key: "assign", icon: "📝", label: "Assign", desc: "Subject & Teacher" },
-							{ key: "view", icon: "👁️", label: "View", desc: "Full Timetable" },						{ key: "daily", icon: "📋", label: "Daily", desc: "Day Snapshot" },						].map((tab) => (
+							{ key: "view", icon: "👁️", label: "View", desc: "Full Timetable" },
+							{ key: "daily", icon: "📋", label: "Daily Snapshot", desc: "Day Snapshot" },
+						].map((tab) => (
 							<button
 								key={tab.key}
 								onClick={() => {
 									if ((tab.key === "assign" || tab.key === "view" || tab.key === "daily") && !activeTemplate) {
 										setError("Save timetable structure first."); return;
+									}
+									if (tab.key === "daily") {
+										router.push("/dashboard/timetable/daily-snap");
+										return;
 									}
 									setError(""); setView(tab.key);
 								}}
