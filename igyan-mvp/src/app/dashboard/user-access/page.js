@@ -122,9 +122,17 @@ export default function UserAccessPage() {
 	const fetchUsers = async () => {
 		setLoadingUsers(true);
 		try {
+			if (!user.school_id) {
+				setUsers([]);
+				setLoadingUsers(false);
+				return;
+			}
+
+			// Only fetch users belonging to the super admin's school
 			const { data, error } = await supabase
 				.from("users")
 				.select("id, email, full_name, role, phone, school_id, created_at")
+				.eq("school_id", user.school_id)
 				.order("created_at", { ascending: false });
 
 			if (error) throw error;

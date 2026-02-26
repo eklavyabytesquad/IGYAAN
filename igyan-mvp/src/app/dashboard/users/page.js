@@ -64,26 +64,14 @@ export default function UserManagementPage() {
 
 	useEffect(() => {
 		const fetchUsers = async () => {
-			if (!user) return;
+			if (!user || !user.school_id) return;
 
 			try {
-				// Get the school_id of the current user
-				const { data: schoolData } = await supabase
-					.from("schools")
-					.select("id")
-					.eq("created_by", user.id)
-					.single();
-
-				if (!schoolData) {
-					setLoadingUsers(false);
-					return;
-				}
-
-				// Fetch all users from the same school
+				// Fetch all users from the same school using user.school_id directly
 				const { data, error: fetchError } = await supabase
 					.from("users")
 					.select("*")
-					.eq("school_id", schoolData.id)
+					.eq("school_id", user.school_id)
 					.order("created_at", { ascending: false });
 
 				if (fetchError) {
@@ -162,33 +150,24 @@ export default function UserManagementPage() {
 				return;
 			}
 
-			if (!formData.image_base64) {
-				setError("Please upload a profile picture");
+			if (formData.password.length < 6) {
+				setError("Password must be at least 6 characters");
 				setSaving(false);
 				return;
 			}
 
-			// Additional validation for faculty role
-			if (formData.role === "faculty") {
-				if (!formData.post || !formData.joining_date) {
-					setError("Post and Joining Date are required for faculty users");
-					setSaving(false);
-					return;
-				}
+			if (!user.school_id) {
+				setError("School not found. Please ensure you are logged in with a valid school account.");
+				setSaving(false);
+				return;
 			}
 
-			// Get the school_id
+			// Get school details for faculty profile
 			const { data: schoolData } = await supabase
 				.from("schools")
 				.select("id, school_name, location, board")
-				.eq("created_by", user.id)
+				.eq("id", user.school_id)
 				.single();
-
-			if (!schoolData) {
-				setError("School not found. Please complete school onboarding first.");
-				setSaving(false);
-				return;
-			}
 
 			// Hash the password using SHA-256
 			const password_hash = await hashPassword(formData.password);
@@ -198,13 +177,13 @@ export default function UserManagementPage() {
 				.from("users")
 				.insert([
 					{
-						email: formData.email,
+						email: formData.email.trim().toLowerCase(),
 						password_hash: password_hash,
-						full_name: formData.full_name,
+						full_name: formData.full_name.trim(),
 						phone: formData.phone || null,
 						role: formData.role,
-						school_id: schoolData.id,
-						image_base64: formData.image_base64,
+						school_id: user.school_id,
+						image_base64: formData.image_base64 || null,
 					},
 				])
 				.select()
@@ -246,10 +225,10 @@ export default function UserManagementPage() {
 							joining_date: formData.joining_date,
 							employment_type: formData.employment_type || null,
 							phone: formData.phone || null,
-							email: formData.email,
-							school_name: formData.school_name || schoolData.school_name,
-							school_location: formData.school_location || schoolData.location,
-							school_board: formData.school_board || schoolData.board,
+							email: formData.email.trim().toLowerCase(),
+							school_name: formData.school_name || schoolData?.school_name || null,
+							school_location: formData.school_location || schoolData?.location || null,
+							school_board: formData.school_board || schoolData?.board || null,
 						},
 					]);
 
@@ -638,7 +617,7 @@ export default function UserManagementPage() {
 							{/* Profile Picture */}
 							<div>
 								<label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-									Profile Picture <span className="text-red-500">*</span>
+									Profile Picture <span className="text-xs text-zinc-400">(optional)</span>
 								</label>
 								<div className="flex items-center gap-4">
 									{formData.image_base64 ? (
