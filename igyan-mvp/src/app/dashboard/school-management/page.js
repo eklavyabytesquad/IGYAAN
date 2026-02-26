@@ -35,7 +35,7 @@ export default function SchoolManagementPage() {
 	const [parents, setParents] = useState([]);
 
 	useEffect(() => {
-		if (!authLoading && (!user || !["super_admin", "co_admin"].includes(user.role))) {
+		if (!authLoading && (!user || !["super_admin", "co_admin", "faculty"].includes(user.role))) {
 			router.push("/dashboard");
 		}
 	}, [user, authLoading, router]);
@@ -187,16 +187,16 @@ export default function SchoolManagementPage() {
 					<ClassesTab schoolId={schoolId} session={activeSession} classes={classes} subjects={subjects} onRefresh={fetchClasses} />
 				)}
 				{activeTab === "add-students" && (
-					<AddStudentsTab schoolId={schoolId} onRefresh={fetchStudents} />
+					<AddStudentsTab schoolId={schoolId} classes={classes} session={activeSession} onRefresh={fetchStudents} />
 				)}
 				{activeTab === "students" && (
-					<StudentsTab schoolId={schoolId} session={activeSession} classes={classes} students={students} onRefresh={refreshAll} />
+					<StudentsTab schoolId={schoolId} session={activeSession} classes={classes} students={students} user={user} onRefresh={refreshAll} />
 				)}
 				{activeTab === "faculty-assign" && (
 					<FacultyAssignTab schoolId={schoolId} session={activeSession} classes={classes} subjects={subjects} faculty={faculty} onRefresh={refreshAll} />
 				)}
 				{activeTab === "student-attendance" && (
-					<StudentAttendanceTab schoolId={schoolId} session={activeSession} classes={classes} userId={user?.id} />
+					<StudentAttendanceTab schoolId={schoolId} session={activeSession} classes={classes} userId={user?.id} userRole={user?.role} />
 				)}
 				{activeTab === "faculty-attendance" && (
 					<FacultyAttendanceTab schoolId={schoolId} session={activeSession} faculty={faculty} userId={user?.id} />

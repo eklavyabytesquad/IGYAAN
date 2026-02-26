@@ -107,10 +107,32 @@ export default function StudentManagementPage() {
 		}
 	};
 
-	// Fetch students from Supabase
+	// Fetch students from Supabase — faculty sees only their assigned classes' students
 	const fetchStudents = async () => {
 		try {
 			setIsLoading(true);
+
+			// If faculty, first get assigned class IDs from faculty_assignments
+			let facultyStudentIds = null;
+			if (user.role === "faculty") {
+				const { data: assignments } = await supabase
+					.from("faculty_assignments")
+					.select("class_id")
+					.eq("faculty_id", user.id)
+					.eq("is_active", true);
+				const classIds = (assignments || []).map((a) => a.class_id);
+
+				if (classIds.length > 0) {
+					const { data: classStudents } = await supabase
+						.from("class_students")
+						.select("student_id")
+						.in("class_id", classIds)
+						.eq("status", "active");
+					facultyStudentIds = [...new Set((classStudents || []).map((cs) => cs.student_id))];
+				} else {
+					facultyStudentIds = [];
+				}
+			}
 			
 			let query = supabase
 				.from("users")
@@ -123,6 +145,16 @@ export default function StudentManagementPage() {
 			// Filter by school_id - only show students from same school
 			if (user.school_id) {
 				query = query.eq("school_id", user.school_id);
+			}
+
+			// Faculty: filter to only assigned students
+			if (facultyStudentIds !== null) {
+				if (facultyStudentIds.length === 0) {
+					setStudents([]);
+					setIsLoading(false);
+					return;
+				}
+				query = query.in("id", facultyStudentIds);
 			}
 			
 			query = query.order("created_at", { ascending: false });
