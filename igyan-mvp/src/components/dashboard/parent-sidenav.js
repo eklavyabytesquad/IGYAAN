@@ -384,7 +384,7 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 															hover:bg-zinc-100 dark:hover:bg-zinc-800
 															${
 																pathname === item.href
-																	? "bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400 font-medium"
+																	? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white font-medium"
 																	: "text-zinc-600 dark:text-zinc-400"
 															}
 														`}
@@ -416,7 +416,7 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 											hover:bg-zinc-100 dark:hover:bg-zinc-800
 											${
 												pathname === section.href
-													? "bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400"
+													? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
 													: "text-zinc-700 dark:text-zinc-300"
 											}
 										`}

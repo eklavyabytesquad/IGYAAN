@@ -116,7 +116,7 @@ export default function ParentChildrenPage() {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
 				<div className="flex flex-col items-center gap-4">
-					<div className="h-12 w-12 animate-spin rounded-full border-4 border-green-500 border-t-transparent" />
+					<div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-500 border-t-transparent" />
 					<p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Loading your children&apos;s info...</p>
 				</div>
 			</div>
@@ -128,24 +128,23 @@ export default function ParentChildrenPage() {
 	return (
 		<div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
 			{/* Hero */}
-			<div className="relative overflow-hidden bg-linear-to-r from-green-600 via-emerald-600 to-teal-600 px-6 py-8 sm:px-8">
-				<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDJ2LTJoMzR6bTAtMzBWMkgydjJoMzR6TTIgMjBoMzR2Mkgydi0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
+			<div className="relative overflow-hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 py-8 sm:px-8">
 				<div className="relative z-10">
-					<h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+					<h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-3xl">
 						👨‍👩‍👧‍👦 My Children
 					</h1>
-					<p className="mt-1.5 text-sm text-green-100/80">Track your children&apos;s attendance, academics, and school activities</p>
+					<p className="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400">Track your children&apos;s attendance, academics, and school activities</p>
 					<div className="mt-5 flex flex-wrap gap-3">
 						{[
-							{ icon: "👶", label: "Children", value: children.length },
+							{ icon: "🧒🏻", label: "Children", value: children.length },
 							{ icon: "✅", label: "Present Today", value: children.filter((c) => getTodayStatus(c.id) === "present").length },
 							{ icon: "📊", label: "This Week", value: Object.values(attendance).flat().length + " records" },
 						].map((s, i) => (
-							<div key={i} className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 backdrop-blur-sm">
+							<div key={i} className="flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2.5">
 								<span className="text-lg">{s.icon}</span>
 								<div>
-									<p className="text-xs font-medium text-white/70">{s.label}</p>
-									<p className="text-lg font-bold text-white">{s.value}</p>
+									<p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{s.label}</p>
+									<p className="text-lg font-bold text-zinc-900 dark:text-white">{s.value}</p>
 								</div>
 							</div>
 						))}
@@ -157,7 +156,7 @@ export default function ParentChildrenPage() {
 			<div className="p-6 sm:p-8">
 				{children.length === 0 ? (
 					<div className="mx-auto max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl dark:bg-green-900/30">👶</div>
+						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 text-3xl dark:bg-zinc-800">🧒🏻</div>
 						<h2 className="text-xl font-bold text-zinc-900 dark:text-white">No Children Linked</h2>
 						<p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
 							Your account has not been linked to any student yet. Please contact your school administrator to link your children to your parent account.
@@ -178,13 +177,13 @@ export default function ParentChildrenPage() {
 										onClick={() => setSelectedChild(child.id)}
 										className={`cursor-pointer rounded-2xl border p-6 shadow-sm transition-all hover:shadow-md ${
 											selectedChild === child.id
-												? "border-green-500 bg-green-50/50 ring-2 ring-green-500/20 dark:border-green-500 dark:bg-green-950/20"
+												? "border-zinc-400 bg-zinc-50 ring-2 ring-zinc-300/50 dark:border-zinc-600 dark:bg-zinc-800/50 dark:ring-zinc-600/30"
 												: "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
 										}`}
 									>
 										{/* Child Header */}
 										<div className="flex items-start gap-4">
-											<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-green-400 to-emerald-600 text-lg font-bold text-white shadow-lg shadow-green-500/25">
+											<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-lg font-bold text-white shadow-lg shadow-blue-500/25">
 												{initials}
 											</div>
 											<div className="min-w-0 flex-1">
