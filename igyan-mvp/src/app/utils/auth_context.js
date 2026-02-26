@@ -178,7 +178,7 @@ export function AuthProvider({ children }) {
 			}
 
 			// Define allowed roles based on login variant
-			const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty'];
+			const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty', 'parent', 'counselor'];
 			const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
 
 			// Validate role based on login variant

@@ -102,11 +102,12 @@ export default function DashboardPage() {
 	const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
 	const isB2CUser = LAUNCH_PAD_ROLES.includes(user.role);
 	const isMentor = user.role === 'b2c_mentor';
+	const isParent = user.role === 'parent';
 
 	// Different labels for B2C users vs institutional users
 	const statCards = [
 		{
-			label: isMentor ? "Active Builders" : isB2CUser ? "Active Ideas" : "Active Courses",
+			label: isParent ? "My Children" : isMentor ? "Active Builders" : isB2CUser ? "Active Ideas" : "Active Courses",
 			value: "8",
 			trend: "+2 this week",
 			accent: "from-indigo-500/15 via-indigo-500/5 to-transparent",
@@ -118,7 +119,7 @@ export default function DashboardPage() {
 			iconBg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300",
 		},
 		{
-			label: isMentor ? "Reviews Completed" : isB2CUser ? "Launch Tasks Completed" : "Completed Tasks",
+			label: isParent ? "Attendance This Week" : isMentor ? "Reviews Completed" : isB2CUser ? "Launch Tasks Completed" : "Completed Tasks",
 			value: "23",
 			trend: "Great momentum",
 			accent: "from-sky-500/15 via-sky-500/5 to-transparent",
@@ -130,7 +131,7 @@ export default function DashboardPage() {
 			iconBg: "bg-sky-500/10 text-sky-600 dark:text-sky-300",
 		},
 		{
-			label: isMentor ? "Decision Accuracy" : isB2CUser ? "Pitch Readiness Score" : "Avg Performance",
+			label: isParent ? "Attendance Rate" : isMentor ? "Decision Accuracy" : isB2CUser ? "Pitch Readiness Score" : "Avg Performance",
 			value: "92%",
 			trend: "Stable progression",
 			accent: "from-purple-500/15 via-purple-500/5 to-transparent",
@@ -142,7 +143,7 @@ export default function DashboardPage() {
 			iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-300",
 		},
 		{
-			label: isMentor ? "Mentor Time Invested" : isB2CUser ? "Focused Build Time" : "Learning Time",
+			label: isParent ? "School Notices" : isMentor ? "Mentor Time Invested" : isB2CUser ? "Focused Build Time" : "Learning Time",
 			value: "42h",
 			trend: "+6h vs last week",
 			accent: "from-emerald-500/15 via-emerald-500/5 to-transparent",
@@ -157,10 +158,10 @@ export default function DashboardPage() {
 
 	const quickActions = [
 		{
-			title: isMentor ? "Builder Queue" : isB2CUser ? "Idea Portals" : "Explore Courses",
-			description: isMentor ? "Review pending student ideas and submissions" : isB2CUser ? "Government & private ideas you can build on" : "Discover curated learning paths tailored to you",
-			href: "/features",
-			buttonText: isMentor ? "Open Queue" : isB2CUser ? "Explore Ideas" : "Open",
+			title: isParent ? "My Children" : isMentor ? "Builder Queue" : isB2CUser ? "Idea Portals" : "Explore Courses",
+			description: isParent ? "View your children's attendance, grades and progress" : isMentor ? "Review pending student ideas and submissions" : isB2CUser ? "Government & private ideas you can build on" : "Discover curated learning paths tailored to you",
+			href: isParent ? "/dashboard/parent/children" : "/features",
+			buttonText: isParent ? "View Children" : isMentor ? "Open Queue" : isB2CUser ? "Explore Ideas" : "Open",
 			iconBg: "bg-white/70 text-indigo-600 dark:bg-white/10 dark:text-indigo-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -169,10 +170,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isMentor ? "Sudarshan AI (Mentor Mode)" : isB2CUser ? "Sudarshan AI (Student Mode)" : "Open iGyanAI",
-			description: isMentor ? "AI co-pilot for mentoring, reviewing & guiding" : isB2CUser ? "Your AI guide for thinking, building & pitching" : "Chat with your AI mentor for voice-first guidance",
-			href: isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai",
-			buttonText: isMentor ? "Open Mentor Console" : isB2CUser ? "Enter Command Mode" : "Open",
+			title: isParent ? "Messages & Teachers" : isMentor ? "Sudarshan AI (Mentor Mode)" : isB2CUser ? "Sudarshan AI (Student Mode)" : "Open iGyanAI",
+			description: isParent ? "Contact class teachers and view school messages" : isMentor ? "AI co-pilot for mentoring, reviewing & guiding" : isB2CUser ? "Your AI guide for thinking, building & pitching" : "Chat with your AI mentor for voice-first guidance",
+			href: isParent ? "/dashboard/parent/messages" : isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai",
+			buttonText: isParent ? "Open Messages" : isMentor ? "Open Mentor Console" : isB2CUser ? "Enter Command Mode" : "Open",
 			iconBg: "bg-white/70 text-pink-600 dark:bg-white/10 dark:text-pink-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -181,10 +182,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isMentor ? "Validation Desk" : isB2CUser ? "Startup Lab (Student Access)" : "Career Hub",
-			description: isMentor ? "Approve, reject, or flag ideas for improvement" : isB2CUser ? "Incubators, grants & startup support paths" : "Match your strengths with future pathways",
-			href: isMentor ? "/dashboard/incubation-hub" : isB2CUser ? "/dashboard/incubation-hub" : "/features",
-			buttonText: isMentor ? "Open Desk" : isB2CUser ? "Explore Support" : "Open",
+			title: isParent ? "Report Cards" : isMentor ? "Validation Desk" : isB2CUser ? "Startup Lab (Student Access)" : "Career Hub",
+			description: isParent ? "View your children's academic reports and grades" : isMentor ? "Approve, reject, or flag ideas for improvement" : isB2CUser ? "Incubators, grants & startup support paths" : "Match your strengths with future pathways",
+			href: isParent ? "/dashboard/parent/report-cards" : isMentor ? "/dashboard/incubation-hub" : isB2CUser ? "/dashboard/incubation-hub" : "/features",
+			buttonText: isParent ? "View Reports" : isMentor ? "Open Desk" : isB2CUser ? "Explore Support" : "Open",
 			iconBg: "bg-white/70 text-purple-600 dark:bg-white/10 dark:text-purple-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -193,10 +194,10 @@ export default function DashboardPage() {
 			),
 		},
 		{
-			title: isMentor ? "Mentor Support Desk" : isB2CUser ? "Launch Help Desk" : "Need Support?",
-			description: isMentor ? "Escalate issues or request admin support" : isB2CUser ? "Get help when you're stuck" : "Reach the iGyaan team for quick assistance",
-			href: "/contact",
-			buttonText: isMentor ? "Get Support" : isB2CUser ? "Ask for Help" : "Open",
+			title: isParent ? "School Events" : isMentor ? "Mentor Support Desk" : isB2CUser ? "Launch Help Desk" : "Need Support?",
+			description: isParent ? "Upcoming school events, holidays and activities" : isMentor ? "Escalate issues or request admin support" : isB2CUser ? "Get help when you're stuck" : "Reach the iGyaan team for quick assistance",
+			href: isParent ? "/dashboard/parent/events" : "/contact",
+			buttonText: isParent ? "View Events" : isMentor ? "Get Support" : isB2CUser ? "Ask for Help" : "Open",
 			iconBg: "bg-white/70 text-emerald-600 dark:bg-white/10 dark:text-emerald-300",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -206,7 +207,23 @@ export default function DashboardPage() {
 		},
 	];
 
-	const focusAreas = isMentor ? [
+	const focusAreas = isParent ? [
+		{
+			title: "Check Attendance",
+			detail: "Review today's attendance status for your children",
+			tags: ["Daily", "Attendance"],
+		},
+		{
+			title: "Homework Status",
+			detail: "See pending homework and assignment deadlines",
+			tags: ["Academics", "Tracking"],
+		},
+		{
+			title: "Upcoming PTM",
+			detail: "Parent-Teacher meeting scheduled this month",
+			tags: ["Meeting", "School"],
+		},
+	] : isMentor ? [
 		{
 			title: "Idea Clarity Review",
 			detail: "Check if the problem statement is well-defined",
@@ -256,7 +273,20 @@ export default function DashboardPage() {
 		},
 	];
 
-	const aiHighlights = isMentor ? [
+	const aiHighlights = isParent ? [
+		{
+			title: "Attendance Alert",
+			detail: "All children marked present today. Great consistency this week!",
+		},
+		{
+			title: "Academic Update",
+			detail: "Report cards for this term will be available next week.",
+		},
+		{
+			title: "School Notice",
+			detail: "Annual sports day preparation starts from next Monday. Stay tuned!",
+		},
+	] : isMentor ? [
 		{
 			title: "AI Summary Note",
 			detail: "3 ideas reviewed today. One flagged for re-submission.",
@@ -297,7 +327,23 @@ export default function DashboardPage() {
 		},
 	];
 
-	const upcomingSessions = isMentor ? [
+	const upcomingSessions = isParent ? [
+		{
+			time: "Today",
+			title: "Attendance Check",
+			description: "Check your children's attendance status",
+		},
+		{
+			time: "This Week",
+			title: "Parent-Teacher Meeting",
+			description: "Discuss academic progress with class teacher",
+		},
+		{
+			time: "This Month",
+			title: "Term Report Cards",
+			description: "View and download term-end report cards",
+		},
+	] : isMentor ? [
 		{
 			time: "Today · 7:30 PM",
 			title: "Idea Review Session",
@@ -418,13 +464,13 @@ export default function DashboardPage() {
 						</div>
 						<div className="grid gap-4 sm:w-52">
 							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
-								<p className="text-xs uppercase tracking-wide text-white/70">{isMentor ? "Next Review Slot" : isB2CUser ? "Next Launch Check-in" : "Next check-in"}</p>
-								<p className="mt-1 text-lg font-semibold">{isMentor ? "Idea Queue · 7 PM" : isB2CUser ? "Idea clarity · 9 PM" : "Physics practice · 9 PM"}</p>
-								<p className="mt-2 text-white/70">{isMentor ? "3 ideas awaiting your review and feedback" : isB2CUser ? "Idea clarity / pitch improvement session" : "Akshat has 3 saved prompts from yesterday's session."}</p>
+								<p className="text-xs uppercase tracking-wide text-white/70">{isParent ? "Today's Summary" : isMentor ? "Next Review Slot" : isB2CUser ? "Next Launch Check-in" : "Next check-in"}</p>
+								<p className="mt-1 text-lg font-semibold">{isParent ? "Attendance · Today" : isMentor ? "Idea Queue · 7 PM" : isB2CUser ? "Idea clarity · 9 PM" : "Physics practice · 9 PM"}</p>
+								<p className="mt-2 text-white/70">{isParent ? "Check your children's attendance and school updates" : isMentor ? "3 ideas awaiting your review and feedback" : isB2CUser ? "Idea clarity / pitch improvement session" : "Akshat has 3 saved prompts from yesterday's session."}</p>
 							</div>
 							<div className="rounded-2xl border border-white/30 bg-white/10 p-4 text-sm">
-								<p className="text-xs uppercase tracking-wide text-white/70">{isMentor ? "Mentor Mindset" : isB2CUser ? "Launch Mindset" : "Focus mantra"}</p>
-								<p className="mt-2 text-white/80">{isMentor ? "Guide with clarity. Decide with confidence. Empower the builder." : isB2CUser ? "One idea. One improvement. One step forward." : "Turn curiosity into progress 1 playful question at a time."}</p>
+								<p className="text-xs uppercase tracking-wide text-white/70">{isParent ? "Parent Tip" : isMentor ? "Mentor Mindset" : isB2CUser ? "Launch Mindset" : "Focus mantra"}</p>
+								<p className="mt-2 text-white/80">{isParent ? "Stay involved — parents who engage with school updates see 40% better results." : isMentor ? "Guide with clarity. Decide with confidence. Empower the builder." : isB2CUser ? "One idea. One improvement. One step forward." : "Turn curiosity into progress 1 playful question at a time."}</p>
 							</div>
 						</div>
 					</div>
