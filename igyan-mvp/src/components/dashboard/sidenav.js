@@ -127,6 +127,12 @@ const ROLE_BASED_NAV_CONFIG = {
 	parentCommunication: {
 		allowedRoles: ['super_admin', 'co_admin', 'parent'],
 	},
+	parentTeacherChat: {
+		allowedRoles: ['super_admin', 'co_admin', 'parent'],
+	},
+	facultyParentChat: {
+		allowedRoles: ['super_admin', 'co_admin', 'faculty'],
+	},
 	
 	// B2C specific items
 	mentors: {
