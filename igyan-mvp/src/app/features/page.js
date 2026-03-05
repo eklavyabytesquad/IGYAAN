@@ -29,6 +29,48 @@ const featureGroups = [
   },
 ];
 
+const academicIntelligence = [
+  {
+    name: "OmniSight Live Classroom System",
+    detail:
+      "Live classes, digital whiteboard, soft board & real-time monitoring.",
+    icon: "📡",
+  },
+  {
+    name: "AI Bulk Report Card Generator",
+    detail:
+      "One-click class-wide report creation with performance analytics & AI-generated remarks.",
+    icon: "📊",
+  },
+  {
+    name: "Parent Engagement Module",
+    detail:
+      "Attendance alerts, report access & direct teacher communication.",
+    icon: "👨‍👩‍👧",
+  },
+];
+
+const smartAdmin = [
+  {
+    name: "Smart Timetable & Substitution System",
+    detail:
+      "Clash-free scheduling with auto substitute allocation & instant updates.",
+    icon: "📅",
+  },
+  {
+    name: "Code Tutor Tools",
+    detail:
+      "AI-assisted coding practice, evaluation & skill tracking.",
+    icon: "💻",
+  },
+  {
+    name: "IdeaSpark – 96 Govt Program Navigator",
+    detail:
+      "AI-powered idea generation with mapped access to 96+ government incubation & funding schemes.",
+    icon: "💡",
+  },
+];
+
 const automations = [
   {
     name: "Pulse Streams",
@@ -81,6 +123,68 @@ export default function FeaturesPage() {
             </ul>
           </article>
         ))}
+      </section>
+
+      {/* Academic & Learning Intelligence */}
+      <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-1.5 text-sm font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+          🧠 Academic & Learning Intelligence
+        </div>
+        <h2 className="mt-3 text-2xl font-semibold text-zinc-900 dark:text-white">
+          Supercharge teaching with intelligent classroom tools
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
+          From live classes to automated report cards and parent engagement — everything educators need, powered by AI.
+        </p>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {academicIntelligence.map((item) => (
+            <div
+              key={item.name}
+              className="group rounded-2xl border border-sky-100 bg-sky-50/75 p-6 shadow-sm shadow-sky-500/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-500/15 dark:border-sky-900/40 dark:bg-slate-900/50"
+            >
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white text-2xl shadow-sm dark:bg-slate-800">
+                {item.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-sky-600 dark:text-sky-300">
+                {item.name}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {item.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Smart Administration & Innovation Suite */}
+      <section className="mt-12 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+          🏫 Smart Administration & Innovation Suite
+        </div>
+        <h2 className="mt-3 text-2xl font-semibold text-zinc-900 dark:text-white">
+          Streamline operations and spark innovation
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
+          Intelligent scheduling, coding education, and government scheme navigation — all in one platform.
+        </p>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {smartAdmin.map((item) => (
+            <div
+              key={item.name}
+              className="group rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 shadow-sm shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/15 dark:border-indigo-900/40 dark:bg-slate-900/50"
+            >
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white text-2xl shadow-sm dark:bg-slate-800">
+                {item.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300">
+                {item.name}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {item.detail}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
