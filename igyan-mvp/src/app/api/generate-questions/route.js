@@ -4,7 +4,7 @@ const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 export async function POST(request) {
   try {
-    const { topic, numQuestions, questionType, subject, prompt } = await request.json();
+    const { topic, numQuestions, questionType, subject, prompt, classLevel, difficulty, language, bloomsLevel } = await request.json();
 
     if (!OPENAI_API_KEY) {
       return NextResponse.json(
@@ -52,10 +52,22 @@ export async function POST(request) {
     let systemPrompt = '';
     let userPrompt = '';
 
+    const classLabel = classLevel ? `Class ${classLevel}` : 'general level';
+    const difficultyLabel = difficulty || 'medium';
+    const langLabel = language || 'English';
+    const bloomsLabel = bloomsLevel || 'understanding';
+
     if (questionType === 'mcq') {
-      systemPrompt = `You are an expert educator specializing in creating high-quality multiple-choice questions. Create questions that test deep understanding, not just memorization. Each question should be clear, unambiguous, and have exactly 4 options with only one correct answer.`;
+      systemPrompt = `You are an expert educator specializing in creating high-quality multiple-choice questions for ${classLabel} students. Tailor the complexity, vocabulary, and depth of questions to be appropriate for ${classLabel} students. Create questions that test deep understanding, not just memorization. Each question should be clear, unambiguous, and have exactly 4 options with only one correct answer. Generate all questions in ${langLabel}.`;
       
-      userPrompt = `Create ${numQuestions} multiple-choice questions on the topic: "${topic}" for ${subject}.
+      userPrompt = `Create ${numQuestions} multiple-choice questions with the following specifications:
+
+📚 Subject: ${subject}
+📖 Topic: "${topic}"
+🎓 Class/Grade: ${classLabel}
+🎯 Difficulty: ${difficultyLabel}
+🧠 Cognitive Level (Bloom's Taxonomy): ${bloomsLabel}
+🌐 Language: ${langLabel}
 
 STRICT FORMAT REQUIREMENTS:
 Return ONLY a valid JSON array with NO markdown, NO code blocks, NO explanations. Just raw JSON.
@@ -72,14 +84,23 @@ Format:
 
 Rules:
 - correct_answer is the index (0-3) of the correct option
-- Make questions challenging and conceptual
+- ALL questions must be at ${difficultyLabel} difficulty level appropriate for ${classLabel}
+- Questions must target the "${bloomsLabel}" level of Bloom's Taxonomy
 - Ensure options are plausible but only one is correct
-- Cover different difficulty levels
+- Use age-appropriate language and concepts for ${classLabel}
+- Generate questions in ${langLabel}
 - Each question worth 1 mark`;
     } else {
-      systemPrompt = `You are an expert educator specializing in creating thoughtful viva (oral examination) questions. Create open-ended questions that encourage critical thinking, application of knowledge, and verbal expression. Include suggested comprehensive answers.`;
+      systemPrompt = `You are an expert educator specializing in creating thoughtful viva (oral examination) questions for ${classLabel} students. Create open-ended questions that encourage critical thinking, application of knowledge, and verbal expression. Tailor the complexity to ${classLabel} level. Include suggested comprehensive answers. Generate all questions in ${langLabel}.`;
       
-      userPrompt = `Create ${numQuestions} viva (oral examination) questions on the topic: "${topic}" for ${subject}.
+      userPrompt = `Create ${numQuestions} viva (oral examination) questions with the following specifications:
+
+📚 Subject: ${subject}
+📖 Topic: "${topic}"
+🎓 Class/Grade: ${classLabel}
+🎯 Difficulty: ${difficultyLabel}
+🧠 Cognitive Level (Bloom's Taxonomy): ${bloomsLabel}
+🌐 Language: ${langLabel}
 
 STRICT FORMAT REQUIREMENTS:
 Return ONLY a valid JSON array with NO markdown, NO code blocks, NO explanations. Just raw JSON.
@@ -94,9 +115,12 @@ Format:
 ]
 
 Rules:
-- Questions should be open-ended
+- Questions should be open-ended and age-appropriate for ${classLabel}
 - Suggested answers should be comprehensive (2-3 sentences minimum)
+- Questions must target the "${bloomsLabel}" level of Bloom's Taxonomy
+- All questions at ${difficultyLabel} difficulty for ${classLabel}
 - Focus on "why" and "how" questions
+- Generate questions in ${langLabel}
 - Each question worth 5 marks
 - Encourage critical thinking and application`;
     }

@@ -21,7 +21,11 @@ export default function HomeworkManagement() {
     topic: '',
     numQuestions: 5,
     questionType: 'mcq',
-    subject: ''
+    subject: '',
+    classLevel: '',
+    difficulty: 'medium',
+    language: 'English',
+    bloomsLevel: 'understanding'
   });
 
   const [formData, setFormData] = useState({
@@ -205,8 +209,8 @@ export default function HomeworkManagement() {
   };
 
   const generateQuestionsWithAI = async () => {
-    if (!aiConfig.topic || !aiConfig.subject) {
-      alert('Please fill in topic and subject');
+    if (!aiConfig.topic || !aiConfig.subject || !aiConfig.classLevel) {
+      alert('Please fill in topic, subject, and class level');
       return;
     }
 
@@ -253,7 +257,11 @@ export default function HomeworkManagement() {
         topic: '',
         numQuestions: 5,
         questionType: 'mcq',
-        subject: ''
+        subject: '',
+        classLevel: '',
+        difficulty: 'medium',
+        language: 'English',
+        bloomsLevel: 'understanding'
       });
     } catch (error) {
       console.error('AI Generation Error:', error);
@@ -468,34 +476,34 @@ export default function HomeworkManagement() {
 
       {/* AI Generator Modal */}
       {showAIGenerator && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="dashboard-card w-full max-w-2xl rounded-3xl p-8 shadow-2xl">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="rounded-2xl p-3 text-white" style={{ backgroundColor: '#a855f7' }}>
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-8 pb-8">
+          <div className="dashboard-card w-full max-w-4xl rounded-2xl p-5 shadow-2xl">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="rounded-xl p-2.5 text-white" style={{ backgroundColor: '#a855f7' }}>
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
+                <h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
                   AI Question Generator
                 </h2>
-                <p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
+                <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                   Let AI create questions for you instantly
                 </p>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                   Question Type
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setAiConfig({ ...aiConfig, questionType: 'mcq' })}
-                    className={`rounded-xl border-2 p-4 text-center font-semibold transition`}
+                    className={`rounded-lg border-2 px-3 py-2.5 text-center text-sm font-semibold transition flex items-center justify-center gap-2`}
                     style={aiConfig.questionType === 'mcq' ? {
                       borderColor: '#3b82f6',
                       backgroundColor: '#dbeafe',
@@ -506,13 +514,13 @@ export default function HomeworkManagement() {
                       color: 'var(--dashboard-text)'
                     }}
                   >
-                    <FileText className="mx-auto mb-2" size={24} />
+                    <FileText size={18} />
                     MCQ Questions
                   </button>
                   <button
                     type="button"
                     onClick={() => setAiConfig({ ...aiConfig, questionType: 'viva' })}
-                    className={`rounded-xl border-2 p-4 text-center font-semibold transition`}
+                    className={`rounded-lg border-2 px-3 py-2.5 text-center text-sm font-semibold transition flex items-center justify-center gap-2`}
                     style={aiConfig.questionType === 'viva' ? {
                       borderColor: '#a855f7',
                       backgroundColor: '#f3e8ff',
@@ -523,15 +531,15 @@ export default function HomeworkManagement() {
                       color: 'var(--dashboard-text)'
                     }}
                   >
-                    <Mic className="mx-auto mb-2" size={24} />
+                    <Mic size={18} />
                     Viva Questions
                   </button>
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-3">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                  <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
                     Subject
                   </label>
                   <input
@@ -539,8 +547,8 @@ export default function HomeworkManagement() {
                     required
                     value={aiConfig.subject}
                     onChange={(e) => setAiConfig({ ...aiConfig, subject: e.target.value })}
-                    placeholder="e.g., Mathematics, Physics"
-                    className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                    placeholder="e.g., Mathematics"
+                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition focus:ring-2"
                     style={{
                       border: '1px solid var(--dashboard-border)',
                       backgroundColor: 'var(--dashboard-surface-solid)',
@@ -550,16 +558,49 @@ export default function HomeworkManagement() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
-                    Number of Questions
+                  <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                    Class / Grade <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={aiConfig.classLevel}
+                    onChange={(e) => setAiConfig({ ...aiConfig, classLevel: e.target.value })}
+                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
+                  >
+                    <option value="">Select class...</option>
+                    <option value="1">Class 1</option>
+                    <option value="2">Class 2</option>
+                    <option value="3">Class 3</option>
+                    <option value="4">Class 4</option>
+                    <option value="5">Class 5</option>
+                    <option value="6">Class 6</option>
+                    <option value="7">Class 7</option>
+                    <option value="8">Class 8</option>
+                    <option value="9">Class 9</option>
+                    <option value="10">Class 10</option>
+                    <option value="11">Class 11</option>
+                    <option value="12">Class 12</option>
+                    <option value="UG">Undergraduate</option>
+                    <option value="PG">Postgraduate</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                    No. of Questions
                   </label>
                   <input
                     type="number"
                     min="1"
-                    max="20"
+                    max="30"
                     value={aiConfig.numQuestions}
-                    onChange={(e) => setAiConfig({ ...aiConfig, numQuestions: parseInt(e.target.value) })}
-                    className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                    onChange={(e) => setAiConfig({ ...aiConfig, numQuestions: parseInt(e.target.value) || 5 })}
+                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition focus:ring-2"
                     style={{
                       border: '1px solid var(--dashboard-border)',
                       backgroundColor: 'var(--dashboard-surface-solid)',
@@ -569,49 +610,127 @@ export default function HomeworkManagement() {
                 </div>
               </div>
 
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                    Difficulty Level
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {['easy', 'medium', 'hard'].map((level) => (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => setAiConfig({ ...aiConfig, difficulty: level })}
+                        className="rounded-md border-2 px-2 py-1.5 text-xs font-semibold capitalize transition"
+                        style={aiConfig.difficulty === level ? {
+                          borderColor: level === 'easy' ? '#22c55e' : level === 'medium' ? '#f59e0b' : '#ef4444',
+                          backgroundColor: level === 'easy' ? '#dcfce7' : level === 'medium' ? '#fef3c7' : '#fee2e2',
+                          color: level === 'easy' ? '#15803d' : level === 'medium' ? '#92400e' : '#b91c1c'
+                        } : {
+                          borderColor: 'var(--dashboard-border)',
+                          backgroundColor: 'var(--dashboard-surface-solid)',
+                          color: 'var(--dashboard-text)'
+                        }}
+                      >
+                        {level === 'easy' ? '🟢' : level === 'medium' ? '🟡' : '🔴'} {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                    Language
+                  </label>
+                  <select
+                    value={aiConfig.language}
+                    onChange={(e) => setAiConfig({ ...aiConfig, language: e.target.value })}
+                    className="w-full rounded-lg px-3 py-2 text-sm outline-none transition focus:ring-2"
+                    style={{
+                      border: '1px solid var(--dashboard-border)',
+                      backgroundColor: 'var(--dashboard-surface-solid)',
+                      color: 'var(--dashboard-text)'
+                    }}
+                  >
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Hinglish">Hinglish</option>
+                    <option value="Marathi">Marathi</option>
+                    <option value="Tamil">Tamil</option>
+                    <option value="Telugu">Telugu</option>
+                    <option value="Kannada">Kannada</option>
+                    <option value="Bengali">Bengali</option>
+                    <option value="Gujarati">Gujarati</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label className="mb-2 block text-sm font-semibold" style={{ color: 'var(--dashboard-text)' }}>
-                  Topic/Chapter
+                <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                  Bloom&apos;s Taxonomy Level
+                </label>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {[
+                    { value: 'remembering', label: 'Remember', emoji: '🧠' },
+                    { value: 'understanding', label: 'Understand', emoji: '💡' },
+                    { value: 'applying', label: 'Apply', emoji: '🔧' },
+                    { value: 'analyzing', label: 'Analyze', emoji: '🔍' },
+                    { value: 'evaluating', label: 'Evaluate', emoji: '⚖️' },
+                    { value: 'creating', label: 'Create', emoji: '🎨' },
+                  ].map((level) => (
+                    <button
+                      key={level.value}
+                      type="button"
+                      onClick={() => setAiConfig({ ...aiConfig, bloomsLevel: level.value })}
+                      className="rounded-md border-2 px-1 py-1.5 text-center text-[10px] font-semibold transition"
+                      style={aiConfig.bloomsLevel === level.value ? {
+                        borderColor: 'var(--dashboard-primary)',
+                        backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)',
+                        color: 'var(--dashboard-primary)'
+                      } : {
+                        borderColor: 'var(--dashboard-border)',
+                        backgroundColor: 'var(--dashboard-surface-solid)',
+                        color: 'var(--dashboard-text)'
+                      }}
+                    >
+                      <span className="block text-sm">{level.emoji}</span>
+                      {level.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold" style={{ color: 'var(--dashboard-text)' }}>
+                  Topic / Chapter
                 </label>
                 <textarea
                   required
                   value={aiConfig.topic}
                   onChange={(e) => setAiConfig({ ...aiConfig, topic: e.target.value })}
                   placeholder="e.g., Photosynthesis in Plants, Quadratic Equations, French Revolution"
-                  rows={3}
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:ring-2"
+                  rows={2}
+                  className="w-full rounded-lg px-3 py-2 text-sm outline-none transition focus:ring-2"
                   style={{
                     border: '1px solid var(--dashboard-border)',
                     backgroundColor: 'var(--dashboard-surface-solid)',
                     color: 'var(--dashboard-text)'
                   }}
                 />
-                <p className="mt-2 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
-                  💡 Be specific for better results. Include key concepts you want to test.
+                <p className="mt-1 text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>
+                  💡 Be specific — include key concepts you want to test.
                 </p>
               </div>
 
-              <div className="rounded-xl p-4" style={{
-                border: '1px solid #fcd34d',
-                backgroundColor: '#fef3c7'
-              }}>
-                <p className="text-sm" style={{ color: '#92400e' }}>
-                  <strong>Note:</strong> AI will generate high-quality questions based on your topic. 
-                  {aiConfig.questionType === 'mcq' 
-                    ? ' MCQs will include 4 options with correct answers marked.'
-                    : ' Viva questions will include suggested comprehensive answers.'}
-                </p>
-              </div>
-
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowAIGenerator(false);
-                    setAiConfig({ topic: '', numQuestions: 5, questionType: 'mcq', subject: '' });
+                    setAiConfig({ topic: '', numQuestions: 5, questionType: 'mcq', subject: '', classLevel: '', difficulty: 'medium', language: 'English', bloomsLevel: 'understanding' });
                   }}
                   disabled={aiGenerating}
-                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
+                  className="flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
                   style={{
                     border: '1px solid var(--dashboard-border)',
                     backgroundColor: 'var(--dashboard-surface-solid)',
@@ -623,8 +742,8 @@ export default function HomeworkManagement() {
                 <button
                   type="button"
                   onClick={generateQuestionsWithAI}
-                  disabled={aiGenerating || !aiConfig.topic || !aiConfig.subject}
-                  className="flex-1 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={aiGenerating || !aiConfig.topic || !aiConfig.subject || !aiConfig.classLevel}
+                  className="flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:shadow-purple-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ backgroundColor: '#a855f7' }}
                 >
                   {aiGenerating ? (
