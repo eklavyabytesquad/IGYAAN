@@ -621,23 +621,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured In Media Section */}
-      <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70 dark:text-sky-300 mb-4">
-            Press Coverage
-          </span>
-          <h2 className="theme-heading text-3xl font-semibold">
-            Featured In Media
-          </h2>
-          <p className="theme-muted mx-auto mt-4 max-w-3xl text-base">
-            Trusted by leading publications worldwide. See what the media is saying about iGyanAI.
-          </p>
-        </div>
-        
-        <MediaCarousel />
-      </section>
-
       <section className="mx-auto w-full max-w-5xl px-6 pb-28">
         <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-center text-white shadow-2xl animate-glow">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent)]" />
