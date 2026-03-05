@@ -5,9 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
-const links = [
+const linksBeforeInsights = [
 	{ href: "/features", label: "Features" },
 	{ href: "/about", label: "About Us" },
+];
+
+const linksAfterInsights = [
 	{ href: "/contact", label: "Contact" },
 	{ href: "/shark-ai", label: "AI Shark" },
 ];
@@ -61,9 +64,8 @@ export default function Navbar() {
 					</div>
 				</Link>
 				<div className="hidden items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-300 lg:flex">
-					{links.map(({ href, label }) => {
+					{linksBeforeInsights.map(({ href, label }) => {
 						const isActive = pathname === href;
-
 						return (
 							<Link
 								key={href}
@@ -81,7 +83,7 @@ export default function Navbar() {
 							</Link>
 						);
 					})}
-					{/* Insights Dropdown */}
+					{/* Insights Dropdown — between About Us and Contact */}
 					<div ref={insightsRef} className="relative">
 						<button
 							type="button"
@@ -135,8 +137,25 @@ export default function Navbar() {
 								})}
 							</div>
 						)}
-					</div>
-				</div>
+					</div>					{linksAfterInsights.map(({ href, label }) => {
+						const isActive = pathname === href;
+						return (
+							<Link
+								key={href}
+								href={href}
+								className={`relative transition-colors hover:text-indigo-500 dark:hover:text-indigo-400 ${
+									isActive
+										? "text-indigo-500 dark:text-indigo-400"
+										: "text-zinc-600 dark:text-zinc-300"
+								}`}
+							>
+								{label}
+								{isActive ? (
+									<span className="absolute -bottom-2 left-0 h-0.5 w-full rounded-full bg-indigo-500 dark:bg-indigo-400" />
+								) : null}
+							</Link>
+						);
+					})}				</div>
 				<div className="hidden items-center gap-3 lg:flex">
 					<Link
 						href="/login"
@@ -186,7 +205,7 @@ export default function Navbar() {
 			{isOpen ? (
 				<div className="mt-3 w-full max-w-5xl rounded-xl border border-zinc-200/80 bg-white/95 p-4 text-sm shadow-lg shadow-zinc-900/10 dark:border-zinc-700/60 dark:bg-zinc-900/95 lg:hidden">
 					<nav className="flex flex-col gap-3">
-						{links.map(({ href, label }) => {
+						{linksBeforeInsights.map(({ href, label }) => {
 							const isActive = pathname === href;
 							return (
 								<Link
@@ -202,7 +221,7 @@ export default function Navbar() {
 								</Link>
 							);
 						})}
-						{/* Insights section in mobile */}
+						{/* Insights section in mobile — between About Us and Contact */}
 						<div className="rounded-lg border border-zinc-200/60 dark:border-zinc-700/40 px-3 py-2">
 							<span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Insights</span>
 							<div className="mt-2 flex flex-col gap-1">
@@ -224,6 +243,22 @@ export default function Navbar() {
 								})}
 							</div>
 						</div>
+						{linksAfterInsights.map(({ href, label }) => {
+							const isActive = pathname === href;
+							return (
+								<Link
+									key={href}
+									href={href}
+									className={`rounded-lg px-3 py-2 transition-colors ${
+										isActive
+											? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300"
+											: "text-zinc-600 hover:bg-zinc-100 hover:text-indigo-500 dark:text-zinc-300 dark:hover:bg-zinc-800"
+									}`}
+								>
+									{label}
+								</Link>
+							);
+						})}
 						<hr className="border-zinc-200 dark:border-zinc-700" />
 						<Link
 							href="/login"
