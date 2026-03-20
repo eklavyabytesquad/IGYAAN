@@ -126,7 +126,7 @@ export default function SettingsPage() {
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-center">
 					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">
+					<p className="mt-4 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 						Loading settings...
 					</p>
 				</div>
@@ -140,26 +140,26 @@ export default function SettingsPage() {
 		<div className="p-6 lg:p-8">
 			{/* Header */}
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
+				<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 					Settings
 				</h1>
-				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
+				<p className="mt-2" style={{ color: 'var(--dashboard-muted)' }}>
 					Manage your account and organization settings
 				</p>
 			</div>
 
 			{/* Appearance Studio */}
-			<div className="dashboard-card mb-8 rounded-3xl border border-zinc-200 bg-white/90 p-6 shadow-sm">
+			<div className="dashboard-card mb-8 rounded-3xl border p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)' }}>
 				<div className="grid gap-8 lg:grid-cols-[340px,1fr]">
 					<div className="flex flex-col gap-6">
 						<div>
 							<span className="dashboard-pill inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide">
 								Appearance Studio
 							</span>
-							<h2 className="mt-4 text-2xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="mt-4 text-2xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Curate the perfect look for your dashboard
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Themes update navigation, cards, chips, and buttons instantly for everyone in your workspace.
 							</p>
 						</div>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
 						</div>
 
 						<div>
-							<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Quick presets</p>
+							<p className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--dashboard-muted)' }}>Quick presets</p>
 							<div className="mt-3 flex flex-wrap gap-2">
 								{quickThemeIds.map((id) => {
 									const preset = themeLookup[id];
@@ -283,7 +283,7 @@ export default function SettingsPage() {
 									type="button"
 									key={option.id}
 									onClick={() => handleThemeSelect(option.id)}
-									className={`group flex h-full flex-col justify-between rounded-2xl border bg-white/90 p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none ${
+									className={`dashboard-card group flex h-full flex-col justify-between rounded-2xl border p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none ${
 										isActive ? "shadow-lg" : ""
 									}`}
 									style={
@@ -292,11 +292,11 @@ export default function SettingsPage() {
 												borderColor: accent,
 												boxShadow: `0 20px 45px -20px ${accent}66`,
 											}
-											: { borderColor: "rgba(148, 163, 184, 0.2)" }
+											: { borderColor: 'var(--dashboard-border)' }
 									}
 								>
 									<span className="flex items-center justify-between gap-3">
-										<span className="text-base font-semibold text-zinc-900 dark:text-white">
+										<span className="text-base font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 											{option.label}
 										</span>
 										{isActive && (
@@ -308,7 +308,7 @@ export default function SettingsPage() {
 											</span>
 										)}
 									</span>
-									<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+									<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 										{option.description}
 									</p>
 									<div className="mt-4 flex items-center gap-2">
@@ -332,7 +332,8 @@ export default function SettingsPage() {
 				{/* User Profile Card */}
 				<Link
 					href="/dashboard/profile"
-					className="group dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					className="group dashboard-card rounded-2xl border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					style={{ borderColor: 'var(--dashboard-border)' }}
 				>
 					<div className="flex items-start gap-4">
 						<div
@@ -358,10 +359,10 @@ export default function SettingsPage() {
 							</svg>
 						</div>
 						<div className="flex-1">
-							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								User Profile
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Update your personal information, contact details, and profile
 								picture
 							</p>
@@ -377,10 +378,10 @@ export default function SettingsPage() {
 										.toUpperCase() || "U"}
 								</div>
 								<div>
-									<p className="text-sm font-medium text-zinc-900 dark:text-white">
+									<p className="text-sm font-medium" style={{ color: 'var(--dashboard-heading)' }}>
 										{user.full_name}
 									</p>
-									<p className="text-xs text-zinc-500 dark:text-zinc-400">
+									<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 										{user.email}
 									</p>
 								</div>
@@ -392,7 +393,8 @@ export default function SettingsPage() {
 							fill="none"
 							stroke="currentColor"
 							strokeWidth="1.5"
-							className="h-6 w-6 text-zinc-400 transition-transform group-hover:translate-x-1"
+							className="h-6 w-6 transition-transform group-hover:translate-x-1"
+							style={{ color: 'var(--dashboard-muted)' }}
 						>
 							<path
 								strokeLinecap="round"
@@ -407,7 +409,8 @@ export default function SettingsPage() {
 				{user?.role !== 'b2c_student' && user?.role !== 'b2c_mentor' && (
 				<Link
 					href="/dashboard/school-profile"
-					className="group dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					className="group dashboard-card rounded-2xl border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					style={{ borderColor: 'var(--dashboard-border)' }}
 				>
 					<div className="flex items-start gap-4">
 						<div
@@ -433,10 +436,10 @@ export default function SettingsPage() {
 							</svg>
 						</div>
 						<div className="flex-1">
-							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								School Profile
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Manage school information, contact details, documents, and
 								branding
 							</p>
@@ -454,16 +457,16 @@ export default function SettingsPage() {
 											.toUpperCase() || "SC"}
 									</div>
 									<div>
-										<p className="text-sm font-medium text-zinc-900 dark:text-white">
+										<p className="text-sm font-medium" style={{ color: 'var(--dashboard-heading)' }}>
 											{schoolData.school_name}
 										</p>
-										<p className="text-xs text-zinc-500 dark:text-zinc-400">
+										<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 											School registered
 										</p>
 									</div>
 								</div>
 							) : (
-								<p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+								<p className="mt-4 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 									No school registered yet
 								</p>
 							)}
@@ -474,7 +477,8 @@ export default function SettingsPage() {
 							fill="none"
 							stroke="currentColor"
 							strokeWidth="1.5"
-							className="h-6 w-6 text-zinc-400 transition-transform group-hover:translate-x-1"
+							className="h-6 w-6 transition-transform group-hover:translate-x-1"
+							style={{ color: 'var(--dashboard-muted)' }}
 						>
 							<path
 								strokeLinecap="round"
@@ -490,7 +494,8 @@ export default function SettingsPage() {
 				{(user?.role === 'b2c_student' || user?.role === 'b2c_mentor') && (
 				<Link
 					href="/dashboard/about"
-					className="group dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					className="group dashboard-card rounded-2xl border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+					style={{ borderColor: 'var(--dashboard-border)' }}
 				>
 					<div className="flex items-start gap-4">
 						<div
@@ -516,17 +521,17 @@ export default function SettingsPage() {
 							</svg>
 						</div>
 						<div className="flex-1">
-							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Professional Profile
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Manage your professional profile, interests, experience, and achievements
 							</p>
 							<div className="mt-4">
-								<p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+							<p className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--dashboard-muted)' }}>
 									Public Profile Link
 								</p>
-								<p className="mt-1 text-xs text-indigo-600 dark:text-indigo-400">
+								<p className="mt-1 text-xs" style={{ color: 'var(--dashboard-primary)' }}>
 									{typeof window !== 'undefined' ? window.location.origin : ''}/about/{user.id}
 								</p>
 							</div>
@@ -537,7 +542,8 @@ export default function SettingsPage() {
 							fill="none"
 							stroke="currentColor"
 							strokeWidth="1.5"
-							className="h-6 w-6 text-zinc-400 transition-transform group-hover:translate-x-1"
+							className="h-6 w-6 transition-transform group-hover:translate-x-1"
+							style={{ color: 'var(--dashboard-muted)' }}
 						>
 							<path
 								strokeLinecap="round"
@@ -550,7 +556,7 @@ export default function SettingsPage() {
 				)}
 
 				{/* Security Card */}
-				<div className="dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+				<div className="dashboard-card rounded-2xl border p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)' }}>
 					<div className="flex items-start gap-4">
 						<div
 							className="rounded-xl p-4 shadow-sm"
@@ -575,14 +581,14 @@ export default function SettingsPage() {
 							</svg>
 						</div>
 						<div className="flex-1">
-							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Security
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Change password, enable two-factor authentication, and manage
 								sessions
 							</p>
-							<p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+							<p className="mt-4 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 								Coming soon...
 							</p>
 						</div>
@@ -590,7 +596,7 @@ export default function SettingsPage() {
 				</div>
 
 				{/* Preferences Card */}
-				<div className="dashboard-card rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+				<div className="dashboard-card rounded-2xl border p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)' }}>
 					<div className="flex items-start gap-4">
 						<div
 							className="rounded-xl p-4 shadow-sm"
@@ -620,14 +626,14 @@ export default function SettingsPage() {
 							</svg>
 						</div>
 						<div className="flex-1">
-							<h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+							<h2 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Preferences
 							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Customize your experience with theme, language, and notification
 								settings
 							</p>
-							<p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+							<p className="mt-4 text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 								Coming soon...
 							</p>
 						</div>
@@ -636,7 +642,7 @@ export default function SettingsPage() {
 			</div>
 
 			{/* Additional Info */}
-			<div className="mt-8 rounded-2xl border border-dashed border-zinc-300 bg-white/60 p-6 shadow-sm">
+			<div className="mt-8 rounded-2xl border border-dashed p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				<div className="flex items-start gap-3">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -644,7 +650,8 @@ export default function SettingsPage() {
 						fill="none"
 						stroke="currentColor"
 						strokeWidth="1.5"
-						className="h-5 w-5 text-zinc-500 dark:text-zinc-400"
+						className="h-5 w-5"
+						style={{ color: 'var(--dashboard-muted)' }}
 					>
 						<path
 							strokeLinecap="round"
@@ -653,10 +660,10 @@ export default function SettingsPage() {
 						/>
 					</svg>
 					<div>
-						<p className="text-sm font-medium text-zinc-900 dark:text-white">
+						<p className="text-sm font-medium" style={{ color: 'var(--dashboard-heading)' }}>
 							Need Help?
 						</p>
-						<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+						<p className="mt-1 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 							Contact support at{" "}
 							<a
 								href="mailto:support@igyanai.com"

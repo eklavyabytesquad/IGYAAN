@@ -5,12 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../utils/auth_context";
 import { supabase } from "../utils/supabase";
 import DashboardNavbar from "../../components/dashboard/navbar";
-import DashboardSidenav from "../../components/dashboard/sidenav";
-import FacultySidenav from "../../components/dashboard/faculty-sidenav";
-import StudentSidenav from "../../components/dashboard/student-sidenav";
-import B2CStudentSidenav from "../../components/dashboard/b2c-student-sidenav";
-import CounselorSidenav from "../../components/dashboard/counselor-sidenav";
-import ParentSidenav from "../../components/dashboard/parent-sidenav";
+import UnifiedSidenav from "../../components/dashboard/unified-sidenav";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -204,55 +199,14 @@ export default function DashboardLayout({ children }) {
 					</div>
 				</div>
 			)}
-			{/* Sidebar - Role-based navigation */}
-			{user?.role === 'faculty' ? (
-				<FacultySidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-					schoolData={schoolData}
-				/>
-			) : user?.role === 'student' ? (
-				<StudentSidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-					schoolData={schoolData}
-				/>
-			) : user?.role === 'counselor' ? (
-				<CounselorSidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-					schoolData={schoolData}
-				/>
-			) : user?.role === 'parent' ? (
-				<ParentSidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-					schoolData={schoolData}
-				/>
-			) : user?.role === 'b2c_student' ? (
-				<B2CStudentSidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-				/>
-			) : (
-				<DashboardSidenav
-					isOpen={isSidenavOpen}
-					setIsOpen={setIsSidenavOpen}
-					isCollapsed={isCollapsed}
-					setIsCollapsed={setIsCollapsed}
-					schoolData={schoolData}
-				/>
-			)}
+			{/* Sidebar - Unified role-based navigation */}
+			<UnifiedSidenav
+				isOpen={isSidenavOpen}
+				setIsOpen={setIsSidenavOpen}
+				isCollapsed={isCollapsed}
+				setIsCollapsed={setIsCollapsed}
+				schoolData={schoolData}
+			/>
 
 			{/* Main Content Area */}
 			<div className={`flex flex-1 flex-col transition-all duration-300 ${
