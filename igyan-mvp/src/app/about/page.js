@@ -3,79 +3,33 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Logo from "@/components/logo";
+import { supabase } from "@/app/utils/supabase";
 
-const values = [
-  {
-    title: "Learner-first innovation",
-    description:
-      "We design with students, educators, and founders to ensure every feature accelerates human potential, not just automation.",
-  },
-  {
-    title: "Intelligent infrastructure",
-    description:
-      "Our AI stack fuses campus data, skill ontologies, and LLM Sudarshan Ai copilots with rigorous safety, privacy, and compliance.",
-  },
-  {
-    title: "Inclusive ecosystems",
-    description:
-      "We partner with schools, industries, and investors to nurture equitable access to career pathways and venture capital.",
-  },
-];
+/* ───────── helper: fetch all rows for a page ───────── */
+async function fetchPageContent(page) {
+  const { data, error } = await supabase
+    .from("dynamic_content")
+    .select("*")
+    .eq("page", page)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
 
-const problemStatements = [
-  {
-    icon: "\ud83c\udf93",
-    text: "Education systems focus on completion.",
-    contrast: "Markets demand real capability.",
-  },
-  {
-    icon: "\ud83d\udd0d",
-    text: "Students often discover their strengths too late.",
-    contrast: "Early skill discovery changes trajectories.",
-  },
-  {
-    icon: "\ud83d\udccb",
-    text: "Parents rely on grades to measure growth.",
-    contrast: "Transparent insights reveal true potential.",
-  },
-  {
-    icon: "\ud83c\udfdb\ufe0f",
-    text: "Institutions struggle to align learning with opportunity.",
-    contrast: "Structured access bridges the gap.",
-  },
-];
+  if (error) {
+    console.error("Error fetching dynamic_content:", error);
+    return [];
+  }
+  return data || [];
+}
 
-const mediaFeatures = [
-  { name: "News18 India", url: "https://www.news18.com/agency-feeds/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020-9806307.html" },
-  { name: "Business Standard", url: "https://www.business-standard.com/content/press-releases-ani/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020-126010200833_1.html" },
-  { name: "USA Report", url: "https://www.usareport.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Tribune India", url: "https://www.tribuneindia.com/news/business/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "France Network Times", url: "https://www.francenetworktimes.com/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Maharashtra News Flash", url: "https://maharashtranewsflash.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "UAE Times", url: "https://drive.google.com/file/d/1UijFYkth6-Jx0KojlztLKymlIJvAJ9kz/view?usp=drive_link" },
-  { name: "Travellr News India", url: "https://travllernewsindia.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Dubai City Reporter", url: "https://www.dubaicityreporter.com/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Himachal Pradesh News Flash", url: "https://himachalpradeshnewsflash.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Gujarat Watch", url: "https://gujaratwatch.co.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "India News 24x7", url: "https://newsindia24x7.co.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "London Channel News", url: "https://www.londonchannelnews.com/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Maharashtra Portal", url: "https://maharastraportal.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Middle East Times", url: "https://www.middleeasttimes.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Wall Street Sentinel", url: "https://www.wallstreetsentinel.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Bihar Times", url: "https://www.bihartimes.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Bihar 24x7", url: "https://www.bihar24x7.com/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Tech Times News", url: "https://techtimesnews.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Karnataka News Room", url: "https://karnatakanewsroom.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Uttarakhand News Wire", url: "https://uttarakhandnewswire.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Vancouver Herald", url: "https://www.vancouverherald.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Gujarat Samachar", url: "https://www.gujaratsamachar.news/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Jharkhand Times", url: "https://www.jharkhandtimes.in/news/i-gyanai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-202020260102180826/" },
-  { name: "Trend Stellers", url: "https://trendstellers.in/i-gyan-ai-launches-ethical-teacher-centric-ai-platform-aligned-with-nep-2020/" },
-  { name: "Washington DC", url: "https://drive.google.com/file/d/1JXY_PZoPlonaHHRbxkeAEJjVZtpswKH_/view?usp=drive_link" },
-  { name: "British News Network", url: "https://drive.google.com/file/d/15HKR6bzrm1Dqn5Sci0difH_P2oyVPWBp/view?usp=drive_link" },
-];
+function getBySection(rows, section) {
+  return rows.filter((r) => r.section === section);
+}
+function getText(rows, section, key) {
+  const row = rows.find((r) => r.section === section && r.content_key === key);
+  return row?.content_value ?? "";
+}
 
-function MediaCarousel() {
+function MediaCarousel({ mediaFeatures }) {
   const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef(null);
   const duplicatedMedia = [...mediaFeatures, ...mediaFeatures];
@@ -102,6 +56,8 @@ function MediaCarousel() {
     animationId = requestAnimationFrame(scroll);
     return () => cancelAnimationFrame(animationId);
   }, [isPaused]);
+
+  if (!mediaFeatures.length) return null;
 
   return (
     <div className="relative">
@@ -164,19 +120,69 @@ function MediaCarousel() {
 }
 
 export default function AboutPage() {
+  const [content, setContent] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPageContent("about").then((data) => {
+      setContent(data);
+      setLoading(false);
+    });
+  }, []);
+
+  /* ── derived data ── */
+  const heroTitle = getText(content, "hero", "title");
+  const heroDesc = getText(content, "hero", "description");
+
+  const values = getBySection(content, "values")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({ title: r.content_value, description: r.metadata1 }));
+
+  const problemStatements = getBySection(content, "problem_statements")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({
+      icon: r.metadata1,
+      text: r.content_value,
+      contrast: r.metadata2,
+    }));
+
+  const mediaFeatures = getBySection(content, "media")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({ name: r.content_value, url: r.metadata1 }));
+
+  const journeyBadge = getText(content, "journey", "badge");
+  const journeyTitle = getText(content, "journey", "title");
+  const journeyIntro = getText(content, "journey", "intro");
+  const journeyInsight1 = getText(content, "journey", "insight_1");
+  const journeyInsight2 = getText(content, "journey", "insight_2");
+  const journeyBridge = getText(content, "journey", "bridge_text");
+  const journeyClosing = getText(content, "journey", "closing");
+
+  const ctaTitle = getText(content, "cta", "title");
+  const ctaDesc = getText(content, "cta", "description");
+  const ctaPrimaryText = getText(content, "cta", "primary_btn_text");
+  const ctaPrimaryLink = getText(content, "cta", "primary_btn_link") || "/contact";
+  const ctaSecondaryText = getText(content, "cta", "secondary_btn_text");
+  const ctaSecondaryLink = getText(content, "cta", "secondary_btn_link") || "/features";
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-sky-500 border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-20">
       {/* Hero */}
       <div className="max-w-3xl">
         <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-          Building the intelligent backbone for next-generation schools.
+          {heroTitle}
         </h1>
         <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
-          iGyanAI was created by a collective of educators, entrepreneurs, and
-          technologists on a mission to craft a future where every learner can
-          discover, design, and deploy world-changing ideas. We believe AI should
-          be a co-pilot for community-led progress.
+          {heroDesc}
         </p>
       </div>
 
@@ -200,16 +206,15 @@ export default function AboutPage() {
       {/* Our Journey */}
       <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-1.5 text-sm font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
-          📖 Our Journey
+          {journeyBadge}
         </div>
         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-          Why I-GYAN AI exists
+          {journeyTitle}
         </h2>
 
         <div className="mt-8 space-y-6">
           <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-            Across the world, millions of students spend years earning degrees, yet
-            industries continue to report a growing skills gap.
+            {journeyIntro}
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -233,32 +238,21 @@ export default function AboutPage() {
 
           <div className="rounded-2xl border border-sky-100 bg-sky-50/60 p-6 dark:border-sky-900/40 dark:bg-sky-950/20">
             <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-200">
-              At the same time, artificial intelligence is reshaping how value is
-              created and how careers begin.
+              {journeyInsight1}
             </p>
             <p className="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-              The real problem is not education itself.{" "}
-              <span className="font-semibold text-zinc-900 dark:text-white">
-                It is the gap between learning and capability.
-              </span>
+              {journeyInsight2}
             </p>
           </div>
 
           <div className="rounded-2xl border border-sky-200 bg-gradient-to-r from-sky-50 to-indigo-50 p-6 dark:border-sky-800 dark:from-sky-950/30 dark:to-indigo-950/30">
             <p className="text-base font-medium leading-relaxed text-zinc-800 dark:text-zinc-100">
-              I-GYAN AI was built to bridge that gap &mdash; by enabling{" "}
-              <span className="text-sky-600 dark:text-sky-400">early skill discovery</span>,{" "}
-              <span className="text-sky-600 dark:text-sky-400">transparent growth insights</span> for parents,
-              and{" "}
-              <span className="text-sky-600 dark:text-sky-400">structured access to innovation and opportunity</span>.
+              {journeyBridge}
             </p>
           </div>
 
           <p className="text-center text-lg font-semibold tracking-tight text-zinc-900 dark:text-white">
-            Because the future will not be defined by degrees alone &mdash;{" "}
-            <span className="bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">
-              but by capability.
-            </span>
+            {journeyClosing}
           </p>
         </div>
       </section>
@@ -276,7 +270,7 @@ export default function AboutPage() {
             Trusted by leading publications worldwide. See what the media is saying about iGyanAI.
           </p>
         </div>
-        <MediaCarousel />
+        <MediaCarousel mediaFeatures={mediaFeatures} />
         <div className="mt-6 text-center">
           <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
             Featured in <span className="text-sky-600 dark:text-sky-400">{mediaFeatures.length}+</span> publications across{" "}
@@ -289,25 +283,23 @@ export default function AboutPage() {
       <section className="mt-20 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-white shadow-2xl shadow-sky-900/30">
         <div className="max-w-3xl space-y-6">
           <h2 className="text-3xl font-semibold">
-            Join our coalition of builders, educators, and dreamers.
+            {ctaTitle}
           </h2>
           <p className="text-base text-sky-100/90">
-            We are actively partnering with school networks, governments, impact
-            investors, and ecosystem catalysts. Let&apos;s architect AI-first
-            education at scale.
+            {ctaDesc}
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href="/contact"
+              href={ctaPrimaryLink}
               className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-sky-700 shadow-lg shadow-sky-900/30 transition-transform hover:-translate-y-0.5"
             >
-              Partner with us
+              {ctaPrimaryText}
             </Link>
             <Link
-              href="/features"
+              href={ctaSecondaryLink}
               className="rounded-lg border border-white/60 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
-              Explore the platform
+              {ctaSecondaryText}
             </Link>
           </div>
         </div>

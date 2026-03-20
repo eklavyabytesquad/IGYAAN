@@ -1,106 +1,105 @@
-// #aniket
+"use client";
 
+import { useState, useEffect } from "react";
 import Logo from "@/components/logo";
+import { supabase } from "@/app/utils/supabase";
 
-const featureGroups = [
-  {
-    title: "Intelligent Operations",
-    items: [
-      "Predictive admissions forecasting and seat planning",
-      "Automated fee collection with financial aid simulations",
-  "Attendance, transport, and compliance Sudarshan Ai copilots",
-    ],
-  },
-  {
-    title: "Learning Intelligence",
-    items: [
-      "Adaptive curricula mapped to national and global standards",
-      "Realtime mastery dashboards for faculty and parents",
-      "AI generated lesson plans, assessments, and remediation loops",
-    ],
-  },
-  {
-    title: "Career & Venture Lab",
-    items: [
-      "Skill passports aligned to industry micro-credentials",
-      "Startup studio with mentorship, grants, and investor demos",
-      "Global community exchanges and virtual internships",
-    ],
-  },
-];
+/* ───────── helper: fetch all rows for a page ───────── */
+async function fetchPageContent(page) {
+  const { data, error } = await supabase
+    .from("dynamic_content")
+    .select("*")
+    .eq("page", page)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
 
-const academicIntelligence = [
-  {
-    name: "OmniSight Live Classroom System",
-    detail:
-      "Live classes, digital whiteboard, soft board & real-time monitoring.",
-    icon: "📡",
-  },
-  {
-    name: "AI Bulk Report Card Generator",
-    detail:
-      "One-click class-wide report creation with performance analytics & AI-generated remarks.",
-    icon: "📊",
-  },
-  {
-    name: "Parent Engagement Module",
-    detail:
-      "Attendance alerts, report access & direct teacher communication.",
-    icon: "👨‍👩‍👧",
-  },
-];
+  if (error) {
+    console.error("Error fetching dynamic_content:", error);
+    return [];
+  }
+  return data || [];
+}
 
-const smartAdmin = [
-  {
-    name: "Smart Timetable & Substitution System",
-    detail:
-      "Clash-free scheduling with auto substitute allocation & instant updates.",
-    icon: "📅",
-  },
-  {
-    name: "Code Tutor Tools",
-    detail:
-      "AI-assisted coding practice, evaluation & skill tracking.",
-    icon: "💻",
-  },
-  {
-    name: "IdeaSpark – 96 Govt Program Navigator",
-    detail:
-      "AI-powered idea generation with mapped access to 96+ government incubation & funding schemes.",
-    icon: "💡",
-  },
-];
-
-const automations = [
-  {
-    name: "Pulse Streams",
-    detail:
-  "Unified data lake that feeds Sudarshan Ai copilots with contextual insights from academics, finance, and wellbeing trackers.",
-  },
-  {
-    name: "Blueprint Designer",
-    detail:
-      "Low-code workflow designer to tailor approvals, accreditation milestones, and event orchestration.",
-  },
-  {
-    name: "Impact Graphs",
-    detail:
-      "Real-time dashboards that highlight risk flags, high-performing cohorts, and ROI of new initiatives.",
-  },
-];
+function getBySection(rows, section) {
+  return rows.filter((r) => r.section === section);
+}
+function getText(rows, section, key) {
+  const row = rows.find((r) => r.section === section && r.content_key === key);
+  return row?.content_value ?? "";
+}
 
 export default function FeaturesPage() {
+  const [content, setContent] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPageContent("features").then((data) => {
+      setContent(data);
+      setLoading(false);
+    });
+  }, []);
+
+  /* ── derived data ── */
+  const heroTitle = getText(content, "hero", "title");
+  const heroDesc = getText(content, "hero", "description");
+
+  // Feature Groups — grouped by sub_page
+  const fgRows = getBySection(content, "feature_groups").filter((r) => r.content_key === "item");
+  const featureGroups = Object.values(
+    fgRows.reduce((acc, r) => {
+      const group = r.sub_page || "Other";
+      if (!acc[group]) acc[group] = { title: group, items: [] };
+      acc[group].items.push(r.content_value);
+      return acc;
+    }, {})
+  );
+
+  // Academic Intelligence
+  const acBadge = getText(content, "academic_intelligence", "badge");
+  const acTitle = getText(content, "academic_intelligence", "title");
+  const acDesc = getText(content, "academic_intelligence", "description");
+  const academicIntelligence = getBySection(content, "academic_intelligence")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({ name: r.content_value, detail: r.metadata1, icon: r.metadata2 }));
+
+  // Smart Admin
+  const saBadge = getText(content, "smart_admin", "badge");
+  const saTitle = getText(content, "smart_admin", "title");
+  const saDesc = getText(content, "smart_admin", "description");
+  const smartAdmin = getBySection(content, "smart_admin")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({ name: r.content_value, detail: r.metadata1, icon: r.metadata2 }));
+
+  // Automations
+  const autoTitle = getText(content, "automations", "title");
+  const automations = getBySection(content, "automations")
+    .filter((r) => r.content_key === "item")
+    .map((r) => ({ name: r.content_value, detail: r.metadata1 }));
+
+  // Governance
+  const govTitle = getText(content, "governance", "title");
+  const govItems = getBySection(content, "governance")
+    .filter((r) => r.content_key.startsWith("item_"))
+    .map((r) => r.content_value);
+  const govDesc = getText(content, "governance", "description");
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-sky-500 border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-20">
       <header className="max-w-3xl">
         <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-          The AI-native platform that orchestrates your entire campus.
+          {heroTitle}
         </h1>
         <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">
-          iGyanAI blends intelligent operations, personalized learning, and
-          entrepreneurship enablement into a single experience. Every module is
-          modular, interoperable, and governed for trust.
+          {heroDesc}
         </p>
       </header>
 
@@ -128,13 +127,13 @@ export default function FeaturesPage() {
       {/* Academic & Learning Intelligence */}
       <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-1.5 text-sm font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
-          🧠 Academic & Learning Intelligence
+          {acBadge}
         </div>
         <h2 className="mt-3 text-2xl font-semibold text-zinc-900 dark:text-white">
-          Supercharge teaching with intelligent classroom tools
+          {acTitle}
         </h2>
         <p className="mt-2 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
-          From live classes to automated report cards and parent engagement — everything educators need, powered by AI.
+          {acDesc}
         </p>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {academicIntelligence.map((item) => (
@@ -159,13 +158,13 @@ export default function FeaturesPage() {
       {/* Smart Administration & Innovation Suite */}
       <section className="mt-12 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
-          🏫 Smart Administration & Innovation Suite
+          {saBadge}
         </div>
         <h2 className="mt-3 text-2xl font-semibold text-zinc-900 dark:text-white">
-          Streamline operations and spark innovation
+          {saTitle}
         </h2>
         <p className="mt-2 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
-          Intelligent scheduling, coding education, and government scheme navigation — all in one platform.
+          {saDesc}
         </p>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {smartAdmin.map((item) => (
@@ -189,7 +188,7 @@ export default function FeaturesPage() {
 
       <section className="mt-20 rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/10 dark:border-slate-900 dark:bg-slate-950/75">
         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-          Automate mission-critical workflows
+          {autoTitle}
         </h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {automations.map((automation) => (
@@ -211,16 +210,15 @@ export default function FeaturesPage() {
       <section className="mt-20 rounded-3xl bg-linear-to-br from-slate-950 via-slate-900 to-sky-700 px-8 py-16 text-white shadow-2xl shadow-sky-900/30">
         <div className="max-w-3xl space-y-6">
           <h2 className="text-3xl font-semibold">
-            Enterprise-grade AI governance
+            {govTitle}
           </h2>
           <ul className="space-y-3 text-base text-sky-100/90">
-            <li>Granular role-based access controls and consent management</li>
-            <li>End-to-end encryption, audit logs, and compliance certifications</li>
-            <li>Model observability with human-in-the-loop review workflows</li>
+            {govItems.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
           </ul>
           <p className="text-sm text-sky-100/80">
-            Deploy on iGyanAI cloud or within your secure infrastructure. All
-            Sudarshan Ai copilots respect your policies and adapt to regulatory shifts.
+            {govDesc}
           </p>
         </div>
       </section>
