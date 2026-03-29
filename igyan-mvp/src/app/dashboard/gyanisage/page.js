@@ -235,26 +235,57 @@ Create 4-6 phases with clear progression.`,
   const ModeIcon = currentMode.icon;
 
   return (
-    <div className="flex h-full w-full overflow-hidden" style={{ backgroundColor: 'var(--dashboard-background)' }}>
-      {/* Sidebar - Mode Selector (desktop) */}
-      <aside className="hidden w-56 shrink-0 flex-col gap-2 p-3 lg:flex">
-        <div className="dashboard-card rounded-xl p-3">
-          <div className="mb-3 flex items-center gap-2.5">
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg">
-              <Image 
-                src={brandImage}
-                alt={brandName}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h2>
-              <p className="text-[11px]" style={{ color: 'var(--dashboard-muted)' }}>AI Counsellor</p>
-            </div>
+    <div className="flex w-full overflow-hidden" style={{ height: 'calc(100vh - 65px)', backgroundColor: 'var(--dashboard-background)' }}>
+      {/* Sidebar — desktop only */}
+      <aside className="hidden w-52 shrink-0 flex-col border-r p-3 lg:flex" style={{ borderColor: 'var(--dashboard-border)' }}>
+        <div className="mb-4 flex items-center gap-2.5 px-1">
+          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg">
+            <Image src={brandImage} alt={brandName} fill className="object-cover" priority />
           </div>
-          <div className="space-y-1">
+          <div>
+            <h2 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h2>
+            <p className="text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>AI Counsellor</p>
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          {modes.map((mode) => {
+            const Icon = mode.icon;
+            const isActive = selectedMode === mode.id;
+            return (
+              <button
+                key={mode.id}
+                onClick={() => setSelectedMode(mode.id)}
+                className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left transition-colors"
+                style={{
+                  backgroundColor: isActive ? 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)' : 'transparent',
+                }}
+              >
+                <Icon
+                  className="h-4 w-4 shrink-0"
+                  style={{ color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)' }}
+                />
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-text)' }}
+                >
+                  {mode.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </aside>
+
+      {/* Main chat column */}
+      <section className="flex min-h-0 flex-1 flex-col">
+        {/* Top bar — mobile mode selector + current mode label */}
+        <div
+          className="flex items-center gap-2 border-b px-4 py-2"
+          style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}
+        >
+          {/* Mobile mode chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto lg:hidden">
             {modes.map((mode) => {
               const Icon = mode.icon;
               const isActive = selectedMode === mode.id;
@@ -262,67 +293,44 @@ Create 4-6 phases with clear progression.`,
                 <button
                   key={mode.id}
                   onClick={() => setSelectedMode(mode.id)}
-                  className="w-full rounded-lg px-2.5 py-2 text-left transition-all"
+                  className="flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors"
                   style={{
-                    backgroundColor: isActive ? 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)' : 'transparent',
+                    borderColor: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
+                    backgroundColor: isActive ? 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' : 'transparent',
+                    color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-text)',
                   }}
                 >
-                  <div className="flex items-center gap-2">
-                    <Icon 
-                      className="h-4 w-4 shrink-0" 
-                      style={{ color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-muted)' }}
-                    />
-                    <span 
-                      className="text-xs font-medium"
-                      style={{ color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-text)' }}
-                    >
-                      {mode.name}
-                    </span>
-                  </div>
+                  <Icon className="h-3 w-3" />
+                  {mode.name}
                 </button>
               );
             })}
           </div>
-        </div>
-      </aside>
 
-      {/* Main Chat Area */}
-      <section className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {/* Welcome / Empty State */}
-        {!hasStartedChat ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-4">
-            <div className="w-full max-w-lg text-center">
-              <div className="relative mx-auto mb-4 h-16 w-16 overflow-hidden rounded-2xl shadow-lg">
+          {/* Desktop label */}
+          <div className="hidden items-center gap-1.5 lg:flex">
+            <ModeIcon className="h-3.5 w-3.5" style={{ color: 'var(--dashboard-primary)' }} />
+            <span className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>
+              {currentMode.name}
+            </span>
+          </div>
+        </div>
+
+        {/* Chat body */}
+        <div className="relative flex-1 overflow-y-auto">
+          {!hasStartedChat ? (
+            /* ---- Empty / Welcome State ---- */
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+              <div className="relative mb-3 h-14 w-14 overflow-hidden rounded-2xl shadow-md">
                 <Image src={brandImage} alt={brandName} fill className="object-cover" priority />
               </div>
-              <h1 className="text-xl font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h1>
-              <p className="mt-1 text-sm" style={{ color: 'var(--dashboard-muted)' }}>{currentMode.description}</p>
+              <h1 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h1>
+              <p className="mt-0.5 max-w-xs text-center text-xs" style={{ color: 'var(--dashboard-muted)' }}>
+                {currentMode.description}
+              </p>
 
-              {/* Mode Pills */}
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                {modes.map((mode) => {
-                  const Icon = mode.icon;
-                  const isActive = selectedMode === mode.id;
-                  return (
-                    <button
-                      key={mode.id}
-                      onClick={() => setSelectedMode(mode.id)}
-                      className="flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all"
-                      style={{
-                        borderColor: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
-                        backgroundColor: isActive ? 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' : 'transparent',
-                        color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-text)',
-                      }}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                      {mode.name}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Quick Prompts */}
-              <div className="mt-8 grid gap-2 sm:grid-cols-2">
+              {/* Quick prompts */}
+              <div className="mt-6 grid w-full max-w-md gap-2 sm:grid-cols-2">
                 {[
                   selectedMode === 'counselling' ? "I'm feeling stressed about exams" : null,
                   selectedMode === 'counselling' ? "Help me manage my anxiety" : null,
@@ -336,212 +344,147 @@ Create 4-6 phases with clear progression.`,
                   <button
                     key={i}
                     onClick={() => setInputMessage(prompt)}
-                    className="rounded-xl border px-3 py-2.5 text-left text-xs transition-all hover:shadow-sm"
+                    className="group flex items-start gap-2 rounded-xl border px-3 py-2.5 text-left text-xs transition-all hover:shadow-sm"
                     style={{
                       borderColor: 'var(--dashboard-border)',
                       color: 'var(--dashboard-text)',
-                      backgroundColor: 'var(--dashboard-surface-solid)',
                     }}
                   >
-                    <MessageCircle className="mb-1 h-3.5 w-3.5" style={{ color: 'var(--dashboard-muted)' }} />
-                    {prompt}
+                    <MessageCircle className="mt-0.5 h-3 w-3 shrink-0 opacity-40" />
+                    <span>{prompt}</span>
                   </button>
                 ))}
               </div>
             </div>
-          </div>
-        ) : (
-          /* Chat Messages */
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            <div className="mx-auto flex max-w-3xl flex-col gap-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {message.isRoadmap ? (
-                  /* Roadmap Display */
-                  <div className="w-full max-w-3xl rounded-2xl dashboard-card p-5">
-                    <div className="mb-3 flex items-center gap-2 border-b pb-2" style={{ borderColor: 'var(--dashboard-border)' }}>
-                      <Target className="h-5 w-5" style={{ color: 'var(--dashboard-primary)' }} />
-                      <h3 className="text-base font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{message.content.title}</h3>
+          ) : (
+            /* ---- Messages ---- */
+            <div className="mx-auto flex max-w-2xl flex-col gap-3 px-4 py-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex gap-2 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                >
+                  {/* Avatar */}
+                  {message.role === 'assistant' && (
+                    <div className="relative mt-1 h-7 w-7 shrink-0 overflow-hidden rounded-full">
+                      <Image src={brandImage} alt={shortName} fill className="object-cover" />
                     </div>
-                    
-                    <p className="mb-3 text-sm" style={{ color: 'var(--dashboard-text)' }}>{message.content.overview}</p>
-                    <div 
-                      className="mb-4 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium"
-                      style={{ 
-                        backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)',
-                        color: 'var(--dashboard-primary)'
-                      }}
-                    >
-                      Total Duration: {message.content.duration}
-                    </div>
+                  )}
 
-                    <div className="space-y-4">
-                      {message.content.phases.map((phase, idx) => (
-                        <div key={idx} className="rounded-xl border p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
-                          <div className="mb-2 flex items-center gap-2">
-                            <span 
-                              className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold text-white"
-                              style={{ backgroundColor: 'var(--dashboard-primary)' }}
-                            >
-                              {idx + 1}
-                            </span>
-                            <div className="flex-1">
-                              <h4 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{phase.phase}</h4>
-                              <p className="text-[11px]" style={{ color: 'var(--dashboard-primary)' }}>{phase.duration}</p>
+                  {message.isRoadmap ? (
+                    /* Roadmap card */
+                    <div className="max-w-[90%] rounded-2xl rounded-tl-sm p-4" style={{ backgroundColor: 'var(--dashboard-surface-solid)' }}>
+                      <div className="mb-2 flex items-center gap-2 border-b pb-2" style={{ borderColor: 'var(--dashboard-border)' }}>
+                        <Target className="h-4 w-4" style={{ color: 'var(--dashboard-primary)' }} />
+                        <h3 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{message.content.title}</h3>
+                      </div>
+
+                      <p className="mb-2 text-xs" style={{ color: 'var(--dashboard-text)' }}>{message.content.overview}</p>
+                      <span
+                        className="mb-3 inline-block rounded-md px-2 py-0.5 text-[11px] font-medium"
+                        style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }}
+                      >
+                        Duration: {message.content.duration}
+                      </span>
+
+                      <div className="space-y-3">
+                        {message.content.phases.map((phase, idx) => (
+                          <div key={idx} className="rounded-lg border p-3" style={{ borderColor: 'var(--dashboard-border)' }}>
+                            <div className="mb-1.5 flex items-center gap-2">
+                              <span
+                                className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                                style={{ backgroundColor: 'var(--dashboard-primary)' }}
+                              >{idx + 1}</span>
+                              <span className="text-xs font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{phase.phase}</span>
+                              <span className="ml-auto text-[10px]" style={{ color: 'var(--dashboard-primary)' }}>{phase.duration}</span>
+                            </div>
+                            <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--dashboard-text)' }}>
+                              {phase.goals?.length > 0 && <div><span className="font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Goals: </span>{phase.goals.join(' · ')}</div>}
+                              {phase.skills?.length > 0 && <div><span className="font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Skills: </span>{phase.skills.join(' · ')}</div>}
+                              {phase.resources?.length > 0 && <div><span className="font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Resources: </span>{phase.resources.join(' · ')}</div>}
+                              {phase.milestones?.length > 0 && <div><span className="font-semibold" style={{ color: 'var(--dashboard-muted)' }}>Milestones: </span>{phase.milestones.join(' · ')}</div>}
                             </div>
                           </div>
+                        ))}
+                      </div>
 
-                          <div className="space-y-2 text-xs">
-                            {phase.goals?.length > 0 && (
-                              <div>
-                                <p className="mb-0.5 font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>Goals</p>
-                                <ul className="ml-3.5 space-y-0.5" style={{ color: 'var(--dashboard-text)' }}>
-                                  {phase.goals.map((goal, gi) => <li key={gi} className="list-disc">{goal}</li>)}
-                                </ul>
-                              </div>
-                            )}
-                            {phase.skills?.length > 0 && (
-                              <div>
-                                <p className="mb-0.5 font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>Skills</p>
-                                <ul className="ml-3.5 space-y-0.5" style={{ color: 'var(--dashboard-text)' }}>
-                                  {phase.skills.map((skill, si) => <li key={si} className="list-disc">{skill}</li>)}
-                                </ul>
-                              </div>
-                            )}
-                            {phase.resources?.length > 0 && (
-                              <div>
-                                <p className="mb-0.5 font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>Resources</p>
-                                <ul className="ml-3.5 space-y-0.5" style={{ color: 'var(--dashboard-text)' }}>
-                                  {phase.resources.map((resource, ri) => <li key={ri} className="list-disc">{resource}</li>)}
-                                </ul>
-                              </div>
-                            )}
-                            {phase.milestones?.length > 0 && (
-                              <div>
-                                <p className="mb-0.5 font-semibold uppercase" style={{ color: 'var(--dashboard-muted)' }}>Milestones</p>
-                                <ul className="ml-3.5 space-y-0.5" style={{ color: 'var(--dashboard-text)' }}>
-                                  {phase.milestones.map((milestone, mi) => <li key={mi} className="list-disc">{milestone}</li>)}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
+                      {message.content.tips?.length > 0 && (
+                        <div className="mt-3 rounded-lg p-2.5" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 6%, transparent)' }}>
+                          <p className="mb-0.5 text-[11px] font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Pro Tips</p>
+                          <ul className="ml-3 space-y-0.5 text-[11px]" style={{ color: 'var(--dashboard-text)' }}>
+                            {message.content.tips.map((tip, ti) => <li key={ti} className="list-disc">{tip}</li>)}
+                          </ul>
                         </div>
-                      ))}
+                      )}
                     </div>
-
-                    {message.content.tips?.length > 0 && (
-                      <div className="mt-4 rounded-xl p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 6%, transparent)' }}>
-                        <p className="mb-1 text-xs font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Pro Tips</p>
-                        <ul className="ml-3.5 space-y-0.5 text-xs" style={{ color: 'var(--dashboard-text)' }}>
-                          {message.content.tips.map((tip, ti) => <li key={ti} className="list-disc">{tip}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  /* Regular Message */
-                  <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                      message.role === 'user' ? '' : 'dashboard-card'
-                    }`}
-                    style={message.role === 'user' ? { 
-                      background: 'var(--dashboard-primary)', 
-                      color: 'white' 
-                    } : {}}
-                  >
-                    {message.role === 'assistant' && (
-                      <div className="mb-1 flex items-center gap-1.5" style={{ color: 'var(--dashboard-primary)' }}>
-                        <ModeIcon className="h-3.5 w-3.5" />
-                        <span className="text-[11px] font-semibold uppercase tracking-wide">{shortName}</span>
-                      </div>
-                    )}
-                    <div 
-                      className="whitespace-pre-wrap text-sm leading-relaxed"
-                      style={message.role === 'assistant' ? { color: 'var(--dashboard-text)' } : {}}
+                  ) : (
+                    /* Regular bubble */
+                    <div
+                      className={`max-w-[75%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                        message.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
+                      }`}
+                      style={
+                        message.role === 'user'
+                          ? { background: 'var(--dashboard-primary)', color: '#fff' }
+                          : { backgroundColor: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-text)' }
+                      }
                     >
                       {message.content}
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="flex items-center gap-2 rounded-2xl px-4 py-3 text-sm dashboard-card">
-                  <Loader2 className="h-4 w-4 animate-spin" style={{ color: 'var(--dashboard-primary)' }} />
-                  <span style={{ color: 'var(--dashboard-muted)' }}>{shortName} is thinking...</span>
+                  )}
                 </div>
-              </div>
-            )}
+              ))}
 
-            <div ref={messagesEndRef} />
+              {isLoading && (
+                <div className="flex gap-2">
+                  <div className="relative mt-1 h-7 w-7 shrink-0 overflow-hidden rounded-full">
+                    <Image src={brandImage} alt={shortName} fill className="object-cover" />
+                  </div>
+                  <div
+                    className="flex items-center gap-2 rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs"
+                    style={{ backgroundColor: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-muted)' }}
+                  >
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: 'var(--dashboard-primary)' }} />
+                    Thinking…
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
+
+        {/* Input bar — always visible */}
+        <div
+          className="border-t px-4 py-2.5"
+          style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}
+        >
+          <div className="mx-auto flex max-w-2xl items-center gap-2">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder={`Message ${shortName}…`}
+              disabled={isLoading}
+              className="flex-1 rounded-lg border bg-transparent px-3 py-2 text-sm outline-none transition placeholder:opacity-50 focus:ring-1 disabled:cursor-not-allowed disabled:opacity-60"
+              style={{
+                borderColor: 'var(--dashboard-border)',
+                color: 'var(--dashboard-text)',
+              }}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!inputMessage.trim() || isLoading}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ background: 'var(--dashboard-primary)' }}
+              type="button"
+            >
+              <Send size={15} />
+            </button>
           </div>
         </div>
-        )}
-
-        {/* Input Footer */}
-        <footer 
-          className="border-t px-4 py-2.5"
-          style={{ 
-            borderColor: 'var(--dashboard-border)',
-            backgroundColor: 'var(--dashboard-surface-solid)'
-          }}
-        >
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-1.5">
-            {/* Mobile Mode Selector */}
-            <div className="flex items-center gap-1.5 overflow-x-auto lg:hidden">
-              {modes.map((mode) => {
-                const Icon = mode.icon;
-                const isActive = selectedMode === mode.id;
-                return (
-                  <button
-                    key={mode.id}
-                    onClick={() => setSelectedMode(mode.id)}
-                    className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-all"
-                    style={{
-                      borderColor: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-border)',
-                      backgroundColor: isActive ? 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' : 'transparent',
-                      color: isActive ? 'var(--dashboard-primary)' : 'var(--dashboard-text)',
-                    }}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{mode.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="flex gap-2">
-              <textarea
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder={`Ask ${shortName} anything...`}
-                disabled={isLoading}
-                rows={1}
-                className="w-full flex-1 resize-none rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-1 disabled:cursor-not-allowed disabled:opacity-70"
-                style={{
-                  borderColor: 'var(--dashboard-border)',
-                  backgroundColor: 'var(--dashboard-background)',
-                  color: 'var(--dashboard-text)'
-                }}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isLoading}
-                className="flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50"
-                style={{ background: 'var(--dashboard-primary)' }}
-                type="button"
-              >
-                <Send size={16} />
-              </button>
-            </div>
-          </div>
-        </footer>
       </section>
     </div>
   );
