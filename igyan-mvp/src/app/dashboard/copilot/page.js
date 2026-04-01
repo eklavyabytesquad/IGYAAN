@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -338,7 +338,7 @@ export default function AICopilotPage() {
 
 IMPORTANT FORMATTING RULES:
 - Be warm, encouraging, and conversational in tone
-- Use emojis occasionally to make responses friendly (📚, ✨, 💡, 🎯, etc.)
+- Use emojis occasionally to make responses friendly (ðŸ“š, âœ¨, ðŸ’¡, ðŸŽ¯, etc.)
 - Break down complex concepts into simple steps
 - Use bullet points and numbered lists when explaining multiple points
 - Add line breaks between paragraphs for readability
@@ -629,7 +629,7 @@ IMPORTANT FORMATTING RULES:
 										<span className="animate-[slideIn_0.5s_ease-out]">
 											{chatHistory.find(c => c.id === currentChatId)?.title}
 										</span>
-										<span className="text-xl animate-[wiggle_1s_ease-in-out_3]">✨</span>
+										<span className="text-xl animate-[wiggle_1s_ease-in-out_3]">âœ¨</span>
 									</span>
 								) : (
 									getAIName()
@@ -680,7 +680,7 @@ IMPORTANT FORMATTING RULES:
 								</h3>
 								<p className="mt-2" style={{ color: 'var(--dashboard-muted)' }}>
 									{selectedMode 
-										? `${AI_MODES.find(m => m.id === selectedMode)?.name} • Ready to help you learn`
+										? `${AI_MODES.find(m => m.id === selectedMode)?.name} â€¢ Ready to help you learn`
 										: "Select a learning mode to get started"}
 								</p>
 							</div>
@@ -719,7 +719,7 @@ IMPORTANT FORMATTING RULES:
 										<button
 											key={idx}
 											onClick={() => setInputMessage(suggestion)}
-											className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-left text-zinc-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
+											className="rounded-lg border p-3 text-sm text-left transition-colors hover:opacity-80" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }}
 										>
 											{suggestion}
 										</button>
@@ -733,7 +733,7 @@ IMPORTANT FORMATTING RULES:
 										<button
 											key={idx}
 											onClick={() => setInputMessage(suggestion)}
-											className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-left text-zinc-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
+											className="rounded-lg border p-3 text-sm text-left transition-colors hover:opacity-80" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }}
 										>
 											{suggestion}
 										</button>
@@ -747,7 +747,7 @@ IMPORTANT FORMATTING RULES:
 										<button
 											key={idx}
 											onClick={() => setInputMessage(suggestion)}
-											className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-left text-zinc-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
+											className="rounded-lg border p-3 text-sm text-left transition-colors hover:opacity-80" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }}
 										>
 											{suggestion}
 										</button>
@@ -761,7 +761,7 @@ IMPORTANT FORMATTING RULES:
 										<button
 											key={idx}
 											onClick={() => setInputMessage(suggestion)}
-											className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-left text-zinc-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
+											className="rounded-lg border p-3 text-sm text-left transition-colors hover:opacity-80" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }}
 										>
 											{suggestion}
 										</button>
@@ -775,7 +775,7 @@ IMPORTANT FORMATTING RULES:
 										<button
 											key={idx}
 											onClick={() => setInputMessage(suggestion)}
-											className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-left text-zinc-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
+											className="rounded-lg border p-3 text-sm text-left transition-colors hover:opacity-80" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }}
 										>
 											{suggestion}
 										</button>
@@ -834,7 +834,7 @@ IMPORTANT FORMATTING RULES:
 									Currently studying:
 								</span>
 								<span style={{ color: 'var(--dashboard-primary)' }}>
-									{selectedNotes.subject} • {selectedNotes.chapter} • {selectedNotes.topic}
+									{selectedNotes.subject} â€¢ {selectedNotes.chapter} â€¢ {selectedNotes.topic}
 								</span>
 								<button
 									onClick={() => setSelectedNotes(null)}
@@ -898,7 +898,7 @@ IMPORTANT FORMATTING RULES:
 							</button>
 						</div>
 						<p className="mt-2 text-xs text-center" style={{ color: 'var(--dashboard-muted)' }}>
-							Press Enter to send • Shift+Enter for new line • Click mic for voice input
+							Press Enter to send â€¢ Shift+Enter for new line â€¢ Click mic for voice input
 						</p>
 					</div>
 				</div>
