@@ -71,8 +71,9 @@ export const ROLE_ACCESS = {
 export function getNavSections(role) {
 	switch (role) {
 		case 'super_admin':
-		case 'co_admin':
 			return ADMIN_NAV;
+		case 'co_admin':
+			return CO_ADMIN_NAV;
 		case 'faculty':
 			return FACULTY_NAV;
 		case 'student':
@@ -95,60 +96,50 @@ const ADMIN_NAV = [
 	{
 		items: [
 			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
-			{ key: 'liveClassroom', name: 'Omni Sight', href: '/dashboard/live-classroom', icon: Video },
-		],
-	},
-	{
-		label: 'I-GYAN AI Suite',
-		labelColor: 'text-sky-500',
-		items: [
-			{ key: 'copilot', name: 'Customise Co-Pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
-			{ key: 'gyanisage', name: 'Buddy AI Counsellor', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
-			{ key: 'vivaAi', name: 'Viva Intelligence', href: '/dashboard/viva-ai', icon: Mic },
-			{ key: 'sharkAi', name: 'AI Shark', href: '/dashboard/shark-ai', icon: SharkIcon, isCustomIcon: true },
-			{ key: 'contentGenerator', name: "Slide's Creator", href: '/dashboard/content-generator', icon: Presentation },
-			{ key: 'tools', name: 'AI Tools Suite', href: '/dashboard/tools', icon: Wrench },
-		],
-	},
-	{
-		label: 'Academic Operations',
-		labelColor: 'text-emerald-500',
-		items: [
-			{ key: 'courses', name: 'Courses & Curriculum', href: '/dashboard/courses', icon: BookOpen },
-			{ key: 'studentManagement', name: 'Student Management', href: '/dashboard/student-management', icon: GraduationCap },
+			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
+			{ key: 'facultySubstitution', name: 'Smart Substitution System (Faculty)', href: '/dashboard/faculty-substitution', icon: UserCheck },
+			{ key: 'eventsManagement', name: 'Events', href: '/dashboard/events', icon: Calendar },
+			{ key: 'gyanisage', name: 'Buddy AI (with Safety-Alert For Students)', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
 			{ key: 'schoolManagement', name: 'School Management', href: '/dashboard/school-management', icon: Building2 },
-			{ key: 'timetable', name: 'Timetable', href: '/dashboard/timetable', icon: Clock },
-			{ key: 'attendance', name: 'Attendance', href: '/dashboard/attendance', icon: CheckCircle },
-			{ key: 'facultySubstitution', name: 'Smart Substitution', href: '/dashboard/faculty-substitution', icon: UserCheck },
 		],
 	},
 	{
-		label: 'Institutional Development',
+		label: 'Users',
 		labelColor: 'text-purple-500',
 		items: [
-			{ key: 'incubationHub', name: 'Incubation Hub', href: '/dashboard/incubation-hub', icon: Rocket },
-			{ key: 'performance', name: 'Performance & Analytics', href: '/dashboard/performance', icon: BarChart3 },
-			{ key: 'reports', name: 'Smart Report Builder', href: '/dashboard/reports', icon: FileText },
-			{ key: 'questionPaper', name: 'Teachers Toolkit', href: '/dashboard/question-paper', icon: ClipboardList },
-			{ key: 'assignments', name: 'AI Play Zone', href: '/dashboard/assignments', icon: Puzzle },
-			{ key: 'reportCards', name: 'Report Cards Generator', href: '/dashboard/report-cards', icon: FileStack },
-		],
-	},
-	{
-		label: 'Events & Engagement',
-		labelColor: 'text-amber-500',
-		items: [
-			{ key: 'eventsManagement', name: 'Events Management', href: '/dashboard/events', icon: Calendar },
-			{ key: 'eventsStudent', name: 'Browse Events', href: '/dashboard/events/student', icon: Calendar },
-			{ key: 'eventsPublic', name: 'Public Events', href: '/dashboard/events/public', icon: Globe },
-		],
-	},
-	{
-		label: 'User Controls',
-		labelColor: 'text-rose-500',
-		items: [
 			{ key: 'userManagement', name: 'User Management', href: '/dashboard/users', icon: Users },
-			{ key: 'userAccess', name: 'User Access & Roles', href: '/dashboard/user-access', icon: Lock },
+			{ key: 'userAccess', name: 'Access & Roles', href: '/dashboard/user-access', icon: Lock },
+		],
+	},
+	{
+		items: [
+			{ key: 'settings', name: 'Settings', href: '/dashboard/settings', icon: Settings },
+		],
+	},
+];
+
+// ── Co-Admin ────────────────────────────────────────────────────
+const CO_ADMIN_NAV = [
+	{
+		items: [
+			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
+			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
+			{ key: 'facultySubstitution', name: 'Smart Substitution System (Faculty)', href: '/dashboard/faculty-substitution', icon: UserCheck },
+			{ key: 'eventsManagement', name: 'Events', href: '/dashboard/events', icon: Calendar },
+			{ key: 'gyanisage', name: 'Buddy AI (with Safety-Alert For Students)', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
+			{ key: 'schoolManagement', name: 'School Management', href: '/dashboard/school-management', icon: Building2 },
+		],
+	},
+	{
+		label: 'Users',
+		labelColor: 'text-purple-500',
+		items: [
+			{ key: 'userManagement', name: 'User Management (View Only)', href: '/dashboard/users', icon: Users },
+			{ key: 'userAccess', name: 'Access & Roles (View Only)', href: '/dashboard/user-access', icon: Lock },
+		],
+	},
+	{
+		items: [
 			{ key: 'settings', name: 'Settings', href: '/dashboard/settings', icon: Settings },
 		],
 	},
@@ -157,50 +148,28 @@ const ADMIN_NAV = [
 // ── Faculty ─────────────────────────────────────────────────────
 const FACULTY_NAV = [
 	{
-		items: [
-			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
-			{ key: 'copilot', name: 'Copilot', href: '/dashboard/copilot-faculty', icon: SudarshanIcon, isCustomIcon: true },
-			{ key: 'attendance', name: 'Attendance', href: '/dashboard/attendance', icon: ClipboardCheck },
-			{ key: 'facultySubstitution', name: 'Smart Substitution', href: '/dashboard/faculty-substitution', icon: Calendar },
-		],
-	},
-	{
-		label: 'Assessment Hub',
+		label: 'Main Section',
 		labelColor: 'text-sky-500',
 		items: [
-			{ key: 'assignments', name: 'AI Question Builder', href: '/dashboard/assignments', icon: BrainCircuit },
-			{ key: 'questionPaper', name: 'Question Bank', href: '/dashboard/question-paper', icon: FileStack },
-			{ key: 'homework', name: 'AI Viva Evaluator', href: '/dashboard/homework', icon: Mic },
-			{ key: 'gamifiedAssignments', name: 'Gamified Assignments', href: '/dashboard/gamified-assignments', icon: Gamepad2 },
-			{ key: 'reports', name: 'Smart Report Builder', href: '/dashboard/reports', icon: BarChart },
+			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
+			{ key: 'parentChat', name: 'Parent Connect', href: '/dashboard/faculty-chat', icon: MessageCircle },
+			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot-faculty', icon: SudarshanIcon, isCustomIcon: true },
+			{ key: 'facultySubstitution', name: 'Smart Substitution Notification', href: '/dashboard/faculty-substitution', icon: UserCheck },
+			{ key: 'tools', name: 'Teaching Tools Kit', href: '/dashboard/tools', icon: Wrench },
+			{ key: 'liveClassroom', name: 'Omni Sight (Live Lec.)', href: '/dashboard/live-classroom', icon: Video },
 		],
 	},
 	{
-		label: 'Teaching Toolkit',
+		label: 'Homework Hub',
 		labelColor: 'text-emerald-500',
 		items: [
-			{ key: 'contentGenerator', name: 'Pitch Deck Builder', href: '/dashboard/content-generator', icon: Presentation },
-			{ key: 'tools', name: 'AI Tools Suite', href: '/dashboard/tools', icon: Wrench },
-			{ key: 'reportCards', name: 'Report Cards', href: '/dashboard/report-cards', icon: FileText },
-			{ key: 'courses', name: 'Courses', href: '/dashboard/courses', icon: BookOpen },
-		],
-	},
-	{
-		label: 'AI & Insights',
-		labelColor: 'text-purple-500',
-		items: [
-			{ key: 'gyanisage', name: 'Buddy AI', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
-			{ key: 'vivaAi', name: 'Viva AI', href: '/dashboard/viva-ai', icon: Mic },
-			{ key: 'sharkAi', name: 'AI Shark', href: '/dashboard/shark-ai', icon: SharkIcon, isCustomIcon: true },
-			{ key: 'performance', name: 'Performance', href: '/dashboard/performance', icon: BarChart3 },
-			{ key: 'liveClassroom', name: 'Omni Sight', href: '/dashboard/live-classroom', icon: Video },
+			{ key: 'homework', name: 'AI Viva Evaluator', href: '/dashboard/homework', icon: Mic },
+			{ key: 'reports', name: 'Viva Evaluation Result', href: '/dashboard/reports', icon: BarChart },
+			{ key: 'gamifiedAssignments', name: 'Gamified Assignments', href: '/dashboard/gamified-assignments', icon: Gamepad2 },
 		],
 	},
 	{
 		items: [
-			{ key: 'eventsStudent', name: 'Events', href: '/dashboard/events/student', icon: Calendar },
-			{ key: 'parentChat', name: 'Parent Messages', href: '/dashboard/faculty-chat', icon: MessageCircle },
-			{ key: 'incubationHub', name: 'Incubation Hub', href: '/dashboard/incubation-hub', icon: Rocket },
 			{ key: 'settings', name: 'Settings', href: '/dashboard/settings', icon: Settings },
 		],
 	},

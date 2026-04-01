@@ -477,10 +477,10 @@ IMPORTANT FORMATTING RULES:
 
 	if (loading) {
 		return (
-			<div className="flex min-h-screen items-center justify-center">
+			<div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: 'var(--dashboard-background)' }}>
 				<div className="text-center">
-					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">Loading...</p>
+					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+					<p className="mt-4 text-sm" style={{ color: 'var(--dashboard-muted)' }}>Loading...</p>
 				</div>
 			</div>
 		);
@@ -508,7 +508,8 @@ IMPORTANT FORMATTING RULES:
 				{/* New Chat Button */}
 				<button
 					onClick={startNewChat}
-					className="flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-indigo-600"
+					className="flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:opacity-90"
+					style={{ background: 'var(--dashboard-primary)' }}
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
 						<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -518,63 +519,39 @@ IMPORTANT FORMATTING RULES:
 
 				{/* Navigation Tabs */}
 				<div className="grid grid-cols-3 gap-2">
-					<button
-						onClick={() => setSidebarView("chats")}
-						className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							sidebarView === "chats"
-								? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-								: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						}`}
-					>
-						Chats
-					</button>
-					<button
-						onClick={() => setSidebarView("session-memory")}
-						className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							sidebarView === "session-memory"
-								? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-								: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						}`}
-					>
-						Session
-					</button>
-					<button
-						onClick={() => setSidebarView("overall-memory")}
-						className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							sidebarView === "overall-memory"
-								? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-								: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						}`}
-					>
-						Memory
-					</button>
+					{['chats', 'session-memory', 'overall-memory'].map((view) => (
+						<button
+							key={view}
+							onClick={() => setSidebarView(view)}
+							className="rounded-lg px-3 py-2 text-xs font-medium transition-colors"
+							style={sidebarView === view
+								? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)', color: 'var(--dashboard-primary)' }
+								: { color: 'var(--dashboard-muted)' }
+							}
+						>
+							{view === 'chats' ? 'Chats' : view === 'session-memory' ? 'Session' : 'Memory'}
+						</button>
+					))}
 				</div>
 
 				<div className="flex gap-2">
-					<button
-						onClick={() => setSidebarView("profile")}
-						className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							sidebarView === "profile"
-								? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-								: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						}`}
-					>
-						Profile
-					</button>
-					<button
-						onClick={() => setSidebarView("notes")}
-						className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							sidebarView === "notes"
-								? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
-								: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-						}`}
-					>
-						Notes
-					</button>
+					{['profile', 'notes'].map((view) => (
+						<button
+							key={view}
+							onClick={() => setSidebarView(view)}
+							className="flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
+							style={sidebarView === view
+								? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)', color: 'var(--dashboard-primary)' }
+								: { color: 'var(--dashboard-muted)' }
+							}
+						>
+							{view.charAt(0).toUpperCase() + view.slice(1)}
+						</button>
+					))}
 				</div>
 
 				{/* Content Area */}
-				<div className="flex-1 overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+				<div className="flex-1 overflow-y-auto rounded-2xl border p-3" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 					{sidebarView === "chats" && (
 						<ChatHistory
 							chatHistory={chatHistory}
@@ -585,7 +562,7 @@ IMPORTANT FORMATTING RULES:
 					)}
 					{sidebarView === "session-memory" && (
 						<div>
-							<h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
+							<h3 className="mb-3 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Current Session Memory
 							</h3>
 							<MemoryList
@@ -597,7 +574,7 @@ IMPORTANT FORMATTING RULES:
 					)}
 					{sidebarView === "overall-memory" && (
 						<div>
-							<h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-white">
+							<h3 className="mb-3 text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 								Overall Memory
 							</h3>
 							<MemoryList
@@ -623,7 +600,7 @@ IMPORTANT FORMATTING RULES:
 			</div>
 
 			{/* Main Chat Area */}
-			<div className="flex flex-1 flex-col rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+			<div className="flex flex-1 flex-col rounded-2xl border shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				{/* Header */}
 				<div className="flex items-center justify-between border-b p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
 					<div className="flex items-center gap-3">
@@ -672,7 +649,8 @@ IMPORTANT FORMATTING RULES:
 						/>
 						<button
 							onClick={startNewChat}
-							className="lg:hidden rounded-lg p-2 text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+							className="lg:hidden rounded-lg p-2 transition hover:opacity-70"
+							style={{ color: 'var(--dashboard-muted)' }}
 						>
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
 								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -697,10 +675,10 @@ IMPORTANT FORMATTING RULES:
 								/>
 							</div>
 							<div>
-								<h3 className="text-2xl font-bold text-zinc-900 dark:text-white">
+								<h3 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 									Welcome to {getAIName()}!
 								</h3>
-								<p className="mt-2 text-zinc-600 dark:text-zinc-400">
+								<p className="mt-2" style={{ color: 'var(--dashboard-muted)' }}>
 									{selectedMode 
 										? `${AI_MODES.find(m => m.id === selectedMode)?.name} • Ready to help you learn`
 										: "Select a learning mode to get started"}
@@ -709,19 +687,19 @@ IMPORTANT FORMATTING RULES:
 
 							{/* Mode Selection Prompt */}
 							{!selectedMode && (
-								<div className="rounded-xl border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-800">
+								<div className="rounded-xl border p-6" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
 									<div className="flex items-start gap-4">
-										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-indigo-600 dark:text-indigo-400">
+										<div className="flex h-12 w-12 items-center justify-center rounded-lg" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6" style={{ color: 'var(--dashboard-primary)' }}>
 												<path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
 												<path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											</svg>
 										</div>
 										<div className="flex-1 text-left">
-											<h4 className="font-semibold text-zinc-900 dark:text-white mb-1">
+											<h4 className="font-semibold mb-1" style={{ color: 'var(--dashboard-heading)' }}>
 												Choose Your Learning Mode
 											</h4>
-											<p className="text-sm text-zinc-600 dark:text-zinc-400">
+											<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 												Select a mode from the top-right to customize how the AI helps you learn
 											</p>
 										</div>
@@ -817,23 +795,24 @@ IMPORTANT FORMATTING RULES:
 				</div>
 
 				{/* Input Area */}
-				<div className="border-t border-zinc-200 dark:border-zinc-800">
+				<div className="border-t" style={{ borderColor: 'var(--dashboard-border)' }}>
 					{/* Active Mode Indicator */}
 					{selectedMode && (
-						<div className={`border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-800 ${AI_MODES.find(m => m.id === selectedMode)?.bgColor}`}>
+						<div className="border-b px-4 py-2.5" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>
 							<div className="flex items-center gap-2 text-xs">
-								<span className={AI_MODES.find(m => m.id === selectedMode)?.textColor}>
+								<span style={{ color: 'var(--dashboard-primary)' }}>
 									{AI_MODES.find(m => m.id === selectedMode)?.icon}
 								</span>
-								<span className="font-medium text-zinc-700 dark:text-zinc-300">
+								<span className="font-medium" style={{ color: 'var(--dashboard-text)' }}>
 									Active:
 								</span>
-								<span className={`font-semibold ${AI_MODES.find(m => m.id === selectedMode)?.textColor}`}>
+								<span className="font-semibold" style={{ color: 'var(--dashboard-primary)' }}>
 									{AI_MODES.find(m => m.id === selectedMode)?.name}
 								</span>
 								<button
 									onClick={() => setSelectedMode(null)}
-									className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+									className="ml-auto transition-colors hover:opacity-70"
+									style={{ color: 'var(--dashboard-muted)' }}
 									title="Clear mode"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
@@ -846,20 +825,21 @@ IMPORTANT FORMATTING RULES:
 					
 					{/* Selected Notes Display */}
 					{selectedNotes && (
-						<div className="border-b border-zinc-200 bg-indigo-50 px-4 py-2 dark:border-zinc-800 dark:bg-indigo-900/20">
+						<div className="border-b px-4 py-2" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>
 							<div className="flex items-center gap-2 text-xs">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 text-indigo-600 dark:text-indigo-400">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" style={{ color: 'var(--dashboard-primary)' }}>
 									<path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
 								</svg>
-								<span className="font-medium text-indigo-900 dark:text-indigo-300">
+								<span className="font-medium" style={{ color: 'var(--dashboard-heading)' }}>
 									Currently studying:
 								</span>
-								<span className="text-indigo-700 dark:text-indigo-400">
+								<span style={{ color: 'var(--dashboard-primary)' }}>
 									{selectedNotes.subject} • {selectedNotes.chapter} • {selectedNotes.topic}
 								</span>
 								<button
 									onClick={() => setSelectedNotes(null)}
-									className="ml-auto text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+									className="ml-auto transition-colors hover:opacity-70"
+									style={{ color: 'var(--dashboard-primary)' }}
 									title="Clear selection"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
@@ -879,16 +859,17 @@ IMPORTANT FORMATTING RULES:
 									onKeyPress={handleKeyPress}
 									placeholder="Ask me anything..."
 									rows="1"
-									className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+									className="w-full resize-none rounded-xl border px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2"
+									style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-text)' }}
 									disabled={isTyping}
 								/>
 								<button
 									onClick={toggleSpeechRecognition}
-									className={`absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg p-2 transition-all ${
-										isListening
-											? 'bg-red-500 text-white animate-pulse'
-											: 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600'
-									}`}
+									className={`absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg p-2 transition-all ${isListening ? 'animate-pulse' : ''}`}
+									style={isListening
+										? { backgroundColor: '#ef4444', color: '#fff' }
+										: { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }
+									}
 									title={isListening ? 'Stop recording' : 'Start voice input'}
 									disabled={isTyping}
 								>
@@ -908,14 +889,15 @@ IMPORTANT FORMATTING RULES:
 							<button
 								onClick={handleSendMessage}
 								disabled={!inputMessage.trim() || isTyping}
-								className="flex items-center justify-center rounded-xl bg-indigo-500 px-6 text-white transition-all hover:-translate-y-0.5 hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+								className="flex items-center justify-center rounded-xl px-6 text-white transition-all hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+								style={{ background: 'var(--dashboard-primary)' }}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
 									<path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
 								</svg>
 							</button>
 						</div>
-						<p className="mt-2 text-xs text-zinc-500 text-center">
+						<p className="mt-2 text-xs text-center" style={{ color: 'var(--dashboard-muted)' }}>
 							Press Enter to send • Shift+Enter for new line • Click mic for voice input
 						</p>
 					</div>
