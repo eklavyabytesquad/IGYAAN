@@ -75,16 +75,22 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 					icon: "🎤",
 				},
 				{
+					key: 'vivaResults',
+					name: "Viva Evaluation Result",
+					href: "/dashboard/homework/reports",
+					icon: "📊",
+				},
+				{
 					key: 'gamifiedAssignments',
 					name: "Gamified Assignments",
 					href: "/dashboard/gamified-assignments",
 					icon: "🏆",
 				},
 				{
-					key: 'aiReportCards',
-					name: "Smart Report Builder",
-					href: "/dashboard/reports",
-					icon: "📊",
+					key: 'aiReport',
+					name: "AI Report",
+					href: "/dashboard/report-cards",
+					icon: "📋",
 				},
 				{
 					key: 'smartNotesGenerator',

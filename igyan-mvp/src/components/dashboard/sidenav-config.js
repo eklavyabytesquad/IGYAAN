@@ -164,7 +164,8 @@ const FACULTY_NAV = [
 		labelColor: 'text-emerald-500',
 		items: [
 			{ key: 'homework', name: 'AI Viva Evaluator', href: '/dashboard/homework', icon: Mic },
-			{ key: 'reports', name: 'Viva Evaluation Result', href: '/dashboard/reports', icon: BarChart },
+			{ key: 'vivaResults', name: 'Viva Evaluation Result', href: '/dashboard/homework/reports', icon: BarChart },
+			{ key: 'aiReport', name: 'AI Report', href: '/dashboard/report-cards', icon: FileText },
 			{ key: 'gamifiedAssignments', name: 'Gamified Assignments', href: '/dashboard/gamified-assignments', icon: Gamepad2 },
 		],
 	},
@@ -191,7 +192,8 @@ const STUDENT_NAV = [
 		labelColor: 'text-purple-500',
 		items: [
 			{ key: 'homework', name: 'My Homework', href: '/dashboard/homework/student', icon: BookOpen },
-			{ key: 'homeworkResults', name: 'Instant Homework Results', href: '/dashboard/homework/reports', icon: BarChart },
+			{ key: 'vivaResults', name: 'Viva Evaluation Result', href: '/dashboard/homework/reports', icon: BarChart },
+			{ key: 'aiReport', name: 'AI Report', href: '/dashboard/report-cards', icon: FileText },
 			{ key: 'gamified', name: 'Gamified Homework', href: '/dashboard/gamified', icon: Puzzle },
 			{ key: 'skillTracks', name: 'Skill Tracks', href: '/dashboard/courses', icon: GraduationCap },
 		],
