@@ -239,10 +239,10 @@ export default function UserAccessPage() {
 
 	if (loading || loadingUsers) {
 		return (
-			<div className="flex min-h-screen items-center justify-center">
+			<div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: 'var(--dashboard-background)' }}>
 				<div className="text-center">
-					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
-					<p className="mt-4 text-sm text-zinc-600 dark:text-zinc-300">
+					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }}></div>
+					<p className="mt-4 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 						Loading...
 					</p>
 				</div>
@@ -256,26 +256,27 @@ export default function UserAccessPage() {
 		<div className="p-6 lg:p-8">
 			{/* Header */}
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
+				<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 					User Access Management
 				</h1>
-				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
+				<p className="mt-2" style={{ color: 'var(--dashboard-muted)' }}>
 					Control module access permissions for all users
 				</p>
 			</div>
 
 			{/* Stats */}
 			<div className="mb-6 grid gap-4 sm:grid-cols-3">
-				<div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+				<div className="rounded-xl border p-4" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 					<div className="flex items-center gap-3">
-						<div className="rounded-lg bg-indigo-100 p-3 dark:bg-indigo-900/30">
+						<div className="rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
+								className="h-6 w-6"
+								style={{ color: 'var(--dashboard-primary)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -285,26 +286,27 @@ export default function UserAccessPage() {
 							</svg>
 						</div>
 						<div>
-							<p className="text-2xl font-bold text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 								{users.length}
 							</p>
-							<p className="text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Total Users
 							</p>
 						</div>
 					</div>
 				</div>
 
-				<div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+				<div className="rounded-xl border p-4" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 					<div className="flex items-center gap-3">
-						<div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900/30">
+						<div className="rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className="h-6 w-6 text-purple-600 dark:text-purple-400"
+								className="h-6 w-6"
+								style={{ color: 'var(--dashboard-primary)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -314,26 +316,27 @@ export default function UserAccessPage() {
 							</svg>
 						</div>
 						<div>
-							<p className="text-2xl font-bold text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 								{availableModules.length}
 							</p>
-							<p className="text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Available Modules
 							</p>
 						</div>
 					</div>
 				</div>
 
-				<div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+				<div className="rounded-xl border p-4" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 					<div className="flex items-center gap-3">
-						<div className="rounded-lg bg-green-100 p-3 dark:bg-green-900/30">
+						<div className="rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="1.5"
-								className="h-6 w-6 text-green-600 dark:text-green-400"
+								className="h-6 w-6"
+								style={{ color: 'var(--dashboard-primary)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -343,10 +346,10 @@ export default function UserAccessPage() {
 							</svg>
 						</div>
 						<div>
-							<p className="text-2xl font-bold text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 								{users.filter((u) => u.role === "super_admin").length}
 							</p>
-							<p className="text-sm text-zinc-600 dark:text-zinc-400">
+							<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 								Super Admins
 							</p>
 						</div>
@@ -355,7 +358,7 @@ export default function UserAccessPage() {
 			</div>
 
 			{/* Users Table */}
-			<div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+			<div className="rounded-xl border" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				{users.length === 0 ? (
 					<div className="p-12 text-center">
 						<svg
@@ -364,7 +367,8 @@ export default function UserAccessPage() {
 							fill="none"
 							stroke="currentColor"
 							strokeWidth="1.5"
-							className="mx-auto h-16 w-16 text-zinc-400"
+							className="mx-auto h-16 w-16"
+							style={{ color: 'var(--dashboard-muted)' }}
 						>
 							<path
 								strokeLinecap="round"
@@ -372,44 +376,44 @@ export default function UserAccessPage() {
 								d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
 							/>
 						</svg>
-						<p className="mt-4 text-lg font-semibold text-zinc-900 dark:text-white">
+						<p className="mt-4 text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 							No users found
 						</p>
 					</div>
 				) : (
 					<div className="overflow-x-auto">
 						<table className="w-full">
-							<thead className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-800/50">
+							<thead className="border-b" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
 								<tr>
-									<th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										User
 									</th>
-									<th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Email
 									</th>
-									<th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Role
 									</th>
-									<th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Phone
 									</th>
-									<th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Joined
 									</th>
-									<th className="px-6 py-4 text-right text-sm font-semibold text-zinc-900 dark:text-white">
+									<th className="px-6 py-4 text-right text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Actions
 									</th>
 								</tr>
 							</thead>
-							<tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+							<tbody className="divide-y" style={{ borderColor: 'var(--dashboard-border)' }}>
 								{users.map((u) => (
 									<tr
 										key={u.id}
-										className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+										className="transition-colors hover:opacity-80"
 									>
 										<td className="px-6 py-4">
 											<div className="flex items-center gap-3">
-												<div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-sm font-semibold text-white">
+												<div className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white" style={{ background: 'var(--dashboard-primary)' }}>
 													{(u.full_name || u.email)
 														.split(" ")
 														.map((n) => n[0])
@@ -418,43 +422,37 @@ export default function UserAccessPage() {
 														.slice(0, 2)}
 												</div>
 												<div>
-													<p className="font-medium text-zinc-900 dark:text-white">
+													<p className="font-medium" style={{ color: 'var(--dashboard-heading)' }}>
 														{u.full_name || "No Name"}
 													</p>
-													<p className="text-xs text-zinc-500 dark:text-zinc-400">
+													<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 														ID: {u.id.slice(0, 8)}...
 													</p>
 												</div>
 											</div>
 										</td>
-										<td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+										<td className="px-6 py-4 text-sm" style={{ color: 'var(--dashboard-text)' }}>
 											{u.email}
 										</td>
 										<td className="px-6 py-4">
 											<span
-												className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-													u.role === "super_admin"
-														? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
-														: u.role === "co_admin"
-														? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-														: u.role === "faculty"
-														? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-														: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400"
-												}`}
+												className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+												style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-primary)' }}
 											>
 												{u.role}
 											</span>
 										</td>
-										<td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+										<td className="px-6 py-4 text-sm" style={{ color: 'var(--dashboard-text)' }}>
 											{u.phone || "N/A"}
 										</td>
-										<td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+										<td className="px-6 py-4 text-sm" style={{ color: 'var(--dashboard-text)' }}>
 											{new Date(u.created_at).toLocaleDateString()}
 										</td>
 										<td className="px-6 py-4 text-right">
 											<button
 												onClick={() => handleManageAccess(u)}
-												className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-600"
+												className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+												style={{ background: 'var(--dashboard-primary)' }}
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -484,13 +482,13 @@ export default function UserAccessPage() {
 			{/* Access Management Modal */}
 			{showModal && selectedUser && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center overlay-scrim p-4">
-					<div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+					<div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border p-6 shadow-2xl" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 						<div className="mb-6 flex items-center justify-between">
 							<div>
-								<h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+								<h2 className="text-2xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 									Manage Access Permissions
 								</h2>
-								<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+								<p className="mt-1 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 									User: {selectedUser.full_name || selectedUser.email} (
 									{selectedUser.role})
 								</p>
@@ -500,7 +498,8 @@ export default function UserAccessPage() {
 									setShowModal(false);
 									setSelectedUser(null);
 								}}
-								className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+								className="rounded-lg p-2 transition-colors hover:opacity-70"
+								style={{ color: 'var(--dashboard-muted)' }}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -520,19 +519,21 @@ export default function UserAccessPage() {
 						</div>
 
 						{/* Quick Actions */}
-						<div className="mb-6 flex flex-wrap gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-800/50">
-							<span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+						<div className="mb-6 flex flex-wrap gap-2 rounded-xl border p-4" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-muted)' }}>
+							<span className="text-sm font-medium" style={{ color: 'var(--dashboard-text)' }}>
 								Quick Set:
 							</span>
 							<button
 								onClick={() => setAllAccess("all")}
-								className="rounded-lg bg-green-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-green-600"
+								className="rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:opacity-90"
+								style={{ background: 'var(--dashboard-primary)' }}
 							>
 								All Access
 							</button>
 							<button
 								onClick={() => setAllAccess("view")}
-								className="rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
+								className="rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:opacity-90"
+								style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 80%, #3b82f6)' }}
 							>
 								View Only
 							</button>
@@ -555,18 +556,19 @@ export default function UserAccessPage() {
 							{availableModules.map((module) => (
 								<div
 									key={module.name}
-									className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+									className="flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-md"
+									style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}
 								>
 									<div className="flex items-center gap-4 flex-1">
 										<div className="text-2xl">{module.icon}</div>
 										<div className="flex-1">
-											<h4 className="font-semibold text-zinc-900 dark:text-white">
+											<h4 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 												{module.name}
 											</h4>
-											<p className="text-xs text-zinc-600 dark:text-zinc-400">
+											<p className="text-xs" style={{ color: 'var(--dashboard-text)' }}>
 												{module.path}
 											</p>
-											<p className="text-xs text-zinc-500 dark:text-zinc-500">
+											<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 												{module.description}
 											</p>
 										</div>
@@ -580,51 +582,51 @@ export default function UserAccessPage() {
 													userAccess[module.name] === "none" ? "view" : "none"
 												)
 											}
-											className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-												userAccess[module.name] === "none"
-													? "bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300"
-													: "bg-red-500 text-white hover:bg-red-600"
-											}`}
+											className="rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+											style={userAccess[module.name] === "none"
+												? { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }
+												: { backgroundColor: '#ef4444', color: '#fff' }
+											}
 										>
 											{userAccess[module.name] === "none" ? "No Access" : "✕"}
 										</button>
 										<button
 											onClick={() => handleAccessChange(module.name, "view")}
-											className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-												userAccess[module.name] === "view"
-													? "bg-blue-500 text-white"
-													: "bg-zinc-100 text-zinc-700 hover:bg-blue-100 dark:bg-zinc-800 dark:text-zinc-300"
-											}`}
+											className="rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+											style={userAccess[module.name] === "view"
+												? { background: 'var(--dashboard-primary)', color: '#fff' }
+												: { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }
+											}
 										>
 											👁️ View
 										</button>
 										<button
 											onClick={() => handleAccessChange(module.name, "edit")}
-											className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-												userAccess[module.name] === "edit"
-													? "bg-yellow-500 text-white"
-													: "bg-zinc-100 text-zinc-700 hover:bg-yellow-100 dark:bg-zinc-800 dark:text-zinc-300"
-											}`}
+											className="rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+											style={userAccess[module.name] === "edit"
+												? { backgroundColor: '#eab308', color: '#fff' }
+												: { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }
+											}
 										>
 											✏️ Edit
 										</button>
 										<button
 											onClick={() => handleAccessChange(module.name, "delete")}
-											className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-												userAccess[module.name] === "delete"
-													? "bg-orange-500 text-white"
-													: "bg-zinc-100 text-zinc-700 hover:bg-orange-100 dark:bg-zinc-800 dark:text-zinc-300"
-											}`}
+											className="rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+											style={userAccess[module.name] === "delete"
+												? { backgroundColor: '#f97316', color: '#fff' }
+												: { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }
+											}
 										>
 											🗑️ Delete
 										</button>
 										<button
 											onClick={() => handleAccessChange(module.name, "all")}
-											className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-												userAccess[module.name] === "all"
-													? "bg-green-500 text-white"
-													: "bg-zinc-100 text-zinc-700 hover:bg-green-100 dark:bg-zinc-800 dark:text-zinc-300"
-											}`}
+											className="rounded-lg px-3 py-2 text-xs font-semibold transition-colors"
+											style={userAccess[module.name] === "all"
+												? { backgroundColor: '#22c55e', color: '#fff' }
+												: { backgroundColor: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-text)' }
+											}
 										>
 											✓ All
 										</button>
@@ -634,11 +636,12 @@ export default function UserAccessPage() {
 						</div>
 
 						{/* Save Button */}
-						<div className="mt-6 flex gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+						<div className="mt-6 flex gap-3 border-t pt-6" style={{ borderColor: 'var(--dashboard-border)' }}>
 							<button
 								onClick={handleSaveAccess}
 								disabled={saving}
-								className="flex-1 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+								className="flex-1 rounded-lg px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+								style={{ background: 'var(--dashboard-primary)' }}
 							>
 								{saving ? "Saving..." : "💾 Save Changes"}
 							</button>
@@ -647,7 +650,8 @@ export default function UserAccessPage() {
 									setShowModal(false);
 									setSelectedUser(null);
 								}}
-								className="rounded-lg border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+								className="rounded-lg border px-6 py-3 text-sm font-semibold transition-colors hover:opacity-80"
+								style={{ borderColor: 'var(--dashboard-border)', color: 'var(--dashboard-text)' }}
 							>
 								Cancel
 							</button>

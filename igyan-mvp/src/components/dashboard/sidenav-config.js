@@ -99,7 +99,7 @@ const ADMIN_NAV = [
 			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
 			{ key: 'facultySubstitution', name: 'Smart Substitution System (Faculty)', href: '/dashboard/faculty-substitution', icon: UserCheck },
 			{ key: 'eventsManagement', name: 'Events', href: '/dashboard/events', icon: Calendar },
-			{ key: 'gyanisage', name: 'Buddy AI (with Safety-Alert For Students)', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
+			{ key: 'gyanisage', name: 'Buddy AI', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
 			{ key: 'schoolManagement', name: 'School Management', href: '/dashboard/school-management', icon: Building2 },
 		],
 	},
@@ -126,7 +126,7 @@ const CO_ADMIN_NAV = [
 			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
 			{ key: 'facultySubstitution', name: 'Smart Substitution System (Faculty)', href: '/dashboard/faculty-substitution', icon: UserCheck },
 			{ key: 'eventsManagement', name: 'Events', href: '/dashboard/events', icon: Calendar },
-			{ key: 'gyanisage', name: 'Buddy AI (with Safety-Alert For Students)', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
+			{ key: 'gyanisage', name: 'Buddy AI', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
 			{ key: 'schoolManagement', name: 'School Management', href: '/dashboard/school-management', icon: Building2 },
 		],
 	},
@@ -279,35 +279,12 @@ const COUNSELOR_NAV = [
 // ── Parent ───────────────────────────────────────────────────────
 const PARENT_NAV = [
 	{
+		label: 'Main Section',
+		labelColor: 'text-sky-500',
 		items: [
 			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
 			{ key: 'myChildren', name: 'My Children', href: '/dashboard/parent/children', icon: Users },
-		],
-	},
-	{
-		label: 'Attendance',
-		labelColor: 'text-sky-500',
-		items: [
-			{ key: 'todayAttendance', name: "Today's Status", href: '/dashboard/parent/attendance/today', icon: Calendar },
-			{ key: 'absenceAlerts', name: 'Absence Alerts', href: '/dashboard/parent/attendance/alerts', icon: AlertTriangle },
-			{ key: 'weeklyReports', name: 'Weekly Reports', href: '/dashboard/parent/attendance/weekly', icon: BarChart },
-			{ key: 'attendanceHistory', name: 'Attendance History', href: '/dashboard/parent/attendance/history', icon: History },
-		],
-	},
-	{
-		label: 'Academics',
-		labelColor: 'text-emerald-500',
-		items: [
-			{ key: 'reportCards', name: 'Report Cards', href: '/dashboard/parent/report-cards', icon: FileText },
-			{ key: 'homework', name: 'Homework Tracking', href: '/dashboard/homework/student', icon: BookOpen },
-			{ key: 'performance', name: 'Performance', href: '/dashboard/performance', icon: BarChart3 },
-		],
-	},
-	{
-		label: 'Communication',
-		labelColor: 'text-purple-500',
-		items: [
-			{ key: 'teacherChat', name: 'Class Teacher Chat', href: '/dashboard/parent/teacher-chat', icon: MessageCircle },
+			{ key: 'teacherConnect', name: 'Class Teacher Connect', href: '/dashboard/parent/teacher-chat', icon: MessageCircle },
 			{ key: 'events', name: 'School Events', href: '/dashboard/events/public', icon: Calendar },
 		],
 	},

@@ -8,9 +8,7 @@ import Image from "next/image";
 export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
 	const pathname = usePathname();
 	const [expandedSections, setExpandedSections] = useState({
-		attendance: true,
-		academics: true,
-		classTeacherChat: true,
+		classTeacherConnect: true,
 	});
 
 	const toggleSection = (section) => {
@@ -20,7 +18,7 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 		}));
 	};
 
-	// Parent Portal Navigation Structure
+	// Parent Portal Navigation Structure — matches image spec
 	const parentNavSections = [
 		{
 			key: 'dashboard',
@@ -43,112 +41,8 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 			),
 		},
 		{
-			key: 'attendance',
-			title: "Attendance",
-			icon: (
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-					<path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-				</svg>
-			),
-			isExpandable: true,
-			subItems: [
-				{
-					key: 'todayAttendance',
-					name: "Today's Status",
-					href: "/dashboard/parent/attendance/today",
-					icon: "📅",
-					badge: "new",
-				},
-				{
-					key: 'absenceAlerts',
-					name: "Absence Alerts",
-					href: "/dashboard/parent/attendance/alerts",
-					icon: "🚨",
-				},
-				{
-					key: 'weeklyReports',
-					name: "Weekly Reports",
-					href: "/dashboard/parent/attendance/weekly",
-					icon: "📊",
-				},
-				{
-					key: 'attendanceHistory',
-					name: "Attendance History",
-					href: "/dashboard/parent/attendance/history",
-					icon: "📜",
-				},
-			],
-		},
-		{
-			key: 'academics',
-			title: "Academics",
-			icon: (
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-					<path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-				</svg>
-			),
-			isExpandable: true,
-			subItems: [
-				{
-					key: 'reportCards',
-					name: "Report Cards",
-					href: "/dashboard/parent/report-cards",
-					icon: "📋",
-				},
-				{
-					key: 'homework',
-					name: "Homework Tracking",
-					href: "/dashboard/parent/homework",
-					icon: "📝",
-				},
-				{
-					key: 'performance',
-					name: "Performance",
-					href: "/dashboard/parent/performance",
-					icon: "📈",
-				},
-				{
-					key: 'timetable',
-					name: "Timetable",
-					href: "/dashboard/parent/timetable",
-					icon: "🕐",
-				},
-			],
-		},
-		{
-			key: 'communication',
-			title: "Communication",
-			icon: (
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-					<path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-				</svg>
-			),
-			isExpandable: true,
-			subItems: [
-				{
-					key: 'classTeacher',
-					name: "Class Teacher",
-					href: "/dashboard/parent/teacher-contact",
-					icon: "👨‍🏫",
-					badge: "POC",
-				},
-				{
-					key: 'messages',
-					name: "Messages",
-					href: "/dashboard/parent/messages",
-					icon: "💬",
-				},
-				{
-					key: 'notifications',
-					name: "Notifications",
-					href: "/dashboard/parent/notifications",
-					icon: "🔔",
-				},
-			],
-		},
-		{
-			key: 'classTeacherChat',
-			title: "Teacher Chat & Call",
+			key: 'classTeacherConnect',
+			title: "Class Teacher Connect",
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
 					<path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
@@ -157,31 +51,16 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 			isExpandable: true,
 			subItems: [
 				{
-					key: 'directChat',
-					name: "Direct Chat",
+					key: 'message',
+					name: "Message",
 					href: "/dashboard/parent/teacher-chat",
 					icon: "💬",
-					badge: "new",
 				},
 				{
-					key: 'callTeacher',
-					name: "Call Teacher",
+					key: 'call',
+					name: "Call",
 					href: "/dashboard/parent/teacher-chat?tab=call",
 					icon: "📞",
-				},
-				{
-					key: 'complaint',
-					name: "File Complaint",
-					href: "/dashboard/parent/teacher-chat?tab=complaint",
-					icon: "🚩",
-					badge: "COMPLAINT",
-				},
-				{
-					key: 'homeworkQuery',
-					name: "Homework Query",
-					href: "/dashboard/parent/teacher-chat?tab=homework",
-					icon: "📚",
-					badge: "HW",
 				},
 			],
 		},
@@ -192,26 +71,6 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 			icon: (
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
 					<path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
-				</svg>
-			),
-		},
-		{
-			key: 'fees',
-			title: "Fee Payment",
-			href: "/dashboard/parent/fees",
-			icon: (
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-					<path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-				</svg>
-			),
-		},
-		{
-			key: 'profile',
-			title: "Profile",
-			href: "/dashboard/profile",
-			icon: (
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-					<path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
 				</svg>
 			),
 		},
@@ -241,17 +100,18 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 			{/* Sidenav */}
 			<aside
 				className={`
-					fixed left-0 top-0 z-50 h-screen bg-white dark:bg-zinc-900 
-					border-r border-zinc-200 dark:border-zinc-800 
+					fixed left-0 top-0 z-50 h-screen
+					border-r
 					transition-all duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full"}
 					${isCollapsed ? "w-20" : "w-72"}
 					lg:translate-x-0
 				`}
+				style={{ backgroundColor: 'var(--dashboard-surface-solid)', borderColor: 'var(--dashboard-border)' }}
 			>
 				<div className="flex h-full flex-col">
 					{/* Header with Logo */}
-					<div className="flex h-16 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4">
+					<div className="flex h-16 items-center justify-between border-b px-4" style={{ borderColor: 'var(--dashboard-border)' }}>
 						{!isCollapsed && schoolData?.logo_url ? (
 							<div className="flex items-center gap-3">
 								<Image
@@ -262,10 +122,10 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 									className="h-8 w-8 rounded-lg object-contain"
 								/>
 								<div className="flex flex-col">
-									<span className="text-sm font-semibold text-zinc-900 dark:text-white">
+									<span className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										{schoolData.school_name || "I-GYAN"}
 									</span>
-									<span className="text-xs text-zinc-500 dark:text-zinc-400">
+									<span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 										Parent Portal
 									</span>
 								</div>
@@ -273,10 +133,10 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 						) : (
 							!isCollapsed && (
 								<div className="flex items-center gap-2">
-									<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600">
+									<div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'var(--dashboard-primary)' }}>
 										<span className="text-sm font-bold text-white">👨‍👩‍👧</span>
 									</div>
-									<span className="text-lg font-bold text-zinc-900 dark:text-white">
+									<span className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 										I-GYAN
 									</span>
 								</div>
@@ -286,7 +146,7 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 						{/* Collapse Toggle (Desktop Only) */}
 						<button
 							onClick={() => setIsCollapsed(!isCollapsed)}
-							className="hidden rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:block"
+							className="hidden rounded-lg p-2 lg:block transition-colors hover:opacity-70"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -294,9 +154,10 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="2"
-								className={`h-5 w-5 text-zinc-600 dark:text-zinc-400 transition-transform ${
+								className={`h-5 w-5 transition-transform ${
 									isCollapsed ? "rotate-180" : ""
 								}`}
+								style={{ color: 'var(--dashboard-muted)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -309,7 +170,7 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 						{/* Close Button (Mobile Only) */}
 						<button
 							onClick={() => setIsOpen(false)}
-							className="rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hidden"
+							className="rounded-lg p-2 transition-colors hover:opacity-70 lg:hidden"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -336,16 +197,11 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 									<div>
 										<button
 											onClick={() => toggleSection(section.key)}
-											className={`
-												flex w-full items-center justify-between rounded-lg px-3 py-2.5
-												text-sm font-medium transition-all
-												hover:bg-zinc-100 dark:hover:bg-zinc-800
-												${
-													section.subItems?.some(item => pathname === item.href)
-														? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
-														: "text-zinc-700 dark:text-zinc-300"
-												}
-											`}
+										className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all"
+										style={section.subItems?.some(item => pathname === item.href)
+											? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-heading)' }
+											: { color: 'var(--dashboard-text)' }
+										}
 										>
 											<div className="flex items-center gap-3">
 												{section.icon}
@@ -373,32 +229,25 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 
 										{/* Sub Items */}
 										{expandedSections[section.key] && !isCollapsed && (
-											<div className="ml-4 mt-1 space-y-1 border-l-2 border-zinc-200 dark:border-zinc-700 pl-4">
+											<div className="ml-4 mt-1 space-y-1 border-l-2 pl-4" style={{ borderColor: 'var(--dashboard-border)' }}>
 												{section.subItems.map((item) => (
 													<Link
 														key={item.key}
 														href={item.href}
-														className={`
-															flex items-center justify-between gap-2 rounded-lg px-3 py-2
-															text-sm transition-all
-															hover:bg-zinc-100 dark:hover:bg-zinc-800
-															${
-																pathname === item.href
-																	? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white font-medium"
-																	: "text-zinc-600 dark:text-zinc-400"
-															}
-														`}
+														className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-all"
+														style={pathname === item.href
+															? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-heading)', fontWeight: 500 }
+															: { color: 'var(--dashboard-muted)' }
+														}
 													>
 														<div className="flex items-center gap-2">
 															<span className="text-base">{item.icon}</span>
 															<span>{item.name}</span>
 														</div>
 														{item.badge && (
-															<span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-																item.badge === 'new' ? 'bg-blue-500 text-white' : 
-																item.badge === 'POC' ? 'bg-amber-500 text-white' : 
-																'bg-zinc-500 text-white'
-															}`}>
+															<span className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
+																style={{ backgroundColor: item.badge === 'new' ? 'var(--dashboard-primary)' : item.badge === 'POC' ? '#f59e0b' : 'var(--dashboard-muted)' }}
+															>
 																{item.badge}
 															</span>
 														)}
@@ -410,16 +259,11 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 								) : (
 									<Link
 										href={section.href}
-										className={`
-											flex items-center gap-3 rounded-lg px-3 py-2.5
-											text-sm font-medium transition-all
-											hover:bg-zinc-100 dark:hover:bg-zinc-800
-											${
-												pathname === section.href
-													? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
-													: "text-zinc-700 dark:text-zinc-300"
-											}
-										`}
+									className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all"
+									style={pathname === section.href
+										? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-heading)' }
+										: { color: 'var(--dashboard-text)' }
+									}
 										title={isCollapsed ? section.title : undefined}
 									>
 										{section.icon}
@@ -432,16 +276,16 @@ export default function ParentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCol
 
 					{/* Footer */}
 					{!isCollapsed && (
-						<div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
-							<div className="rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-3">
+						<div className="border-t p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
+							<div className="rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>
 								<div className="flex items-center gap-2 mb-2">
 									<span className="text-lg">👨‍👩‍👧‍👦</span>
-									<span className="text-xs font-semibold text-zinc-900 dark:text-white">
+									<span className="text-xs font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Parent Portal
 									</span>
 								</div>
-								<p className="text-xs text-zinc-600 dark:text-zinc-400">
-									Stay connected with your child's academic journey and wellbeing.
+								<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
+									Stay connected with your child&apos;s academic journey and wellbeing.
 								</p>
 							</div>
 						</div>

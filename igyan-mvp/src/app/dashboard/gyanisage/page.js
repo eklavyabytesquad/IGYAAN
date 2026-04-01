@@ -25,6 +25,7 @@ export default function GyanisagePage() {
   // Determine branding based on user role
   const isB2C = user?.role === 'b2c_student' || user?.role === 'b2c_mentor';
   const brandName = isB2C ? 'GyanAI Sage' : 'Buddy AI';
+  const brandTagline = isB2C ? '' : 'with Safety-Alert For Students';
   const shortName = isB2C ? 'Gyani Sage' : 'Buddy AI';
   const brandImage = isB2C ? '/asset/gyanaisage.jpg' : '/asset/buddyai.jpg';
 
@@ -244,6 +245,7 @@ Create 4-6 phases with clear progression.`,
           </div>
           <div>
             <h2 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h2>
+            {brandTagline && <p className="text-[9px] font-medium" style={{ color: 'var(--dashboard-primary)' }}>{brandTagline}</p>}
             <p className="text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>AI Counsellor</p>
           </div>
         </div>
@@ -325,6 +327,7 @@ Create 4-6 phases with clear progression.`,
                 <Image src={brandImage} alt={brandName} fill className="object-cover" priority />
               </div>
               <h1 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{brandName}</h1>
+              {brandTagline && <p className="text-[10px] font-medium" style={{ color: 'var(--dashboard-primary)' }}>{brandTagline}</p>}
               <p className="mt-0.5 max-w-xs text-center text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                 {currentMode.description}
               </p>
