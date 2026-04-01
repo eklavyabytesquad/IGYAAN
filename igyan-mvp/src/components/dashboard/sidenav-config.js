@@ -178,58 +178,42 @@ const FACULTY_NAV = [
 // ── Student (Institutional) ──────────────────────────────────────
 const STUDENT_NAV = [
 	{
+		label: 'Main Section',
 		items: [
 			{ key: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: Home },
-		],
-	},
-	{
-		label: 'Projects',
-		labelColor: 'text-sky-500',
-		items: [
-			{ key: 'notesGen', name: 'NoteGen AI', href: '/dashboard/tools/notes-generator', icon: FileEdit },
-			{ key: 'quickRead', name: 'QuickRead', href: '/dashboard/tools/text-summarizer', icon: FileText },
-			{ key: 'launchProject', name: 'Launch Project', href: '/dashboard/tools/project-learning', icon: Layers },
-			{ key: 'copilot', name: 'Personalized Co-Pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
-			{ key: 'ideaSpark', name: 'Idea Spark', href: '/dashboard/tools/idea-generation', icon: Lightbulb },
-			{ key: 'deckMaster', name: 'DeckMaster', href: '/dashboard/content-generator', icon: Presentation },
-		],
-	},
-	{
-		label: 'School Innovation Cell',
-		labelColor: 'text-emerald-500',
-		items: [
-			{ key: 'brainFlex', name: 'BrainFlex', href: '/dashboard/tools/quiz-me', icon: Clipboard },
-			{ key: 'sharkAi', name: 'AI Shark', href: '/dashboard/shark-ai', icon: SharkIcon, isCustomIcon: true },
-			{ key: 'incubation', name: 'Incubation Form', href: '/dashboard/incubation-hub', icon: Rocket },
+			{ key: 'copilot', name: 'Co-pilot', href: '/dashboard/copilot', icon: SudarshanIcon, isCustomIcon: true },
+			{ key: 'vivaLab', name: 'AI Viva Lab', href: '/dashboard/viva-ai', icon: Mic },
+			{ key: 'buddyAi', name: 'Buddy AI', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
 		],
 	},
 	{
 		label: 'Task Hub',
 		labelColor: 'text-purple-500',
 		items: [
-			{ key: 'homework', name: 'Homework', href: '/dashboard/homework/student', icon: BookOpen },
+			{ key: 'homework', name: 'My Homework', href: '/dashboard/homework/student', icon: BookOpen },
+			{ key: 'homeworkResults', name: 'Instant Homework Results', href: '/dashboard/homework/reports', icon: BarChart },
 			{ key: 'gamified', name: 'Gamified Homework', href: '/dashboard/gamified', icon: Puzzle },
-			{ key: 'vivaAi', name: 'AI Viva Lab', href: '/dashboard/viva-ai', icon: Mic },
-			{ key: 'reports', name: 'Report Card', href: '/dashboard/homework/reports', icon: BarChart },
+			{ key: 'skillTracks', name: 'Skill Tracks', href: '/dashboard/courses', icon: GraduationCap },
 		],
 	},
 	{
-		label: 'AI PlayZone',
-		labelColor: 'text-amber-500',
 		items: [
-			{ key: 'ideaSparkTools', name: 'Idea Spark', href: '/dashboard/tools/idea-generation', icon: Lightbulb },
-			{ key: 'notesTools', name: 'NoteGen AI', href: '/dashboard/tools/notes-generator', icon: FileEdit },
-			{ key: 'summaryTools', name: 'QuickRead', href: '/dashboard/tools/text-summarizer', icon: FileText },
-			{ key: 'quizTools', name: 'BrainFlex', href: '/dashboard/tools/quiz-me', icon: Clipboard },
-			{ key: 'projectTools', name: 'Launch Project', href: '/dashboard/tools/project-learning', icon: Layers },
-			{ key: 'pitchTools', name: 'PitchCraft', href: '/dashboard/content-generator', icon: Presentation },
+			{ key: 'aiGround', name: 'AI Ground', href: '/dashboard/tools', icon: Wrench },
+		],
+	},
+	{
+		label: 'School Innovation Cell',
+		labelColor: 'text-emerald-500',
+		items: [
+			{ key: 'ideaSpark', name: 'IDEA SPARK', href: '/dashboard/tools/idea-generation', icon: Lightbulb },
+			{ key: 'pitchCraft', name: 'Pitch Craft', href: '/dashboard/content-generator', icon: Presentation },
+			{ key: 'sharkAi', name: 'AI Shark', href: '/dashboard/shark-ai', icon: SharkIcon, isCustomIcon: true },
+			{ key: 'incubation', name: 'Incubation Form', href: '/dashboard/incubation-hub', icon: Rocket },
 		],
 	},
 	{
 		items: [
 			{ key: 'events', name: 'Campus Events', href: '/dashboard/events/student', icon: Calendar },
-			{ key: 'courses', name: 'SkillTracks', href: '/dashboard/courses', icon: GraduationCap },
-			{ key: 'gyanisage', name: 'Buddy AI', href: '/dashboard/gyanisage', icon: BuddyIcon, isCustomIcon: true },
 			{ key: 'settings', name: 'Settings', href: '/dashboard/settings', icon: Settings },
 		],
 	},
