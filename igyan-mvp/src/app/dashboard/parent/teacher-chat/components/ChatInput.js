@@ -15,10 +15,10 @@ export default function ChatInput({ onSend, sending, defaultFlag = "general" }) 
   };
 
   return (
-    <div className="border-t border-zinc-200 dark:border-zinc-700 p-3 bg-white dark:bg-zinc-900">
+    <div className="p-3" style={{ borderTop: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
       {/* Flag selector */}
       <div className="flex items-center gap-2 mb-2 overflow-x-auto pb-1">
-        <span className="text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">Tag:</span>
+        <span className="text-xs whitespace-nowrap" style={{ color: 'var(--dashboard-muted)' }}>Tag:</span>
         {Object.entries(MESSAGE_FLAGS).map(([key, val]) => (
           <button
             key={key}
@@ -26,10 +26,17 @@ export default function ChatInput({ onSend, sending, defaultFlag = "general" }) 
             className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-all whitespace-nowrap ${
               flag === key
                 ? key === "general"
-                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                  ? ""
                   : val.color + " ring-2 ring-offset-1 ring-current"
-                : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                : ""
             }`}
+            style={
+              flag === key && key === "general"
+                ? { background: 'var(--dashboard-primary)', color: '#fff' }
+                : flag !== key
+                ? { background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }
+                : undefined
+            }
           >
             {val.icon} {val.label}
           </button>
@@ -54,12 +61,14 @@ export default function ChatInput({ onSend, sending, defaultFlag = "general" }) 
               : "Type a message..."
           }
           rows={2}
-          className="flex-1 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="flex-1 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2"
+          style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)', outlineColor: 'var(--dashboard-primary)' }}
         />
         <button
           onClick={handleSend}
           disabled={sending || !message.trim()}
-          className="rounded-xl bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white p-3 transition-colors"
+          className="rounded-xl disabled:opacity-50 text-white p-3 transition-colors hover:opacity-90"
+          style={{ background: 'var(--dashboard-primary)' }}
         >
           {sending ? (
             <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

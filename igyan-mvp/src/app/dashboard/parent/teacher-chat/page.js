@@ -881,20 +881,20 @@ function TeacherChatContent() {
       {/* ════════════════ HOMEWORK TAB ════════════════ */}
       {activeTab === "homework" && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 p-4">
+          <div className="rounded-xl p-4" style={{ border: '1px solid color-mix(in srgb, var(--dashboard-primary) 30%, transparent)', background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-lg">📚</span>
-              <h3 className="font-semibold text-blue-700 dark:text-blue-400">Homework Queries</h3>
+              <h3 className="font-semibold" style={{ color: 'var(--dashboard-primary)' }}>Homework Queries</h3>
             </div>
-            <p className="text-sm text-blue-600 dark:text-blue-300">
+            <p className="text-sm" style={{ color: 'var(--dashboard-text)' }}>
               Send homework-related questions directly to the class teacher. Messages are tagged with{" "}
-              <strong className="text-blue-700 dark:text-blue-400">HW</strong> flag for quick identification.
+              <strong style={{ color: 'var(--dashboard-primary)' }}>HW</strong> flag for quick identification.
             </p>
           </div>
 
           {/* Quick HW message sender */}
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4 space-y-3">
-            <h4 className="font-medium text-zinc-900 dark:text-white">Send Homework Query</h4>
+          <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
+            <h4 className="font-medium" style={{ color: 'var(--dashboard-heading)' }}>Send Homework Query</h4>
             <textarea
               value={hwMessage}
               onChange={(e) => setHwMessage(e.target.value)}
@@ -906,13 +906,15 @@ function TeacherChatContent() {
               }}
               placeholder="E.g., What is the homework for Maths today? / My child didn't understand the Science assignment..."
               rows={3}
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2"
+              style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)', outlineColor: 'var(--dashboard-primary)' }}
             />
             <div className="flex justify-end">
               <button
                 onClick={sendHwQuery}
                 disabled={sending || !hwMessage.trim()}
-                className="rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white px-6 py-2 text-sm font-medium transition-colors flex items-center gap-2"
+                className="rounded-lg disabled:opacity-50 text-white px-6 py-2 text-sm font-medium transition-colors flex items-center gap-2 hover:opacity-90"
+                style={{ background: 'var(--dashboard-primary)' }}
               >
                 📚 Send as HW Query
                 {sending && (
@@ -925,28 +927,28 @@ function TeacherChatContent() {
           </div>
 
           {/* HW-flagged messages history */}
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-            <div className="border-b border-zinc-200 dark:border-zinc-700 px-4 py-3">
-              <h3 className="font-semibold text-zinc-900 dark:text-white">📝 Previous HW Queries</h3>
+          <div className="rounded-xl" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
+            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
+              <h3 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>📝 Previous HW Queries</h3>
             </div>
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y" style={{ borderColor: 'var(--dashboard-border)' }}>
               {messages.filter((m) => m.flag === "homework").length === 0 ? (
-                <div className="p-8 text-center text-zinc-400 text-sm">No homework queries yet</div>
+                <div className="p-8 text-center text-sm" style={{ color: 'var(--dashboard-muted)' }}>No homework queries yet</div>
               ) : (
                 messages
                   .filter((m) => m.flag === "homework")
                   .map((msg) => (
                     <div key={msg.id} className="px-4 py-3">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-0.5 text-xs font-bold">
+                        <span className="rounded-full px-2 py-0.5 text-xs font-bold" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)', color: 'var(--dashboard-primary)' }}>
                           📚 HW
                         </span>
-                        <span className="text-xs text-zinc-400">
+                        <span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                           {msg.sender_id === user?.id ? "You" : classTeacher?.name || "Teacher"} •{" "}
                           {formatDate(msg.created_at)} {formatTime(msg.created_at)}
                         </span>
                       </div>
-                      <p className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+                      <p className="text-sm whitespace-pre-wrap" style={{ color: 'var(--dashboard-text)' }}>
                         {msg.message_text}
                       </p>
                     </div>

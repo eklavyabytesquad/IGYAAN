@@ -40,31 +40,33 @@ export default function ComplaintModal({ isOpen, onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-6 shadow-xl">
+      <div className="w-full max-w-lg rounded-2xl p-6 shadow-xl" style={{ background: 'var(--dashboard-surface-solid)', border: '1px solid var(--dashboard-border)' }}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">🚩 File a Complaint</h3>
-          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600 text-xl">✕</button>
+          <h3 className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>🚩 File a Complaint</h3>
+          <button onClick={onClose} className="text-xl hover:opacity-70" style={{ color: 'var(--dashboard-muted)' }}>✕</button>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Subject *</label>
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--dashboard-text)' }}>Subject *</label>
             <input
               type="text"
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
               placeholder="Brief subject of complaint"
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+              style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)', outlineColor: '#ef4444' }}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Type</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--dashboard-text)' }}>Type</label>
               <select
                 value={form.complaint_type}
                 onChange={(e) => setForm({ ...form, complaint_type: e.target.value })}
-                className="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm"
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)' }}
               >
                 {COMPLAINT_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -74,11 +76,12 @@ export default function ComplaintModal({ isOpen, onClose, onSubmit }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Priority</label>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--dashboard-text)' }}>Priority</label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                className="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm"
+                className="w-full rounded-lg px-3 py-2 text-sm"
+                style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)' }}
               >
                 {PRIORITIES.map((p) => (
                   <option key={p.value} value={p.value}>
@@ -90,20 +93,22 @@ export default function ComplaintModal({ isOpen, onClose, onSubmit }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Description *</label>
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--dashboard-text)' }}>Description *</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="Describe the issue in detail..."
               rows={4}
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2"
+              style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-heading)', outlineColor: '#ef4444' }}
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={onClose}
-              className="rounded-lg border border-zinc-300 dark:border-zinc-600 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
+              style={{ border: '1px solid var(--dashboard-border)', color: 'var(--dashboard-text)' }}
             >
               Cancel
             </button>

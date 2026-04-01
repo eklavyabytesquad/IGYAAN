@@ -11,9 +11,9 @@ export default function ChatMessages({ messages, userId, classTeacherName, forma
   }, [messages]);
 
   return (
-    <div className="h-[500px] overflow-y-auto p-4 space-y-3 bg-zinc-50 dark:bg-zinc-950">
+    <div className="h-[500px] overflow-y-auto p-4 space-y-3" style={{ background: 'var(--dashboard-background)' }}>
       {messages.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-full text-zinc-400">
+        <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--dashboard-muted)' }}>
           <span className="text-4xl mb-2">💬</span>
           <p className="text-sm">No messages yet. Start a conversation with the class teacher!</p>
         </div>
@@ -26,13 +26,18 @@ export default function ChatMessages({ messages, userId, classTeacherName, forma
               <div
                 className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
                   isMe
-                    ? "bg-green-500 text-white rounded-br-md"
-                    : "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-700 rounded-bl-md"
+                    ? "text-white rounded-br-md"
+                    : "rounded-bl-md"
                 }`}
+                style={
+                  isMe
+                    ? { background: 'var(--dashboard-primary)' }
+                    : { background: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-heading)', border: '1px solid var(--dashboard-border)' }
+                }
               >
                 {/* Sender label for teacher messages */}
                 {!isMe && (
-                  <p className="text-xs font-semibold text-green-600 dark:text-green-400 mb-0.5">
+                  <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--dashboard-primary)' }}>
                     {classTeacherName || "Class Teacher"}
                   </p>
                 )}
@@ -49,11 +54,11 @@ export default function ChatMessages({ messages, userId, classTeacherName, forma
                 )}
                 <p className="text-sm whitespace-pre-wrap">{msg.message_text}</p>
                 <div className={`flex items-center gap-1 mt-1 ${isMe ? "justify-end" : "justify-start"}`}>
-                  <span className={`text-xs ${isMe ? "text-green-100" : "text-zinc-400"}`}>
+                  <span className={`text-xs ${isMe ? "text-white/70" : ""}`} style={!isMe ? { color: 'var(--dashboard-muted)' } : undefined}>
                     {formatTime(msg.created_at)}
                   </span>
-                  {isMe && msg.is_read && <span className="text-xs text-green-100">✓✓</span>}
-                  {isMe && !msg.is_read && <span className="text-xs text-green-200">✓</span>}
+                  {isMe && msg.is_read && <span className="text-xs text-white/70">✓✓</span>}
+                  {isMe && !msg.is_read && <span className="text-xs text-white/50">✓</span>}
                 </div>
               </div>
             </div>
