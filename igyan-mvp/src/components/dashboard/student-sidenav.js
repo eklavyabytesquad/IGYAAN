@@ -298,15 +298,17 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				)}
 
 				{/* Navigation */}
-				<nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+				<nav className="flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden px-3 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 					{studentNavSections.map((section) => {
 						// Section Label
 						if (section.type === 'label') {
 							if (isCollapsed) return null;
 							return (
-								<div key={section.key} className="px-3 pt-2 pb-1">
-									<p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--dashboard-primary)' }}>
-										{section.title}
+								<div key={section.key} className="px-2 pt-4 pb-2 first:pt-0">
+									<p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest" style={{ color: 'var(--dashboard-muted)' }}>
+										<span className="h-px flex-1" style={{ background: 'var(--dashboard-border)' }}></span>
+										<span>{section.title}</span>
+										<span className="h-px flex-1" style={{ background: 'var(--dashboard-border)' }}></span>
 									</p>
 								</div>
 							);
@@ -314,36 +316,41 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 
 						const isActive = pathname === section.href;
 						const isExpanded = expandedSections[section.key];
+						const hasActiveChild = section.subItems?.some(item => pathname === item.href);
 
 						if (section.isExpandable) {
 							return (
-								<div key={section.key} className="space-y-1">
+								<div key={section.key} className="mt-1">
 									<button
 										onClick={() => !isCollapsed && toggleSection(section.key)}
-										className={`group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+										className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
 											isCollapsed ? "lg:justify-center lg:px-0" : ""
 										}`}
-										style={section.subItems?.some(item => pathname === item.href)
-											? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-heading)' }
+										style={hasActiveChild
+											? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }
 											: { color: 'var(--dashboard-text)' }
 										}
 										title={isCollapsed ? section.title : ""}
 									>
-										<div className={`${isCollapsed ? "lg:mx-auto" : ""} transition-transform`}>
+										<div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all ${isCollapsed ? "lg:mx-auto" : ""}`}
+											style={hasActiveChild
+												? { background: 'var(--dashboard-primary)', color: 'white' }
+												: { background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)', color: 'var(--dashboard-text)' }
+											}
+										>
 											{section.icon}
 										</div>
 										{!isCollapsed && (
 											<>
 												<span className="flex-1 text-left">{section.title}</span>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2"
-													className={`h-4 w-4 transition-transform duration-200 ${
-														isExpanded ? "rotate-180" : ""
-													}`}
+												<span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+													style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }}
+												>
+													{section.subItems?.length}
+												</span>
+												<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+													className={`h-3.5 w-3.5 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+													style={{ color: 'var(--dashboard-muted)' }}
 												>
 													<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 												</svg>
@@ -351,33 +358,36 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 										)}
 									</button>
 
-									{isExpanded && !isCollapsed && section.subItems && (
-										<div className="ml-3 space-y-0.5 border-l-2 pl-4" style={{ borderColor: 'var(--dashboard-border)' }}>
-											{section.subItems.map((subItem) => {
-												const isSubActive = pathname === subItem.href;
-												return (
-													<Link
-														key={subItem.key}
-														href={subItem.href}
-														onClick={() => setIsOpen(false)}
-														className="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all"
-														style={isSubActive
-															? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-heading)' }
-															: { color: 'var(--dashboard-muted)' }
-														}
-													>
-														<span className={`text-base ${isSubActive ? "scale-110" : ""} transition-transform`}>
-															{subItem.icon}
-														</span>
-														<span className="flex-1">{subItem.name}</span>
-														{isSubActive && (
-															<div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: 'var(--dashboard-primary)' }}></div>
-														)}
-													</Link>
-												);
-											})}
-										</div>
-									)}
+									{/* Animated Dropdown */}
+									<div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded && !isCollapsed ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+										{section.subItems && (
+											<div className="ml-6 mt-1 space-y-0.5 border-l-2 pl-3 pb-1" style={{ borderColor: 'color-mix(in srgb, var(--dashboard-primary) 20%, transparent)' }}>
+												{section.subItems.map((subItem) => {
+													const isSubActive = pathname === subItem.href;
+													return (
+														<Link
+															key={subItem.key}
+															href={subItem.href}
+															onClick={() => setIsOpen(false)}
+															className="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all"
+															style={isSubActive
+																? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-primary)', borderLeft: '2px solid var(--dashboard-primary)', marginLeft: '-1px' }
+																: { color: 'var(--dashboard-muted)' }
+															}
+														>
+															<span className="flex h-6 w-6 shrink-0 items-center justify-center">
+																{subItem.icon}
+															</span>
+															<span className="flex-1">{subItem.name}</span>
+															{isSubActive && (
+																<div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: 'var(--dashboard-primary)' }}></div>
+															)}
+														</Link>
+													);
+												})}
+											</div>
+										)}
+									</div>
 								</div>
 							);
 						}
@@ -388,28 +398,33 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 								key={section.key}
 								href={section.href}
 								onClick={() => setIsOpen(false)}
-								className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+								className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
 									isCollapsed ? "lg:justify-center lg:px-0" : ""
 								}`}
 								style={isActive
-									? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-primary)' }
+									? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }
 									: { color: 'var(--dashboard-text)' }
 								}
 								title={isCollapsed ? section.title : ""}
 							>
-								<div className={`${isCollapsed ? "lg:mx-auto" : ""} ${isActive ? "scale-110" : ""} transition-transform`}>
+								<div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all ${isCollapsed ? "lg:mx-auto" : ""}`}
+									style={isActive
+										? { background: 'var(--dashboard-primary)', color: 'white' }
+										: { background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)', color: 'var(--dashboard-text)' }
+									}
+								>
 									{section.icon}
 								</div>
 								{!isCollapsed && (
 									<>
 										<span className="flex-1">{section.title}</span>
 										{section.description && (
-											<span className="text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>
+											<span className="text-[10px] max-w-[80px] truncate" style={{ color: 'var(--dashboard-muted)' }}>
 												{section.description}
 											</span>
 										)}
 										{isActive && (
-											<div className="h-2 w-2 rounded-full" style={{ backgroundColor: 'var(--dashboard-primary)' }}></div>
+											<div className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--dashboard-primary)' }}></div>
 										)}
 									</>
 								)}
@@ -420,10 +435,10 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 
 				{/* Footer */}
 				{!isCollapsed && (
-					<div className="border-t p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
-						<div className="rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>
+					<div className="p-3" style={{ borderTop: '1px solid var(--dashboard-border)' }}>
+						<div className="rounded-xl p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 6%, transparent)' }}>
 							<p className="text-xs font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Learn & Innovate</p>
-							<p className="mt-1 text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>
+							<p className="mt-0.5 text-[10px]" style={{ color: 'var(--dashboard-muted)' }}>
 								Your journey to excellence starts here
 							</p>
 						</div>
