@@ -25,7 +25,8 @@ export default function GyanisagePage() {
   // Determine branding based on user role
   const isB2C = user?.role === 'b2c_student' || user?.role === 'b2c_mentor';
   const brandName = isB2C ? 'GyanAI Sage' : 'Buddy AI';
-  const brandTagline = isB2C ? '' : 'with Safety-Alert For Students';
+  const isStudent = user?.role === 'student';
+  const brandTagline = isB2C || isStudent ? '' : 'with Safety-Alert For Students';
   const shortName = isB2C ? 'Gyani Sage' : 'Buddy AI';
   const brandImage = isB2C ? '/asset/gyanaisage.jpg' : '/asset/buddyai.jpg';
 

@@ -154,17 +154,17 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 			{/* Sidenav */}
 			<aside
 				className={`
-					fixed left-0 top-0 z-50 h-screen bg-white dark:bg-zinc-900 
-					border-r border-zinc-200 dark:border-zinc-800 
+					fixed left-0 top-0 z-50 h-screen
 					transition-all duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full"}
 					${isCollapsed ? "w-20" : "w-72"}
 					lg:translate-x-0
 				`}
+				style={{ background: 'var(--dashboard-background)', borderRight: '1px solid var(--dashboard-border)' }}
 			>
 				<div className="flex h-full flex-col">
 					{/* Header with Logo */}
-					<div className="flex h-16 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4">
+					<div className="flex h-16 items-center justify-between px-4" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
 						{!isCollapsed && schoolData?.logo_url ? (
 							<div className="flex items-center gap-3">
 								<Image
@@ -175,10 +175,10 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 									className="h-8 w-8 rounded-lg object-contain"
 								/>
 								<div className="flex flex-col">
-									<span className="text-sm font-semibold text-zinc-900 dark:text-white">
+									<span className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										{schoolData.school_name || "I-GYAN"}
 									</span>
-									<span className="text-xs text-zinc-500 dark:text-zinc-400">
+									<span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 										Counselor Portal
 									</span>
 								</div>
@@ -186,10 +186,10 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						) : (
 							!isCollapsed && (
 								<div className="flex items-center gap-2">
-									<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
+									<div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'var(--dashboard-primary)' }}>
 										<span className="text-sm font-bold text-white">🧘</span>
 									</div>
-									<span className="text-lg font-bold text-zinc-900 dark:text-white">
+									<span className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 										I-GYAN
 									</span>
 								</div>
@@ -199,7 +199,7 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						{/* Collapse Toggle (Desktop Only) */}
 						<button
 							onClick={() => setIsCollapsed(!isCollapsed)}
-							className="hidden rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:block"
+							className="hidden rounded-lg p-2 hover:opacity-80 lg:block"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -207,9 +207,10 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 								fill="none"
 								stroke="currentColor"
 								strokeWidth="2"
-								className={`h-5 w-5 text-zinc-600 dark:text-zinc-400 transition-transform ${
+								className={`h-5 w-5 transition-transform ${
 									isCollapsed ? "rotate-180" : ""
 								}`}
+								style={{ color: 'var(--dashboard-muted)' }}
 							>
 								<path
 									strokeLinecap="round"
@@ -222,7 +223,7 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 						{/* Close Button (Mobile Only) */}
 						<button
 							onClick={() => setIsOpen(false)}
-							className="rounded-lg p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hidden"
+							className="rounded-lg p-2 hover:opacity-80 lg:hidden"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -242,114 +243,144 @@ export default function CounselorSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 					</div>
 
 					{/* Navigation */}
-					<nav className="flex-1 space-y-1 overflow-y-auto p-4">
-						{counselorNavSections.map((section) => (
-							<div key={section.key}>
-								{section.isExpandable ? (
-									<div>
+					<nav className="flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden px-3 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+						{counselorNavSections.map((section) => {
+							const isActive = pathname === section.href;
+							const isExpanded = expandedSections[section.key];
+							const hasActiveChild = section.subItems?.some(item => pathname === item.href);
+
+							if (section.isExpandable) {
+								return (
+									<div key={section.key} className="mt-1">
 										<button
-											onClick={() => toggleSection(section.key)}
-											className={`
-												flex w-full items-center justify-between rounded-lg px-3 py-2.5
-												text-sm font-medium transition-all
-												hover:bg-zinc-100 dark:hover:bg-zinc-800
-												${
-													section.subItems?.some(item => pathname === item.href)
-														? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
-														: "text-zinc-700 dark:text-zinc-300"
-												}
-											`}
+											onClick={() => !isCollapsed && toggleSection(section.key)}
+											className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
+											style={hasActiveChild
+												? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }
+												: { color: 'var(--dashboard-text)' }
+											}
+											title={isCollapsed ? section.title : ""}
 										>
-											<div className="flex items-center gap-3">
+											<div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all ${isCollapsed ? "lg:mx-auto" : ""}`}
+												style={hasActiveChild
+													? { background: 'var(--dashboard-primary)', color: 'white' }
+													: { background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)', color: 'var(--dashboard-text)' }
+												}
+											>
 												{section.icon}
-												{!isCollapsed && <span>{section.title}</span>}
 											</div>
 											{!isCollapsed && (
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2"
-													className={`h-4 w-4 transition-transform ${
-														expandedSections[section.key] ? "rotate-180" : ""
-													}`}
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														d="M19 9l-7 7-7-7"
-													/>
-												</svg>
+												<>
+													<span className="flex-1 text-left">{section.title}</span>
+													<span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+														style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }}
+													>
+														{section.subItems?.length}
+													</span>
+													<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+														className={`h-3.5 w-3.5 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+														style={{ color: 'var(--dashboard-muted)' }}
+													>
+														<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+													</svg>
+												</>
+											)}
+											{isCollapsed && (
+												<div className="invisible absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 lg:block hidden" style={{ background: 'var(--dashboard-surface-solid)' }}>
+													{section.title}
+												</div>
 											)}
 										</button>
 
-										{/* Sub Items */}
-										{expandedSections[section.key] && !isCollapsed && (
-											<div className="ml-4 mt-1 space-y-1 border-l-2 border-zinc-200 dark:border-zinc-700 pl-4">
-												{section.subItems.map((item) => (
-													<Link
-														key={item.key}
-														href={item.href}
-														className={`
-															flex items-center justify-between gap-2 rounded-lg px-3 py-2
-															text-sm transition-all
-															hover:bg-zinc-100 dark:hover:bg-zinc-800
-															${
-																pathname === item.href
-																	? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 font-medium"
-																	: "text-zinc-600 dark:text-zinc-400"
-															}
-														`}
-													>
-														<div className="flex items-center gap-2">
-															<span className="text-base">{item.icon}</span>
-															<span>{item.name}</span>
-														</div>
-														{item.badge && (
-															<span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-medium text-white animate-pulse">
-																{item.badge}
-															</span>
-														)}
-													</Link>
-												))}
-											</div>
-										)}
+										{/* Animated Dropdown */}
+										<div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded && !isCollapsed ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+											{section.subItems && (
+												<div className="ml-6 mt-1 space-y-0.5 border-l-2 pl-3 pb-1" style={{ borderColor: 'color-mix(in srgb, var(--dashboard-primary) 20%, transparent)' }}>
+													{section.subItems.map((subItem) => {
+														const isSubActive = pathname === subItem.href;
+														return (
+															<Link
+																key={subItem.key}
+																href={subItem.href}
+																onClick={() => setIsOpen(false)}
+																className="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all"
+																style={isSubActive
+																	? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)', color: 'var(--dashboard-primary)', borderLeft: '2px solid var(--dashboard-primary)', marginLeft: '-1px' }
+																	: { color: 'var(--dashboard-muted)' }
+																}
+															>
+																<span className="flex h-6 w-6 shrink-0 items-center justify-center text-base">
+																	{subItem.icon}
+																</span>
+																<span className="flex-1">{subItem.name}</span>
+																{subItem.badge && (
+																	<span className="rounded-full px-2 py-0.5 text-xs font-medium text-white animate-pulse" style={{ background: 'var(--dashboard-primary)' }}>
+																		{subItem.badge}
+																	</span>
+																)}
+																{isSubActive && !subItem.badge && (
+																	<div className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--dashboard-primary)' }}></div>
+																)}
+															</Link>
+														);
+													})}
+												</div>
+											)}
+										</div>
 									</div>
-								) : (
-									<Link
-										href={section.href}
-										className={`
-											flex items-center gap-3 rounded-lg px-3 py-2.5
-											text-sm font-medium transition-all
-											hover:bg-zinc-100 dark:hover:bg-zinc-800
-											${
-												pathname === section.href
-													? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400"
-													: "text-zinc-700 dark:text-zinc-300"
-											}
-										`}
-										title={isCollapsed ? section.title : undefined}
+								);
+							}
+
+							// Regular Section
+							return (
+								<Link
+									key={section.key}
+									href={section.href}
+									onClick={() => setIsOpen(false)}
+									className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
+									style={isActive
+										? { backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }
+										: { color: 'var(--dashboard-text)' }
+									}
+									title={isCollapsed ? section.title : ""}
+								>
+									<div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all ${isCollapsed ? "lg:mx-auto" : ""}`}
+										style={isActive
+											? { background: 'var(--dashboard-primary)', color: 'white' }
+											: { background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)', color: 'var(--dashboard-text)' }
+										}
 									>
 										{section.icon}
-										{!isCollapsed && <span>{section.title}</span>}
-									</Link>
-								)}
-							</div>
-						))}
+									</div>
+									{!isCollapsed && (
+										<>
+											<span className="flex-1">{section.title}</span>
+											{isActive && (
+												<div className="h-2 w-2 rounded-full animate-pulse" style={{ background: 'var(--dashboard-primary)' }}></div>
+											)}
+										</>
+									)}
+									{isCollapsed && (
+										<div className="invisible absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 lg:block hidden" style={{ background: 'var(--dashboard-surface-solid)' }}>
+											{section.title}
+										</div>
+									)}
+								</Link>
+							);
+						})}
 					</nav>
 
 					{/* Footer */}
 					{!isCollapsed && (
-						<div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
-							<div className="rounded-lg bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-3">
+						<div className="p-3" style={{ borderTop: '1px solid var(--dashboard-border)' }}>
+							<div className="rounded-xl p-3" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 6%, transparent)' }}>
 								<div className="flex items-center gap-2 mb-2">
 									<span className="text-lg">🧘‍♀️</span>
-									<span className="text-xs font-semibold text-zinc-900 dark:text-white">
+									<span className="text-xs font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 										Counselor Mode
 									</span>
 								</div>
-								<p className="text-xs text-zinc-600 dark:text-zinc-400">
+								<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
 									Monitor student wellbeing and respond to AI safety alerts in real-time.
 								</p>
 							</div>
