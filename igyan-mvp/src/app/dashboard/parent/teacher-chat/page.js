@@ -742,13 +742,13 @@ function TeacherChatContent() {
           </div>
 
           {/* Call History */}
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-            <div className="border-b border-zinc-200 dark:border-zinc-700 px-4 py-3">
-              <h3 className="font-semibold text-zinc-900 dark:text-white">📋 Call History</h3>
+          <div className="rounded-xl" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
+            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
+              <h3 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>📋 Call History</h3>
             </div>
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y" style={{ borderColor: 'var(--dashboard-border)' }}>
               {callLogs.length === 0 ? (
-                <div className="p-8 text-center text-zinc-400 text-sm">No call history yet</div>
+                <div className="p-8 text-center text-sm" style={{ color: 'var(--dashboard-muted)' }}>No call history yet</div>
               ) : (
                 callLogs.map((log) => (
                   <div key={log.id} className="flex items-center justify-between px-4 py-3">
@@ -761,24 +761,25 @@ function TeacherChatContent() {
                           : "📞"}
                       </span>
                       <div>
-                        <p className="text-sm font-medium text-zinc-900 dark:text-white">
+                        <p className="text-sm font-medium" style={{ color: 'var(--dashboard-heading)' }}>
                           {log.call_type === "callback_request" ? "Callback Request" : "Call"}
                         </p>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>
                           {formatDate(log.created_at)} • {formatTime(log.created_at)}
                         </p>
                       </div>
                     </div>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className="rounded-full px-2 py-0.5 text-xs font-medium"
+                      style={
                         log.call_status === "completed"
-                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          ? { background: 'color-mix(in srgb, #10b981 15%, transparent)', color: '#10b981' }
                           : log.call_status === "requested"
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                          ? { background: 'color-mix(in srgb, #3b82f6 15%, transparent)', color: '#3b82f6' }
                           : log.call_status === "missed"
-                          ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                          : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      }`}
+                          ? { background: 'color-mix(in srgb, #ef4444 15%, transparent)', color: '#ef4444' }
+                          : { background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }
+                      }
                     >
                       {log.call_status}
                     </span>
@@ -794,10 +795,11 @@ function TeacherChatContent() {
       {activeTab === "complaint" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-zinc-900 dark:text-white">🚩 My Complaints</h3>
+            <h3 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>🚩 My Complaints</h3>
             <button
               onClick={() => setShowComplaintModal(true)}
-              className="rounded-lg bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm font-medium transition-colors"
+              className="rounded-lg text-white px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
+              style={{ background: '#ef4444' }}
             >
               + File New Complaint
             </button>
@@ -805,14 +807,15 @@ function TeacherChatContent() {
 
           <div className="space-y-3">
             {complaints.length === 0 ? (
-              <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-8 text-center text-zinc-400 text-sm">
+              <div className="rounded-xl p-8 text-center text-sm" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-muted)' }}>
                 No complaints filed yet
               </div>
             ) : (
               complaints.map((c) => (
                 <div
                   key={c.id}
-                  className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4"
+                  className="rounded-xl p-4"
+                  style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -831,35 +834,36 @@ function TeacherChatContent() {
                           {c.priority.toUpperCase()}
                         </span>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                          className="rounded-full px-2 py-0.5 text-xs font-medium"
+                          style={
                             c.status === "open"
-                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                              ? { background: 'color-mix(in srgb, #3b82f6 15%, transparent)', color: '#3b82f6' }
                               : c.status === "in_progress"
-                              ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                              ? { background: 'color-mix(in srgb, #f59e0b 15%, transparent)', color: '#f59e0b' }
                               : c.status === "resolved"
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                              ? { background: 'color-mix(in srgb, #10b981 15%, transparent)', color: '#10b981' }
                               : c.status === "escalated"
-                              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                              : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                          }`}
+                              ? { background: 'color-mix(in srgb, #ef4444 15%, transparent)', color: '#ef4444' }
+                              : { background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }
+                          }
                         >
                           {c.status.replace("_", " ").toUpperCase()}
                         </span>
-                        <span className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-500">
+                        <span className="rounded-full px-2 py-0.5 text-xs" style={{ background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }}>
                           {c.complaint_type}
                         </span>
                       </div>
-                      <h4 className="font-semibold text-zinc-900 dark:text-white">{c.subject}</h4>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{c.description}</p>
+                      <h4 className="font-semibold" style={{ color: 'var(--dashboard-heading)' }}>{c.subject}</h4>
+                      <p className="text-sm mt-1" style={{ color: 'var(--dashboard-text)' }}>{c.description}</p>
                       {c.resolution_notes && (
-                        <div className="mt-2 rounded-lg bg-green-50 dark:bg-green-950/30 p-2 border border-green-200 dark:border-green-800">
-                          <p className="text-xs text-green-700 dark:text-green-400">
+                        <div className="mt-2 rounded-lg p-2" style={{ background: 'color-mix(in srgb, #10b981 10%, transparent)', border: '1px solid color-mix(in srgb, #10b981 30%, transparent)' }}>
+                          <p className="text-xs" style={{ color: '#10b981' }}>
                             <strong>✅ Resolution:</strong> {c.resolution_notes}
                           </p>
                         </div>
                       )}
                     </div>
-                    <span className="text-xs text-zinc-400 whitespace-nowrap">{formatDate(c.created_at)}</span>
+                    <span className="text-xs whitespace-nowrap" style={{ color: 'var(--dashboard-muted)' }}>{formatDate(c.created_at)}</span>
                   </div>
                 </div>
               ))
