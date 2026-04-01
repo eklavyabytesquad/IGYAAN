@@ -12,7 +12,7 @@ import { MESSAGE_FLAGS } from "./components/constants";
 
 export default function TeacherChatPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--dashboard-primary)' }}></div></div>}>
       <TeacherChatContent />
     </Suspense>
   );
@@ -582,8 +582,8 @@ function TeacherChatContent() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-          <p className="text-sm text-zinc-500">Loading class teacher info...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--dashboard-primary)' }}></div>
+          <p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>Loading class teacher info...</p>
         </div>
       </div>
     );
@@ -594,10 +594,10 @@ function TeacherChatContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--dashboard-heading)' }}>
             👨‍🏫 Class Teacher Communication
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm mt-1" style={{ color: 'var(--dashboard-muted)' }}>
             Chat, call, or raise concerns directly with your child&apos;s class teacher
           </p>
         </div>
@@ -605,14 +605,15 @@ function TeacherChatContent() {
         {/* Child selector */}
         {children.length > 1 && (
           <div className="flex items-center gap-2">
-            <label className="text-sm text-zinc-500 dark:text-zinc-400">Child:</label>
+            <label className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>Child:</label>
             <select
               value={selectedChild?.id || ""}
               onChange={(e) => {
                 const child = children.find((c) => c.id === e.target.value);
                 setSelectedChild(child);
               }}
-              className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+              style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-heading)', outlineColor: 'var(--dashboard-primary)' }}
             >
               {children.map((child) => (
                 <option key={child.id} value={child.id}>
@@ -624,7 +625,7 @@ function TeacherChatContent() {
         )}
 
         {children.length === 1 && selectedChild && (
-          <div className="rounded-lg bg-green-50 dark:bg-green-950/30 px-3 py-1.5 text-sm text-green-700 dark:text-green-400">
+          <div className="rounded-lg px-3 py-1.5 text-sm" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)', color: 'var(--dashboard-primary)' }}>
             👧 {selectedChild.name}
           </div>
         )}
@@ -635,18 +636,18 @@ function TeacherChatContent() {
 
       {/* If no teacher assigned, show message and block all tabs */}
       {!classTeacher && !loading && (
-        <div className="rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-10 text-center space-y-4">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
+        <div className="rounded-xl border-2 border-dashed p-10 text-center space-y-4" style={{ borderColor: 'var(--dashboard-border)', background: 'var(--dashboard-surface-muted)' }}>
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full" style={{ background: 'color-mix(in srgb, #f59e0b 15%, transparent)' }}>
             <span className="text-4xl">👨‍🏫</span>
           </div>
-          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+          <h3 className="text-lg font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
             No Class Teacher Assigned Yet
           </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
+          <p className="text-sm max-w-md mx-auto" style={{ color: 'var(--dashboard-muted)' }}>
             A class teacher has not been assigned to {selectedChild?.name || "your child"}&apos;s class in your school yet.
             Please contact your school administration to assign a class teacher.
           </p>
-          <div className="inline-flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-4 py-2 text-sm text-amber-700 dark:text-amber-400">
+          <div className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm" style={{ background: 'color-mix(in srgb, #f59e0b 10%, transparent)', border: '1px solid color-mix(in srgb, #f59e0b 30%, transparent)', color: '#f59e0b' }}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
               <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
             </svg>
@@ -657,16 +658,17 @@ function TeacherChatContent() {
 
       {/* Tab Navigation — only show when teacher is assigned */}
       {classTeacher && (<>
-      <div className="flex gap-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 p-1">
+      <div className="flex gap-1 rounded-xl p-1" style={{ background: 'var(--dashboard-surface-muted)' }}>
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+            className="flex-1 rounded-lg px-3 py-2.5 text-sm font-medium transition-all"
+            style={
               activeTab === tab.key
-                ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
-            }`}
+                ? { background: 'var(--dashboard-surface-solid)', color: 'var(--dashboard-heading)', boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }
+                : { color: 'var(--dashboard-muted)' }
+            }
           >
             <span className="block">{tab.label}</span>
             <span className="block text-xs opacity-70">{tab.desc}</span>
@@ -676,7 +678,7 @@ function TeacherChatContent() {
 
       {/* ════════════════ CHAT TAB ════════════════ */}
       {activeTab === "chat" && (
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
           <ChatMessages
             messages={messages}
             userId={user?.id}
@@ -695,17 +697,18 @@ function TeacherChatContent() {
             {classTeacher?.phone ? (
               <a
                 href={`tel:${classTeacher.phone}`}
-                className="flex flex-col items-center gap-3 rounded-xl border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 p-6 hover:bg-green-100 dark:hover:bg-green-950/50 transition-colors"
+                className="flex flex-col items-center gap-3 rounded-xl p-6 transition-colors hover:opacity-90"
+                style={{ border: '2px solid color-mix(in srgb, var(--dashboard-primary) 40%, transparent)', background: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}
               >
                 <span className="text-4xl">📞</span>
-                <span className="font-semibold text-green-700 dark:text-green-400">Voice Call</span>
-                <span className="text-xs text-zinc-500">{classTeacher.phone}</span>
+                <span className="font-semibold" style={{ color: 'var(--dashboard-primary)' }}>Voice Call</span>
+                <span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>{classTeacher.phone}</span>
               </a>
             ) : (
-              <div className="flex flex-col items-center gap-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-6 opacity-50">
+              <div className="flex flex-col items-center gap-3 rounded-xl p-6 opacity-50" style={{ border: '2px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)' }}>
                 <span className="text-4xl">📞</span>
-                <span className="font-semibold text-zinc-500">No Phone</span>
-                <span className="text-xs text-zinc-400">Phone not available</span>
+                <span className="font-semibold" style={{ color: 'var(--dashboard-muted)' }}>No Phone</span>
+                <span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Phone not available</span>
               </div>
             )}
             <a
@@ -716,23 +719,25 @@ function TeacherChatContent() {
               }
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex flex-col items-center gap-3 rounded-xl border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 p-6 transition-colors ${
+              className={`flex flex-col items-center gap-3 rounded-xl p-6 transition-colors ${
                 classTeacher?.phone
-                  ? "hover:bg-emerald-100 dark:hover:bg-emerald-950/50"
+                  ? "hover:opacity-90"
                   : "opacity-50 pointer-events-none"
               }`}
+              style={{ border: '2px solid color-mix(in srgb, #10b981 40%, transparent)', background: 'color-mix(in srgb, #10b981 8%, transparent)' }}
             >
               <span className="text-4xl">💬</span>
-              <span className="font-semibold text-emerald-700 dark:text-emerald-400">WhatsApp</span>
-              <span className="text-xs text-zinc-500">Open in WhatsApp</span>
+              <span className="font-semibold" style={{ color: '#10b981' }}>WhatsApp</span>
+              <span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Open in WhatsApp</span>
             </a>
             <button
               onClick={requestCallback}
-              className="flex flex-col items-center gap-3 rounded-xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 p-6 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-colors"
+              className="flex flex-col items-center gap-3 rounded-xl p-6 transition-colors hover:opacity-90"
+              style={{ border: '2px solid color-mix(in srgb, #3b82f6 40%, transparent)', background: 'color-mix(in srgb, #3b82f6 8%, transparent)' }}
             >
               <span className="text-4xl">🔔</span>
-              <span className="font-semibold text-blue-700 dark:text-blue-400">Request Callback</span>
-              <span className="text-xs text-zinc-500">Teacher will call you back</span>
+              <span className="font-semibold" style={{ color: '#3b82f6' }}>Request Callback</span>
+              <span className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Teacher will call you back</span>
             </button>
           </div>
 

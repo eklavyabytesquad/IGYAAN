@@ -107,17 +107,17 @@ export default function ParentChildrenPage() {
 	};
 
 	const statusColors = {
-		present: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-		absent: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-		late: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+		present: { background: 'color-mix(in srgb, #10b981 15%, transparent)', color: '#10b981' },
+		absent: { background: 'color-mix(in srgb, #ef4444 15%, transparent)', color: '#ef4444' },
+		late: { background: 'color-mix(in srgb, #f59e0b 15%, transparent)', color: '#f59e0b' },
 	};
 
 	if (authLoading || loading) {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
 				<div className="flex flex-col items-center gap-4">
-					<div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-500 border-t-transparent" />
-					<p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Loading your children&apos;s info...</p>
+					<div className="h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-border)', borderTopColor: 'transparent' }} />
+					<p className="text-sm font-medium" style={{ color: 'var(--dashboard-muted)' }}>Loading your children&apos;s info...</p>
 				</div>
 			</div>
 		);
@@ -126,25 +126,25 @@ export default function ParentChildrenPage() {
 	if (!user) return null;
 
 	return (
-		<div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
+		<div className="min-h-screen" style={{ background: 'var(--dashboard-background)' }}>
 			{/* Hero */}
-			<div className="relative overflow-hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 py-8 sm:px-8">
+			<div className="relative overflow-hidden px-6 py-8 sm:px-8" style={{ background: 'var(--dashboard-surface-muted)', borderBottom: '1px solid var(--dashboard-border)' }}>
 				<div className="relative z-10">
-					<h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-3xl">
+					<h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl" style={{ color: 'var(--dashboard-heading)' }}>
 						👨‍👩‍👧‍👦 My Children
 					</h1>
-					<p className="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400">Track your children&apos;s attendance, academics, and school activities</p>
+					<p className="mt-1.5 text-sm" style={{ color: 'var(--dashboard-muted)' }}>Track your children&apos;s attendance, academics, and school activities</p>
 					<div className="mt-5 flex flex-wrap gap-3">
 						{[
 							{ icon: "🧒🏻", label: "Children", value: children.length },
 							{ icon: "✅", label: "Present Today", value: children.filter((c) => getTodayStatus(c.id) === "present").length },
 							{ icon: "📊", label: "This Week", value: Object.values(attendance).flat().length + " records" },
 						].map((s, i) => (
-							<div key={i} className="flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-2.5">
+							<div key={i} className="flex items-center gap-3 rounded-xl px-4 py-2.5" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
 								<span className="text-lg">{s.icon}</span>
 								<div>
-									<p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{s.label}</p>
-									<p className="text-lg font-bold text-zinc-900 dark:text-white">{s.value}</p>
+									<p className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>{s.label}</p>
+									<p className="text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{s.value}</p>
 								</div>
 							</div>
 						))}
@@ -155,10 +155,10 @@ export default function ParentChildrenPage() {
 			{/* Content */}
 			<div className="p-6 sm:p-8">
 				{children.length === 0 ? (
-					<div className="mx-auto max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 text-3xl dark:bg-zinc-800">🧒🏻</div>
-						<h2 className="text-xl font-bold text-zinc-900 dark:text-white">No Children Linked</h2>
-						<p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+					<div className="mx-auto max-w-md rounded-2xl p-8 text-center shadow-xl" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
+						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 10%, transparent)' }}>🧒🏻</div>
+						<h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>No Children Linked</h2>
+						<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>
 							Your account has not been linked to any student yet. Please contact your school administrator to link your children to your parent account.
 						</p>
 					</div>
@@ -175,26 +175,26 @@ export default function ParentChildrenPage() {
 									<div
 										key={child.id}
 										onClick={() => setSelectedChild(child.id)}
-										className={`cursor-pointer rounded-2xl border p-6 shadow-sm transition-all hover:shadow-md ${
-											selectedChild === child.id
-												? "border-zinc-400 bg-zinc-50 ring-2 ring-zinc-300/50 dark:border-zinc-600 dark:bg-zinc-800/50 dark:ring-zinc-600/30"
-												: "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
-										}`}
+										className={`cursor-pointer rounded-2xl p-6 shadow-sm transition-all hover:shadow-md`}
+										style={selectedChild === child.id
+											? { border: '2px solid var(--dashboard-primary)', background: 'color-mix(in srgb, var(--dashboard-primary) 5%, transparent)' }
+											: { border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }
+										}
 									>
 										{/* Child Header */}
 										<div className="flex items-start gap-4">
-											<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-lg font-bold text-white shadow-lg shadow-blue-500/25">
+											<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
 												{initials}
 											</div>
 											<div className="min-w-0 flex-1">
-												<h3 className="truncate text-lg font-bold text-zinc-900 dark:text-white">{child.full_name}</h3>
-												<p className="truncate text-sm text-zinc-500 dark:text-zinc-400">{child.email}</p>
+												<h3 className="truncate text-lg font-bold" style={{ color: 'var(--dashboard-heading)' }}>{child.full_name}</h3>
+												<p className="truncate text-sm" style={{ color: 'var(--dashboard-muted)' }}>{child.email}</p>
 												<div className="mt-1.5 flex flex-wrap gap-1.5">
-													<span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+													<span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)', color: 'var(--dashboard-primary)' }}>
 														{child.relationship || "Child"}
 													</span>
 													{child.is_primary && (
-														<span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+														<span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" style={{ background: 'color-mix(in srgb, #f59e0b 15%, transparent)', color: '#f59e0b' }}>
 															⭐ Primary
 														</span>
 													)}
@@ -203,16 +203,16 @@ export default function ParentChildrenPage() {
 										</div>
 
 										{/* Today's Status */}
-										<div className="mt-5 rounded-xl border border-zinc-100 bg-zinc-50/80 p-3.5 dark:border-zinc-800 dark:bg-zinc-800/50">
+										<div className="mt-5 rounded-xl p-3.5" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)' }}>
 											<div className="flex items-center justify-between">
-												<span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Today&apos;s Attendance</span>
+												<span className="text-xs font-medium" style={{ color: 'var(--dashboard-muted)' }}>Today&apos;s Attendance</span>
 												{todayStatus ? (
-													<span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${statusColors[todayStatus] || ""}`}>
+													<span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize" style={statusColors[todayStatus] || {}}>
 														{todayStatus === "present" && "✅ "}{todayStatus === "absent" && "❌ "}{todayStatus === "late" && "⏰ "}
 														{todayStatus}
 													</span>
 												) : (
-													<span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+													<span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium" style={{ background: 'var(--dashboard-surface-muted)', color: 'var(--dashboard-muted)' }}>
 														No record
 													</span>
 												)}
@@ -221,17 +221,17 @@ export default function ParentChildrenPage() {
 
 										{/* Weekly Stats */}
 										<div className="mt-4 grid grid-cols-3 gap-2 text-center">
-											<div className="rounded-lg bg-emerald-50 p-2 dark:bg-emerald-900/20">
-												<p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{stats.present}</p>
-												<p className="text-[10px] font-medium text-emerald-600/70 dark:text-emerald-400/70">Present</p>
+											<div className="rounded-lg p-2" style={{ background: 'color-mix(in srgb, #10b981 10%, transparent)' }}>
+												<p className="text-lg font-bold" style={{ color: '#10b981' }}>{stats.present}</p>
+												<p className="text-[10px] font-medium" style={{ color: '#10b981', opacity: 0.7 }}>Present</p>
 											</div>
-											<div className="rounded-lg bg-red-50 p-2 dark:bg-red-900/20">
-												<p className="text-lg font-bold text-red-600 dark:text-red-400">{stats.absent}</p>
-												<p className="text-[10px] font-medium text-red-600/70 dark:text-red-400/70">Absent</p>
+											<div className="rounded-lg p-2" style={{ background: 'color-mix(in srgb, #ef4444 10%, transparent)' }}>
+												<p className="text-lg font-bold" style={{ color: '#ef4444' }}>{stats.absent}</p>
+												<p className="text-[10px] font-medium" style={{ color: '#ef4444', opacity: 0.7 }}>Absent</p>
 											</div>
-											<div className="rounded-lg bg-amber-50 p-2 dark:bg-amber-900/20">
-												<p className="text-lg font-bold text-amber-600 dark:text-amber-400">{stats.late}</p>
-												<p className="text-[10px] font-medium text-amber-600/70 dark:text-amber-400/70">Late</p>
+											<div className="rounded-lg p-2" style={{ background: 'color-mix(in srgb, #f59e0b 10%, transparent)' }}>
+												<p className="text-lg font-bold" style={{ color: '#f59e0b' }}>{stats.late}</p>
+												<p className="text-[10px] font-medium" style={{ color: '#f59e0b', opacity: 0.7 }}>Late</p>
 											</div>
 										</div>
 
@@ -239,22 +239,23 @@ export default function ParentChildrenPage() {
 										{stats.total > 0 && (
 											<div className="mt-4">
 												<div className="flex items-center justify-between text-xs">
-													<span className="font-medium text-zinc-500 dark:text-zinc-400">Weekly Attendance</span>
-													<span className="font-bold text-zinc-900 dark:text-white">{stats.percentage}%</span>
+													<span className="font-medium" style={{ color: 'var(--dashboard-muted)' }}>Weekly Attendance</span>
+													<span className="font-bold" style={{ color: 'var(--dashboard-heading)' }}>{stats.percentage}%</span>
 												</div>
-												<div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+												<div className="mt-1.5 h-2 w-full overflow-hidden rounded-full" style={{ background: 'var(--dashboard-border)' }}>
 													<div
-														className={`h-full rounded-full transition-all ${
-															stats.percentage >= 75 ? "bg-emerald-500" : stats.percentage >= 50 ? "bg-amber-500" : "bg-red-500"
-														}`}
-														style={{ width: `${stats.percentage}%` }}
+														className="h-full rounded-full transition-all"
+														style={{
+															width: `${stats.percentage}%`,
+															background: stats.percentage >= 75 ? '#10b981' : stats.percentage >= 50 ? '#f59e0b' : '#ef4444'
+														}}
 													/>
 												</div>
 											</div>
 										)}
 
 										{child.phone && (
-											<p className="mt-3 text-xs text-zinc-400">📞 {child.phone}</p>
+											<p className="mt-3 text-xs" style={{ color: 'var(--dashboard-muted)' }}>📞 {child.phone}</p>
 										)}
 									</div>
 								);
@@ -268,38 +269,38 @@ export default function ParentChildrenPage() {
 							const records = (attendance[child.id] || []).slice(0, 7);
 
 							return (
-								<div className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-									<div className="border-b border-zinc-200 bg-zinc-50/80 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-800/50">
-										<h3 className="text-sm font-semibold text-zinc-900 dark:text-white">
+								<div className="rounded-2xl shadow-sm" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
+									<div className="px-6 py-4" style={{ borderBottom: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)' }}>
+										<h3 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>
 											📅 Recent Attendance — {child.full_name}
 										</h3>
 									</div>
 									{records.length === 0 ? (
 										<div className="px-6 py-10 text-center">
-											<div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-xl dark:bg-zinc-800">📅</div>
-											<p className="text-sm text-zinc-500 dark:text-zinc-400">No attendance records found for the past week.</p>
+											<div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full text-xl" style={{ background: 'var(--dashboard-surface-muted)' }}>📅</div>
+											<p className="text-sm" style={{ color: 'var(--dashboard-muted)' }}>No attendance records found for the past week.</p>
 										</div>
 									) : (
 										<div className="overflow-x-auto">
 											<table className="w-full">
-												<thead className="border-b border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-800/30">
+												<thead style={{ borderBottom: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-muted)' }}>
 													<tr>
-														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Date</th>
-														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Day</th>
-														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Status</th>
+														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--dashboard-muted)' }}>Date</th>
+														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--dashboard-muted)' }}>Day</th>
+														<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--dashboard-muted)' }}>Status</th>
 													</tr>
 												</thead>
-												<tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+												<tbody>
 													{records.map((rec, i) => {
 														const d = new Date(rec.date);
 														const day = d.toLocaleDateString("en-US", { weekday: "long" });
 														const dateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 														return (
-															<tr key={i} className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/30">
-																<td className="whitespace-nowrap px-6 py-3.5 text-sm text-zinc-900 dark:text-white">{dateStr}</td>
-																<td className="whitespace-nowrap px-6 py-3.5 text-sm text-zinc-500 dark:text-zinc-400">{day}</td>
+															<tr key={i} className="transition-colors hover:opacity-80" style={{ borderBottom: '1px solid var(--dashboard-border)' }}>
+																<td className="whitespace-nowrap px-6 py-3.5 text-sm" style={{ color: 'var(--dashboard-heading)' }}>{dateStr}</td>
+																<td className="whitespace-nowrap px-6 py-3.5 text-sm" style={{ color: 'var(--dashboard-muted)' }}>{day}</td>
 																<td className="whitespace-nowrap px-6 py-3.5">
-																	<span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${statusColors[rec.status] || ""}`}>
+																	<span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize" style={statusColors[rec.status] || {}}>
 																		{rec.status === "present" && "✅ "}{rec.status === "absent" && "❌ "}{rec.status === "late" && "⏰ "}
 																		{rec.status}
 																	</span>
@@ -317,41 +318,41 @@ export default function ParentChildrenPage() {
 
 						{/* Quick Info Cards */}
 						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-							<div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+							<div className="rounded-2xl p-5 shadow-sm" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
 								<div className="flex items-center gap-3">
-									<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-lg dark:bg-blue-900/30">💬</div>
+									<div className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>💬</div>
 									<div>
-										<h4 className="text-sm font-semibold text-zinc-900 dark:text-white">Messages</h4>
-										<p className="text-xs text-zinc-500 dark:text-zinc-400">Contact class teacher</p>
+										<h4 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Messages</h4>
+										<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Contact class teacher</p>
 									</div>
 								</div>
-								<button onClick={() => router.push("/dashboard/parent/messages")} className="mt-4 w-full rounded-xl bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-600">
+								<button onClick={() => router.push("/dashboard/parent/messages")} className="mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90" style={{ background: 'var(--dashboard-primary)' }}>
 									Open Messages
 								</button>
 							</div>
 
-							<div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+							<div className="rounded-2xl p-5 shadow-sm" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
 								<div className="flex items-center gap-3">
-									<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-lg dark:bg-purple-900/30">📋</div>
+									<div className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>📋</div>
 									<div>
-										<h4 className="text-sm font-semibold text-zinc-900 dark:text-white">Report Cards</h4>
-										<p className="text-xs text-zinc-500 dark:text-zinc-400">View academic reports</p>
+										<h4 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>Report Cards</h4>
+										<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>View academic reports</p>
 									</div>
 								</div>
-								<button onClick={() => router.push("/dashboard/parent/report-cards")} className="mt-4 w-full rounded-xl bg-purple-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-purple-600">
+								<button onClick={() => router.push("/dashboard/parent/report-cards")} className="mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90" style={{ background: 'var(--dashboard-primary)' }}>
 									View Reports
 								</button>
 							</div>
 
-							<div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+							<div className="rounded-2xl p-5 shadow-sm" style={{ border: '1px solid var(--dashboard-border)', background: 'var(--dashboard-surface-solid)' }}>
 								<div className="flex items-center gap-3">
-									<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-lg dark:bg-amber-900/30">🎫</div>
+									<div className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: 'color-mix(in srgb, var(--dashboard-primary) 15%, transparent)' }}>🎫</div>
 									<div>
-										<h4 className="text-sm font-semibold text-zinc-900 dark:text-white">School Events</h4>
-										<p className="text-xs text-zinc-500 dark:text-zinc-400">Upcoming activities</p>
+										<h4 className="text-sm font-semibold" style={{ color: 'var(--dashboard-heading)' }}>School Events</h4>
+										<p className="text-xs" style={{ color: 'var(--dashboard-muted)' }}>Upcoming activities</p>
 									</div>
 								</div>
-								<button onClick={() => router.push("/dashboard/parent/events")} className="mt-4 w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-600">
+								<button onClick={() => router.push("/dashboard/parent/events")} className="mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90" style={{ background: 'var(--dashboard-primary)' }}>
 									View Events
 								</button>
 							</div>
