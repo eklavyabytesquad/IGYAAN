@@ -42,10 +42,10 @@ export function Modal({ open, onClose, title, children, maxWidth = "max-w-2xl" }
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={onClose}>
 			<div className="absolute inset-0 bg-black/40" />
-			<div className={`relative w-full ${maxWidth} max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900`} onClick={(e) => e.stopPropagation()}>
-				<div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
-					<h2 className="text-xl font-bold text-zinc-900 dark:text-white">{title}</h2>
-					<button onClick={onClose} className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300">
+			<div className={`relative w-full ${maxWidth} max-h-[90vh] overflow-y-auto rounded-2xl border p-6 shadow-2xl`} style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }} onClick={(e) => e.stopPropagation()}>
+				<div className="mb-6 flex items-center justify-between border-b pb-4" style={{ borderColor: 'var(--dashboard-border)' }}>
+					<h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>{title}</h2>
+					<button onClick={onClose} className="rounded-lg p-2 transition-colors" style={{ color: 'var(--dashboard-muted)' }}>
 						<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
 					</button>
 				</div>
@@ -95,7 +95,7 @@ export function StatCard({ icon, label, value, color = "indigo" }) {
 				</div>
 				<div>
 					<p className={isWhite ? "text-2xl font-bold text-white" : "text-2xl font-bold text-zinc-900 dark:text-white"}>{value}</p>
-					<p className={isWhite ? "text-xs text-indigo-100" : "text-sm text-zinc-500 dark:text-zinc-400"}>{label}</p>
+						<p className={isWhite ? "text-xs text-white/70" : "text-sm"} style={isWhite ? undefined : { color: 'var(--dashboard-muted)' }}>{label}</p>
 				</div>
 			</div>
 		</div>

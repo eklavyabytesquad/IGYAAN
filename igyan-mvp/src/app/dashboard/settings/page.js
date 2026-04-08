@@ -139,7 +139,7 @@ export default function SettingsPage() {
 	return (
 		<div className="p-6 lg:p-8">
 			{/* Header */}
-			<div className="mb-8">
+			<div data-tour="settings-header" className="mb-8">
 				<h1 className="text-3xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>
 					Settings
 				</h1>
@@ -149,7 +149,7 @@ export default function SettingsPage() {
 			</div>
 
 			{/* Appearance Studio */}
-			<div className="dashboard-card mb-8 rounded-3xl border p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)' }}>
+			<div data-tour="settings-appearance" className="dashboard-card mb-8 rounded-3xl border p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)' }}>
 				<div className="grid gap-8 lg:grid-cols-[340px,1fr]">
 					<div className="flex flex-col gap-6">
 						<div>
@@ -328,7 +328,7 @@ export default function SettingsPage() {
 			</div>
 
 			{/* Settings Cards Grid */}
-			<div className="grid gap-6 lg:grid-cols-2">
+			<div data-tour="settings-cards" className="grid gap-6 lg:grid-cols-2">
 				{/* User Profile Card */}
 				<Link
 					href="/dashboard/profile"
@@ -642,7 +642,7 @@ export default function SettingsPage() {
 			</div>
 
 			{/* Additional Info */}
-			<div className="mt-8 rounded-2xl border border-dashed p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
+			<div data-tour="settings-help" className="mt-8 rounded-2xl border border-dashed p-6 shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				<div className="flex items-start gap-3">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

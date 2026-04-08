@@ -6,6 +6,7 @@ import { useAuth } from "../utils/auth_context";
 import { supabase } from "../utils/supabase";
 import DashboardNavbar from "../../components/dashboard/navbar";
 import UnifiedSidenav from "../../components/dashboard/unified-sidenav";
+import GuidedTour from "../../components/guided-tour/GuidedTour";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -144,6 +145,9 @@ export default function DashboardLayout({ children }) {
 
 	return (
 		<div className="dashboard-theme flex h-screen overflow-hidden">
+			{/* Guided Product Tour */}
+			{user && <GuidedTour userRole={user.role} userId={user.id} />}
+
 			{/* School Onboarding Popup for Super Admin */}
 			{showSchoolPopup && (
 				<div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">

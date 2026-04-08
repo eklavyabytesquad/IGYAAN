@@ -78,7 +78,7 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				<div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden" onClick={() => setIsOpen(false)} />
 			)}
 
-			<aside className={`dashboard-sidenav fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
+			<aside data-tour="sidenav" className={`dashboard-sidenav fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
 				isOpen ? "translate-x-0" : "-translate-x-full"
 			} ${isCollapsed ? "w-[68px]" : "w-60"}`}>
 
@@ -140,8 +140,7 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 								return (
 									<Link
 										key={item.key}
-										href={item.href}
-										onClick={() => setIsOpen(false)}
+										href={item.href}											data-tour={`nav-${item.key}`}										onClick={() => setIsOpen(false)}
 										className={`group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-all ${
 											isActive
 												? "bg-[color-mix(in_srgb,var(--dashboard-primary)_12%,transparent)] shadow-sm"

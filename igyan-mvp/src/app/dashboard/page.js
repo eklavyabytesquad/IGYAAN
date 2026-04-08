@@ -363,7 +363,7 @@ export default function DashboardPage() {
 			background: 'var(--dashboard-background)'
 		}}>
 			<div className="mx-auto max-w-6xl space-y-8">
-				<header className="relative overflow-hidden rounded-3xl bg-gradient-to-r p-6 text-white shadow-xl sm:p-10" style={{
+				<header data-tour="welcome-header" className="relative overflow-hidden rounded-3xl bg-gradient-to-r p-6 text-white shadow-xl sm:p-10" style={{
 					background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 80%, #000))`,
 				}}>
 					<div className="absolute inset-0 opacity-40 mix-blend-soft-light">
@@ -434,7 +434,7 @@ export default function DashboardPage() {
 					</div>
 				</header>
 
-				<section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+				<section data-tour="stat-cards" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 					{statCards.map((card) => {
 						const Icon = card.icon;
 						return (
@@ -459,7 +459,7 @@ export default function DashboardPage() {
 
 				<div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
 					<div className="space-y-6">
-						<section className="dashboard-card rounded-3xl p-6">
+						<section data-tour="quick-actions" className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<div>
 									<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Mentor Command Tools" : isB2CUser ? "Student Launch Console" : "Quick launchpad"}</h2>
@@ -494,7 +494,7 @@ export default function DashboardPage() {
 							</div>
 						</section>
 
-						<section className="dashboard-card rounded-3xl p-6">
+						<section data-tour="focus-board" className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Today's Review List" : isB2CUser ? "Today's Launch Task" : "Today's focus board"}</h2>
 								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "Quick reviews you can action now" : isB2CUser ? "One task that moves your idea forward today" : `Curated for ${firstName}`}</span>
@@ -520,7 +520,7 @@ export default function DashboardPage() {
 							</ul>
 						</section>
 
-						<section className="dashboard-card rounded-3xl p-6">
+						<section data-tour="ai-highlights" className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Mentor Intelligence Feed" : isB2CUser ? "Student Launch Insights" : "iGyanAI highlights"}</h2>
 								<Link href={isB2CUser ? "/dashboard/sudarshan" : "/dashboard/viva-ai"} className="text-xs font-semibold hover:underline" style={{color: 'var(--dashboard-primary)'}}>{isMentor ? "View mentor log" : "View chat log"}</Link>
@@ -537,7 +537,7 @@ export default function DashboardPage() {
 					</div>
 
 					<div className="space-y-6">
-						<section className="dashboard-card overflow-hidden rounded-3xl p-6">
+						<section data-tour="profile-card" className="dashboard-card overflow-hidden rounded-3xl p-6">
 							<div className="flex items-start gap-4">
 								<div className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-semibold text-white" style={{
 									background: `linear-gradient(135deg, var(--dashboard-primary), color-mix(in srgb, var(--dashboard-primary) 70%, #000))`
@@ -598,7 +598,7 @@ export default function DashboardPage() {
 							</div>
 						</section>
 
-						<section className="dashboard-card rounded-3xl p-6">
+						<section data-tour="upcoming-sessions" className="dashboard-card rounded-3xl p-6">
 							<div className="mb-6 flex items-center justify-between">
 								<h2 className="text-lg font-semibold" style={{color: 'var(--dashboard-heading)'}}>{isMentor ? "Review & Advisory Schedule" : isB2CUser ? "Student Launch Timeline" : "Upcoming timeline"}</h2>
 								<span className="text-xs" style={{color: 'var(--dashboard-muted)'}}>{isMentor ? "Your upcoming review & mentoring sessions" : isB2CUser ? "Your upcoming build & review sessions" : "Stay prepped"}</span>

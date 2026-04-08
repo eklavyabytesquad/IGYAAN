@@ -239,7 +239,7 @@ Create 4-6 phases with clear progression.`,
   return (
     <div className="flex w-full overflow-hidden" style={{ height: 'calc(100vh - 65px)', backgroundColor: 'var(--dashboard-background)' }}>
       {/* Sidebar — desktop only */}
-      <aside className="hidden w-52 shrink-0 flex-col border-r p-3 lg:flex" style={{ borderColor: 'var(--dashboard-border)' }}>
+      <aside data-tour="gyanisage-sidebar" className="hidden w-52 shrink-0 flex-col border-r p-3 lg:flex" style={{ borderColor: 'var(--dashboard-border)' }}>
         <div className="mb-4 flex items-center gap-2.5 px-1">
           <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg">
             <Image src={brandImage} alt={brandName} fill className="object-cover" priority />
@@ -320,7 +320,7 @@ Create 4-6 phases with clear progression.`,
         </div>
 
         {/* Chat body */}
-        <div className="relative flex-1 overflow-y-auto">
+        <div data-tour="gyanisage-chat" className="relative flex-1 overflow-y-auto">
           {!hasStartedChat ? (
             /* ---- Empty / Welcome State ---- */
             <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
@@ -334,7 +334,7 @@ Create 4-6 phases with clear progression.`,
               </p>
 
               {/* Quick prompts */}
-              <div className="mt-6 grid w-full max-w-md gap-2 sm:grid-cols-2">
+              <div data-tour="gyanisage-prompts" className="mt-6 grid w-full max-w-md gap-2 sm:grid-cols-2">
                 {[
                   selectedMode === 'counselling' ? "I'm feeling stressed about exams" : null,
                   selectedMode === 'counselling' ? "Help me manage my anxiety" : null,
@@ -461,6 +461,7 @@ Create 4-6 phases with clear progression.`,
 
         {/* Input bar — always visible */}
         <div
+          data-tour="gyanisage-input"
           className="border-t px-4 py-2.5"
           style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}
         >

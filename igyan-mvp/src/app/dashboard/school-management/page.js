@@ -96,8 +96,8 @@ export default function SchoolManagementPage() {
 		return (
 			<div className="flex h-screen items-center justify-center">
 				<div className="flex flex-col items-center gap-4">
-					<div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-					<p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Loading School Management...</p>
+					<div className="h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: 'var(--dashboard-primary)', borderTopColor: 'transparent' }} />
+					<p className="text-sm font-medium" style={{ color: 'var(--dashboard-muted)' }}>Loading School Management...</p>
 				</div>
 			</div>
 		);
@@ -106,10 +106,10 @@ export default function SchoolManagementPage() {
 	if (!schoolId) {
 		return (
 			<div className="flex h-screen items-center justify-center p-6">
-				<div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-3xl dark:bg-amber-900/30">🏫</div>
-					<h2 className="text-xl font-bold text-zinc-900 dark:text-white">No School Found</h2>
-					<p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Your account is not linked to any school. Please contact support or complete your school profile setup.</p>
+				<div className="w-full max-w-md rounded-2xl border p-8 text-center shadow-xl" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
+					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl" style={{ backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 12%, transparent)' }}>🏫</div>
+					<h2 className="text-xl font-bold" style={{ color: 'var(--dashboard-heading)' }}>No School Found</h2>
+					<p className="mt-2 text-sm" style={{ color: 'var(--dashboard-muted)' }}>Your account is not linked to any school. Please contact support or complete your school profile setup.</p>
 				</div>
 			</div>
 		);
@@ -117,14 +117,20 @@ export default function SchoolManagementPage() {
 
 	const sessionSelector = activeTab !== "sessions" && activeTab !== "subjects" && activeTab !== "add-students" && activeTab !== "parents" && (
 		<div className="flex items-center gap-3">
-			<span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Session:</span>
+			<span className="text-sm font-medium" style={{ color: 'var(--dashboard-muted)' }}>Session:</span>
 			<select
 				value={activeSession?.id || ""}
 				onChange={(e) => {
 					const s = sessions.find((s) => s.id === e.target.value);
 					setActiveSession(s || null);
 				}}
-				className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+				className="rounded-xl border px-3 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2"
+				style={{
+					borderColor: 'var(--dashboard-border)',
+					backgroundColor: 'var(--dashboard-surface-solid)',
+					color: 'var(--dashboard-heading)',
+					'--tw-ring-color': 'color-mix(in srgb, var(--dashboard-primary) 25%, transparent)',
+				}}
 			>
 				{sessions.map((s) => <option key={s.id} value={s.id}>{s.session_name}{s.is_active ? " ✦" : ""}</option>)}
 			</select>
@@ -132,16 +138,27 @@ export default function SchoolManagementPage() {
 	);
 
 	return (
-		<div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
+		<div
+			className="min-h-screen"
+			style={{
+				backgroundColor: 'var(--dashboard-background)',
+				'--color-indigo-50': 'color-mix(in srgb, var(--dashboard-primary) 8%, white)',
+				'--color-indigo-100': 'color-mix(in srgb, var(--dashboard-primary) 15%, white)',
+				'--color-indigo-400': 'color-mix(in srgb, var(--dashboard-primary) 85%, white)',
+				'--color-indigo-500': 'var(--dashboard-primary)',
+				'--color-indigo-600': 'var(--dashboard-primary-hover, var(--dashboard-primary))',
+				'--color-indigo-700': 'color-mix(in srgb, var(--dashboard-primary) 100%, black 15%)',
+			}}
+		>
 			{/* Hero Banner */}
-			<div className="relative overflow-hidden bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-700 px-6 py-8 sm:px-8">
+			<div data-tour="school-hero" className="relative overflow-hidden px-6 py-8 sm:px-8" style={{ background: 'var(--dashboard-primary)' }}>
 				<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDJ2LTJoMzR6bTAtMzBWMkgydjJoMzR6TTIgMjBoMzR2Mkgydi0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
 				<div className="relative z-10">
 					<h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
 						🏫 {schoolData?.name || "School Management"}
 					</h1>
-					<p className="mt-1.5 text-sm text-indigo-100/80">Manage your academic operations — sessions, classes, students, faculty & more</p>
-					<div className="mt-5 flex flex-wrap gap-3">
+					<p className="mt-1.5 text-sm text-white/70">Manage your academic operations — sessions, classes, students, faculty & more</p>
+					<div data-tour="school-stats" className="mt-5 flex flex-wrap gap-3">
 						<StatCard icon="📅" label="Sessions" value={sessions.length} color="white" />
 						<StatCard icon="📚" label="Subjects" value={subjects.length} color="white" />
 						<StatCard icon="🏫" label="Classes" value={classes.length} color="white" />
@@ -153,18 +170,19 @@ export default function SchoolManagementPage() {
 			</div>
 
 			{/* Tab Navigation */}
-			<div className="sticky top-0 z-20 border-b border-zinc-200 bg-white/90 backdrop-blur-lg dark:border-zinc-800 dark:bg-zinc-900/90">
+			<div data-tour="school-tabs" className="sticky top-0 z-20 border-b backdrop-blur-lg" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'color-mix(in srgb, var(--dashboard-surface-solid) 90%, transparent)' }}>
 				<div className="flex items-center justify-between px-6 py-3">
 					<div className="no-scrollbar flex gap-1 overflow-x-auto">
 						{TABS.map((tab) => (
 							<button
 								key={tab.id}
 								onClick={() => setActiveTab(tab.id)}
-								className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+								className="flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all"
+								style={
 									activeTab === tab.id
-										? "bg-indigo-500 text-white shadow-md shadow-indigo-500/25"
-										: "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-								}`}
+										? { backgroundColor: 'var(--dashboard-primary)', color: '#fff', boxShadow: '0 4px 6px -1px color-mix(in srgb, var(--dashboard-primary) 25%, transparent)' }
+										: { color: 'var(--dashboard-muted)' }
+								}
 							>
 								<span>{tab.icon}</span>
 								<span className="hidden sm:inline">{tab.label}</span>
@@ -176,7 +194,7 @@ export default function SchoolManagementPage() {
 			</div>
 
 			{/* Tab Content */}
-			<div className="p-6 sm:p-8">
+			<div data-tour="school-content" className="p-6 sm:p-8">
 				{activeTab === "sessions" && (
 					<SessionsTab schoolId={schoolId} sessions={sessions} onRefresh={fetchSessions} />
 				)}

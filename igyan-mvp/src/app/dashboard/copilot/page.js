@@ -504,7 +504,7 @@ IMPORTANT FORMATTING RULES:
 
 			<div className="flex h-[calc(100vh-4rem)] gap-4 p-4 lg:p-6">
 			{/* Sidebar */}
-			<div className="hidden lg:flex lg:w-80 flex-col gap-4">
+			<div data-tour="copilot-sidebar" className="hidden lg:flex lg:w-80 flex-col gap-4">
 				{/* New Chat Button */}
 				<button
 					onClick={startNewChat}
@@ -600,9 +600,9 @@ IMPORTANT FORMATTING RULES:
 			</div>
 
 			{/* Main Chat Area */}
-			<div className="flex flex-1 flex-col rounded-2xl border shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
+			<div data-tour="copilot-chat-area" className="flex flex-1 flex-col rounded-2xl border shadow-sm" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'var(--dashboard-surface-solid)' }}>
 				{/* Header */}
-				<div className="flex items-center justify-between border-b p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
+				<div data-tour="copilot-header" className="flex items-center justify-between border-b p-4" style={{ borderColor: 'var(--dashboard-border)' }}>
 					<div className="flex items-center gap-3">
 					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 via-yellow-400 to-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-900/50">
 						<Image 
@@ -795,7 +795,7 @@ IMPORTANT FORMATTING RULES:
 				</div>
 
 				{/* Input Area */}
-				<div className="border-t" style={{ borderColor: 'var(--dashboard-border)' }}>
+				<div data-tour="copilot-input" className="border-t" style={{ borderColor: 'var(--dashboard-border)' }}>
 					{/* Active Mode Indicator */}
 					{selectedMode && (
 						<div className="border-b px-4 py-2.5" style={{ borderColor: 'var(--dashboard-border)', backgroundColor: 'color-mix(in srgb, var(--dashboard-primary) 8%, transparent)' }}>

@@ -261,7 +261,7 @@ export default function EventsManagement() {
       )}
 
       {/* Header */}
-      <header className="rounded-3xl dashboard-card p-6 shadow-2xl">
+      <header data-tour="events-header" className="rounded-3xl dashboard-card p-6 shadow-2xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-4">
             <span className="rounded-2xl p-4 text-white shadow-lg" style={{ background: 'var(--dashboard-primary)' }}>
@@ -277,6 +277,7 @@ export default function EventsManagement() {
             </div>
           </div>
           <button
+            data-tour="events-create-btn"
             onClick={() => {
               if (!user?.school_id) {
                 alert('Please complete school onboarding first!');
@@ -293,7 +294,7 @@ export default function EventsManagement() {
         </div>
 
         {/* Search & Filter */}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <div data-tour="events-search" className="mt-6 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" style={{ color: 'var(--dashboard-muted)' }} />
             <input
@@ -331,7 +332,7 @@ export default function EventsManagement() {
       </header>
 
       {/* Events Grid */}
-      <div className="flex-1 overflow-y-auto rounded-3xl dashboard-card p-6 shadow-2xl">
+      <div data-tour="events-list" className="flex-1 overflow-y-auto rounded-3xl dashboard-card p-6 shadow-2xl">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredEvents.map((event) => (
             <div
