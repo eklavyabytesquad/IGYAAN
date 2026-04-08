@@ -149,22 +149,21 @@ const ROLE_BASED_NAV_CONFIG = {
 export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
 	const pathname = usePathname();
 	const { user } = useAuth();
-	const [userAccess, setUserAccess] = useState({});
+	const [userModules, setUserModules] = useState(null);
 	const [loadingAccess, setLoadingAccess] = useState(true);
 
-	// Fetch user access permissions for institutional users
-	// NOTE: user_access table is ONLY for restrictions, not requirements
-	// Users see items based on role by default, unless explicitly restricted here
+	// Fetch user access whitelist from user_access table
+	// If entries exist, only those modules are shown. If no entries, show all role-based defaults.
 	useEffect(() => {
 		if (user) {
-			fetchUserAccess();
+			fetchUserModules();
 		}
 	}, [user]);
 
-	const fetchUserAccess = async () => {
+	const fetchUserModules = async () => {
 		if (!user) return;
 
-		// Super admin and B2C users don't need user_access table
+		// Super admin and B2C users don't need access restrictions
 		const B2C_ROLES = ['b2c_student', 'b2c_mentor'];
 		if (user.role === "super_admin" || B2C_ROLES.includes(user.role)) {
 			setLoadingAccess(false);
@@ -174,19 +173,16 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		try {
 			const { data, error } = await supabase
 				.from("user_access")
-				.select("*")
+				.select("module_name")
 				.eq("user_id", user.id);
 
 			if (error) throw error;
 
-			// Create access map for RESTRICTIONS ONLY
-			// Empty map means no restrictions = full access based on role
-			const accessMap = {};
-			data?.forEach((access) => {
-				accessMap[access.module_name] = access.access_type;
-			});
-
-			setUserAccess(accessMap);
+			if (data && data.length > 0) {
+				setUserModules(new Set(data.map(d => d.module_name)));
+			} else {
+				setUserModules(null); // No restrictions
+			}
 		} catch (error) {
 			console.error("Error fetching user access:", error);
 		} finally {
@@ -194,34 +190,28 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		}
 	};
 
-	// Check if user has access to a module based on role and permissions
+	// Check if user has access to a module based on role and user_access whitelist
 	const hasAccess = (itemKey, allowedRoles, superAdminOnly) => {
 		if (!user) return false;
 		
 		// Super admin has access to everything
 		if (user.role === "super_admin") return true;
 		
-		// Check if user's role is in allowed roles
-		if (allowedRoles && !allowedRoles.includes(user.role)) return false;
-		
 		// For B2C users, role-based access is sufficient
 		const B2C_ROLES = ['b2c_student', 'b2c_mentor'];
 		if (B2C_ROLES.includes(user.role)) return true;
 		
-		// For institutional users (faculty, co_admin, student):
-		// Role-based access is PRIMARY - user_access table is only for ADDITIONAL restrictions
-		// If user has the role, they should see the item unless explicitly restricted in user_access
-		const moduleName = itemKey.replace(/([A-Z])/g, ' $1').trim();
-		
-		// If user_access is still loading, allow access based on role (optimistic UI)
+		// If still loading, allow access based on role (optimistic UI)
 		if (loadingAccess) return true;
 		
-		// If module exists in user_access, check if it's explicitly denied
-		if (userAccess.hasOwnProperty(moduleName)) {
-			return userAccess[moduleName] !== "none";
+		// If user_access whitelist exists, it is the AUTHORITATIVE source.
+		// Skip role-based check so admin-granted modules always show.
+		if (userModules !== null) {
+			return userModules.has(itemKey);
 		}
 		
-		// If module NOT in user_access table, allow access based on role (default allow)
+		// No entries in user_access → fall back to role-based defaults
+		if (allowedRoles && !allowedRoles.includes(user.role)) return false;
 		return true;
 	};
 

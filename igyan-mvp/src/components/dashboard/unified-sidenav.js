@@ -1,28 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../app/utils/auth_context";
 import { supabase } from "../../app/utils/supabase";
-import { getNavSections, ROLE_ACCESS } from "./sidenav-config";
+import { getNavSections, getMasterNavSections, ROLE_ACCESS, getMustHaveKeys } from "./sidenav-config";
 import { ChevronsLeft, X } from "lucide-react";
 
 /**
- * UnifiedSidenav — single sidenav component for all roles.
- * Replaces: sidenav.js, faculty-sidenav.js, student-sidenav.js,
- *           b2c-student-sidenav.js, counselor-sidenav.js, parent-sidenav.js
+ * Master Sidenav — single sidenav component for ALL dashboard roles.
+ * Replaces all legacy per-role sidenavs (faculty-sidenav, student-sidenav, etc.)
+ *
+ * Access logic:
+ *  1. super_admin → sees everything from their role nav
+ *  2. b2c_student / b2c_mentor → role defaults, no user_access restrictions
+ *  3. Institutional users (faculty, student, co_admin, counselor, parent):
+ *     - If user_access table has entries for this user → WHITELIST mode:
+ *       renders MASTER_NAV filtered to only granted modules
+ *     - If user_access table has NO entries → role-specific defaults
  */
 export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCollapsed, schoolData }) {
 	const pathname = usePathname();
 	const { user } = useAuth();
-	const [userAccess, setUserAccess] = useState({});
+	// undefined = still loading, null = no whitelist, Set = active whitelist
+	const [userModules, setUserModules] = useState(undefined);
 	const [loadingAccess, setLoadingAccess] = useState(true);
 
-	const sections = user ? getNavSections(user.role) : [];
-
-	// Portal labels per role
 	const portalLabels = {
 		super_admin: { title: "Admin Portal", subtitle: "Full System Control" },
 		co_admin: { title: "Admin Portal", subtitle: "School Management" },
@@ -35,42 +40,120 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 	};
 	const portal = portalLabels[user?.role] || portalLabels.student;
 
-	// ── Fetch user_access restrictions (institutional only) ──
+	// ══════════════════════════════════════════════════════════════
+	//  Fetch user_access whitelist from DB
+	// ══════════════════════════════════════════════════════════════
 	useEffect(() => {
 		if (!user) return;
-		const B2C = ['b2c_student', 'b2c_mentor'];
-		if (user.role === 'super_admin' || B2C.includes(user.role)) {
+
+		// B2C users don't use user_access — skip fetch
+		const B2C = ["b2c_student", "b2c_mentor"];
+		if (B2C.includes(user.role)) {
+			setUserModules(null);
 			setLoadingAccess(false);
 			return;
 		}
+		// All institutional users (including super_admin) check user_access
+
+		let cancelled = false;
+
 		(async () => {
 			try {
 				const { data, error } = await supabase
 					.from("user_access")
-					.select("*")
+					.select("module_name")
 					.eq("user_id", user.id);
-				if (error) throw error;
-				const map = {};
-				data?.forEach(a => { map[a.module_name] = a.access_type; });
-				setUserAccess(map);
-			} catch { /* allow all */ }
-			finally { setLoadingAccess(false); }
+
+				if (cancelled) return;
+
+				if (error) {
+					console.error("[MasterSidenav] user_access query error:", error.message, error.details, error.hint);
+					setUserModules(null); // graceful fallback — show role defaults
+					return;
+				}
+
+				if (data && data.length > 0) {
+					const moduleSet = new Set(data.map((d) => d.module_name));
+					console.log("[MasterSidenav] Whitelist active:", [...moduleSet]);
+					setUserModules(moduleSet);
+				} else {
+					console.log("[MasterSidenav] No user_access entries for", user.id, "— showing role defaults");
+					setUserModules(null);
+				}
+			} catch (err) {
+				if (!cancelled) {
+					console.error("[MasterSidenav] Exception fetching user_access:", err);
+					setUserModules(null);
+				}
+			} finally {
+				if (!cancelled) setLoadingAccess(false);
+			}
 		})();
+
+		return () => { cancelled = true; };
 	}, [user]);
 
-	const hasAccess = (itemKey) => {
+	// ══════════════════════════════════════════════════════════════
+	//  Pick nav sections based on whitelist state
+	// ══════════════════════════════════════════════════════════════
+	const rawSections = useMemo(() => {
+		if (!user) return [];
+		// Whitelist active → use MASTER_NAV so all granted items can render
+		if (userModules instanceof Set) return getMasterNavSections();
+		// No whitelist → use the curated role-specific nav
+		return getNavSections(user.role);
+	}, [user, userModules]);
+
+	// ══════════════════════════════════════════════════════════════
+	//  Access gate
+	// ══════════════════════════════════════════════════════════════
+	const mustHaves = user ? getMustHaveKeys(user.role) : new Set();
+
+	const checkAccess = (itemKey) => {
 		if (!user) return false;
-		if (user.role === 'super_admin') return true;
+
+		const B2C = ["b2c_student", "b2c_mentor"];
+		if (B2C.includes(user.role)) return true;
+
+		// Must-have items ALWAYS show (dashboard, settings, user-access for super_admin)
+		if (mustHaves.has(itemKey)) return true;
+
+		// While loading → optimistic: show whatever the role allows
+		if (loadingAccess) {
+			const allowed = ROLE_ACCESS[itemKey];
+			return !allowed || allowed.includes(user.role);
+		}
+
+		// ── Whitelist is AUTHORITATIVE for ALL roles (including super_admin) ──
+		if (userModules instanceof Set) {
+			return userModules.has(itemKey);
+		}
+
+		// ── No whitelist entries ──
+		if (user.role === "super_admin") return true;
+
+		// Other roles with no whitelist → standard ROLE_ACCESS check
 		const allowed = ROLE_ACCESS[itemKey];
 		if (allowed && !allowed.includes(user.role)) return false;
-		const B2C = ['b2c_student', 'b2c_mentor'];
-		if (B2C.includes(user.role)) return true;
-		if (loadingAccess) return true;
-		const moduleName = itemKey.replace(/([A-Z])/g, ' $1').trim();
-		if (userAccess.hasOwnProperty(moduleName)) return userAccess[moduleName] !== 'none';
 		return true;
 	};
 
+	// ══════════════════════════════════════════════════════════════
+	//  Pre-filter sections so empty ones don't render labels
+	// ══════════════════════════════════════════════════════════════
+	const sections = useMemo(() => {
+		return rawSections
+			.map((section) => ({
+				...section,
+				items: section.items.filter((item) => checkAccess(item.key)),
+			}))
+			.filter((section) => section.items.length > 0);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [rawSections, userModules, loadingAccess, user]);
+
+	// ══════════════════════════════════════════════════════════════
+	//  Render
+	// ══════════════════════════════════════════════════════════════
 	return (
 		<>
 			{/* Mobile overlay */}
@@ -78,10 +161,12 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				<div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden" onClick={() => setIsOpen(false)} />
 			)}
 
-			<aside data-tour="sidenav" className={`dashboard-sidenav fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
-				isOpen ? "translate-x-0" : "-translate-x-full"
-			} ${isCollapsed ? "w-[68px]" : "w-60"}`}>
-
+			<aside
+				data-tour="sidenav"
+				className={`dashboard-sidenav fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
+					isOpen ? "translate-x-0" : "-translate-x-full"
+				} ${isCollapsed ? "w-[68px]" : "w-60"}`}
+			>
 				{/* ── Logo ── */}
 				<div className="flex h-14 items-center justify-between border-b px-3" style={{ borderColor: "var(--dashboard-border)" }}>
 					<Link href="/dashboard" className={`flex items-center gap-2 ${isCollapsed ? "lg:justify-center" : ""}`}>
@@ -123,7 +208,7 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				<nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-2 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 					{sections.map((section, si) => (
 						<div key={si}>
-							{/* Section label */}
+							{/* Section label — only shows if section has visible items (pre-filtered) */}
 							{section.label && !isCollapsed && (
 								<p className={`mt-4 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest ${section.labelColor || "text-zinc-400"}`}>
 									{section.label}
@@ -131,16 +216,17 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 							)}
 							{section.label && isCollapsed && <div className="my-2 mx-2 border-t" style={{ borderColor: "var(--dashboard-border)" }} />}
 
-							{/* Items */}
+							{/* Items — already filtered, just render */}
 							{section.items.map((item) => {
-								if (!hasAccess(item.key)) return null;
 								const isActive = pathname === item.href;
 								const Icon = item.icon;
 
 								return (
 									<Link
 										key={item.key}
-										href={item.href}											data-tour={`nav-${item.key}`}										onClick={() => setIsOpen(false)}
+										href={item.href}
+										data-tour={`nav-${item.key}`}
+										onClick={() => setIsOpen(false)}
 										className={`group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-all ${
 											isActive
 												? "bg-[color-mix(in_srgb,var(--dashboard-primary)_12%,transparent)] shadow-sm"
