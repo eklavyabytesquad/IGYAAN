@@ -98,8 +98,8 @@ export default function ReportCardsPage() {
     if (!classId || !activeSession) return;
     const { data } = await supabase
       .from("class_students")
-      .select("student_id, users!class_students_student_id_fkey(id, full_name, email)")
-      .eq("class_id", classId).eq("session_id", activeSession.id).eq("is_active", true);
+      .select("student_id, users(id, full_name, email)")
+      .eq("class_id", classId).eq("session_id", activeSession.id).eq("status", "active");
     const list = (data || [])
       .filter((d) => d.users)
       .map((d) => ({ id: d.users.id, full_name: d.users.full_name, email: d.users.email }))

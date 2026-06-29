@@ -263,8 +263,9 @@ export default function AICopilotPage() {
 		}
 		
 		if (selectedNotes) {
-			context += `\n\nThe student is currently studying: ${selectedNotes.subject}, ${selectedNotes.chapter}, Topic: ${selectedNotes.topic}. `;
-			context += `Please provide answers relevant to this specific topic and the student's class level (Class 9th NCERT curriculum).`;
+			const classLabel = selectedNotes.grade ? selectedNotes.grade.replace(/^Grade\b/i, "Class") : "their class";
+			context += `\n\nThe student is currently studying: ${classLabel}, ${selectedNotes.subject}, ${selectedNotes.chapter}, Topic: ${selectedNotes.topic}. `;
+			context += `Please provide answers relevant to this specific topic and pitched at the difficulty level of ${classLabel} NCERT curriculum.`;
 		}
 		
 		return context;
@@ -834,7 +835,7 @@ IMPORTANT FORMATTING RULES:
 									Currently studying:
 								</span>
 								<span style={{ color: 'var(--dashboard-primary)' }}>
-									{selectedNotes.subject} â€¢ {selectedNotes.chapter} â€¢ {selectedNotes.topic}
+									{selectedNotes.grade ? `${selectedNotes.grade.replace(/^Grade\b/i, "Class")} • ` : ""}{selectedNotes.subject} • {selectedNotes.chapter} • {selectedNotes.topic}
 								</span>
 								<button
 									onClick={() => setSelectedNotes(null)}
