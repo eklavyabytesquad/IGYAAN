@@ -8,7 +8,7 @@ import extraNotes from "../../copilot-faculty/data/notes_extra.json";
 export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 	const [selectedGrade, setSelectedGrade] = useState(null);
 	const [selectedSubject, setSelectedSubject] = useState(null);
-	const [expandedChapter, setExpandedChapter] = useState(null);
+	const [selectedChapter, setSelectedChapter] = useState(null);
 
 	const handleTopicSelect = (grade, subject, chapter, topic) => {
 		onNotesSelect({ grade, subject, chapter, topic });
@@ -86,7 +86,7 @@ export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 						onChange={(e) => {
 							setSelectedGrade(e.target.value || null);
 							setSelectedSubject(null);
-							setExpandedChapter(null);
+							setSelectedChapter(null);
 						}}
 						className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 					>
@@ -109,7 +109,7 @@ export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 						disabled={!selectedGrade}
 						onChange={(e) => {
 							setSelectedSubject(e.target.value || null);
-							setExpandedChapter(null);
+							setSelectedChapter(null);
 						}}
 						className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 					>
@@ -144,55 +144,29 @@ export default function NotesSelector({ onNotesSelect, selectedNotes }) {
 				</div>
 			)}
 
-			{currentSubjectData && currentSubjectData.chapters.map((chapter) => (
-				<div key={chapter.name} className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/50">
-					<button
-						onClick={() => setExpandedChapter(expandedChapter === chapter.name ? null : chapter.name)}
-						className="flex w-full items-center justify-between p-3 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+			{currentSubjectData && (
+				<div className="mt-4">
+					<label className="mb-1.5 block text-xs font-medium text-zinc-700 dark:text-zinc-300">Chapter</label>
+					<select
+						value={selectedChapter || ""}
+						onChange={(e) => setSelectedChapter(e.target.value || null)}
+						className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-3 text-sm font-medium text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
 					>
-						<div className="flex items-center gap-2">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5 text-indigo-500">
-								<path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-							</svg>
-							<span className="text-sm font-medium text-zinc-900 dark:text-white">
-								{chapter.name}
-							</span>
-						</div>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							className={`h-4 w-4 text-zinc-500 transition-transform ${
-								expandedChapter === chapter.name ? "rotate-180" : ""
-							}`}
-						>
-							<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-						</svg>
-					</button>
-
-					{expandedChapter === chapter.name && (
-						<div className="border-t border-zinc-200 p-2 dark:border-zinc-700">
+						<option value="">Choose a chapter...</option>
+						{currentSubjectData.chapters.map((chapter) => <option key={chapter.name} value={chapter.name}>{chapter.name}</option>)}
+					</select>
+					{selectedChapter && (
+						<div className="mt-3 rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800/50">
+							<p className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Topics</p>
 							<div className="space-y-1">
-								{chapter.topics.map((topic) => (
-									<button
-										key={topic}
-										onClick={() => handleTopicSelect(selectedGrade, selectedSubject, chapter.name, topic)}
-										className={`block w-full rounded-lg px-3 py-2 text-left text-xs transition-colors ${
-											isSelected(selectedGrade, selectedSubject, chapter.name, topic)
-												? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200"
-												: "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800"
-										}`}
-									>
-										{topic}
-									</button>
+								{currentSubjectData.chapters.find((chapter) => chapter.name === selectedChapter)?.topics.map((topic) => (
+									<button key={topic} onClick={() => handleTopicSelect(selectedGrade, selectedSubject, selectedChapter, topic)} className={`block w-full rounded-lg px-3 py-2 text-left text-xs transition-colors ${isSelected(selectedGrade, selectedSubject, selectedChapter, topic) ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200" : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800"}`}>{topic}</button>
 								))}
 							</div>
 						</div>
 					)}
 				</div>
-			))}
+			)}
 		</div>
 	);
 }

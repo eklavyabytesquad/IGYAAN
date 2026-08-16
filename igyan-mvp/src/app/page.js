@@ -38,7 +38,7 @@ const mediaFeatures = [
 
 const highlights = [
   "Unified operating system for schools",
-  "Sudarshan Ai copilots for every learner and educator",
+  "Sudarshan AI copilots for every learner and educator",
   "Career and venture incubators built in",
 ];
 
@@ -51,7 +51,7 @@ const featureCards = [
   {
     title: "Personalized Learning Paths",
     description:
-  "Adaptive Sudarshan Ai copilots curate lesson plans, mastery checks, and mentorship tailored to each learner's aspirations.",
+      "Adaptive Sudarshan AI copilots curate lesson plans, mastery checks, and mentorship tailored to each learner's aspirations.",
   },
   {
     title: "Career & Entrepreneurship Studio",
@@ -68,40 +68,19 @@ const stats = [
 
 const copilots = [
   {
-  name: "Principal Sudarshan Ai",
+  name: "Principal Sudarshan AI",
     description:
       "Forecast admissions, manage compliance, and orchestrate school-wide OKRs with executive dashboards.",
   },
   {
-  name: "Faculty Sudarshan Ai",
+  name: "Faculty Sudarshan AI",
     description:
       "Generate lesson plans, formative assessments, and differentiated content in seconds.",
   },
   {
-  name: "Student Sudarshan Ai",
+  name: "Student Sudarshan AI",
     description:
       "Chat-based mentor guiding daily learning goals, career exploration, and venture pitch feedback.",
-  },
-];
-
-const heroSignals = [
-  {
-    title: "Leadership cockpit",
-    metric: "+32% forecast accuracy",
-    description:
-      "Auto-generate OKRs, board decks, and funding readiness reports in minutes with trusted data.",
-  },
-  {
-  title: "Sudarshan Ai copilots live",
-    metric: "142 lessons launched",
-    description:
-      "Differentiated lesson plans, mastery checks, and engagement nudges delivered in real time.",
-  },
-  {
-    title: "Venture studio pipeline",
-    metric: "48 demos this week",
-    description:
-      "Student founders receive mentor feedback, capital readiness scores, and alumni connections instantly.",
   },
 ];
 
@@ -167,7 +146,7 @@ const offeringMatrix = [
     professionalSuite: { status: "no", note: "Smart Study Scheduler" },
   },
   {
-    feature: "Teachers Tool Kit",
+    feature: "Teacher Toolkit",
     institutionalSuite: { status: "yes", note: "AI Lesson Planner, Content Generator & Multiple Tools"  },
     professionalSuite: { status: "no", note: "Smart Study Scheduler" },
   },
@@ -330,7 +309,7 @@ export default function Home() {
               AI-Native Learning OS
             </span>
             <h1 className="theme-heading mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Build <span className="bg-linear-to-r from-sky-500 via-cyan-400 to-sky-300 bg-clip-text text-transparent">future-first schools</span> with Sudarshan Ai copilots for every journey.
+              Build <span className="bg-linear-to-r from-sky-500 via-cyan-400 to-sky-300 bg-clip-text text-transparent">future-first schools</span> with Sudarshan AI copilots for every journey.
             </h1>
             <p className="theme-muted mt-6 max-w-2xl text-lg leading-relaxed">
               iGyanAI unifies school operations, personalized learning, and venture incubation into a single intelligent fabric. Empower your community to learn, launch, and lead with confidence.
@@ -371,33 +350,25 @@ export default function Home() {
               style={{ background: "var(--hero-card-spark-bottom)" }}
               aria-hidden="true"
             />
-            <div className="relative space-y-6">
-              <div className="flex items-center gap-3">
-                <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
-                  Live campus snapshot
-                </span>
-                <span className="theme-muted text-xs font-medium">Auto-sync every 5 minutes</span>
-              </div>
-              <p className="theme-muted text-sm leading-relaxed">
-                Leadership Sudarshan Ai copilots surface opportunities and risks before they appear. See how your school evolves in real time.
-              </p>
-              <div className="space-y-3">
-                {heroSignals.map((signal, index) => (
-                  <div
-                    key={signal.title}
-                    className="theme-surface flex items-start justify-between rounded-2xl border px-4 py-4 shadow-sm shadow-sky-500/10 transition-transform animate-float"
-                    style={{ animationDelay: `${index * 0.3}s` }}
+            <div className="relative">
+              <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
+                Platform features
+              </span>
+              <h2 className="theme-heading mt-4 text-2xl font-semibold">One AI-native OS, built for every journey.</h2>
+              <div className="mt-6 space-y-3">
+                {featureCards.map((feature, index) => (
+                  <Link
+                    key={feature.title}
+                    href="/features"
+                    className="theme-surface group flex items-start gap-4 rounded-2xl border p-4 shadow-sm shadow-sky-500/10 transition hover:-translate-y-0.5 hover:border-sky-300"
+                    style={{ animationDelay: `${index * 0.15}s` }}
                   >
-                    <div className="max-w-[220px]">
-                      <p className="theme-heading text-sm font-semibold">{signal.title}</p>
-                      <p className="theme-muted mt-1 text-xs leading-relaxed">{signal.description}</p>
-                    </div>
-                    <span className="ml-4 rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-500 dark:bg-sky-500/20 dark:text-sky-300">
-                      {signal.metric}
-                    </span>
-                  </div>
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-sky-500/10 text-lg font-bold text-sky-500 dark:bg-sky-500/20 dark:text-sky-300">0{index + 1}</span>
+                    <span><span className="theme-heading block text-sm font-semibold group-hover:text-sky-500">{feature.title}</span><span className="theme-muted mt-1 block text-xs leading-relaxed">{feature.description}</span></span>
+                  </Link>
                 ))}
               </div>
+              <Link href="/features" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-500 transition hover:text-sky-400">Explore all features <span aria-hidden="true">→</span></Link>
             </div>
           </div>
         </div>
@@ -566,7 +537,7 @@ export default function Home() {
           Designed for modern school leaders
         </h2>
         <p className="theme-muted mx-auto mt-4 max-w-3xl text-center text-base">
-          Whether you are scaling a network or reimagining a single campus, our modular Sudarshan Ai copilots adapt to your unique vision.
+              Whether you are scaling a network or reimagining a single campus, our modular Sudarshan AI copilots adapt to your unique vision.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {featureCards.map((feature, index) => (
@@ -594,7 +565,7 @@ export default function Home() {
         <div className="theme-surface grid gap-10 rounded-3xl border p-10 shadow-2xl shadow-sky-500/10 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-6">
             <h2 className="theme-heading text-3xl font-semibold">
-              Meet the iGyanAI Sudarshan Ai Suite
+              Meet the iGyanAI Sudarshan AI Suite
             </h2>
             <p className="theme-muted text-base leading-relaxed">
               Seamless assistants tuned for every stakeholder, powered by your data and large language models with enterprise-grade governance.

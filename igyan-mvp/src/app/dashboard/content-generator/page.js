@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Loader2, Download, Sparkles, FileText, Presentation, Maximize2, Minimize2, Edit3, Check, X } from 'lucide-react';
-import OpenAI from 'openai';
 import Image from 'next/image';
 import TemplateSelector from './components/TemplateSelector';
 import PreviewModal from './components/PreviewModal';
@@ -24,13 +23,6 @@ export default function ContentGenerator() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [editingSlideIndex, setEditingSlideIndex] = useState(null);
   const [editedSlides, setEditedSlides] = useState(null);
-
-  const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-  
-  const openai = new OpenAI({
-    apiKey: API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
 
   // Shark PPT specific prompt for investor pitch decks (Indian context)
   const getSharkPitchPrompt = (companyTopic) => ({
@@ -168,15 +160,16 @@ FORMAT YOUR RESPONSE AS JSON:
         ];
       }
 
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages,
-        temperature: 0.7,
-        max_tokens: contentType === 'shark-ppt' ? 3000 : 2000,
-        response_format: { type: "json_object" }
+      const response = await fetch('/api/content-generator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, contentType }),
       });
+      const result = await response.json();
 
-      const aiResponse = JSON.parse(response.choices[0].message.content);
+      if (!response.ok) throw new Error(result.error || 'Failed to generate content.');
+
+      const aiResponse = JSON.parse(result.content);
       
       if (contentType === 'shark-ppt') {
         const slides = aiResponse.slides || [];
@@ -198,7 +191,7 @@ FORMAT YOUR RESPONSE AS JSON:
       setShowPreview(false);
     } catch (error) {
       console.error('Error generating content:', error);
-      alert('Failed to generate content. Please try again.');
+      alert(error.message || 'Failed to generate content. Please try again.');
     } finally {
       setIsGenerating(false);
     }

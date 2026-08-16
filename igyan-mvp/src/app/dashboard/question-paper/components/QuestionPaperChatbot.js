@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Send, Loader2, FileQuestion, CheckCircle } from 'lucide-react';
-import OpenAI from 'openai';
+import OpenAI from 'openai/index.js';
 
 export default function QuestionPaperChatbot({
   mode,

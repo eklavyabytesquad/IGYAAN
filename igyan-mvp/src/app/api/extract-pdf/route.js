@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import OpenAI from 'openai/index.js';
 
 export async function POST(request) {
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'AI service is not configured. Add OPENAI_API_KEY to the server environment and restart the app.' },
+        { status: 503 },
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
     const formData = await request.formData();
     const file = formData.get('file');
 

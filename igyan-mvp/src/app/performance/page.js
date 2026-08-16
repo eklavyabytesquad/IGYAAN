@@ -32,7 +32,7 @@ const skillScores = [
 
 const milestones = [
 	{
-		title: "Build Sudarshan Ai MVP",
+		title: "Build Sudarshan AI MVP",
 		status: "In Review",
 		description: "Awaiting mentor sign-off on deployment checklist.",
 	},
@@ -75,7 +75,7 @@ const feedbackHighlights = [
 		quote: "Strong automation narrative. Add quantifiable ROI to elevate the case study to exec-ready.",
 	},
 	{
-		source: "Sudarshan Ai critique",
+		source: "Sudarshan AI critique",
 		quote: "Prompt clarity improved by 30%. Continue using the structured rubric before submission.",
 	},
 	{

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Logo from "@/components/logo";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../utils/auth_context";
+import RegisterLayout from "../register-layout";
 
 export default function InstitutionalSuiteRegister() {
 	const { register } = useAuth();
@@ -21,6 +22,8 @@ export default function InstitutionalSuiteRegister() {
 	const [otpError, setOtpError] = useState("");
 	const [otpSuccess, setOtpSuccess] = useState("");
 	const [resendTimer, setResendTimer] = useState(0);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	// Countdown timer for resend
 	useEffect(() => {
@@ -188,24 +191,13 @@ export default function InstitutionalSuiteRegister() {
 	};
 
 	return (
-		<div className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center px-6 py-20">
-			<div className="rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/15 dark:border-slate-900 dark:bg-slate-950/75">
-				<div className="mb-6 flex justify-center">
-					<Logo variant="card" />
-				</div>
-				<div className="mb-4 flex items-center gap-3">
-					<span className="inline-block rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
-						Institutional Suite
-					</span>
-					<span className="inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
-						School Super Admin
-					</span>
-				</div>
+		<RegisterLayout variant="institutional">
+			<div className="register-card rounded-3xl border border-zinc-200 bg-white/92 p-6 shadow-2xl shadow-sky-500/15 sm:p-10">
 				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-					Register your school
+					Create an account
 				</h1>
 				<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-					Create your Super Admin account to set up and manage your institution on iGyanAI.
+					Fill in the details below to get started.
 				</p>
 
 				{error && (
@@ -214,7 +206,7 @@ export default function InstitutionalSuiteRegister() {
 					</div>
 				)}
 
-				<form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+				<form className="register-form register-form-institutional mt-8 space-y-5" onSubmit={handleSubmit}>
 					{/* ─── Profile Picture ─── */}
 					<div>
 						<label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
@@ -239,7 +231,7 @@ export default function InstitutionalSuiteRegister() {
 									</button>
 								</div>
 							) : (
-								<label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-sky-500 hover:bg-sky-50 dark:border-zinc-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-900/60">
+								<label className="register-upload-control flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-sky-500 hover:bg-sky-50">
 									<input
 										type="file"
 										accept="image/jpeg,image/jpg,image/png"
@@ -318,7 +310,7 @@ export default function InstitutionalSuiteRegister() {
 							Mobile number <span className="text-red-500">*</span>
 						</label>
 						<div className="mt-2 flex gap-2">
-							<div className="flex items-center rounded-lg border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-500 dark:border-zinc-700 dark:bg-slate-800 dark:text-zinc-400">
+							<div className="register-phone-prefix flex items-center rounded-lg border border-zinc-300 bg-zinc-50 px-3 text-sm text-zinc-500">
 								+91
 							</div>
 							<input
@@ -408,34 +400,18 @@ export default function InstitutionalSuiteRegister() {
 						<label htmlFor="password" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
 							Password <span className="text-red-500">*</span>
 						</label>
-						<input
-							id="password"
-							name="password"
-							type="password"
-							placeholder="••••••••"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-							required
-							minLength={8}
-						/>
+						<div className="relative mt-2"><input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100" required minLength={8} /><button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:text-[#064bb2] focus-visible:outline-2 focus-visible:outline-[#064bb2]" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button></div>
 						<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Minimum 8 characters</p>
 					</div>
 					<div>
 						<label htmlFor="confirmPassword" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
 							Confirm password <span className="text-red-500">*</span>
 						</label>
-						<input
-							id="confirmPassword"
-							name="confirmPassword"
-							type="password"
-							placeholder="••••••••"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-							required
-							minLength={8}
-						/>
+						<div className="relative mt-2"><input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="••••••••" className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100" required minLength={8} /><button type="button" onClick={() => setShowConfirmPassword((visible) => !visible)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:text-[#064bb2] focus-visible:outline-2 focus-visible:outline-[#064bb2]" aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}>{showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button></div>
 					</div>
 
 					{/* ─── Info ─── */}
-					<div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 dark:border-sky-900/50 dark:bg-sky-900/10">
+					<div className="register-info rounded-lg border border-sky-200 bg-sky-50 px-4 py-3">
 						<div className="flex items-start gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="mt-0.5 h-5 w-5 flex-shrink-0 text-sky-500">
 								<path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
@@ -475,6 +451,6 @@ export default function InstitutionalSuiteRegister() {
 					</Link>
 				</p>
 			</div>
-		</div>
+		</RegisterLayout>
 	);
 }

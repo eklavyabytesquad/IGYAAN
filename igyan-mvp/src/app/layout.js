@@ -1,7 +1,6 @@
 "use client";
 
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -9,23 +8,16 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "./utils/auth_context";
 import "./globals.css";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
-
 function LayoutContent({ children }) {
 	const pathname = usePathname();
 	const isDashboard = pathname?.startsWith("/dashboard");
+	const isLogin = pathname === "/login" || pathname?.startsWith("/login/");
+	const isAuthPage = isLogin || pathname === "/forgot-password";
+	const isRegister = pathname?.startsWith("/register/");
 
 	return (
 		<AuthProvider>
-			{isDashboard ? (
+			{isDashboard || isAuthPage || isRegister ? (
 				// Dashboard layout - no navbar/footer
 				<>{children}</>
 			) : (
@@ -44,6 +36,7 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en" suppressHydrationWarning data-theme="dark" className="dark">
 			<head>
+				<title>IGYAN AI -Native Operating System</title>
 				<Script id="force-dark-theme" strategy="beforeInteractive">{`
 					(function ensureDarkTheme(){
 						var root = document.documentElement;
@@ -59,9 +52,7 @@ export default function RootLayout({ children }) {
 					})();
 				`}</Script>
 			</head>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-			>
+			<body className="antialiased bg-background text-foreground">
 				<ThemeProvider>
 					<LayoutContent>{children}</LayoutContent>
 				</ThemeProvider>
