@@ -284,7 +284,7 @@ export default function DashboardSidenav({ isOpen, setIsOpen, isCollapsed, setIs
 		},
 		{
 			key: 'copilot',
-			name: "Sudarshan Ai",
+			name: "Sudarshan AI",
 			href: "/dashboard/copilot",
 			allowedRoles: ROLE_BASED_NAV_CONFIG.copilot.allowedRoles,
 			icon: (

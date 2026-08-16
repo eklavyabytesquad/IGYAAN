@@ -2,171 +2,121 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ArrowLeft, Bot, ChartNoAxesColumn, Eye, EyeOff, Mail, Sparkles } from "lucide-react";
 import Logo from "@/components/logo";
+import FloatingContactActions from "@/components/floating-contact-actions";
 import { useAuth } from "../utils/auth_context";
 
 const VARIANT_COPY = {
   institutionalSuite: {
-    badge: "Institutional Suite • Institutions",
-    title: "Welcome back, visionary school leaders",
-    subtitle:
-      "Access the unified control center for Sudarshan Ai copilots, compliance, and innovation programs tailored to your campus.",
-  highlight: "Institutional Suite",
-    accentRing: "from-sky-500/20 via-cyan-400/10 to-transparent",
-    gradient: "from-white via-sky-50 to-white",
-    helper:
-      "Need to onboard new principals or connect additional campuses? Our strategy team can tailor governance, provisioning, and integrations for your network.",
-    helperLink: { href: "/contact", label: "Talk to strategists" },
-    signupHref: "/register",
+    eyebrow: "Institutional Suite",
+    title: "Welcome back",
+    subtitle: "For super admins, principals, and teachers.",
+    emailPlaceholder: "you@institution.edu",
     signupLabel: "Request workspace access",
-    footerPrompt: "Need to invite your leadership team?",
+    signupHref: "/register/institutional-suite",
   },
   professionalSuite: {
-    badge: "Professional Suite • Learners & Families",
-    title: "Log in to your Sudarshan learner copilots",
-    subtitle:
-      "Stay on top of daily learning plans, passion projects, and venture studio challenges curated for curious minds and ambitious families.",
-    highlight: "Professional Suite",
-    accentRing: "from-sky-400/30 via-blue-400/10 to-transparent",
-    gradient: "from-white via-sky-50 to-white",
-    helper:
-      "Looking to join as a new learner, parent, or mentor? Request access in minutes and unlock guided roadmaps for the skills you want to master.",
-    helperLink: { href: "/contact", label: "Request an invite" },
-    signupHref: "/register",
-    signupLabel: "Create your personal account",
-  footerPrompt: "First time discovering Professional Suite?",
+    eyebrow: "Launch Pad",
+    title: "Welcome back",
+    subtitle: "For students and parents.",
+    emailPlaceholder: "you@example.com",
+    signupLabel: "Create your account",
+    signupHref: "/register/launch-pad",
   },
 };
 
-export default function LoginForm({ variant = "institutionalSuite" }) {
+function FeaturePill({ children }) {
+  return <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md">{children}</span>;
+}
+
+export default function LoginForm({ variant = "institutionalSuite", initialError = "" }) {
   const config = VARIANT_COPY[variant] ?? VARIANT_COPY.institutionalSuite;
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
+  const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError("");
-
+    setPasswordError("");
     const formData = new FormData(event.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    // Pass variant to login function for role-based access control
-    const result = await login(email, password, variant);
-
+    const result = await login(formData.get("email"), formData.get("password"), variant);
     if (!result.success) {
-      setError(result.error);
+      if (result.field === "password") {
+        setPasswordError(result.error);
+      } else {
+        setError(result.error);
+      }
       setLoading(false);
     }
-    // Role validation is handled in auth context
-    // Successful login redirects to dashboard automatically
   };
 
   return (
-    <div className="mx-auto flex min-h-[72vh] w-full max-w-2xl flex-col justify-center px-6 py-20">
-      <div className="theme-surface relative overflow-hidden rounded-3xl border p-10 shadow-2xl shadow-sky-500/15">
-        <div
-          className={`pointer-events-none absolute -top-24 right-[-15%] h-56 w-56 rounded-full bg-linear-to-br ${config.accentRing} blur-3xl`}
-        />
-        <div className="pointer-events-none absolute -bottom-28 left-[-10%] h-56 w-56 rounded-full bg-sky-400/15 blur-3xl dark:bg-sky-500/20" />
-        <div className="relative">
-          <div className="mb-6 flex justify-center">
-            <Logo variant="card" />
-          </div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-white/80 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-sky-300">
-            {config.badge}
-          </p>
-          <h1 className="theme-heading mt-5 text-2xl font-semibold">{config.title}</h1>
-          <p className="theme-muted mt-3 text-sm leading-relaxed">{config.subtitle}</p>
+    <div className="relative flex min-h-screen overflow-x-clip bg-white text-slate-900">
+      <section className="relative hidden min-h-screen w-1/2 overflow-hidden bg-[#242a81] px-10 py-12 md:flex xl:px-16">
+        <div className="absolute inset-0 bg-[linear-gradient(122deg,#1666be_0%,#27358e_46%,#74159d_100%)]" />
+        <div className="absolute inset-0 opacity-[0.13] [background-image:radial-gradient(#fff_1.15px,transparent_1.15px)] [background-size:32px_32px]" />
+        <div aria-hidden="true" className="absolute left-[7%] top-[18%] h-10 w-10 rotate-12 text-[#f3cb60]/75"><Sparkles className="h-full w-full" /></div>
+        <div className="absolute bottom-[20%] right-[9%] h-12 w-12 -rotate-12 text-[#b69cf4]/55"><Sparkles className="h-full w-full" /></div>
 
-          {error ? (
-            <div className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300">
-              {error}
-            </div>
-          ) : null}
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-[620px] flex-col">
+          <Link href="/" className="flex w-fit items-center gap-3 text-white transition-opacity hover:opacity-85">
+            <div className="flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-white/25 bg-white/10 p-2 shadow-[0_12px_30px_rgba(12,18,80,0.24)] backdrop-blur-md"><Logo variant="compact" /></div>
+            <span className="text-[1.8rem] font-extrabold tracking-tight">IGYAN AI</span>
+          </Link>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="you@school.com"
-                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-              />
+          <div className="my-auto py-10">
+            <h1 className="max-w-[560px] text-4xl font-extrabold leading-[1.12] tracking-[-0.04em] text-white sm:text-5xl">Empowering the future of learning.</h1>
+            <p className="mt-7 max-w-[540px] text-base leading-relaxed text-indigo-100 xl:text-lg">Join the AI-native operating system designed to map personalized pathways, automate workflows, and ignite student success.</p>
+            <div className="mt-12 flex flex-wrap gap-4">
+              <FeaturePill><ChartNoAxesColumn className="h-4 w-4 text-cyan-300" /> Predictive paths</FeaturePill>
+              <FeaturePill><Bot className="h-4 w-4 text-purple-200" /> AI mentors</FeaturePill>
             </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                Password
-              </label>
-              <div className="relative mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  placeholder="••••••••"
-                  className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 transition-colors focus:border-sky-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-transform hover:-translate-y-0.5 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? "Signing in..." : `Access ${config.highlight}`}
-            </button>
-          </form>
-
-          <div className="mt-8 rounded-2xl border border-sky-200/60 bg-linear-to-br from-white via-sky-50 to-white px-5 py-4 text-xs text-zinc-600 shadow-inner dark:border-slate-800 dark:from-slate-950 dark:via-slate-950/80 dark:to-slate-900 dark:text-zinc-400">
-            <p className="font-semibold text-sky-600 dark:text-sky-300">{config.footerPrompt}</p>
-            <p className="mt-1 leading-relaxed">
-              {config.helper}
-              {config.helperLink ? (
-                <>
-                  {" "}
-                  <Link href={config.helperLink.href} className="font-semibold text-sky-500 hover:text-sky-400">
-                    {config.helperLink.label}
-                  </Link>
-                  .
-                </>
-              ) : null}
-            </p>
           </div>
 
-          <p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
-            No access yet?{" "}
-            <Link href={config.signupHref} className="font-semibold text-sky-500 transition-colors hover:text-sky-400">
-              {config.signupLabel}
-            </Link>
-          </p>
+          <blockquote className="rounded-[1.45rem] border border-white/25 bg-white/[0.13] p-7 text-white shadow-[0_16px_45px_rgba(20,17,90,0.2)] backdrop-blur-md xl:p-8">
+            <p className="text-3xl font-bold leading-none text-cyan-300/80">“</p>
+            <p className="mt-1 text-[0.95rem] font-medium leading-relaxed xl:text-base">IGYAN AI has transformed how we track student progress and intervene exactly when they need help.</p>
+            <footer className="mt-5 flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80" alt="Dr. Sarah Jenkins" className="h-11 w-11 rounded-full border-2 border-[#f9b24d]/80 object-cover" />
+              <span><b className="block text-base">Dr. Sarah Jenkins</b><small className="mt-0.5 block text-sm text-indigo-100">Director of Academics, Future Prep</small></span>
+            </footer>
+          </blockquote>
         </div>
-      </div>
+      </section>
+
+      <section className="relative flex min-h-screen w-full items-center justify-center bg-white p-6 sm:p-12 md:w-1/2 xl:p-24">
+        <Link href="/" className="absolute left-6 top-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-900 md:hidden"><ArrowLeft className="h-4 w-4" /> Home</Link>
+        <div className="w-full max-w-[380px] animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-10 text-center md:text-left">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-[#0955b9]">{config.eyebrow}</p>
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[#0f1d3c] sm:text-4xl">{config.title}</h2>
+            <p className="mt-3 text-slate-500">{config.subtitle}</p>
+            {error ? <p role="alert" className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm font-medium text-red-600">{error}</p> : null}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="email" className="ml-1 block text-sm font-semibold text-slate-700">Email address</label>
+              <div className="relative mt-1.5"><Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input id="email" name="email" type="email" required placeholder={config.emailPlaceholder} className="w-full rounded-xl border border-[#d0d9e9] bg-white py-3 pl-11 pr-4 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#0955b9] focus:ring-2 focus:ring-[#0955b9]/20 [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#ffffff_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:#0f172a]" /></div>
+            </div>
+            <div>
+              <label htmlFor="password" className="ml-1 block text-sm font-semibold text-slate-700">Password</label>
+              <div className="relative mt-1.5"><input id="password" name="password" type={showPassword ? "text" : "password"} required placeholder="Enter your password" aria-invalid={Boolean(passwordError)} aria-describedby={passwordError ? "password-error" : undefined} onChange={() => setPasswordError("")} className={`w-full rounded-xl border bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-2 [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#ffffff_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:#0f172a] ${passwordError ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#d0d9e9] focus:border-[#0955b9] focus:ring-[#0955b9]/20"}`} /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-[#0955b9]" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button></div>
+              {passwordError ? <p id="password-error" role="alert" className="mt-1.5 ml-1 text-sm font-medium text-red-600">{passwordError}</p> : null}
+            </div>
+            <div className="flex items-center justify-between gap-3 pt-1 text-sm"><label className="flex cursor-pointer items-center gap-2 text-slate-600"><input name="remember-me" type="checkbox" className="h-4 w-4 appearance-none rounded border border-slate-400 bg-white text-[#0955b9] transition checked:border-[#0955b9] checked:bg-[#0955b9] checked:after:block checked:after:text-center checked:after:text-[11px] checked:after:leading-[14px] checked:after:text-white checked:after:content-['✓'] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0955b9]" /> Remember me</label><Link href="/forgot-password" className="whitespace-nowrap font-semibold text-[#0955b9] transition hover:text-[#073e88]">Forgot password?</Link></div>
+            <button type="submit" disabled={loading} className="mt-6 w-full rounded-full bg-[#0955b9] px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-[#0955b9]/20 transition hover:-translate-y-0.5 hover:bg-[#073e88] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0955b9] disabled:cursor-not-allowed disabled:opacity-55">{loading ? "Signing in..." : "Sign in to your account"}</button>
+          </form>
+          <p className="mt-8 text-center text-sm text-slate-500">Don&apos;t have an account? <Link href={config.signupHref} className="font-bold text-[#0955b9] transition hover:text-[#073e88]">{config.signupLabel}</Link></p>
+        </div>
+      </section>
+
+      <FloatingContactActions />
     </div>
   );
 }

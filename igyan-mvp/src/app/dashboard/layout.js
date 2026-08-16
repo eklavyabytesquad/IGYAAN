@@ -7,6 +7,7 @@ import { supabase } from "../utils/supabase";
 import DashboardNavbar from "../../components/dashboard/navbar";
 import UnifiedSidenav from "../../components/dashboard/unified-sidenav";
 import GuidedTour from "../../components/guided-tour/GuidedTour";
+import RouteSkeleton from "../components/RouteSkeleton";
 
 const THEME_STORAGE_KEY = "dashboard-theme";
 
@@ -16,7 +17,7 @@ export default function DashboardLayout({ children }) {
 	const [schoolData, setSchoolData] = useState(null);
 	const [activeTheme, setActiveTheme] = useState("indigo");
 	const [showSchoolPopup, setShowSchoolPopup] = useState(false);
-	const { user, logout } = useAuth();
+	const { user, logout, loading } = useAuth();
 	const pathname = usePathname();
 
 	// Validate user has valid dashboard role access
@@ -143,6 +144,10 @@ export default function DashboardLayout({ children }) {
 		}
 	}, [user, schoolData, pathname]);
 
+	if (loading) {
+		return <RouteSkeleton variant="dashboard" />;
+	}
+
 	return (
 		<div className="dashboard-theme flex h-screen overflow-hidden">
 			{/* Guided Product Tour */}
@@ -213,8 +218,8 @@ export default function DashboardLayout({ children }) {
 			/>
 
 			{/* Main Content Area */}
-			<div className={`flex flex-1 flex-col transition-all duration-300 ${
-				isCollapsed ? "lg:ml-20" : "lg:ml-64"
+			<div className={`dashboard-workspace dashboard-main-content flex flex-col ${
+				isCollapsed ? "dashboard-main-content--collapsed" : ""
 			}`}>
 				{/* Top Navbar */}
 				<DashboardNavbar 

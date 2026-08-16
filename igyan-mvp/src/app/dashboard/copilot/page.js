@@ -38,10 +38,12 @@ export default function AICopilotPage() {
 	const [showProfileSetup, setShowProfileSetup] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const messagesEndRef = useRef(null);
+	const hasRedirectedToLogin = useRef(false);
 
 	useEffect(() => {
-		if (!loading && !user) {
-			router.push("/login");
+		if (!loading && !user && !hasRedirectedToLogin.current) {
+			hasRedirectedToLogin.current = true;
+			router.replace("/login");
 		}
 	}, [user, loading, router]);
 

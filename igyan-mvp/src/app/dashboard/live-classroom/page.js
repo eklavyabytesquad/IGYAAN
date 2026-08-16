@@ -1,301 +1,93 @@
-'use client';
+"use client";
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import { useAuth } from '@/app/utils/auth_context';
+import Image from "next/image";
+import {
+	CalendarDays, Check, ChevronLeft, Clipboard, Expand, Hand, MessageSquare,
+	Mic, MicOff, MoreHorizontal, PanelRight, PhoneOff, ScreenShare, Send,
+	Settings2, UsersRound, Video, VideoOff, X
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import styles from "./classroom.module.css";
 
-const API_BASE_URL = 'https://igyan-meets.onrender.com';
-const API_KEY = 'zQgLY2TzzmgKA0Ge98sTWYaWkxfz3b1ltV_rcUqHSDw';
-
-function LiveClassroomContent() {
-	const { user, authLoading } = useAuth();
-	const searchParams = useSearchParams();
-	const [inMeeting, setInMeeting] = useState(false);
-	const [currentRoomId, setCurrentRoomId] = useState(null);
-	const [useIframe, setUseIframe] = useState(true);
-
-	const allowedRoles = ['super_admin', 'co_admin', 'faculty', 'student', 'b2c_student', 'b2c_mentor'];
-
-	// Auto-join if room ID is in URL
-	useEffect(() => {
-		if (!authLoading && user && !inMeeting) {
-			const roomFromUrl = searchParams.get('join');
-			if (roomFromUrl) {
-				setCurrentRoomId(roomFromUrl);
-				setInMeeting(true);
-			}
-		}
-	}, [authLoading, user, searchParams, inMeeting]);
-
-	if (authLoading) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-			</div>
-		);
-	}
-
-	if (!user || !allowedRoles.includes(user.role)) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="text-center">
-					<h2 className="text-2xl font-bold text-red-500 mb-2">Access Denied</h2>
-					<p className="text-gray-600">You don&apos;t have permission to access this feature.</p>
-				</div>
-			</div>
-		);
-	}
-
-	// If in meeting, show the igyan-meets interface directly
-	if (inMeeting && currentRoomId) {
-		const meetingUrl = currentRoomId 
-			? `${API_BASE_URL}/join/${currentRoomId}?name=${encodeURIComponent(user?.name || 'Guest')}&apiKey=${API_KEY}`
-			: `${API_BASE_URL}/demo`;
-
-		return (
-			<div className="flex flex-col h-screen bg-black">
-				<div className="bg-gray-900 px-4 py-3 flex items-center justify-between border-b border-gray-700 flex-shrink-0">
-					<div className="flex items-center gap-3">
-						<Image src="/asset/imeets.png" alt="Omni Sight" width={40} height={40} className="object-contain" />
-						<div>
-							<h2 className="text-lg font-semibold text-white">Omni Sight - Room: {currentRoomId}</h2>
-							<p className="text-xs text-gray-400">Powered by igyan-meets</p>
-						</div>
-					</div>
-					<button
-						onClick={() => {
-							setInMeeting(false);
-							setCurrentRoomId(null);
-						}}
-						className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm font-medium transition-colors"
-					>
-						Leave Meeting
-					</button>
-				</div>
-				<div className="flex-1 overflow-hidden">
-					<iframe
-						src={meetingUrl}
-						className="w-full h-full border-0"
-						allow="camera; microphone; display-capture; fullscreen"
-						title="Video Conference"
-					/>
-				</div>
-			</div>
-		);
-	}
-
-	// Main landing page - embedded igyan-meets demo
-	return (
-		<div className="flex flex-col h-screen">
-			<div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 sm:px-6 py-4 shadow-lg flex-shrink-0">
-				<div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-					<div className="flex items-center gap-3">
-						<Image src="/asset/imeets.png" alt="Omni Sight" width={48} height={48} className="object-contain" />
-						<div>
-							<h1 className="text-xl sm:text-2xl font-bold text-white">Omni Sight Video Conferencing</h1>
-							<p className="text-purple-100 text-xs sm:text-sm">Powered by igyan-meets • Secure • Fast • Reliable</p>
-						</div>
-					</div>
-					<button
-						onClick={() => setUseIframe(!useIframe)}
-						className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-sm font-medium transition-colors backdrop-blur"
-					>
-						{useIframe ? '📱 Native View' : '🌐 Web View'}
-					</button>
-				</div>
-			</div>
-			
-			<div className="flex-1 overflow-hidden">
-				{useIframe ? (
-					<iframe
-						src={`${API_BASE_URL}/demo`}
-						className="w-full h-full border-0 bg-white"
-						allow="camera; microphone; display-capture; fullscreen"
-						title="Omni Sight Video Conferencing"
-					/>
-				) : (
-					<NativeInterface 
-						onJoinMeeting={(roomId) => {
-							setCurrentRoomId(roomId);
-							setInMeeting(true);
-						}}
-						user={user}
-					/>
-				)}
-			</div>
-		</div>
-	);
-}
-
-// Native interface component (optional fallback)
-function NativeInterface({ onJoinMeeting, user }) {
-	const [roomName, setRoomName] = useState('');
-	const [joinRoomId, setJoinRoomId] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState(null);
-
-	const handleCreateMeeting = async () => {
-		if (!roomName.trim()) return;
-		
-		setIsLoading(true);
-		setError(null);
-		
-		try {
-			const roomId = roomName.trim().toLowerCase().replace(/\s+/g, '-');
-			
-			const response = await fetch(`${API_BASE_URL}/api/rooms`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-API-Key': API_KEY
-				},
-				body: JSON.stringify({
-					room_code: roomId,
-					name: roomName.trim(),
-					created_by: user?.id || 'guest',
-					max_participants: 50
-				})
-			});
-
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.detail || 'Failed to create room');
-			}
-
-			onJoinMeeting(roomId);
-		} catch (err) {
-			setError(err.message || 'Failed to create meeting');
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleJoinMeeting = async () => {
-		if (!joinRoomId.trim()) return;
-		
-		setIsLoading(true);
-		setError(null);
-		
-		try {
-			const roomId = joinRoomId.trim().toLowerCase();
-			
-			const response = await fetch(`${API_BASE_URL}/api/rooms/${roomId}`, {
-				headers: { 'X-API-Key': API_KEY }
-			});
-
-			if (!response.ok && response.status !== 404) {
-				throw new Error('Failed to verify room');
-			}
-
-			onJoinMeeting(roomId);
-		} catch (err) {
-			setError(err.message || 'Failed to join meeting');
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	return (
-		<div className="flex-1 bg-gradient-to-br from-purple-50 to-blue-50 p-4 sm:p-6 lg:p-8 overflow-auto">
-			<div className="max-w-6xl mx-auto">
-				{error && (
-					<div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
-						<p className="text-red-700 font-medium">⚠️ {error}</p>
-					</div>
-				)}
-
-				<div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-					<div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-purple-100 hover:shadow-2xl transition-shadow">
-						<div className="text-5xl sm:text-6xl mb-4">🎥</div>
-						<h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-800">Create Meeting</h2>
-						<p className="text-sm sm:text-base text-gray-600 mb-6">Start a new video conference instantly</p>
-						<input
-							type="text"
-							value={roomName}
-							onChange={(e) => setRoomName(e.target.value)}
-							placeholder="Enter meeting name..."
-							className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl mb-4 focus:outline-none focus:border-purple-500 transition-colors text-sm sm:text-base"
-							onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleCreateMeeting()}
-							disabled={isLoading}
-						/>
-						<button
-							onClick={handleCreateMeeting}
-							disabled={isLoading || !roomName.trim()}
-							className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold rounded-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-sm sm:text-base"
-						>
-							{isLoading ? '⏳ Creating...' : '🚀 Create New Meeting'}
-						</button>
-					</div>
-
-					<div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-blue-100 hover:shadow-2xl transition-shadow">
-						<div className="text-5xl sm:text-6xl mb-4">📱</div>
-						<h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-800">Join Meeting</h2>
-						<p className="text-sm sm:text-base text-gray-600 mb-6">Enter a meeting code to join</p>
-						<input
-							type="text"
-							value={joinRoomId}
-							onChange={(e) => setJoinRoomId(e.target.value)}
-							placeholder="Enter meeting code..."
-							className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl mb-4 focus:outline-none focus:border-blue-500 transition-colors text-sm sm:text-base"
-							onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleJoinMeeting()}
-							disabled={isLoading}
-						/>
-						<button
-							onClick={handleJoinMeeting}
-							disabled={isLoading || !joinRoomId.trim()}
-							className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-sm sm:text-base"
-						>
-							{isLoading ? '⏳ Joining...' : '🎯 Join Meeting'}
-						</button>
-					</div>
-				</div>
-
-				<div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-					<h3 className="text-base sm:text-lg font-bold mb-3 text-gray-800">✨ Features</h3>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">🔒</span>
-							<span className="text-sm sm:text-base text-gray-700">Secure & Private</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">⚡</span>
-							<span className="text-sm sm:text-base text-gray-700">Fast & Reliable</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">💬</span>
-							<span className="text-sm sm:text-base text-gray-700">Chat & Screen Share</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">🎙️</span>
-							<span className="text-sm sm:text-base text-gray-700">HD Audio/Video</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">📹</span>
-							<span className="text-sm sm:text-base text-gray-700">Recording Available</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-xl sm:text-2xl">🌐</span>
-							<span className="text-sm sm:text-base text-gray-700">Works Everywhere</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
+const upcoming = [
+	{ id: "maths-live", title: "Maths - Lecture Title", teacher: "Rahul Sharma", time: "Today · 10:00 AM - 11:00 AM", live: true },
+	{ id: "english-next", title: "English - Lecture Title", teacher: "Rahul Sharma", time: "May 10 · 11:00 AM - 11:30 AM" }
+];
+const previous = [{ status: "Attended", tone: "attended" }, { status: "Attended", tone: "attended" }, { status: "Missed", tone: "missed" }];
+const people = ["Rahul Sharma", "Aarav Mehta", "Ananya Singh", "Kabir Khan"];
 
 export default function LiveClassroom() {
-	return (
-		<Suspense fallback={
-			<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-blue-100">
-				<div className="text-center">
-					<div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600 mx-auto mb-4"></div>
-					<p className="text-gray-700 font-medium text-lg">Loading Omni Sight...</p>
-				</div>
+	const [activeClass, setActiveClass] = useState(null);
+	const [micOn, setMicOn] = useState(false);
+	const [videoOn, setVideoOn] = useState(false);
+	const [panel, setPanel] = useState(null);
+	const [handRaised, setHandRaised] = useState(false);
+	const [copied, setCopied] = useState(false);
+	const [message, setMessage] = useState("");
+	const [messages, setMessages] = useState([{ name: "Ananya Singh", text: "Will we get a practice worksheet?", time: "10:24" }, { name: "Rahul Sharma", text: "Yes, I’ll share it after the class.", time: "10:25" }]);
+	const [elapsed, setElapsed] = useState(34 * 60 + 23);
+	const videoRef = useRef(null);
+	const stageRef = useRef(null);
+	const streamRef = useRef(null);
+
+	useEffect(() => {
+		if (!activeClass) return undefined;
+		const timer = setInterval(() => setElapsed((value) => value + 1), 1000);
+		return () => clearInterval(timer);
+	}, [activeClass]);
+
+	useEffect(() => () => streamRef.current?.getTracks().forEach((track) => track.stop()), []);
+
+	const toggleMedia = async (kind) => {
+		const current = kind === "mic" ? micOn : videoOn;
+		if (current) {
+			streamRef.current?.getTracks().filter((track) => track.kind === (kind === "mic" ? "audio" : "video")).forEach((track) => { track.enabled = false; });
+			kind === "mic" ? setMicOn(false) : setVideoOn(false);
+			return;
+		}
+		try {
+			if (!streamRef.current) streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+			streamRef.current.getTracks().filter((track) => track.kind === (kind === "mic" ? "audio" : "video")).forEach((track) => { track.enabled = true; });
+			if (videoRef.current) videoRef.current.srcObject = streamRef.current;
+			kind === "mic" ? setMicOn(true) : setVideoOn(true);
+		} catch { alert("Please allow camera and microphone access in your browser to use this control."); }
+	};
+
+	const leaveClass = () => {
+		if (!window.confirm("Do you want to leave this live class?")) return;
+		streamRef.current?.getTracks().forEach((track) => track.stop());
+		streamRef.current = null;
+		setActiveClass(null); setPanel(null); setMicOn(false); setVideoOn(false);
+	};
+	const toggleFullscreen = () => stageRef.current?.requestFullscreen?.();
+	const copyInvite = async () => { await navigator.clipboard?.writeText(window.location.href); setCopied(true); setTimeout(() => setCopied(false), 1800); };
+	const sendMessage = (event) => { event.preventDefault(); if (!message.trim()) return; setMessages((items) => [...items, { name: "You", text: message.trim(), time: "now" }]); setMessage(""); };
+	const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+
+	if (activeClass) return <main className={styles.workspace}><section className={styles.livePanel}>
+		<header className={styles.liveHeader}><button type="button" onClick={leaveClass} aria-label="Back"><ChevronLeft size={18} /></button><div><small>CLASSROOM <i>•</i> LIVE CLASS</small><h1>{activeClass.title}</h1></div><span><b /> {formatTime(elapsed)}</span></header>
+		<div className={styles.roomLayout}><div ref={stageRef} className={styles.videoStage}>
+			<Image src="/student-hero.png" alt="Rahul Sharma teaching the live class" fill priority className={styles.teacherVideo} />
+			<div className={styles.teacherLabel}><span className={styles.liveDot} /> Rahul Sharma · Host</div>
+			{videoOn && <div className={styles.selfView}><video ref={videoRef} autoPlay muted playsInline /><strong>You</strong></div>}
+			<button className={styles.expand} onClick={toggleFullscreen} aria-label="Fullscreen"><Expand size={19} /></button>
+			<div className={styles.callControls}>
+				<button onClick={() => toggleMedia("mic")} className={micOn ? styles.controlOn : ""} title={micOn ? "Mute microphone" : "Unmute microphone"}>{micOn ? <Mic size={18} /> : <MicOff size={18} />}</button>
+				<button onClick={() => toggleMedia("video")} className={videoOn ? styles.controlOn : ""} title={videoOn ? "Turn camera off" : "Turn camera on"}>{videoOn ? <Video size={18} /> : <VideoOff size={18} />}</button>
+				<button onClick={() => setPanel(panel === "people" ? null : "people")} className={panel === "people" ? styles.controlOn : ""} title="Participants"><UsersRound size={18} /></button>
+				<button onClick={() => setHandRaised((value) => !value)} className={handRaised ? styles.handActive : ""} title="Raise hand"><Hand size={18} /></button>
+				<button onClick={() => setPanel(panel === "chat" ? null : "chat")} className={panel === "chat" ? styles.controlOn : ""} title="Chat"><MessageSquare size={18} /></button>
+				<button onClick={() => setPanel(panel === "more" ? null : "more")} title="More options"><MoreHorizontal size={18} /></button>
+				<button className={styles.leave} onClick={leaveClass}><PhoneOff size={15} /> Leave</button>
 			</div>
-		}>
-			<LiveClassroomContent />
-		</Suspense>
-	);
+		</div>
+		{panel && <aside className={styles.sidePanel}><div className={styles.sidePanelHead}><h2>{panel === "people" ? "People" : panel === "chat" ? "In-call messages" : "More options"}</h2><button onClick={() => setPanel(null)} aria-label="Close"><X size={17} /></button></div>
+			{panel === "people" && <div className={styles.peopleList}>{people.map((person, index) => <div key={person}><span className={styles.personAvatar}>{person.split(" ").map((part) => part[0]).join("")}</span><span>{person}{index === 0 && <small>Host</small>}</span>{index === 0 ? <Mic size={15} /> : <span className={styles.mutedDot} />}</div>)}</div>}
+			{panel === "chat" && <><div className={styles.messages}>{messages.map((item, index) => <div key={`${item.time}-${index}`} className={item.name === "You" ? styles.myMessage : ""}><strong>{item.name}<small>{item.time}</small></strong><p>{item.text}</p></div>)}</div><form className={styles.chatForm} onSubmit={sendMessage}><input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Send a message" aria-label="Send a message" /><button aria-label="Send"><Send size={16} /></button></form></>}
+			{panel === "more" && <div className={styles.moreList}><button onClick={copyInvite}>{copied ? <Check size={17} /> : <Clipboard size={17} />} {copied ? "Invite link copied" : "Copy invite link"}</button><button><ScreenShare size={17} /> Share your screen</button><button><Settings2 size={17} /> Audio and video settings</button></div>}
+		</aside>}
+		</div>
+	</section></main>;
+
+	return <main className={styles.workspace}><section className={styles.panel}><header className={styles.pageHeader}><div><span>CLASSROOM</span><h1>Your classes</h1><p>Join live sessions and revisit your learning.</p></div><button><CalendarDays size={17} /> My timetable</button></header><section><div className={styles.sectionTitle}><h2>Upcoming classes</h2><button><Settings2 size={16} /></button></div><div className={styles.upcoming}>{upcoming.map((session) => <article key={session.id} className={session.live ? styles.liveClass : styles.futureClass}>{session.live && <div className={styles.liveMeta}><em>Live now</em><span><span className={styles.avatars}>RS +3</span>32+ students joined</span></div>}<h3>{session.title}</h3><p>{session.teacher}</p><small><CalendarDays size={13} /> {session.time}</small>{session.live && <button type="button" onClick={() => setActiveClass(session)}><Video size={15} /> Join Live Class</button>}</article>)}</div></section><section><div className={styles.sectionTitle}><h2>Previous classes</h2><button><Settings2 size={16} /></button></div><div className={styles.previous}>{previous.map((item, index) => <article key={index}><span className={styles[item.tone]}>{item.status}</span><h3>English - Lecture Title</h3><p>Rahul Sharma</p><small><CalendarDays size={13} /> May 10, 11:00 - 11:30 AM</small></article>)}</div></section></section></main>;
 }

@@ -5,8 +5,8 @@
   --foreground: #1f3b64;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --dashboard-background: #f5f8ff;
   --dashboard-background-contrast: #e3edff;
   --dashboard-surface: rgba(255, 255, 255, 0.94);
@@ -70,6 +70,250 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+@keyframes login-backdrop-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2rem, -1.5rem, 0) scale(1.07); }
+}
+
+@keyframes login-backdrop-drift-reverse {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-2rem, 1.5rem, 0) scale(1.08); }
+}
+
+@keyframes login-path-flow {
+  to { stroke-dashoffset: -68; }
+}
+
+@keyframes login-node-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); transform-origin: center; }
+  50% { opacity: 1; transform: scale(1.28); transform-origin: center; }
+}
+
+.login-backdrop-drift { animation: login-backdrop-drift 14s ease-in-out infinite; }
+.login-backdrop-drift-reverse { animation: login-backdrop-drift-reverse 17s ease-in-out infinite; }
+.login-path-flow { animation: login-path-flow 7s linear infinite; }
+.login-path-flow-slow { animation-duration: 10s; animation-direction: reverse; }
+.login-node { animation: login-node-pulse 3.6s ease-in-out infinite; transform-box: fill-box; }
+.login-node-delay { animation-delay: -1.8s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .login-backdrop-drift,
+  .login-backdrop-drift-reverse,
+  .login-path-flow,
+  .login-node { animation: none; }
+}
+
+/* Registration screens use a deliberately light form surface, independent of site theme. */
+.register-shell .register-card {
+  color: #1e293b;
+  background: #fff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.register-shell .register-card form {
+  margin-top: 1.25rem !important;
+}
+
+.register-shell .register-card form.space-y-5 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .register-shell .register-card {
+    width: 100%;
+    max-width: 100%;
+    zoom: 0.74;
+  }
+
+  .register-shell .register-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.9rem;
+  }
+
+  .register-shell .register-form > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0 !important;
+  }
+
+  .register-shell .register-form-institutional > :nth-of-type(1),
+  .register-shell .register-form-institutional > :nth-of-type(2),
+  .register-shell .register-form-institutional > :nth-of-type(3),
+  .register-shell .register-form-institutional > :nth-of-type(4),
+  .register-shell .register-form-institutional > :nth-of-type(7),
+  .register-shell .register-form-institutional > button,
+  .register-shell .register-form-launch > :nth-of-type(1),
+  .register-shell .register-form-launch > :nth-of-type(2),
+  .register-shell .register-form-launch > :nth-of-type(3),
+  .register-shell .register-form-launch > :nth-of-type(4),
+  .register-shell .register-form-launch > button {
+    grid-column: 1 / -1;
+  }
+}
+
+.register-shell .register-card h1 {
+  color: #0f1d3c;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.register-shell .register-card label {
+  color: #334155 !important;
+}
+
+.register-shell .register-card input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+.register-shell .register-card select {
+  border-color: #d0d9e9 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  border-radius: 0.8rem !important;
+  padding-top: 0.65rem !important;
+  padding-bottom: 0.65rem !important;
+}
+
+.register-shell .register-card input::placeholder,
+.register-shell .register-card textarea::placeholder {
+  color: #475569 !important;
+  opacity: 1;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.register-shell .register-card input:not(:placeholder-shown),
+.register-shell .register-card input:focus {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a;
+}
+
+.register-shell .register-card input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):focus,
+.register-shell .register-card select:focus {
+  border-color: #0955b9 !important;
+  box-shadow: 0 0 0 2px rgba(9, 85, 185, 0.16);
+}
+
+.register-shell .register-card input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):-webkit-autofill,
+.register-shell .register-card input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):-webkit-autofill:hover,
+.register-shell .register-card input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #eaf1ff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.register-shell .register-role-card {
+  color: #334155 !important;
+  background: #fff !important;
+  border-color: #d0d9e9 !important;
+}
+
+.register-shell .register-role-card:hover,
+.register-shell .register-role-card-active {
+  background: #eaf8ff !important;
+  border-color: #06b6d4 !important;
+}
+
+.register-shell .register-role-card > div:first-child {
+  color: #0f1d3c !important;
+}
+
+.register-shell .register-role-card > div:last-child {
+  color: #64748b !important;
+}
+
+.register-shell .register-upload-control {
+  width: 5rem !important;
+  height: 5rem !important;
+  background: #f8fbff !important;
+  border-color: #b8c8df !important;
+}
+
+.register-shell .register-phone-prefix {
+  background: #f8fbff !important;
+  border-color: #d0d9e9 !important;
+  color: #475569 !important;
+}
+
+.register-shell .register-info {
+  background: #eff8ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.register-shell .register-info p:first-child {
+  color: #075985 !important;
+}
+
+.register-shell .register-info p:last-child {
+  color: #475569 !important;
+}
+
+/* The Insights hub is intentionally light, even when the application shell is dark. */
+.insights-white {
+  background: #fff;
+  color: #0f172a;
+}
+
+.insights-white [class*="dark:bg-zinc-900"],
+.insights-white [class*="dark:bg-slate-900"] {
+  background-color: #fff !important;
+}
+
+.insights-white [class*="dark:bg-slate-800"] {
+  background-color: #f1f5f9 !important;
+}
+
+.insights-white [class*="dark:border-zinc-700"] {
+  border-color: #e4e4e7 !important;
+}
+
+.insights-white [class*="dark:text-white"] {
+  color: #0f172a !important;
+}
+
+.insights-white [class*="dark:text-slate-400"],
+.insights-white [class*="dark:text-zinc-300"] {
+  color: #64748b !important;
+}
+
+.insights-white [class*="dark:text-slate-500"] {
+  color: #64748b !important;
+}
+
+.insights-white [class*="dark:bg-indigo-900"] {
+  background-color: #eef2ff !important;
+}
+
+.insights-white [class*="dark:text-indigo-300"],
+.insights-white [class*="dark:text-indigo-400"] {
+  color: #4338ca !important;
+}
+
+.insights-white [class*="dark:bg-slate-800"] [class*="dark:text-slate-300"],
+.insights-white [class*="dark:text-slate-300"] {
+  color: #475569 !important;
+}
+
+.register-shell .register-card input[type="checkbox"] {
+  appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.25rem;
+  background: #fff;
+  vertical-align: -0.15rem;
+}
+
+.register-shell .register-card input[type="checkbox"]:checked {
+  border-color: #0955b9;
+  background: #0955b9;
+}
+
+.register-shell .register-card button[type="submit"]:not(:disabled) {
+  background: #0955b9 !important;
+  box-shadow: 0 12px 24px rgba(9, 85, 185, 0.18) !important;
+  border-radius: 9999px !important;
+}
+
 .theme-surface {
   background: var(--surface-card);
   border-color: var(--border-soft);
@@ -92,6 +336,20 @@ body {
 
 .overlay-scrim {
   background: var(--overlay-scrim);
+}
+
+/* Keep browser autofill readable and visually aligned with the form fields. */
+.auth-reset-input:-webkit-autofill,
+.auth-reset-input:-webkit-autofill:hover,
+.auth-reset-input:-webkit-autofill:focus,
+#contact-form input:-webkit-autofill,
+#contact-form input:-webkit-autofill:hover,
+#contact-form input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  color: #0f172a !important;
+  caret-color: #0f172a !important;
 }
 
 /* ===== Streamlined Dashboard Themes (5 Themes) ===== */
@@ -195,12 +453,47 @@ body[data-dashboard-theme="midnight"] {
 }
 
 .dashboard-nav {
-  background-color: var(--dashboard-navbar-bg);
-  border-color: var(--dashboard-border);
+  height: 80px;
+  margin: 8px 8px 0;
+  border: 0.8px solid #eeeeee;
+  border-radius: 12px;
+  background: #fefefe;
   color: var(--dashboard-text);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+}
+
+.dashboard-nav-inner {
+  height: 100%;
+  padding: 0 20px;
+}
+
+.dashboard-search {
+  width: 300px;
+  height: 44px;
+  padding: 12px 16px 12px 44px;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  background: #ffffff;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+.dashboard-search::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.dashboard-page-label {
+  margin: 0;
+  color: #e87552;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dashboard-tools-search {
+  width: 320px;
+  height: 46px;
+  font-size: 13px;
 }
 
 .dashboard-sidenav {
@@ -210,6 +503,48 @@ body[data-dashboard-theme="midnight"] {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 4px 0 24px -8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-workspace { background: #fafafa; }
+
+body[data-dashboard-theme] .dashboard-sidenav,
+body[data-dashboard-theme] .dashboard-nav {
+  background: #fefefe;
+  border-color: #eeeeee;
+  box-shadow: none;
+}
+
+@media (max-width: 767px) {
+  .dashboard-nav { margin: 4px 4px 0; }
+  .dashboard-nav-inner { padding: 0 12px; }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-fixed-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px !important;
+    height: 100vh;
+    z-index: 50;
+  }
+
+  .dashboard-fixed-sidebar--collapsed {
+    width: 64px !important;
+  }
+
+  .dashboard-main-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    min-width: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .dashboard-main-content--collapsed {
+    margin-left: 64px;
+    width: calc(100% - 64px);
+  }
 }
 
 .dashboard-card {

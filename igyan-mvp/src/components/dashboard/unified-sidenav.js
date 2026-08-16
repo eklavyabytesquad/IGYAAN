@@ -163,20 +163,20 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 
 			<aside
 				data-tour="sidenav"
-				className={`dashboard-sidenav fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
+				className={`dashboard-sidenav dashboard-fixed-sidebar fixed left-0 top-0 z-50 flex h-screen transform flex-col border-r transition-all duration-300 ease-in-out lg:translate-x-0 ${
 					isOpen ? "translate-x-0" : "-translate-x-full"
-				} ${isCollapsed ? "w-[68px]" : "w-60"}`}
+				} ${isCollapsed ? "dashboard-fixed-sidebar--collapsed w-16" : "w-60"}`}
 			>
 				{/* ── Logo ── */}
-				<div className="flex h-14 items-center justify-between border-b px-3" style={{ borderColor: "var(--dashboard-border)" }}>
+				<div className="flex h-20 items-center justify-between border-b px-5" style={{ borderColor: "#f0f0f0" }}>
 					<Link href="/dashboard" className={`flex items-center gap-2 ${isCollapsed ? "lg:justify-center" : ""}`}>
 						{schoolData?.logo_url ? (
-							<img src={schoolData.logo_url} alt={schoolData.school_name || "Logo"} className="h-8 w-8 shrink-0 rounded-lg object-cover" />
+							<img src={schoolData.logo_url} alt={schoolData.school_name || "Logo"} className="h-10 w-10 shrink-0 rounded-full object-cover" />
 						) : (
-							<Image src="/logo2.jpg" alt="IGYAN.AI" width={32} height={32} className="h-8 w-8 shrink-0 rounded-lg object-cover" />
+							<Image src="/logo2.jpg" alt="IGYAN.AI" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full object-cover" />
 						)}
 						{!isCollapsed && (
-							<span className="text-sm font-bold truncate" style={{ color: "var(--dashboard-heading)" }}>
+							<span className="text-xl font-bold truncate" style={{ color: "#1d1d1f" }}>
 								{schoolData?.school_name || "IGYAN.AI"}
 							</span>
 						)}
@@ -197,15 +197,10 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 				</div>
 
 				{/* ── Portal label ── */}
-				{!isCollapsed && (
-					<div className="border-b px-3 py-2" style={{ borderColor: "var(--dashboard-border)" }}>
-						<p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--dashboard-primary)" }}>{portal.title}</p>
-						<p className="text-[10px]" style={{ color: "var(--dashboard-muted)" }}>{portal.subtitle}</p>
-					</div>
-				)}
+				{!isCollapsed && <div className="sr-only">{portal.title} · {portal.subtitle}</div>}
 
 				{/* ── Navigation ── */}
-				<nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-2 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+				<nav className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden px-3 py-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 					{sections.map((section, si) => (
 						<div key={si}>
 							{/* Section label — only shows if section has visible items (pre-filtered) */}
@@ -227,20 +222,22 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 										href={item.href}
 										data-tour={`nav-${item.key}`}
 										onClick={() => setIsOpen(false)}
-										className={`group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-all ${
-											isActive
-												? "bg-[color-mix(in_srgb,var(--dashboard-primary)_12%,transparent)] shadow-sm"
-												: "hover:bg-[color-mix(in_srgb,var(--dashboard-primary)_6%,transparent)]"
+										className={`group relative flex items-center gap-3 rounded-xl px-5 py-3 text-sm font-medium transition-all ${
+										isActive
+											? "bg-[#fff0e9] shadow-none"
+											: "hover:bg-[#fff8f4]"
 										} ${isCollapsed ? "lg:justify-center lg:px-0" : ""}`}
-										style={{ color: isActive ? "var(--dashboard-primary)" : "var(--dashboard-text)" }}
+									style={{ color: isActive ? "#f9733b" : "#737373" }}
 										title={isCollapsed ? item.name : ""}
 									>
 										<div className={`shrink-0 ${isCollapsed ? "lg:mx-auto" : ""}`}>
 											{item.isCustomIcon ? <Icon /> : <Icon className="h-[18px] w-[18px]" />}
 										</div>
-										{!isCollapsed && <span className="truncate">{item.name}</span>}
-										{isActive && !isCollapsed && (
-											<div className="ml-auto h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--dashboard-primary)" }} />
+										{!isCollapsed && <span className="min-w-0 flex-1 truncate">{item.name}</span>}
+										{!isCollapsed && item.badge && (
+											<span className="ml-auto grid h-7 min-w-7 place-items-center rounded-full bg-[#ffd9d9] px-2 text-xs font-semibold text-[#ec4f4f]">
+												{item.badge}
+											</span>
 										)}
 
 										{/* Collapsed tooltip */}

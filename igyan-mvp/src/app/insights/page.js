@@ -1,14 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import IGyanBlogsPage from "./blogs/page";
 
 export default function InsightsPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/insights/blogs");
-  }, [router]);
-
-  return null;
+  return <IGyanBlogsPage />;
 }

@@ -1,0 +1,486 @@
+.page {
+  min-height: 100%;
+  background: #fafafa;
+  color: #171717;
+  padding: 8px 8px 32px;
+  font-family: Inter,Arial,sans-serif;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 270px;
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.mainColumn,.utility {
+  min-width: 0;
+  background: #fff;
+  border: .8px solid #eee;
+  border-radius: 12px;
+}
+
+.mainColumn {
+  padding: 20px;
+  overflow: hidden;
+}
+
+.utility {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+}
+
+.hero {
+  height: 133px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 13px 21px;
+  background: radial-gradient(ellipse at 14% 18%,#f3d8cd 0%,transparent 21%),#f4f6f7;
+}
+
+.heroCopy {
+  z-index: 1;
+}
+
+.hero h1 {
+  margin: 0;
+  color: #171717;
+  font-size: 24px;
+  line-height: 29px;
+  letter-spacing: -.5px;
+}
+
+.hero h1 span {
+  font-size: 23px;
+}
+
+.hero p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.heroArt {
+  position: absolute;
+  right: 1px;
+  bottom: -34px;
+  width: 330px;
+  height: 193px;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.metric {
+  height: 74px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  background: #f4f4f5;
+  padding: 12px;
+}
+
+.metric>span {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+}
+
+.metric p,.metric strong {
+  display: block;
+  margin: 0;
+}
+
+.metric p {
+  color: #767676;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.metric strong {
+  margin-top: 2px;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.blue {
+  background: #dbe9ff;
+  color: #0669ff;
+}
+
+.violet {
+  background: #eee7ff;
+  color: #7b55ff;
+}
+
+.green {
+  background: #ddefeb;
+  color: #00a86b;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 53px 0 14px;
+}
+
+.sectionTitle h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 600;
+}
+
+.sectionTitle a {
+  color: #e17543;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px;
+}
+
+.course {
+  height: 162px;
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  grid-template-columns: 103px minmax(0,1fr);
+  gap: 16px;
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.courseCover {
+  width: 103px;
+  height: 136px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.courseInfo {
+  min-width: 0;
+}
+
+.subject {
+  display: inline-block;
+  border-radius: 7px;
+  background: #f4f4f5;
+  padding: 4px 12px;
+  color: #343434;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.courseInfo h3 {
+  max-width: 180px;
+  margin: 7px 0 5px;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.courseInfo p,.progressLabel {
+  display: block;
+  color: #767676;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.courseInfo p {
+  margin: 0 0 10px;
+}
+
+.progress {
+  width: 149px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e8e8e8;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #00ad70;
+}
+
+.continueButton {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  padding: 8px 15px;
+  background: white;
+  color: #171717;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.updates .sectionTitle,.games .sectionTitle {
+  margin-top: 54px;
+  margin-bottom: 8px;
+}
+
+.update {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 4px;
+}
+
+.document {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 40px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+.pdf {
+  background: #ef2f34;
+}
+
+.homework {
+  background: #7944c6;
+}
+
+.material {
+  background: #4f91f5;
+}
+
+.update h3 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.update p {
+  margin: 3px 0 0;
+  color: #767676;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.update button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #767676;
+}
+
+.gameGrid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 16px;
+}
+
+.game {
+  position: relative;
+  display: block;
+  height: 171px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #eee;
+}
+
+.game img {
+  object-fit: cover;
+}
+
+.calendar,.upcomingPanel {
+  box-sizing: border-box;
+  border: .8px solid #eee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.calendar {
+  height: 270px;
+  padding: 20px;
+}
+
+.calendarTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 17px;
+}
+
+.calendarTitle h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.calendarTitle button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #171717;
+}
+
+.week,.days {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.week {
+  margin-bottom: 10px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.days span,.days button {
+  display: grid;
+  place-items: center;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-size: 12px;
+}
+
+.days .present {
+  background: #ddf4e9;
+}
+
+.days .missed {
+  background: #ffcfd0;
+}
+
+.days .today {
+  border: 2px solid #00a86b;
+  background: #ddf4e9;
+}
+
+.days .future {
+  color: #aaa;
+}
+
+.upcomingPanel {
+  min-height: 679px;
+  padding: 20px;
+}
+
+.upcomingPanel .sectionTitle {
+  margin: 0 0 20px;
+}
+
+.upcomingTask {
+  height: 62px;
+  box-sizing: border-box;
+  margin-top: 16px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 11px 22px;
+  box-shadow: 0 4px 0 #0000000d;
+}
+
+.upcomingTask:first-of-type {
+  margin-top: 0;
+}
+
+.upcomingTask h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.upcomingTask p {
+  margin: 3px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.upcomingTask .due {
+  color: #f0342e;
+}
+
+@media(max-width: 1200px) {
+  .contentGrid {
+  grid-template-columns: 1fr;
+}
+
+.utility {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.upcomingPanel {
+  min-height: auto;
+}
+
+}
+
+@media(max-width: 720px) {
+  .page {
+  padding: 10px;
+}
+
+.mainColumn {
+  padding: 14px;
+}
+
+.heroArt {
+  opacity: .18;
+}
+
+.metrics,.courseGrid,.utility {
+  grid-template-columns: 1fr;
+}
+
+.metric {
+  height: 68px;
+}
+
+.course {
+  height: 170px;
+}
+
+.gameGrid {
+  grid-template-columns: repeat(2,1fr);
+}
+
+.game {
+  height: 145px;
+}
+
+.sectionTitle {
+  margin-top: 32px;
+}
+
+.upcomingPanel {
+  min-height: auto;
+}
+
+}

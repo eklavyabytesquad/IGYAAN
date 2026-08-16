@@ -362,23 +362,23 @@ export default function TimetablePage() {
 	return (
 		<div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
 			{/* ── HERO BANNER ── */}
-			<div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 px-6 py-8 sm:px-8">
+			<div className="border-b border-zinc-200 bg-white px-6 py-7 sm:px-8 dark:border-zinc-800 dark:bg-zinc-900">
 				<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTIwIDBMMCAwIDAgMjB6TTQwIDIwTDIwIDQwIDQwIDQweiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
-				<div className="relative z-10">
+				<div>
 					<div className="flex items-center gap-3">
-						<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm text-2xl">🕐</div>
+						<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-xl dark:bg-orange-950/40">◷</div>
 						<div>
-							<h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-								Timetable Management
+							<h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-white sm:text-4xl">
+								Timetable
 							</h1>
-							<p className="mt-0.5 text-sm text-white/70">
+							<p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
 								{schoolData?.school_name || "School"} • {activeSession?.session_name || "No session"}
 							</p>
 						</div>
 					</div>
 
 					{/* Stats row */}
-					<div className="mt-5 flex flex-wrap gap-3">
+					<div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
 						{[
 							{ icon: "📅", label: "Days", value: activeDays.length },
 							{ icon: "📖", label: "Periods", value: slots.filter((s) => s.slot_type === "period").length },
@@ -387,12 +387,12 @@ export default function TimetablePage() {
 							{ icon: "📚", label: "Subjects", value: subjects.length },
 							{ icon: "👨‍🏫", label: "Faculty", value: faculty.length },
 						].map((s) => (
-							<div key={s.label} className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-3 min-w-[100px]">
+							<div key={s.label} className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/60">
 								<div className="flex items-center gap-2">
-									<span className="text-lg">{s.icon}</span>
+									<span className="text-base grayscale">{s.icon}</span>
 									<div>
-										<p className="text-xl font-bold text-white">{s.value}</p>
-										<p className="text-[10px] text-white/60">{s.label}</p>
+										<p className="text-lg font-semibold text-zinc-900 dark:text-white">{s.value}</p>
+										<p className="text-[10px] text-zinc-400">{s.label}</p>
 									</div>
 								</div>
 							</div>
@@ -405,7 +405,7 @@ export default function TimetablePage() {
 			<div className="sticky top-0 z-20 border-b border-zinc-200 bg-white/90 backdrop-blur-lg dark:border-zinc-800 dark:bg-zinc-900/90">
 				<div className="flex flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
 					{/* View tabs */}
-					<div className="flex gap-1 rounded-xl bg-zinc-100 p-1 dark:bg-zinc-800">
+					<div className="flex gap-2 overflow-x-auto">
 						{[
 							{ key: "structure", icon: "🏗️", label: "Structure", desc: "Build Day" },
 							{ key: "assign", icon: "📝", label: "Assign", desc: "Subject & Teacher" },
@@ -424,10 +424,10 @@ export default function TimetablePage() {
 									}
 									setError(""); setView(tab.key);
 								}}
-								className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+								className={`flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
 									view === tab.key
-										? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white"
-										: "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
+										? "border-orange-200 bg-orange-50 text-orange-700 shadow-sm dark:border-orange-900 dark:bg-orange-950/30 dark:text-orange-300"
+										: "border-transparent text-zinc-500 hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white"
 								}`}
 							>
 								<span>{tab.icon}</span>

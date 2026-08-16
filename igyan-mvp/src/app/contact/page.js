@@ -1,226 +1,80 @@
-import Logo from "@/components/logo";
+"use client";
+
+import { Handshake, Headset, MapPin, Send } from "lucide-react";
+import { useState } from "react";
+
+const fieldClassName = "w-full rounded-xl border border-white/80 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-blue-200 focus:border-[#064bb2] focus:ring-4 focus:ring-[#064bb2]/10 [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#ffffff_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:#0f172a] [&:-webkit-autofill]:[caret-color:#0f172a]";
+const EMAIL_COMPOSE_URL = "https://mail.google.com/mail/?view=cm&fs=1&to=igyan.ai.team@gmail.com";
 
 export default function ContactPage() {
-  return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50 dark:from-slate-950 dark:via-slate-900 dark:to-sky-950">
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-sky-400/10 blur-3xl dark:bg-sky-500/5" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-400/10 blur-3xl dark:bg-indigo-500/5" />
-        <div className="absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-300/10 blur-3xl dark:bg-purple-500/5" />
-      </div>
+  const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState({});
 
-      <div className="relative mx-auto w-full max-w-6xl px-6 py-16 lg:py-24">
-        {/* Header */}
-        <header className="max-w-2xl">
-          <Logo variant="card" className="mb-6 scale-250 transform-gpu origin-left" />
-          <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-1.5 text-xs font-semibold text-sky-600 dark:border-sky-800 dark:bg-sky-950/50 dark:text-sky-400">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-500" />
-            </span>
-            We respond within 24 hours
+  function handleSubmit(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const nextErrors = {};
+
+    form.querySelectorAll("[required]").forEach((field) => {
+      if (!field.value.trim()) nextErrors[field.id] = "This field is required.";
+    });
+
+    const email = form.elements.email;
+    if (!nextErrors.email && !email.validity.valid) {
+      nextErrors.email = "Please enter a valid email address.";
+    }
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length === 0) setSent(true);
+  }
+
+  function clearError(id) {
+    if (!errors[id]) return;
+    setErrors((current) => ({ ...current, [id]: "" }));
+  }
+
+  return <main className="bg-white">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#3b1595] via-[#2f1078] to-[#0a051c] px-6 py-20 text-center text-white sm:px-10 md:py-24">
+      <Sparkle className="absolute left-8 top-1/3 hidden h-11 w-11 text-amber-500 sm:block" />
+      <Sparkle className="absolute right-10 top-1/3 hidden h-12 w-12 text-orange-500 sm:block" />
+      <div className="relative mx-auto max-w-3xl"><h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">Let&apos;s Build the Future of Learning</h1><p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-indigo-100">Have questions about our AI OS, institutional licensing, or partnership opportunities? Reach out, and our team will get in touch with you shortly.</p></div>
+    </section>
+    <section className="px-6 py-16 sm:px-10 md:py-20">
+    <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+      <aside className="pt-2">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#064bb2] sm:text-4xl">Contact Information</h1>
+        <p className="mt-5 max-w-md text-lg leading-relaxed text-slate-600">Connect with our global support and sales team for personalized advice and integration support.</p>
+        <div className="mt-9 space-y-5">
+          <ContactCard icon={Handshake} title="Partnerships" description="For schools, colleges, and enterprise licensing." />
+          <ContactCard icon={Headset} title="Technical Help" description="For help with Sudarshan AI or student accounts." />
+          <div className="flex items-start gap-5 rounded-3xl bg-white p-7 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.28)]"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-blue-50 text-[#064bb2]"><MapPin className="h-6 w-6" /></span><div><h2 className="font-bold text-[#064bb2]">Our offices</h2><p className="mt-2 font-semibold text-slate-700">Mumbai, Maharashtra, India</p><p className="mt-4 text-sm font-bold uppercase tracking-wide text-slate-500">Sub branches</p><p className="mt-1 leading-7 text-slate-600">Delhi, India<br />Patna, Bihar, India</p></div></div>
+        </div>
+      </aside>
+
+      <section id="contact-form" className="rounded-3xl border border-blue-200 bg-gradient-to-br from-[#c8e8f8] to-[#b8cdef] p-7 shadow-[0_24px_55px_-26px_rgba(30,100,170,0.45)] sm:p-10">
+        <h2 className="text-2xl font-extrabold tracking-tight text-[#064bb2]">Send us a Message</h2>
+        {sent ? <div className="py-14 text-center"><div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-3xl text-emerald-600">✓</div><h3 className="mt-5 text-2xl font-bold text-[#1e1b4b]">Message received</h3><p className="mx-auto mt-3 max-w-md leading-relaxed text-slate-600">Thank you for reaching out. Our team will review your enquiry and get back to you shortly.</p><button type="button" onClick={() => { setSent(false); setErrors({}); }} className="mt-7 rounded-full border border-[#064bb2]/25 bg-white px-6 py-3 text-sm font-bold text-[#064bb2] transition hover:border-[#064bb2]">Send another message</button></div> : <form className="mt-8 space-y-5" noValidate onSubmit={handleSubmit}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="First Name" id="first-name" placeholder="John" required error={errors["first-name"]} onChange={() => clearError("first-name")} />
+            <Field label="Last Name" id="last-name" placeholder="Doe" required error={errors["last-name"]} onChange={() => clearError("last-name")} />
           </div>
-          <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white lg:text-5xl">
-            Let&apos;s design your{' '}
-            <span className="bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">
-              AI-first
-            </span>{' '}
-            learning ecosystem.
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-zinc-600 dark:text-zinc-400 lg:text-lg">
-            Share a few details and our strategy team will connect within 24 hours
-            to co-create your campus transformation roadmap.
-          </p>
-        </header>
-
-        {/* Main section */}
-        <section className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          {/* Form card */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-white/80 p-7 shadow-xl shadow-zinc-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-black/20 lg:p-9">
-            <h2 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">
-              📬 Get in touch
-            </h2>
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Full name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Priya Sharma"
-                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-sky-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-sky-500 dark:focus:bg-slate-800"
-                  required
-                />
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="email" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                    Work email
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="you@school.edu"
-                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-sky-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-sky-500 dark:focus:bg-slate-800"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="organization" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                    Institution
-                  </label>
-                  <input
-                    id="organization"
-                    name="organization"
-                    type="text"
-                    placeholder="Nova World School"
-                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-sky-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-sky-500 dark:focus:bg-slate-800"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="goal" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  Primary goal
-                </label>
-                <select
-                  id="goal"
-                  name="goal"
-                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 transition-all focus:border-sky-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-zinc-100 dark:focus:border-sky-500 dark:focus:bg-slate-800"
-                >
-                  <option>Launch Sudarshan AI copilots across operations</option>
-                  <option>Personalize learning and careers</option>
-                  <option>Build entrepreneurship and venture labs</option>
-                  <option>Co-create a custom initiative</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  How can we support you?
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={3}
-                  placeholder="Share your priorities, timelines, or challenges."
-                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-sky-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-sky-500 dark:focus:bg-slate-800"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-sky-500/30"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Request strategy session
-                </span>
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-transform duration-300 group-hover:translate-x-0" />
-              </button>
-            </form>
-          </div>
-
-          {/* Right sidebar */}
-          <div className="flex flex-col gap-5">
-            {/* Demo CTA card */}
-            <div className="rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50 to-indigo-50 p-6 shadow-lg shadow-sky-500/5 dark:border-sky-800/40 dark:from-sky-950/50 dark:to-indigo-950/50">
-              <div className="mb-3 inline-flex rounded-lg bg-sky-100 p-2 dark:bg-sky-900/50">
-                <svg className="h-5 w-5 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
-                Need an immediate walkthrough?
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                Schedule a 30-minute live demo with our product strategists. We&apos;ll
-                map your objectives to the right Sudarshan AI copilots and launch plan.
-              </p>
-            </div>
-
-            {/* Contact details card */}
-            <div className="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-lg shadow-zinc-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                Reach us directly
-              </h3>
-              <div className="space-y-3">
-                <a href="mailto:hello@igyan.ai" className="group flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-sky-50 dark:hover:bg-sky-950/30">
-                  <div className="rounded-lg bg-sky-100 p-2 dark:bg-sky-900/50">
-                    <svg className="h-4 w-4 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Email</p>
-                    <p className="text-sm font-semibold text-zinc-900 group-hover:text-sky-600 dark:text-zinc-100 dark:group-hover:text-sky-400">hello@igyan.ai</p>
-                  </div>
-                </a>
-
-                <a href="tel:+919262932333" className="group flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-sky-50 dark:hover:bg-sky-950/30">
-                  <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-900/50">
-                    <svg className="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Phone</p>
-                    <p className="text-sm font-semibold text-zinc-900 group-hover:text-sky-600 dark:text-zinc-100 dark:group-hover:text-sky-400">+91 - 9262932333</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            {/* Offices card */}
-            <div className="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-lg shadow-zinc-900/5 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                Our offices
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3 rounded-xl border border-amber-200/50 bg-amber-50/50 p-3 dark:border-amber-800/30 dark:bg-amber-950/20">
-                  <div className="rounded-lg bg-amber-100 p-2 dark:bg-amber-900/50">
-                    <svg className="h-4 w-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-amber-700 dark:text-amber-400">🏢 Headquarters</p>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Mumbai, Maharashtra, India</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-xl p-3">
-                  <div className="rounded-lg bg-violet-100 p-2 dark:bg-violet-900/50">
-                    <svg className="h-4 w-4 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-violet-600 dark:text-violet-400">📍 Sub Branches</p>
-                    <p className="text-sm text-zinc-700 dark:text-zinc-300">Delhi, India</p>
-                    <p className="text-sm text-zinc-700 dark:text-zinc-300">Patna, Bihar, India</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <p className="px-1 text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">
-              By submitting this form, you agree to receive communications about
-              iGyanAI products, events, and research. You can opt out anytime.
-            </p>
-          </div>
-        </section>
-      </div>
+              <Field label="Email Address" id="email" type="email" spellCheck={false} placeholder="johndoe@example.com" required error={errors.email} onChange={() => clearError("email")} />
+          <Field label="Institution / School Name" id="institution" placeholder="IGYAN AI Academy" />
+          <div><label htmlFor="message" className="mb-2 block text-sm font-semibold text-slate-700">Message <span className="text-rose-500">*</span></label><textarea id="message" name="message" rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? "message-error" : undefined} onChange={() => clearError("message")} placeholder="How can we help your school or organization?" className={`${fieldClassName} ${errors.message ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/10" : ""}`} />{errors.message && <p id="message-error" className="mt-2 text-sm font-semibold text-rose-600">{errors.message}</p>}</div>
+          <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#064bb2] px-8 py-4 font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-[#003d91] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#064bb2]">Submit Request <Send className="h-5 w-5" /></button>
+        </form>}
+      </section>
     </div>
-  );
+    </section>
+  </main>;
+}
+
+function Sparkle({ className }) { return <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 14.8 9.2 24 12l-9.2 2.8L12 24l-2.8-9.2L0 12l9.2-2.8L12 0Z" /></svg>; }
+
+function Field({ label, id, type = "text", placeholder, required = false, error, onChange, spellCheck }) {
+  return <div><label htmlFor={id} className="mb-2 block text-sm font-semibold text-slate-700">{label} {required && <span className="text-rose-500">*</span>}</label><input id={id} name={id} type={type} required={required} spellCheck={spellCheck} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : undefined} onChange={onChange} placeholder={placeholder} className={`${fieldClassName} ${error ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/10" : ""}`} />{error && <p id={`${id}-error`} className="mt-2 text-sm font-semibold text-rose-600">{error}</p>}</div>;
+}
+
+function ContactCard({ icon: Icon, title, description }) {
+  return <a href={EMAIL_COMPOSE_URL} target="_blank" rel="noopener noreferrer" className="group flex items-start gap-5 rounded-3xl bg-white p-7 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.28)] transition hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(6,75,178,0.3)]"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-blue-50 text-[#064bb2]"><Icon className="h-6 w-6" /></span><span><span className="block font-bold text-[#064bb2]">{title}</span><span className="mt-1 block text-sm font-semibold text-slate-500">{description}</span><span className="mt-2 block text-sm font-bold text-[#064bb2]">igyan.ai.team@gmail.com</span></span></a>;
 }

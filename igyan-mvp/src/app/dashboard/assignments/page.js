@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FileText, Download, BookOpen, Sparkles, CheckCircle, Loader2, Copy, Check } from 'lucide-react';
 import { cbseData, getSubjects, getTopics } from './data/cbseData';
 import { generateMCQPDF } from './utils/mcqPDFGenerator';
-import OpenAI from 'openai';
+import OpenAI from 'openai/index.js';
 
 export default function DashboardAssignmentsPage() {
   const [selectedClass, setSelectedClass] = useState('');

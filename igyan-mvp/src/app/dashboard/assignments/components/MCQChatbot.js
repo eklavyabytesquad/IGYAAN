@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Send, Loader2, BookOpen, FileText } from 'lucide-react';
-import OpenAI from 'openai';
+import OpenAI from 'openai/index.js';
 
 export default function MCQChatbot({ selectedClass, selectedSubject, selectedTopic, onGenerate }) {
   const [messages, setMessages] = useState([

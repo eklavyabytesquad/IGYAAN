@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Logo from "@/components/logo";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../utils/auth_context";
+import RegisterLayout from "../register-layout";
 
 export default function LaunchPadRegister() {
 	const { register } = useAuth();
@@ -12,6 +13,7 @@ export default function LaunchPadRegister() {
 	const [imageBase64, setImageBase64] = useState("");
 	const [uploadingImage, setUploadingImage] = useState(false);
 	const [selectedRole, setSelectedRole] = useState("b2c_student");
+	const [showPassword, setShowPassword] = useState(false);
 
 	const LAUNCH_PAD_ROLES = [
 		{ value: "b2c_student", label: "Student", description: "Personal learning account" },
@@ -89,21 +91,13 @@ export default function LaunchPadRegister() {
 	};
 
 	return (
-		<div className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center px-6 py-20">
-			<div className="rounded-3xl border border-zinc-200 bg-white/92 p-10 shadow-2xl shadow-sky-500/15 dark:border-slate-900 dark:bg-slate-950/75">
-				<div className="mb-6 flex justify-center">
-					<Logo variant="card" />
-				</div>
-				<div className="mb-4">
-					<span className="inline-block rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300">
-						Professional Suite
-					</span>
-				</div>
+		<RegisterLayout variant="launch">
+			<div className="register-card rounded-3xl border border-zinc-200 bg-white/92 p-6 shadow-2xl shadow-sky-500/15 sm:p-10">
 				<h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-					Create your personal account
+					Create an account
 				</h1>
 				<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-					Start your personalized learning journey with AI-powered tools.
+					Fill in the details below to get started.
 				</p>
 
 				{error && (
@@ -112,7 +106,7 @@ export default function LaunchPadRegister() {
 					</div>
 				)}
 
-				<form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+				<form className="register-form register-form-launch mt-8 space-y-5" onSubmit={handleSubmit}>
 					{/* Role Selection */}
 					<div>
 						<label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
@@ -124,10 +118,10 @@ export default function LaunchPadRegister() {
 									key={role.value}
 									type="button"
 									onClick={() => setSelectedRole(role.value)}
-									className={`rounded-lg border-2 p-3 text-left transition-all ${
+									className={`register-role-card rounded-xl border-2 p-3 text-left transition-all ${
 										selectedRole === role.value
-											? "border-cyan-500 bg-cyan-50 dark:border-cyan-500 dark:bg-cyan-900/20"
-											: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-slate-900"
+											? "register-role-card-active border-cyan-500 bg-cyan-50"
+											: "border-zinc-200 bg-white hover:border-zinc-300"
 									}`}
 								>
 									<div className="font-semibold text-sm text-zinc-900 dark:text-white">
@@ -176,7 +170,7 @@ export default function LaunchPadRegister() {
 									</button>
 								</div>
 							) : (
-								<label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-cyan-500 hover:bg-cyan-50 dark:border-zinc-700 dark:bg-slate-900 dark:hover:border-cyan-500 dark:hover:bg-slate-900/60">
+								<label className="register-upload-control flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-cyan-500 hover:bg-cyan-50">
 									<input
 										type="file"
 										accept="image/jpeg,image/jpg,image/png"
@@ -311,15 +305,7 @@ export default function LaunchPadRegister() {
 						>
 							Password
 						</label>
-						<input
-							id="password"
-							name="password"
-							type="password"
-							placeholder="••••••••"
-							className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors focus:border-cyan-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100"
-							required
-							minLength={8}
-						/>
+						<div className="relative mt-2"><input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 pr-12 text-sm text-zinc-900 transition-colors focus:border-cyan-500 focus:outline-none dark:border-zinc-700 dark:bg-slate-900 dark:text-zinc-100" required minLength={8} /><button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:text-[#064bb2] focus-visible:outline-2 focus-visible:outline-[#064bb2]" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button></div>
 						<p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
 							Minimum 8 characters
 						</p>
@@ -332,7 +318,7 @@ export default function LaunchPadRegister() {
 						{loading ? "Creating account..." : "Create personal account"}
 					</button>
 				</form>
-				<p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
+				<p className="mt-6 text-center text-base text-zinc-500 dark:text-zinc-400">
 					Already have an account?{" "}
 					<Link
 						href="/login/launch-pad"
@@ -342,6 +328,6 @@ export default function LaunchPadRegister() {
 					</Link>
 				</p>
 			</div>
-		</div>
+		</RegisterLayout>
 	);
 }

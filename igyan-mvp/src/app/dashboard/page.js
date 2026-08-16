@@ -13,6 +13,8 @@ import {
 	Volume2, Briefcase, MessageCircle, ArrowUpRight, Calendar,
 	Rocket, Shield
 } from "lucide-react";
+import PremiumStudentDashboard from "../../components/dashboard/premium-student-dashboard";
+import FacultyDashboard from "../../components/dashboard/faculty-dashboard";
 
 export default function DashboardPage() {
 	const { user, session, loading } = useAuth();
@@ -87,6 +89,10 @@ export default function DashboardPage() {
 	}
 
 	if (!user) return null;
+
+	if (user.role === "faculty") {
+		return <FacultyDashboard user={user} />;
+	}
 
 	// Show onboarding if user has no school
 	if (hasSchool === false) {
@@ -357,6 +363,10 @@ export default function DashboardPage() {
 			description: "Integrate sensor module for the rover",
 		},
 	];
+
+	if (user.role === "student" || user.role === "b2c_student") {
+		return <PremiumStudentDashboard firstName={firstName} />;
+	}
 
 	return (
 		<div className="dashboard-theme min-h-screen p-6 lg:p-8" style={{

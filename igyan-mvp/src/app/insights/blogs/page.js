@@ -9,13 +9,11 @@ export default function IGyanBlogsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState(null);
   const [allTags, setAllTags] = useState([]);
-
-  useEffect(() => {
-    fetchBlogs();
-  }, [selectedTag]);
+  const [fetchError, setFetchError] = useState("");
 
   async function fetchBlogs() {
     setLoading(true);
+    setFetchError("");
     try {
       let query = supabase
         .from("blogs")
@@ -42,12 +40,18 @@ export default function IGyanBlogsPage() {
         );
         setAllTags([...tags]);
       }
-    } catch (err) {
-      console.error("Error fetching blogs:", err);
+    } catch {
+      setBlogs([]);
+      setAllTags([]);
+      setFetchError("Insights are temporarily unavailable. Please try again shortly.");
     } finally {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [selectedTag]);
 
   const featuredBlogs = blogs.filter((b) => b.is_featured);
   const regularBlogs = blogs.filter((b) => !b.is_featured);
@@ -72,6 +76,7 @@ export default function IGyanBlogsPage() {
 
   return (
     <div className="space-y-10">
+      {fetchError && <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">{fetchError}</div>}
       {/* Tag filters */}
       {allTags.length > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -178,7 +183,7 @@ function FeaturedBlogCard({ blog }) {
           {(blog.tags || []).slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+              className="rounded-full bg-sky-100 px-2.5 py-0.5 text-[11px] font-semibold text-sky-800"
             >
               {tag}
             </span>
@@ -235,7 +240,7 @@ function BlogCard({ blog }) {
           {(blog.tags || []).slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+              className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-800"
             >
               {tag}
             </span>

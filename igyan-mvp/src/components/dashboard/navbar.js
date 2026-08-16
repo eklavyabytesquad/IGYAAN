@@ -2,10 +2,47 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../app/utils/auth_context";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../app/utils/supabase";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, Search, Bell, ChevronDown, User, Settings, HelpCircle, LogOut, Clock } from "lucide-react";
+
+const PAGE_TITLES = [
+	["/dashboard/timetable", "Calendar"],
+	["/dashboard/tools", "AI Tools"],
+	["/dashboard/courses", "Learn"],
+	["/dashboard/gyanisage", "Buddy AI"],
+	["/dashboard/academics", "Academics"],
+	["/dashboard/live-classroom", "Classroom"],
+	["/dashboard/games", "Games"],
+	["/dashboard/innovation", "Innovation"],
+	["/dashboard/campus", "Campus"],
+	["/dashboard/copilot", "Co-pilot"],
+	["/dashboard/viva-ai", "AI Viva Lab"],
+	["/dashboard/homework", "My Homework"],
+	["/dashboard/report-cards", "AI Report"],
+	["/dashboard/gamified", "Gamified Homework"],
+	["/dashboard/content-generator", "Pitch Craft"],
+	["/dashboard/incubation-hub", "Incubation Hub"],
+	["/dashboard/events", "Campus Events"],
+	["/dashboard/faculty-chat", "Parent Connect"],
+	["/dashboard/faculty-substitution", "Smart Substitution"],
+	["/dashboard/school-management", "School Management"],
+	["/dashboard/school-profile", "School Profile"],
+	["/dashboard/student-management", "Student Management"],
+	["/dashboard/users", "User Management"],
+	["/dashboard/user-access", "Access & Roles"],
+	["/dashboard/shark-ai", "AI Shark"],
+	["/dashboard/attendance", "Attendance"],
+	["/dashboard/performance", "Performance"],
+	["/dashboard/settings", "Settings"],
+];
+
+function getPageTitle(pathname) {
+	if (pathname === "/dashboard") return "Dashboard";
+	return PAGE_TITLES.find(([path]) => pathname.startsWith(path))?.[1] || "Dashboard";
+}
 
 export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	const { user, logout } = useAuth();
@@ -16,6 +53,8 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 	const dropdownRef = useRef(null);
 	const notificationsRef = useRef(null);
 	const router = useRouter();
+	const pathname = usePathname();
+	const pageTitle = getPageTitle(pathname);
 
 	// Close dropdown when clicking outside
 	// Fetch session requests for B2C users (mentors and students)
@@ -122,10 +161,11 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 
 	// Determine if user is B2C
 	const isB2CUser = user?.role === 'b2c_student' || user?.role === 'b2c_mentor';
+	const canSeeAchievements = user?.role === 'student' || user?.role === 'b2c_student';
 
 	return (
-		<header className="dashboard-nav sticky top-0 z-30 border-b">
-			<div className="flex h-16 items-center justify-between px-6">
+		<header className="dashboard-nav sticky top-2 z-30">
+			<div className="dashboard-nav-inner flex items-center justify-between">
 				{/* Left Section */}
 				<div className="flex items-center gap-4">
 					<button
@@ -137,30 +177,22 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 						<Menu className="h-6 w-6" />
 					</button>
 
-					{/* Search Bar */}
-					<div className="hidden items-center md:flex">
-						<div className="relative">
-							<Search
-								className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2"
-								style={{ color: 'var(--dashboard-muted)' }}
-							/>
-							<input
-								type="text"
-								placeholder={isB2CUser ? "Search tools, courses..." : "Search courses, assignments..."}
-								className="w-64 rounded-xl py-2.5 pl-10 pr-4 text-sm transition-all focus:outline-none focus:ring-2 focus:w-80 lg:w-80"
-								style={{
-									border: '1px solid var(--dashboard-border)',
-									backgroundColor: 'var(--dashboard-surface-muted)',
-									color: 'var(--dashboard-text)',
-									'--tw-ring-color': 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)'
-								}}
-							/>
-						</div>
-					</div>
+					<p className="dashboard-page-label">{pageTitle}</p>
 				</div>
 
 				{/* Right Section */}
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-4">
+					<div className="hidden items-center md:flex">
+						<div className="relative">
+							<Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" style={{ color: 'var(--dashboard-muted)' }} />
+							<input type="text" placeholder="Search anything..." className="dashboard-search dashboard-tools-search text-base transition-all focus:outline-none focus:ring-2" style={{ color: 'var(--dashboard-text)', '--tw-ring-color': 'color-mix(in srgb, var(--dashboard-primary) 30%, transparent)' }} />
+						</div>
+					</div>
+					{canSeeAchievements && (
+						<div className="hidden h-12 w-12 items-center justify-center sm:flex" aria-label="Achievements">
+							<Image src="/badges/silver-badge.png" alt="Silver achievement badge" width={48} height={48} className="h-12 w-12 object-contain" />
+						</div>
+					)}
 					{/* Portal Badge */}
 					{isB2CUser && (
 						<div className="hidden sm:flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-4 py-1.5 ring-1 ring-cyan-500/20 dark:from-cyan-500/20 dark:to-blue-500/20">
@@ -309,7 +341,7 @@ export default function DashboardNavbar({ onMenuClick, schoolData }) {
 					</div>
 
 					{/* Divider */}
-					<div className="h-8 w-px" style={{ backgroundColor: 'var(--dashboard-border)' }} />
+					<div className="hidden h-8 w-px sm:block" style={{ backgroundColor: 'var(--dashboard-border)' }} />
 
 					{/* Profile Dropdown */}
 					<div className="relative" ref={dropdownRef}>

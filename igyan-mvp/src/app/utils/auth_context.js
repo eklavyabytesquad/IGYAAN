@@ -84,6 +84,7 @@ export function AuthProvider({ children }) {
 	}, []);
 
 	const checkSession = async () => {
+		setLoading(true);
 		try {
 			const sessionToken = localStorage.getItem("session_token");
 			if (!sessionToken) {
@@ -99,9 +100,18 @@ export function AuthProvider({ children }) {
 				.eq("is_active", true)
 				.single();
 
-			if (error || !sessionData) {
+			// Only remove the token when Supabase confirms that no matching session exists.
+			// Network or transient database errors must not log a user out on refresh.
+			if (error?.code === "PGRST116" || (!error && !sessionData)) {
 				localStorage.removeItem("session_token");
+				setUser(null);
+				setSession(null);
 				setLoading(false);
+				return;
+			}
+
+			if (error) {
+				console.error("Session verification temporarily failed:", error);
 				return;
 			}
 
@@ -165,30 +175,33 @@ export function AuthProvider({ children }) {
 		try {
 			const passwordHash = await hashPassword(password);
 
-			// Find user with matching email and password
+			// Look up the account first so the form can identify a password mismatch.
 			const { data: userData, error: userError } = await supabase
 				.from("users")
 				.select("*")
 				.eq("email", email)
-				.eq("password_hash", passwordHash)
 				.single();
 
 			if (userError || !userData) {
-				throw new Error("Invalid email or password");
+				throw new Error("Invalid email address");
+			}
+
+			if (userData.password_hash !== passwordHash) {
+				return { success: false, error: "Incorrect password", field: "password" };
 			}
 
 			// Define allowed roles based on login variant
-			const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'student', 'faculty', 'parent', 'counselor'];
-			const LAUNCH_PAD_ROLES = ['b2c_student', 'b2c_mentor'];
+			const INSTITUTIONAL_ROLES = ['super_admin', 'co_admin', 'principal', 'faculty', 'teacher'];
+			const LAUNCH_PAD_ROLES = ['student', 'parent'];
 
 			// Validate role based on login variant
 			if (loginVariant === "institutionalSuite") {
 				if (!INSTITUTIONAL_ROLES.includes(userData.role)) {
-					throw new Error("Access denied. This portal is for institutional users (super_admin, co_admin, student, faculty) only. Please use the Professional Suite portal for B2C access.");
+					throw new Error("Access denied. This portal is for super admins, principals, and teachers. Students and parents should use Launch Pad.");
 				}
 			} else if (loginVariant === "professionalSuite") {
 				if (!LAUNCH_PAD_ROLES.includes(userData.role)) {
-					throw new Error("Access denied. This portal is for B2C users (b2c_student, b2c_mentor) only. Please use the Institutional Suite portal.");
+					throw new Error("Access denied. Launch Pad is for students and parents. Staff should use the Institutional Suite portal.");
 				}
 			}
 
@@ -234,8 +247,7 @@ export function AuthProvider({ children }) {
 
 			return { success: true, data: userData };
 		} catch (error) {
-			console.error("Login error:", error);
-			return { success: false, error: error.message };
+			return { success: false, error: error.message || "Unable to sign in. Please try again." };
 		}
 	};
 
