@@ -242,7 +242,7 @@ export default function StudentSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 							/>
 						) : (
 							<Image
-								src="/logo2.jpg"
+								src="/asset/igyan-ai-mark.png"
 								alt="IGYAN.AI"
 								width={40}
 								height={40}

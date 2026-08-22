@@ -199,11 +199,11 @@ export default function FacultySidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 							/>
 						) : (
 							<Image
-								src="/logo2.jpg"
+								src="/asset/igyan-ai-mark.png"
 								alt="IGYAN.AI"
 								width={40}
 								height={40}
-								className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md"
+								className="h-10 w-10 shrink-0 object-contain shadow-md"
 								style={{ boxShadow: '0 0 0 2px color-mix(in srgb, var(--dashboard-primary) 20%, transparent)' }}
 							/>
 						)}

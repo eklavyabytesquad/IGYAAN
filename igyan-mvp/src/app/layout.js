@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -37,20 +36,8 @@ export default function RootLayout({ children }) {
 		<html lang="en" suppressHydrationWarning data-theme="dark" className="dark">
 			<head>
 				<title>IGYAN AI -Native Operating System</title>
-				<Script id="force-dark-theme" strategy="beforeInteractive">{`
-					(function ensureDarkTheme(){
-						var root = document.documentElement;
-						if (!root) return;
-						root.classList.add('dark');
-						root.dataset.theme = 'dark';
-						root.style.colorScheme = 'dark';
-						try {
-							window.localStorage.setItem('igyan-theme', 'dark');
-						} catch (error) {
-							/* ignore storage access issues */
-						}
-					})();
-				`}</Script>
+				<link rel="icon" href="/apple-icon.png" type="image/png" />
+				<link rel="apple-touch-icon" href="/apple-icon.png" />
 			</head>
 			<body className="antialiased bg-background text-foreground">
 				<ThemeProvider>

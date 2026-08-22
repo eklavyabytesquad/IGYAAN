@@ -173,7 +173,7 @@ export default function UnifiedSidenav({ isOpen, setIsOpen, isCollapsed, setIsCo
 						{schoolData?.logo_url ? (
 							<img src={schoolData.logo_url} alt={schoolData.school_name || "Logo"} className="h-10 w-10 shrink-0 rounded-full object-cover" />
 						) : (
-							<Image src="/logo2.jpg" alt="IGYAN.AI" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full object-cover" />
+							<Image src="/asset/igyan-ai-mark.png" alt="IGYAN.AI" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
 						)}
 						{!isCollapsed && (
 							<span className="text-xl font-bold truncate" style={{ color: "#1d1d1f" }}>
