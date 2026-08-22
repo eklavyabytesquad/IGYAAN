@@ -267,11 +267,11 @@ export default function B2CStudentSidenav({ isOpen, setIsOpen, isCollapsed, setI
 						}`}
 					>
 						<Image
-							src="/logo2.jpg"
+							src="/asset/igyan-ai-mark.png"
 							alt="IGYAN.AI"
 							width={40}
 							height={40}
-							className="h-10 w-10 shrink-0 rounded-lg object-cover shadow-md ring-2 ring-indigo-500/20"
+							className="h-10 w-10 shrink-0 object-contain shadow-md ring-2 ring-indigo-500/20"
 						/>
 						{!isCollapsed && (
 							<span className="text-lg font-bold text-zinc-900 transition-all duration-300 dark:text-white">

@@ -385,7 +385,7 @@ export default function DashboardPage() {
 						<Link href="./" className="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-white/40 bg-white/20 px-6 py-4 shadow-2xl ring-2 ring-white/30 transition-all hover:scale-105 hover:shadow-3xl cursor-pointer">
 							<div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/50 shadow-xl ring-4 ring-white/40">
 								<Image
-									src="/logo2.jpg"
+									src="/asset/igyan-ai-mark.png"
 									alt="IGYAN.AI Logo"
 									fill
 									className="object-cover"

@@ -62,7 +62,7 @@ export default function Navbar() {
       <nav className="mx-auto flex h-20 w-full max-w-[1200px] items-center justify-between px-5 sm:px-8 lg:px-0">
         <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="IGYAN AI home">
           <span className="grid h-12 w-12 place-items-center overflow-hidden rounded-xl bg-[#eaf4ff] ring-1 ring-[#064bb2]/10">
-            <Image src="/logo3.png" alt="IGYAN AI logo" width={48} height={48} className="h-12 w-12 object-cover object-center contrast-125 saturate-125 drop-shadow-[0_1px_1px_rgba(6,75,178,0.35)]" priority />
+            <Image src="/asset/igyan-ai-mark.png" alt="IGYAN AI logo" width={48} height={48} className="h-12 w-12 object-contain drop-shadow-[0_1px_1px_rgba(6,75,178,0.35)]" priority />
           </span>
           <span className="text-xl font-extrabold tracking-tight text-[#064bb2] sm:text-2xl">IGYAN AI</span>
         </Link>

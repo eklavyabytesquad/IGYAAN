@@ -26,7 +26,7 @@ export default function Logo({
 	return (
 		<span className={cn("inline-flex items-center", className)}>
 			<Image
-				src="/asset/logo1.png"
+				src="/asset/igyan-ai-mark.png"
 				alt={alt}
 				width={512}
 				height={512}
